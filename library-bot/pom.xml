@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>aifu.project</groupId>
-    <artifactId>AIFU_Library</artifactId>
+    <artifactId>library-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>AIFU_Library</name>
-    <description>AIFU_Library</description>
+    <name>library-bot</name>
+    <description>library-bot</description>
     <url/>
     <licenses>
         <license/>
@@ -34,6 +34,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <dependency>
+            <groupId>aifu.project</groupId>
+            <artifactId>common-domain</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -44,11 +49,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

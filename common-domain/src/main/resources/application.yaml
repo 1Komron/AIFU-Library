@@ -1,12 +1,4 @@
 spring:
   application:
-      name:
-        common-domain
-  datasource:
-    url: jdbc:postgresql://localhost:5432/aifu_library
-    password: root123
-    username: postgres
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
+    name:
+      common-domain

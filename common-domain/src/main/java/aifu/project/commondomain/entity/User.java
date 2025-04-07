@@ -1,6 +1,5 @@
 package aifu.project.commondomain.entity;
 
-
 import aifu.project.commondomain.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,5 +21,6 @@ public class User {
 
     private String faculty;
     private String course;
+    private String group;
 
 }

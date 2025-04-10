@@ -39,7 +39,7 @@ public class BaseBookService {
         BaseBook baseBook = baseBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BaseBook not found"));
 
-        baseBook.setAuther(baseBookDTO.getAuther());
+        baseBook.setAuthor(baseBookDTO.getAuther());
         baseBook.setTitle(baseBookDTO.getTitle());
         baseBook.setSeries(baseBookDTO.getSeries());
         baseBook.setTitleDetails(baseBookDTO.getTitleDetails());
@@ -63,7 +63,7 @@ public class BaseBookService {
     private BaseBookDTO mapToDTO(BaseBook baseBook) {
         BaseBookDTO dto = new BaseBookDTO();
         dto.setId(baseBook.getId());
-        dto.setAuther(baseBook.getAuther());
+        dto.setAuther(baseBook.getAuthor());
         dto.setTitle(baseBook.getTitle());
         dto.setSeries(baseBook.getSeries());
         dto.setTitleDetails(baseBook.getTitleDetails());
@@ -80,7 +80,7 @@ public class BaseBookService {
 
     private BaseBook mapToEntity(BaseBookDTO dto) {
         BaseBook entity = new BaseBook();
-        entity.setAuther(dto.getAuther());
+        entity.setAuthor(dto.getAuther());
         entity.setTitle(dto.getTitle());
         entity.setSeries(dto.getSeries());
         entity.setTitleDetails(dto.getTitleDetails());

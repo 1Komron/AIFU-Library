@@ -14,7 +14,7 @@ public class BaseBook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String auther;
+    private String author;
     private String title;
     private String series;
     private String titleDetails;

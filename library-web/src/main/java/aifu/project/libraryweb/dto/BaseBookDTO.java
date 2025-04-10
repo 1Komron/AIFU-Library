@@ -1,19 +1,18 @@
-package aifu.project.commondomain.entity;
+package aifu.project.libraryweb.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@NotBlank
 @Data
-public class BaseBook {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Builder
+public class BaseBookDTO {
     private Integer id;
-
     private String auther;
     private String title;
     private String series;
@@ -26,7 +25,4 @@ public class BaseBook {
     private String language;
     private Double price;
     private String udc;
-
-
-
 }

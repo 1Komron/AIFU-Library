@@ -10,8 +10,12 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  messages:
+    basename: message
+    encoding: UTF-8
 bot:
   token:
     7284272709:AAHVHFQTs6fG7ijdzg6cHwZI9MnjUSlJ9PU
   name:
     AIFU Library
+

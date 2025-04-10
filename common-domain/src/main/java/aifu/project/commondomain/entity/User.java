@@ -21,6 +21,14 @@ public class User {
 
     private String faculty;
     private String course;
+    @Column(name = "group_number")
     private String group;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+    @Column(nullable = false)
+    private String password;
+
+    private Long chatId;
 
 }

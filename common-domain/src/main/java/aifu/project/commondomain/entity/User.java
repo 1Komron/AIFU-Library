@@ -17,18 +17,18 @@ public class User {
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
 
     private String faculty;
     private String course;
     @Column(name = "group_number")
     private String group;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
-    @Column(nullable = false)
     private String password;
 
     private Long chatId;
 
+    boolean isActive = false;
 }

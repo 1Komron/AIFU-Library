@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class UserLanguageProperties {
+    private UserLanguageProperties() {}
 
     private static final Properties properties = new Properties();
     private static final Path filePath = Paths.get("library-bot/src/main/resources/user-language.properties");

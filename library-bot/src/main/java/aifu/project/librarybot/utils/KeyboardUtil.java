@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KeyboardUtil {
+    private KeyboardUtil() {}
+
     public static ReplyKeyboardMarkup getMainMenuKeyboard(String lang) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> rows = new ArrayList<>();
@@ -65,8 +67,6 @@ public class KeyboardUtil {
 
         keyboardMarkup.setKeyboard(rows);
         return keyboardMarkup;
-
-
     }
 
     public static void getRegisterInlineKeyboard(SendMessage sendMessage, String lang) {
@@ -114,6 +114,33 @@ public class KeyboardUtil {
         row.add(button);
 
         rows.add(row);
+        row = new ArrayList<>();
+        button = new InlineKeyboardButton();
+        button.setText(MessageUtil.get("register.cancel.button", lang));
+        button.setCallbackData("register_cancel");
+        row.add(button);
+
+        button = new InlineKeyboardButton();
+        button.setText(MessageUtil.get("register.save.button", lang));
+        button.setCallbackData("register_save");
+        row.add(button);
+        rows.add(row);
+
+        keyboardMarkup.setKeyboard(rows);
+
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public static void getLoginRegisterInlineKeyboard(SendMessage sendMessage, String language) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText(MessageUtil.get("register.login.button", language));
+        button.setCallbackData("login");
+        row.add(button);
+        rows.add(row);
         keyboardMarkup.setKeyboard(rows);
 
         sendMessage.setReplyMarkup(keyboardMarkup);
@@ -150,5 +177,4 @@ public class KeyboardUtil {
         editMessageText.setReplyMarkup(getLangInlineKeyboard());
         return editMessageText;
     }
-
 }

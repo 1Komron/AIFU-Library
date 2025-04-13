@@ -18,7 +18,7 @@ public class ButtonService {
 
     @SneakyThrows
     public void getMainButtons(Long chatId, String text) {
-        ReplyKeyboardMarkup keyboard = KeyboardUtil.getMainMenuKeyboard(userLanguageService.getUserLanguage(String.valueOf(chatId)));
+        ReplyKeyboardMarkup keyboard = KeyboardUtil.getMainMenuKeyboard(userLanguageService.getLanguage(String.valueOf(chatId)));
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setReplyMarkup(keyboard);
@@ -32,7 +32,7 @@ public class ButtonService {
         InlineKeyboardMarkup keyboard = KeyboardUtil.getLangInlineKeyboard();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(MessageUtil.get("language.choose", userLanguageService.getUserLanguage(String.valueOf(chatId))));
+        sendMessage.setText(MessageUtil.get("language.choose", userLanguageService.getLanguage(String.valueOf(chatId))));
 
         sendMessage.setReplyMarkup(keyboard);
         executeUtil.execute(sendMessage);

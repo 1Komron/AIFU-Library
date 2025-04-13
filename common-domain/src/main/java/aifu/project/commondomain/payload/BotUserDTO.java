@@ -1,0 +1,17 @@
+package aifu.project.commondomain.payload;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class BotUserDTO {
+    String name;
+    String surname;
+    String phone;
+    String email;
+    String faculty;
+    String course;
+    String group;
+    Long chatId;
+}

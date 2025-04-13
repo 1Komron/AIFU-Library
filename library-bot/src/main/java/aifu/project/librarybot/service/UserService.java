@@ -1,34 +1,73 @@
 package aifu.project.librarybot.service;
 
 import aifu.project.commondomain.entity.User;
+import aifu.project.commondomain.mapper.UserMapper;
+import aifu.project.commondomain.payload.BotUserDTO;
 import aifu.project.commondomain.repository.UserRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageUtil;
-import aifu.project.librarybot.utils.UserLanguageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserLanguageService userLanguageService;
+    private final RegisterService registerService;
     private final ExecuteUtil executeUtil;
 
     public boolean exists(Long chatId) {
-        return userRepository.existsUserByChatId(chatId);
+        return !userRepository.existsUserByChatId(chatId);
     }
 
     @SneakyThrows
-    public void registerUser(Long chatId) {
+    public void loginRegister(Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(MessageUtil.get("register.message", UserLanguageProperties.getLanguage(chatId.toString())));
+        sendMessage.setText(MessageUtil.get("register.login", userLanguageService.getLanguage(chatId.toString())));
 
-        KeyboardUtil.getRegisterInlineKeyboard(sendMessage, UserLanguageProperties.getLanguage(chatId.toString()));
+        KeyboardUtil.getLoginRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
+
 
         executeUtil.execute(sendMessage);
+    }
+
+    @SneakyThrows
+    public void registerUser(Long chatId, Integer messageId) {
+        String text = MessageUtil.get("register.message", userLanguageService.getLanguage(chatId.toString()));
+        SendMessage sendMessage = new SendMessage(chatId.toString(),
+                text.formatted("-", "-", "-", "-", "-", "-"));
+
+        KeyboardUtil.getRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
+
+        registerService.checkHaveRegistrationState(chatId);
+
+        DeleteMessage deleteMessage = MessageUtil.deleteMessage(chatId.toString(), messageId);
+
+        executeUtil.execute(deleteMessage);
+
+        Message execute = executeUtil.execute(sendMessage);
+
+        registerService.addMessageId(chatId, execute.getMessageId());
+    }
+
+    public void saveUser(BotUserDTO userDTO) {
+        if (userDTO == null || userRepository.existsUserByChatId(userDTO.getChatId())) {
+            return;
+        }
+
+        User user = UserMapper.fromBotDTO(userDTO);
+
+        userRepository.save(user);
+    }
+
+    public boolean isInactive(Long chatId) {
+        return !userRepository.existsByChatIdAndIsActive(chatId, true);
     }
 }

@@ -3,7 +3,6 @@ package aifu.project.commondomain.entity;
 import aifu.project.commondomain.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -20,18 +19,16 @@ public class Booking {
     @OneToOne
     private BookCopy book;
 
-    @CreationTimestamp
     private LocalDateTime givenAt;
-
-    @CreationTimestamp
     private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @PrePersist
-    public void setDueDate() {
+    public void initializeDates() {
         this.givenAt = LocalDateTime.now();
         this.dueDate = this.givenAt.plusDays(4);
     }
+
 }

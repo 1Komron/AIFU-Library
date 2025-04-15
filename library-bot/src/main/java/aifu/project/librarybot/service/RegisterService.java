@@ -5,6 +5,7 @@ import aifu.project.librarybot.enums.RegistrationStep;
 import aifu.project.librarybot.session.RegistrationState;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
+import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -192,7 +193,7 @@ public class RegisterService {
         String course = safe(userDTO.getCourse());
         String group = safe(userDTO.getGroup());
 
-        String template = MessageUtil.get("register.message", lang);
+        String template = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, lang);
         String registerState = String.format(template, name, surname, phone, faculty, course, group);
 
         SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), registerState);

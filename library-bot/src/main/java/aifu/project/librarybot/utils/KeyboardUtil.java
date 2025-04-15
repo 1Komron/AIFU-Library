@@ -20,22 +20,22 @@ public class KeyboardUtil {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(new KeyboardButton(MessageUtil.get("button.borrow", lang)));
-        row.add(new KeyboardButton(MessageUtil.get("button.return", lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_BORROW, lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_RETURN, lang)));
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(new KeyboardButton(MessageUtil.get("button.myBooks", lang)));
-        row.add(new KeyboardButton(MessageUtil.get("button.history", lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_MY_BOOKS, lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_HISTORY, lang)));
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(new KeyboardButton(MessageUtil.get("button.profile", lang)));
-        row.add(new KeyboardButton(MessageUtil.get("button.settings", lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_PROFILE, lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_SETTINGS, lang)));
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(new KeyboardButton(MessageUtil.get("button.search", lang)));
+        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_SEARCH, lang)));
         rows.add(row);
 
         keyboardMarkup.setKeyboard(rows);
@@ -72,77 +72,73 @@ public class KeyboardUtil {
     public static void getRegisterInlineKeyboard(SendMessage sendMessage, String lang) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        List<InlineKeyboardButton> row = new ArrayList<>();
 
+        List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.name", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_NAME, lang));
         button.setCallbackData("register_name");
         row.add(button);
 
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.surname", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_SURNAME, lang));
         button.setCallbackData("register_surname");
         row.add(button);
-
         rows.add(row);
-        row = new ArrayList<>();
 
+        row = new ArrayList<>();
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.phone", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_PHONE, lang));
         button.setCallbackData("register_phone");
         row.add(button);
-
         rows.add(row);
-        row = new ArrayList<>();
 
+        row = new ArrayList<>();
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.faculty", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_FACULTY, lang));
         button.setCallbackData("register_faculty");
         row.add(button);
 
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.course", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_COURSE, lang));
         button.setCallbackData("register_course");
         row.add(button);
-
         rows.add(row);
-        row = new ArrayList<>();
 
+        row = new ArrayList<>();
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.group", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_GROUP, lang));
         button.setCallbackData("register_group");
         row.add(button);
-
         rows.add(row);
+
         row = new ArrayList<>();
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.cancel.button", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_CANCEL_BUTTON, lang));
         button.setCallbackData("register_cancel");
         row.add(button);
 
         button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.save.button", lang));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_SAVE_BUTTON, lang));
         button.setCallbackData("register_save");
         row.add(button);
         rows.add(row);
 
         keyboardMarkup.setKeyboard(rows);
-
         sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
     public static void getLoginRegisterInlineKeyboard(SendMessage sendMessage, String language) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        List<InlineKeyboardButton> row = new ArrayList<>();
 
+        List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get("register.login.button", language));
+        button.setText(MessageUtil.get(MessageKeys.REGISTER_LOGIN_BUTTON, language));
         button.setCallbackData("login");
         row.add(button);
         rows.add(row);
-        keyboardMarkup.setKeyboard(rows);
 
+        keyboardMarkup.setKeyboard(rows);
         sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
@@ -150,7 +146,7 @@ public class KeyboardUtil {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
 
         KeyboardRow row = new KeyboardRow();
-        KeyboardButton button = new KeyboardButton(MessageUtil.get("register.phone", lang));
+        KeyboardButton button = new KeyboardButton(MessageUtil.get(MessageKeys.REGISTER_PHONE, lang));
         button.setRequestContact(true);
         row.add(button);
 
@@ -158,23 +154,10 @@ public class KeyboardUtil {
         keyboardRows.add(row);
 
         keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(true);
         keyboardMarkup.setKeyboard(keyboardRows);
 
         return keyboardMarkup;
     }
 
-    public static EditMessageReplyMarkup editReplyMarkup(Long chatId) {
-        EditMessageReplyMarkup replyMarkup = new EditMessageReplyMarkup();
-        replyMarkup.setChatId(chatId);
-        replyMarkup.setReplyMarkup(getLangInlineKeyboard());
-        return replyMarkup;
-    }
-
-    public static EditMessageText editText(Long chatId, String text) {
-        EditMessageText editMessageText = new EditMessageText();
-        editMessageText.setChatId(chatId);
-        editMessageText.setText(text);
-        editMessageText.setReplyMarkup(getLangInlineKeyboard());
-        return editMessageText;
-    }
 }

@@ -2,6 +2,7 @@ package aifu.project.librarybot.service;
 
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
+import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -32,7 +33,7 @@ public class ButtonService {
         InlineKeyboardMarkup keyboard = KeyboardUtil.getLangInlineKeyboard();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(MessageUtil.get("language.choose", userLanguageService.getLanguage(String.valueOf(chatId))));
+        sendMessage.setText(MessageUtil.get(MessageKeys.LANGUAGE_CHOOSE, userLanguageService.getLanguage(String.valueOf(chatId))));
 
         sendMessage.setReplyMarkup(keyboard);
         executeUtil.execute(sendMessage);

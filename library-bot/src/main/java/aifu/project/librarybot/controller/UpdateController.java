@@ -2,13 +2,12 @@ package aifu.project.librarybot.controller;
 
 import aifu.project.librarybot.service.ButtonService;
 import aifu.project.librarybot.service.UserLanguageService;
-import aifu.project.librarybot.utils.ExecuteUtil;
-import aifu.project.librarybot.service.UpdateService;
+import aifu.project.librarybot.service.ProcessService;
+import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Controller;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -16,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class UpdateController {
     private final ButtonService buttonService;
-    private final UpdateService updateService;
+    private final ProcessService processService;
     private final UserLanguageService langService;
 
     @SneakyThrows
@@ -26,14 +25,14 @@ public class UpdateController {
         if (message != null) {
             if (!message.hasText() && !message.hasContact()) {
                 Long chatId = message.getChatId();
-                buttonService.getMainButtons(chatId, MessageUtil.get("message.invalid.format",
+                buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT,
                         langService.getLanguage(chatId.toString())));
             } else if (message.hasContact())
-                updateService.registerPhone(message);
+                processService.processRegisterPhone(message);
             else
-                updateService.textMessage(message);
+                processService.processTextMessage(message);
         } else if (update.getCallbackQuery() != null && update.hasCallbackQuery())
-            updateService.callBack(update.getCallbackQuery());
+            processService.processCallBack(update.getCallbackQuery());
 
     }
 }

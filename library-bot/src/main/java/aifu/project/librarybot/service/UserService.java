@@ -6,6 +6,7 @@ import aifu.project.commondomain.payload.BotUserDTO;
 import aifu.project.commondomain.repository.UserRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
+import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -30,17 +31,16 @@ public class UserService {
     public void loginRegister(Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(MessageUtil.get("register.login", userLanguageService.getLanguage(chatId.toString())));
+        sendMessage.setText(MessageUtil.get(MessageKeys.REGISTER_LOGIN, userLanguageService.getLanguage(chatId.toString())));
 
         KeyboardUtil.getLoginRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
-
 
         executeUtil.execute(sendMessage);
     }
 
     @SneakyThrows
     public void registerUser(Long chatId, Integer messageId) {
-        String text = MessageUtil.get("register.message", userLanguageService.getLanguage(chatId.toString()));
+        String text = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, userLanguageService.getLanguage(chatId.toString()));
         SendMessage sendMessage = new SendMessage(chatId.toString(),
                 text.formatted("-", "-", "-", "-", "-", "-"));
 
@@ -65,6 +65,19 @@ public class UserService {
         User user = UserMapper.fromBotDTO(userDTO);
 
         userRepository.save(user);
+    }
+
+    @SneakyThrows
+    public boolean checkUserStatus(Long chatId, String lang) {
+        if (exists(chatId)) {
+            loginRegister(chatId);
+            return false;
+        }
+        else if (isInactive(chatId)) {
+            executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
+            return false;
+        }
+        return true;
     }
 
     public boolean isInactive(Long chatId) {

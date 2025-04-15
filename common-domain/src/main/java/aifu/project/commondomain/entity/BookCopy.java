@@ -15,8 +15,9 @@ public class BookCopy {
     private String inventoryNumber;
     private String shelfLocation;
     private String notes;
+    private boolean isTaken = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_book_id")
     private BaseBook book;
 

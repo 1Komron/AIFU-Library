@@ -10,10 +10,10 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> findByChatId(Long chatId);
-
     boolean existsUserByChatId(Long chatId);
 
     boolean existsByChatIdAndIsActive(Long chatId, boolean isActive);
+
+    User findByChatId(Long chatId);
 
 }

@@ -1,8 +1,6 @@
 package aifu.project.librarybot.utils;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -13,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KeyboardUtil {
-    private KeyboardUtil() {}
+    private KeyboardUtil() {
+    }
 
     public static ReplyKeyboardMarkup getMainMenuKeyboard(String lang) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
@@ -49,7 +48,7 @@ public class KeyboardUtil {
         List<InlineKeyboardButton> row = new ArrayList<>();
 
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("En \uD83C\uDDFA\uD83C\uDDF8");
+        button.setText("En \n\uD83C\uDDEC\uD83C\uDDE7");
         button.setCallbackData("en");
         row.add(button);
 
@@ -58,9 +57,17 @@ public class KeyboardUtil {
         button.setCallbackData("ru");
         row.add(button);
 
+        rows.add(row);
+        row = new ArrayList<>();
+
         button = new InlineKeyboardButton();
         button.setText("Uz \uD83C\uDDFA\uD83C\uDDFF");
         button.setCallbackData("uz");
+        row.add(button);
+
+        button = new InlineKeyboardButton();
+        button.setText("Zh \uD83C\uDDE8\uD83C\uDDF3");
+        button.setCallbackData("zh");
         row.add(button);
 
         rows.add(row);

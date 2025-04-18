@@ -72,12 +72,18 @@ public class UserService {
         if (exists(chatId)) {
             loginRegister(chatId);
             return false;
-        }
-        else if (isInactive(chatId)) {
+        } else if (isInactive(chatId)) {
             executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
             return false;
         }
         return true;
+    }
+
+    public String showProfile(Long chatId, String lang) {
+        User user = userRepository.findByChatId(chatId);
+
+        String template = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, lang);
+        return String.format(template, user.getName(), user.getSurname(), user.getPhone(), user.getFaculty(), user.getCourse(), user.getGroup());
     }
 
     public boolean isInactive(Long chatId) {

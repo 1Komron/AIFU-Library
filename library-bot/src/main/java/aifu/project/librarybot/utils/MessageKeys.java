@@ -43,6 +43,15 @@ public class MessageKeys {
     public static final String BOOK_SEND_INVENTORY = "book.send.inventory";
     public static final String BOOK_BORROW_WAITING_APPROVAL = "book.borrow.waiting.approval";
 
+    public static final String BOOKING_INFO = "booking.info";
+    public static final String BOOKING_STATUS_WAITING_APPROVAL = "booking.status.waiting.approval";
+    public static final String BOOKING_STATUS_APPROVED = "booking.status.approved";
+    public static final String BOOKING_STATUS_OVERDUE = "booking.status.overdue";
+    public static final String BOOKING_LIST_EMPTY = "booking.list.empty";
+    public static final String BOOKING_RETURN_SUCCESS = "booking.return.success";
+    public static final String BOOKING_RETURN_NOT_FOUND= "booking.return.not_found";
+    public static final String BOOKING_WAIT_RETURN_APPROVAL= "booking.wait_for_return_approval";
+
 
     public static final String MESSAGE_INVALID_FORMAT = "message.invalid.format";
 

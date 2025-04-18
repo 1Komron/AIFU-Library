@@ -13,6 +13,6 @@ public class History {
     @ManyToOne
     private User user;
 
-    @OneToOne
+    @ManyToOne
     private BookCopy book;
 }

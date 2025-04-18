@@ -14,6 +14,7 @@ public class MessageUtil {
         Locale locale = switch (lang) {
             case "en" -> Locale.ENGLISH;
             case "ru" -> Locale.forLanguageTag("ru");
+            case "zh" -> Locale.forLanguageTag("zh");
             default -> Locale.forLanguageTag("uz");
         };
 

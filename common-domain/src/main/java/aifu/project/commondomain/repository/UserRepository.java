@@ -15,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByChatIdAndIsActive(Long chatId, boolean isActive);
 
     User findByChatId(Long chatId);
-
 }

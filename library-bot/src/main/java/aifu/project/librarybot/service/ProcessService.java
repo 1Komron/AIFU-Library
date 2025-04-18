@@ -74,6 +74,17 @@ public class ProcessService {
                 }
                 return true;
             }
+            case RETURN -> {
+                if (bookingService.returnBook(chatId, text, lang)) {
+                    SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
+                            MessageUtil.get(MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang));
+                    executeUtil.execute(sendMessage);
+                }
+                return true;
+            }
+            case SEARCH -> {
+                return true;
+            }
             default -> {
                 return false;
             }
@@ -95,12 +106,15 @@ public class ProcessService {
 
     @SneakyThrows
     private void processButtons(Long chatId, String text, String lang) {
+
+        if (!(text.equals("Sozlamalar ⚙️") || text.equals("Настройки ⚙️") || text.equals("Settings ⚙️"))
+                && !userService.checkUserStatus(chatId, lang))
+            return;
+
         switch (lang) {
             case "uz" -> {
                 switch (text) {
                     case "Kitob olish 📥" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
 
                         transactionalService.putState(chatId, TransactionStep.BORROW);
 
@@ -110,23 +124,26 @@ public class ProcessService {
                     }
 
                     case "Kitob topshirish 📤" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        transactionalService.putState(chatId, TransactionStep.RETURN);
+
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
+                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
+                        executeUtil.execute(sendMessage);
                     }
 
-                    case "Mendagi kitoblar 📚" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                    case "Mening kitoblarim 📚" -> {
+                        String messageText = bookingService.getBookList(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Tarix 🗞" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
                     }
 
                     case "Mening profilim 👤" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        String profileMessageText = userService.showProfile(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Sozlamalar ⚙️" -> buttonService.changeLangButton(chatId);
@@ -138,8 +155,6 @@ public class ProcessService {
             case "ru" -> {
                 switch (text) {
                     case "Взять книгу 📥" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
 
                         transactionalService.putState(chatId, TransactionStep.BORROW);
 
@@ -149,23 +164,26 @@ public class ProcessService {
                     }
 
                     case "Вернуть книгу 📤" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        transactionalService.putState(chatId, TransactionStep.RETURN);
+
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
+                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Мои книги 📚" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        String messageText = bookingService.getBookList(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "История 🗞" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
                     }
 
                     case "Мой профиль 👤" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        String profileMessageText = userService.showProfile(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Настройки ⚙️" -> buttonService.changeLangButton(chatId);
@@ -177,8 +195,6 @@ public class ProcessService {
             case "en" -> {
                 switch (text) {
                     case "Borrow Book 📥" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
 
                         transactionalService.putState(chatId, TransactionStep.BORROW);
 
@@ -188,23 +204,26 @@ public class ProcessService {
                     }
 
                     case "Return Book 📤" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        transactionalService.putState(chatId, TransactionStep.RETURN);
+
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
+                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "My Books 📚" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        String messageText = bookingService.getBookList(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "History 🗞" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
                     }
 
                     case "My Profile 👤" -> {
-                        if (!userService.checkUserStatus(chatId, lang))
-                            return;
+                        String profileMessageText = userService.showProfile(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Settings ⚙️" -> buttonService.changeLangButton(chatId);
@@ -212,6 +231,44 @@ public class ProcessService {
                 }
             }
 
+            case "zh" -> {
+                switch (text) {
+                    case "借书 📥" -> {
+                        transactionalService.putState(chatId, TransactionStep.BORROW);
+                        SendMessage sendMessage = MessageUtil.createMessage(
+                                chatId.toString(),
+                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang)
+                        );
+                        executeUtil.execute(sendMessage);
+                    }
+                    case "还书 📤" -> {
+                        transactionalService.putState(chatId, TransactionStep.RETURN);
+                        SendMessage sendMessage = MessageUtil.createMessage(
+                                chatId.toString(),
+                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang)
+                        );
+                        executeUtil.execute(sendMessage);
+                    }
+                    case "我的书 📚" -> {
+                        String messageText = bookingService.getBookList(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
+                    }
+                    case "历史记录 🗞" -> {
+                        // Здесь пока нет логики
+                    }
+                    case "我的资料 👤" -> {
+                        String profileMessageText = userService.showProfile(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
+                        executeUtil.execute(sendMessage);
+                    }
+                    case "设置 ⚙️" -> buttonService.changeLangButton(chatId);
+                    default -> buttonService.getMainButtons(
+                            chatId,
+                            MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang)
+                    );
+                }
+            }
             default -> buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang));
         }
 
@@ -221,7 +278,7 @@ public class ProcessService {
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
 
-        if (data.equals("uz") || data.equals("ru") || data.equals("en")) {
+        if (data.equals("uz") || data.equals("ru") || data.equals("en") || data.equals("zh")) {
             userLanguageService.setLanguage(chatId.toString(), data);
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.LANGUAGE_CHANGED, data));
         } else if (data.startsWith("register"))

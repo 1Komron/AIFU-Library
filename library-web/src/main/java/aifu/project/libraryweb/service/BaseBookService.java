@@ -1,97 +1,80 @@
 package aifu.project.libraryweb.service;
 
 import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.libraryweb.dto.BaseBookDTO;
-
+import aifu.project.commondomain.entity.BookCopy;
 import aifu.project.commondomain.repository.BaseBookRepository;
+import aifu.project.commondomain.repository.BookCopyRepository;
+import aifu.project.libraryweb.dto.BookCopyDTO;
+
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static aifu.project.libraryweb.mapper.BaseBookMapper.fromEntity;
+import static aifu.project.libraryweb.mapper.BookCopyMapper.fromDTO;
+import static aifu.project.libraryweb.mapper.BookCopyMapper.toDTO;
 
 @Service
 @RequiredArgsConstructor
 public class BaseBookService {
 
     private final BaseBookRepository baseBookRepository;
+    private final BookCopyRepository copyRepository;
 
-    public BaseBookDTO createBaseBook(BaseBookDTO baseBookDTO) {
-        BaseBook baseBook = mapToEntity(baseBookDTO);
-        BaseBook savedBaseBook = baseBookRepository.save(baseBook);
-        return mapToDTO(savedBaseBook);
+    public BookCopyDTO create(BookCopyDTO dto) {
+        if (dto == null || dto.getBaseBook() == null) {
+            throw new IllegalArgumentException("BookCopy or BaseBook cannot be null");
+        }
+
+        // DTO -> Entity
+        BookCopy bookCopy = fromDTO(dto);
+        BaseBook savedBaseBook = baseBookRepository.save(bookCopy.getBook()); // bazaga yoziladi
+        bookCopy.setBook(savedBaseBook); // BookCopyga BaseBookni qo‘yamiz
+
+        BookCopy savedCopy = copyRepository.save(bookCopy); // saqlaymiz
+        return toDTO(savedCopy); // qaytariladi
     }
 
-    public BaseBookDTO getBaseBookById(Integer id) {
-        BaseBook baseBook = baseBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BaseBook not found"));
-        return mapToDTO(baseBook);
+    public List<BookCopy> getAll() {
+        return copyRepository.findAll();
+
     }
 
-    public List<BaseBookDTO> getAllBaseBooks() {
-        List<BaseBook> baseBooks = baseBookRepository.findAll();
-        return baseBooks.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public BookCopyDTO getById(Integer id) {
+        BookCopy bookCopy = copyRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("BookCopy not found with id: " + id));
+
+        return toDTO(bookCopy);
     }
 
-    public BaseBookDTO updateBaseBook(Integer id, BaseBookDTO baseBookDTO) {
-        BaseBook baseBook = baseBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BaseBook not found"));
+    public BookCopyDTO update(Integer id, BookCopyDTO dto) {
+        BookCopy existing = copyRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("BookCopy not found"));
 
-        baseBook.setAuthor(baseBookDTO.getAuther());
-        baseBook.setTitle(baseBookDTO.getTitle());
-        baseBook.setSeries(baseBookDTO.getSeries());
-        baseBook.setTitleDetails(baseBookDTO.getTitleDetails());
-        baseBook.setPublicationYear(baseBookDTO.getPublicationYear());
-        baseBook.setPublisher(baseBookDTO.getPublisher());
-        baseBook.setPublicationCity(baseBookDTO.getPublicationCity());
-        baseBook.setIsbn(baseBookDTO.getIsbn());
-        baseBook.setPageCount(baseBookDTO.getPageCount());
-        baseBook.setLanguage(baseBookDTO.getLanguage());
-        baseBook.setPrice(baseBookDTO.getPrice());
-        baseBook.setUdc(baseBookDTO.getUdc());
+        existing.setInventoryNumber(dto.getInventoryNumber());
+        existing.setNotes(dto.getNotes());
+        existing.setShelfLocation(dto.getShelfLocation());
 
-        BaseBook updated = baseBookRepository.save(baseBook);
-        return mapToDTO(updated);
+        BaseBook baseBook = fromEntity(dto.getBaseBook());
+        baseBook.setId(existing.getBook().getId());
+
+        BaseBook updateBook=baseBookRepository.save(baseBook);
+        existing.setBook(updateBook);
+
+        BookCopy updated = copyRepository.save(existing);
+        return toDTO(updated);
     }
 
-    public void deleteBaseBook(Integer id) {
-        baseBookRepository.deleteById(id);
+    public void delete(Integer id) {
+        BookCopy existing = copyRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("BookCopy not found"));
+        BaseBook baseBook=existing.getBook();
+        copyRepository.delete(existing);
+        baseBookRepository.delete(baseBook);
     }
 
-    private BaseBookDTO mapToDTO(BaseBook baseBook) {
-        BaseBookDTO dto = new BaseBookDTO();
-        dto.setId(baseBook.getId());
-        dto.setAuther(baseBook.getAuthor());
-        dto.setTitle(baseBook.getTitle());
-        dto.setSeries(baseBook.getSeries());
-        dto.setTitleDetails(baseBook.getTitleDetails());
-        dto.setPublicationYear(baseBook.getPublicationYear());
-        dto.setPublisher(baseBook.getPublisher());
-        dto.setPublicationCity(baseBook.getPublicationCity());
-        dto.setIsbn(baseBook.getIsbn());
-        dto.setPageCount(baseBook.getPageCount());
-        dto.setLanguage(baseBook.getLanguage());
-        dto.setPrice(baseBook.getPrice());
-        dto.setUdc(baseBook.getUdc());
-        return dto;
-    }
 
-    private BaseBook mapToEntity(BaseBookDTO dto) {
-        BaseBook entity = new BaseBook();
-        entity.setAuthor(dto.getAuther());
-        entity.setTitle(dto.getTitle());
-        entity.setSeries(dto.getSeries());
-        entity.setTitleDetails(dto.getTitleDetails());
-        entity.setPublicationYear(dto.getPublicationYear());
-        entity.setPublisher(dto.getPublisher());
-        entity.setPublicationCity(dto.getPublicationCity());
-        entity.setIsbn(dto.getIsbn());
-        entity.setPageCount(dto.getPageCount());
-        entity.setLanguage(dto.getLanguage());
-        entity.setPrice(dto.getPrice());
-        entity.setUdc(dto.getUdc());
-        return entity;
-    }
 }
+

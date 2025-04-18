@@ -1,20 +1,17 @@
 package aifu.project.libraryweb.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Builder
+@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class BookCopyDTO {
-    private Integer id;
     private String inventoryNumber;
     private String shelfLocation;
     private String notes;
-    private BaseBookDTO book;
+    private BaseBookDTO baseBook;
 
 }

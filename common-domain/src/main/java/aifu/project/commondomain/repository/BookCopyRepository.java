@@ -3,14 +3,14 @@ package aifu.project.commondomain.repository;
 import aifu.project.commondomain.entity.BaseBook;
 import aifu.project.commondomain.entity.BookCopy;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
+import java.util.Collection;
 
-@Repository
+
 public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
+    Optional<BookCopy> findByInventoryNumber(String inventoryNumber);
+    long countByBook(BaseBook book);
 
     Collection<Object> findByBook(BaseBook baseBook);
 
@@ -19,5 +19,4 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
 
     boolean existsByInventoryNumberAndIsTakenTrue(String inventoryNumber);
 
-    Optional<BookCopy> findByInventoryNumber(String inventoryNumber);
 }

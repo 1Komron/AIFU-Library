@@ -2,10 +2,16 @@ package aifu.project.commondomain.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookCopy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +22,7 @@ public class BookCopy {
     private String shelfLocation;
     private String notes;
     private boolean isTaken = false;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_book_id")

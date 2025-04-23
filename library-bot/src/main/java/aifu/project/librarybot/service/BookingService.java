@@ -88,7 +88,8 @@ public class BookingService {
 
         AtomicBoolean isTaken = new AtomicBoolean(false);
         allBookings.forEach(booking -> {
-            if (booking.getBook().getId().equals(bookCopy.getId())) {
+            if (booking.getBook().getId().equals(bookCopy.getId()) &&
+                    (booking.getStatus() == Status.APPROVED || booking.getStatus() == Status.OVERDUE)) {
                 isTaken.set(true);
 
 
@@ -152,6 +153,10 @@ public class BookingService {
         return booking;
     }
 
+    public Booking getBooking(Long chatId, Integer bookId, Status status) {
+        return bookingRepository.findByBookIdAndUserChatIdAndStatus(bookId, chatId, status);
+    }
+
     private String getBookingStatusMessage(Status status, String lang) {
         if (status == Status.WAITING_APPROVAL)
             return MessageUtil.get(MessageKeys.BOOKING_STATUS_WAITING_APPROVAL, lang);
@@ -162,4 +167,11 @@ public class BookingService {
         return MessageUtil.get(MessageKeys.BOOKING_STATUS_OVERDUE, lang);
     }
 
+    public void update(Booking booking) {
+        bookingRepository.save(booking);
+    }
+
+    public void delete(Booking booking) {
+        bookingRepository.delete(booking);
+    }
 }

@@ -1,6 +1,7 @@
 package aifu.project.commondomain.repository;
 
 import aifu.project.commondomain.entity.Booking;
+import aifu.project.commondomain.entity.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.user.chatId = :chatId")
     List<Booking> findAllWithBooksByUser_ChatId(@Param("chatId") Long chatId);
 
+
+    Booking findByBookIdAndUserChatIdAndStatus(Integer bookId, Long chatId, Status status);
 }

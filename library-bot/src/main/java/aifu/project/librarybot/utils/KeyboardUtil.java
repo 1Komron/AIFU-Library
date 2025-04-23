@@ -48,7 +48,7 @@ public class KeyboardUtil {
         List<InlineKeyboardButton> row = new ArrayList<>();
 
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("En \n\uD83C\uDDEC\uD83C\uDDE7");
+        button.setText("En \uD83C\uDDEC\uD83C\uDDE7");
         button.setCallbackData("en");
         row.add(button);
 

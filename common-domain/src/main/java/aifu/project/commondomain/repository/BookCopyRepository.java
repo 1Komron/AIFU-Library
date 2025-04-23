@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.Collection;
 
 
-public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
+public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
     Optional<BookCopy> findByInventoryNumber(String inventoryNumber);
+
     long countByBook(BaseBook book);
 
     Collection<Object> findByBook(BaseBook baseBook);

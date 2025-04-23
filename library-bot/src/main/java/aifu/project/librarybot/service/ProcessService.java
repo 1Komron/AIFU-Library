@@ -22,6 +22,7 @@ public class ProcessService {
     private final UserLanguageService userLanguageService;
     private final RegisterService registerService;
     private final TransactionalService transactionalService;
+    private final HistoryService historyService;
     private final BookingService bookingService;
 
 
@@ -107,7 +108,8 @@ public class ProcessService {
     @SneakyThrows
     private void processButtons(Long chatId, String text, String lang) {
 
-        if (!(text.equals("Sozlamalar ⚙️") || text.equals("Настройки ⚙️") || text.equals("Settings ⚙️"))
+        if (!(text.equals("Sozlamalar ⚙️") || text.equals("Настройки ⚙️")
+                || text.equals("Settings ⚙️") || text.equals("设置 ⚙️"))
                 && !userService.checkUserStatus(chatId, lang))
             return;
 
@@ -138,6 +140,9 @@ public class ProcessService {
                     }
 
                     case "Tarix 🗞" -> {
+                        String messageText = historyService.getHistory(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Mening profilim 👤" -> {
@@ -178,6 +183,9 @@ public class ProcessService {
                     }
 
                     case "История 🗞" -> {
+                        String messageText = historyService.getHistory(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "Мой профиль 👤" -> {
@@ -218,6 +226,9 @@ public class ProcessService {
                     }
 
                     case "History 🗞" -> {
+                        String messageText = historyService.getHistory(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
 
                     case "My Profile 👤" -> {
@@ -255,7 +266,9 @@ public class ProcessService {
                         executeUtil.execute(sendMessage);
                     }
                     case "历史记录 🗞" -> {
-                        // Здесь пока нет логики
+                        String messageText = historyService.getHistory(chatId, lang);
+                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
+                        executeUtil.execute(sendMessage);
                     }
                     case "我的资料 👤" -> {
                         String profileMessageText = userService.showProfile(chatId, lang);

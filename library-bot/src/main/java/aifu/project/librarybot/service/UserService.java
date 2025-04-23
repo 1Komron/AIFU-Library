@@ -67,6 +67,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void saveUser(Long chatId) {
+        User user = userRepository.findByChatId(chatId);
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
     @SneakyThrows
     public boolean checkUserStatus(Long chatId, String lang) {
         if (exists(chatId)) {
@@ -88,5 +94,9 @@ public class UserService {
 
     public boolean isInactive(Long chatId) {
         return !userRepository.existsByChatIdAndIsActive(chatId, true);
+    }
+
+    public void deleteUser(Long chatId) {
+        userRepository.deleteByChatId(chatId);
     }
 }

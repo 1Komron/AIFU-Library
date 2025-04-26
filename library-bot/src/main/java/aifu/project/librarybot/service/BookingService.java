@@ -1,10 +1,9 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.BookCopy;
-import aifu.project.commondomain.entity.Booking;
-import aifu.project.commondomain.entity.User;
+import aifu.project.commondomain.entity.*;
+import aifu.project.commondomain.entity.enums.BookingRequestStatus;
 import aifu.project.commondomain.entity.enums.Status;
+import aifu.project.commondomain.payload.PartList;
 import aifu.project.commondomain.repository.BookCopyRepository;
 import aifu.project.commondomain.repository.BookingRepository;
 import aifu.project.commondomain.repository.UserRepository;
@@ -14,9 +13,11 @@ import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,10 +27,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
+    private final BookingRequestService bookingRequestService;
     private final BookCopyRepository bookCopyRepository;
     private final ExecuteUtil executeUtil;
     private final TransactionalService transactionalService;
-    private final HistoryService historyService;
     private final UserRepository userRepository;
 
     @Transactional
@@ -42,14 +43,12 @@ public class BookingService {
             bookCopy = bookCopyRepository.findByInventoryNumber(inventoryNumber)
                     .orElseThrow(() -> new BookCopyNotFoundException(inventoryNumber));
         } catch (BookCopyNotFoundException e) {
-            SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.BOOK_NOT_FOUND, lang));
-            executeUtil.execute(sendMessage);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
             return false;
         }
 
         if (bookCopy.isTaken()) {
-            SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.BOOK_ALREADY_TAKEN, lang));
-            executeUtil.execute(sendMessage);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_ALREADY_TAKEN, lang);
             return false;
         }
 
@@ -57,7 +56,7 @@ public class BookingService {
         bookCopyRepository.save(bookCopy);
 
         User user = userRepository.findByChatId(chatId);
-        bookingRepository.save(createBooking(user, bookCopy));
+        bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
 
         return true;
     }
@@ -72,17 +71,14 @@ public class BookingService {
             bookCopy = bookCopyRepository.findByInventoryNumber(inventoryNumber)
                     .orElseThrow(() -> new BookCopyNotFoundException(inventoryNumber));
         } catch (BookCopyNotFoundException e) {
-            SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.BOOK_NOT_FOUND, lang));
-            executeUtil.execute(sendMessage);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
             return false;
         }
 
         List<Booking> allBookings = bookingRepository.findAllWithBooksByUser_ChatId(chatId);
 
         if (allBookings.isEmpty()) {
-            SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.BOOKING_LIST_EMPTY, lang));
-            executeUtil.execute(sendMessage);
-
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_LIST_EMPTY, lang);
             return false;
         }
 
@@ -92,30 +88,30 @@ public class BookingService {
                     (booking.getStatus() == Status.APPROVED || booking.getStatus() == Status.OVERDUE)) {
                 isTaken.set(true);
 
+                bookingRequestService.create(booking, BookingRequestStatus.RETURN);
 
                 //kutibxonachiga api chiqariladi
-//                bookCopy.setTaken(false);
-//
-//                historyService.add(booking);
-//                bookingRepository.save(booking);
             }
         });
 
         if (!isTaken.get()) {
-            SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                    MessageUtil.get(MessageKeys.BOOKING_RETURN_NOT_FOUND, lang));
-            executeUtil.execute(sendMessage);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_RETURN_NOT_FOUND, lang);
             return false;
         }
 
         return true;
     }
 
-    public String getBookList(Long chatId, String lang) {
-        List<Booking> allBookings = bookingRepository.findAllWithBooksByUser_ChatId(chatId);
+    public PartList getBookList(Long chatId, String lang, int pageNumber) {
+        Pageable pageable = PageRequest.of(--pageNumber, 3);
+        Page<Booking> bookingPage = bookingRepository.findAllWithBooksByUserChatId(chatId, pageable);
+        List<Booking> allBookings = bookingPage.getContent();
 
-        if (allBookings == null || allBookings.isEmpty())
-            return MessageUtil.get(MessageKeys.BOOKING_LIST_EMPTY, lang);
+
+        if (allBookings.isEmpty()) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_LIST_EMPTY, lang);
+            return null;
+        }
 
         String template = MessageUtil.get(MessageKeys.BOOKING_INFO, lang);
 
@@ -141,20 +137,20 @@ public class BookingService {
             messageText.append("\n\n");
         });
 
-
-        return messageText.toString();
+        return new PartList(messageText.toString(), ++pageNumber, bookingPage.getTotalPages());
     }
 
-    public Booking createBooking(User user, BookCopy book) {
+    public void createBooking(BookingRequest bookingRequest) {
         Booking booking = new Booking();
-        booking.setUser(user);
-        booking.setBook(book);
-        booking.setStatus(Status.WAITING_APPROVAL);
-        return booking;
+        booking.setUser(bookingRequest.getUser());
+        booking.setBook(bookingRequest.getBookCopy());
+        booking.setStatus(Status.APPROVED);
+
+        bookingRepository.save(booking);
     }
 
-    public Booking getBooking(Long chatId, Integer bookId, Status status) {
-        return bookingRepository.findByBookIdAndUserChatIdAndStatus(bookId, chatId, status);
+    public Booking getBooking(Long chatId, Integer bookId) {
+        return bookingRepository.findByBookIdAndUserChatId(bookId, chatId);
     }
 
     private String getBookingStatusMessage(Status status, String lang) {
@@ -165,10 +161,6 @@ public class BookingService {
             return MessageUtil.get(MessageKeys.BOOKING_STATUS_APPROVED, lang);
 
         return MessageUtil.get(MessageKeys.BOOKING_STATUS_OVERDUE, lang);
-    }
-
-    public void update(Booking booking) {
-        bookingRepository.save(booking);
     }
 
     public void delete(Booking booking) {

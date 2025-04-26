@@ -10,6 +10,8 @@ public class MessageKeys {
     public static final String BUTTON_PROFILE = "button.profile";
     public static final String BUTTON_SETTINGS = "button.settings";
     public static final String BUTTON_SEARCH = "button.search";
+    public static final String BUTTON_BACK = "button.back";
+    public static final String BUTTON_NEXT = "button.next";
 
     public static final String LANGUAGE_CHANGED = "language.changed";
     public static final String LANGUAGE_CHOOSE = "language.choose";

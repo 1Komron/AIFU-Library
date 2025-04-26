@@ -1,5 +1,7 @@
 package aifu.project.librarybot.service;
 
+import aifu.project.commondomain.payload.PartList;
+import aifu.project.librarybot.enums.Command;
 import aifu.project.librarybot.enums.RegistrationStep;
 import aifu.project.librarybot.enums.TransactionStep;
 import aifu.project.librarybot.utils.ExecuteUtil;
@@ -10,8 +12,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +33,44 @@ public class ProcessService {
     private final TransactionalService transactionalService;
     private final HistoryService historyService;
     private final BookingService bookingService;
+
+    private static final String BOOKING_LIST = "bookingList";
+    private static final String HISTORY = "history";
+
+    private static final Map<String, Map<String, Command>> COMMAND_MAP = Map.of(
+            "uz", Map.of(
+                    "Kitob olish 📥", Command.BORROW,
+                    "Kitob topshirish 📤", Command.RETURN,
+                    "Mening kitoblarim 📚", Command.MY_BOOKS,
+                    "Tarix 🗞", Command.HISTORY,
+                    "Mening profilim 👤", Command.PROFILE,
+                    "Sozlamalar ⚙️", Command.SETTINGS
+            ),
+            "ru", Map.of(
+                    "Взять книгу 📥", Command.BORROW,
+                    "Вернуть книгу 📤", Command.RETURN,
+                    "Мои книги 📚", Command.MY_BOOKS,
+                    "История 🗞", Command.HISTORY,
+                    "Мой профиль 👤", Command.PROFILE,
+                    "Настройки ⚙️", Command.SETTINGS
+            ),
+            "en", Map.of(
+                    "Borrow Book 📥", Command.BORROW,
+                    "Return Book 📤", Command.RETURN,
+                    "My Books 📚", Command.MY_BOOKS,
+                    "History 🗞", Command.HISTORY,
+                    "My Profile 👤", Command.PROFILE,
+                    "Settings ⚙️", Command.SETTINGS
+            ),
+            "zh", Map.of(
+                    "借书 📥", Command.BORROW,
+                    "还书 📤", Command.RETURN,
+                    "我的书 📚", Command.MY_BOOKS,
+                    "历史记录 🗞", Command.HISTORY,
+                    "我的资料 👤", Command.PROFILE,
+                    "设置 ⚙️", Command.SETTINGS
+            )
+    );
 
 
     public void processTextMessage(Message message) {
@@ -68,19 +115,13 @@ public class ProcessService {
 
         switch (state) {
             case BORROW -> {
-                if (bookingService.borrowBook(chatId, text, lang)) {
-                    SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                            MessageUtil.get(MessageKeys.BOOK_BORROW_WAITING_APPROVAL, lang));
-                    executeUtil.execute(sendMessage);
-                }
+                if (bookingService.borrowBook(chatId, text, lang))
+                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_BORROW_WAITING_APPROVAL, lang);
                 return true;
             }
             case RETURN -> {
-                if (bookingService.returnBook(chatId, text, lang)) {
-                    SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                            MessageUtil.get(MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang));
-                    executeUtil.execute(sendMessage);
-                }
+                if (bookingService.returnBook(chatId, text, lang))
+                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang);
                 return true;
             }
             case SEARCH -> {
@@ -98,8 +139,7 @@ public class ProcessService {
             if (!RegistrationStep.PHONE.equals(registerService.getRegistrationStep(chatId)))
                 registerService.processRegistrationStep(chatId, text, lang);
             else
-                executeUtil.execute(MessageUtil.createMessage(chatId.toString(),
-                        MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang)));
+                executeUtil.executeMessage(chatId.toString(), MessageKeys.MESSAGE_INVALID_FORMAT, lang);
             return true;
         }
         return false;
@@ -107,189 +147,93 @@ public class ProcessService {
 
     @SneakyThrows
     private void processButtons(Long chatId, String text, String lang) {
-
-        if (!(text.equals("Sozlamalar ⚙️") || text.equals("Настройки ⚙️")
-                || text.equals("Settings ⚙️") || text.equals("设置 ⚙️"))
-                && !userService.checkUserStatus(chatId, lang))
+        if (!isSettings(text, lang) && !userService.checkUserStatus(chatId, lang)) {
             return;
-
-        switch (lang) {
-            case "uz" -> {
-                switch (text) {
-                    case "Kitob olish 📥" -> {
-
-                        transactionalService.putState(chatId, TransactionStep.BORROW);
-
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Kitob topshirish 📤" -> {
-                        transactionalService.putState(chatId, TransactionStep.RETURN);
-
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Mening kitoblarim 📚" -> {
-                        String messageText = bookingService.getBookList(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Tarix 🗞" -> {
-                        String messageText = historyService.getHistory(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Mening profilim 👤" -> {
-                        String profileMessageText = userService.showProfile(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Sozlamalar ⚙️" -> buttonService.changeLangButton(chatId);
-                    default ->
-                            buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang));
-                }
-            }
-
-            case "ru" -> {
-                switch (text) {
-                    case "Взять книгу 📥" -> {
-
-                        transactionalService.putState(chatId, TransactionStep.BORROW);
-
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Вернуть книгу 📤" -> {
-                        transactionalService.putState(chatId, TransactionStep.RETURN);
-
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Мои книги 📚" -> {
-                        String messageText = bookingService.getBookList(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "История 🗞" -> {
-                        String messageText = historyService.getHistory(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Мой профиль 👤" -> {
-                        String profileMessageText = userService.showProfile(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Настройки ⚙️" -> buttonService.changeLangButton(chatId);
-                    default ->
-                            buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang));
-                }
-            }
-
-            case "en" -> {
-                switch (text) {
-                    case "Borrow Book 📥" -> {
-
-                        transactionalService.putState(chatId, TransactionStep.BORROW);
-
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Return Book 📤" -> {
-                        transactionalService.putState(chatId, TransactionStep.RETURN);
-
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang));
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "My Books 📚" -> {
-                        String messageText = bookingService.getBookList(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "History 🗞" -> {
-                        String messageText = historyService.getHistory(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "My Profile 👤" -> {
-                        String profileMessageText = userService.showProfile(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
-                        executeUtil.execute(sendMessage);
-                    }
-
-                    case "Settings ⚙️" -> buttonService.changeLangButton(chatId);
-                    default -> buttonService.getMainButtons(chatId, text);
-                }
-            }
-
-            case "zh" -> {
-                switch (text) {
-                    case "借书 📥" -> {
-                        transactionalService.putState(chatId, TransactionStep.BORROW);
-                        SendMessage sendMessage = MessageUtil.createMessage(
-                                chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang)
-                        );
-                        executeUtil.execute(sendMessage);
-                    }
-                    case "还书 📤" -> {
-                        transactionalService.putState(chatId, TransactionStep.RETURN);
-                        SendMessage sendMessage = MessageUtil.createMessage(
-                                chatId.toString(),
-                                MessageUtil.get(MessageKeys.BOOK_SEND_INVENTORY, lang)
-                        );
-                        executeUtil.execute(sendMessage);
-                    }
-                    case "我的书 📚" -> {
-                        String messageText = bookingService.getBookList(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-                    case "历史记录 🗞" -> {
-                        String messageText = historyService.getHistory(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), messageText);
-                        executeUtil.execute(sendMessage);
-                    }
-                    case "我的资料 👤" -> {
-                        String profileMessageText = userService.showProfile(chatId, lang);
-                        SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), profileMessageText);
-                        executeUtil.execute(sendMessage);
-                    }
-                    case "设置 ⚙️" -> buttonService.changeLangButton(chatId);
-                    default -> buttonService.getMainButtons(
-                            chatId,
-                            MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang)
-                    );
-                }
-            }
-            default -> buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang));
         }
 
+        Command cmd = COMMAND_MAP
+                .getOrDefault(lang, Collections.emptyMap())
+                .get(text);
+
+        if (cmd == null) {
+            String invalid = MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang);
+            buttonService.getMainButtons(chatId, invalid);
+            return;
+        }
+
+        switch (cmd) {
+            case BORROW, RETURN -> {
+                TransactionStep step = (cmd == Command.BORROW)
+                        ? TransactionStep.BORROW
+                        : TransactionStep.RETURN;
+                transactionalService.putState(chatId, step);
+                executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_SEND_INVENTORY, lang);
+            }
+
+            case MY_BOOKS ->
+                    handlePagedList(() -> bookingService.getBookList(chatId, lang, 1), chatId, lang, BOOKING_LIST);
+
+            case HISTORY -> handlePagedList(() -> historyService.getHistory(chatId, lang, 1), chatId, lang, HISTORY);
+
+            case PROFILE -> {
+                String profile = userService.showProfile(chatId, lang);
+                executeUtil.executeMessage(chatId.toString(), profile, lang);
+            }
+
+            case SETTINGS -> buttonService.changeLangButton(chatId);
+
+        }
+    }
+
+    @SneakyThrows
+    private void handlePagedList(
+            Supplier<PartList> supplier,
+            Long chatId,
+            String lang,
+            String keyboardType
+    ) {
+        PartList part = supplier.get();
+        if (part == null) return;
+
+        String text = part.list();
+        SendMessage msg = MessageUtil.createMessage(chatId.toString(), text);
+        InlineKeyboardMarkup markup =
+                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
+        if (markup != null)
+            msg.setReplyMarkup(markup);
+        executeUtil.execute(msg);
+    }
+
+    @SneakyThrows
+    private void editMessagePagedList(
+            Supplier<PartList> supplier,
+            Long chatId,
+            String lang,
+            String keyboardType,
+            Integer messageId
+    ) {
+        PartList part = supplier.get();
+        if (part == null) return;
+
+        String text = part.list();
+        EditMessageText editMessageText = MessageUtil.editMessageText(chatId.toString(), messageId, text);
+        InlineKeyboardMarkup markup =
+                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
+        if (markup != null)
+            editMessageText.setReplyMarkup(markup);
+
+        executeUtil.execute(editMessageText);
+    }
+
+    private boolean isSettings(String text, String lang) {
+        return COMMAND_MAP.getOrDefault(lang, Collections.emptyMap())
+                .get(text) == Command.SETTINGS;
     }
 
     public void processCallBack(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
+        String lang = userLanguageService.getLanguage(chatId.toString());
 
         if (data.equals("uz") || data.equals("ru") || data.equals("en") || data.equals("zh")) {
             userLanguageService.setLanguage(chatId.toString(), data);
@@ -298,6 +242,31 @@ public class ProcessService {
             processCallBackDataRegister(chatId, data);
         else if (data.startsWith("login")) {
             userService.registerUser(chatId, callbackQuery.getMessage().getMessageId());
+        } else if (data.startsWith("back_") || data.startsWith("next_")) {
+            processControl(data, chatId, lang, callbackQuery.getMessage().getMessageId());
+        }
+    }
+
+    private void processControl(String data, Long chatId, String lang, Integer messageId) {
+        String[] split = data.split("_");
+        String step = split[0];
+        String type = split[1];
+        AtomicInteger pageNumber = new AtomicInteger(Integer.parseInt(split[2]));
+
+        if (step.equals("next")) {
+            if (type.equals(BOOKING_LIST))
+                editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.incrementAndGet()),
+                        chatId, lang, type, messageId);
+            else if (type.equals(HISTORY))
+                editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.incrementAndGet()),
+                        chatId, lang, type, messageId);
+        } else if (step.equals("back")) {
+            if (type.equals(BOOKING_LIST))
+                editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.decrementAndGet()),
+                        chatId, lang, type, messageId);
+            else if (type.equals(HISTORY))
+                editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.decrementAndGet()),
+                        chatId, lang, type, messageId);
         }
     }
 

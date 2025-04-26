@@ -1,7 +1,8 @@
 package aifu.project.commondomain.repository;
 
 import aifu.project.commondomain.entity.Booking;
-import aifu.project.commondomain.entity.enums.Status;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,12 +12,25 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    @Query("SELECT b FROM Booking b " +
-            "JOIN FETCH b.book bc " +
-            "JOIN FETCH bc.book bb " +
-            "WHERE b.user.chatId = :chatId")
-    List<Booking> findAllWithBooksByUser_ChatId(@Param("chatId") Long chatId);
+    @Query(
+            value = """
+                      SELECT DISTINCT b
+                        FROM Booking b
+                        JOIN FETCH b.book bc
+                        JOIN FETCH bc.book bb
+                       WHERE b.user.chatId = :chatId
+                    """,
+            countQuery = """
+                      SELECT COUNT(b)
+                        FROM Booking b
+                       WHERE b.user.chatId = :chatId
+                    """
+    )
+    Page<Booking> findAllWithBooksByUserChatId(@Param("chatId") Long chatId, Pageable pageable);
 
 
-    Booking findByBookIdAndUserChatIdAndStatus(Integer bookId, Long chatId, Status status);
+    Booking findByBookIdAndUserChatId(Integer bookId, Long chatId);
+
+    List<Booking> findAllWithBooksByUser_ChatId(Long chatId);
+
 }

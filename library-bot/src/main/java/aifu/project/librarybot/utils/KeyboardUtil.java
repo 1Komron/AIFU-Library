@@ -167,4 +167,40 @@ public class KeyboardUtil {
         return keyboardMarkup;
     }
 
+    public static InlineKeyboardMarkup controlInlineKeyboard(String lang, int pageNumber, int totalPages, String type) {
+        if (totalPages == 1)
+            return null;
+
+        StringBuilder sb = new StringBuilder();
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton button;
+
+        if (pageNumber != 1) {
+            button = new InlineKeyboardButton();
+            button.setText(MessageUtil.get(MessageKeys.BUTTON_BACK, lang));
+            button.setCallbackData(sb.append("back_").append(type).append("_").append(pageNumber).toString());
+            row.add(button);
+        }
+
+        button = new InlineKeyboardButton();
+        button.setText(pageNumber + "/" + totalPages);
+        button.setCallbackData("page_info");
+        row.add(button);
+
+        if (pageNumber != totalPages) {
+            sb = new StringBuilder();
+            button = new InlineKeyboardButton();
+            button.setText(MessageUtil.get(MessageKeys.BUTTON_NEXT, lang));
+            button.setCallbackData(sb.append("next_").append(type).append("_").append(pageNumber).toString());
+            row.add(button);
+        }
+
+        rows.add(row);
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
+
 }

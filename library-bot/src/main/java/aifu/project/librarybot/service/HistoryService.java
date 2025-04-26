@@ -4,10 +4,15 @@ import aifu.project.commondomain.entity.BaseBook;
 import aifu.project.commondomain.entity.BookCopy;
 import aifu.project.commondomain.entity.Booking;
 import aifu.project.commondomain.entity.History;
+import aifu.project.commondomain.payload.PartList;
 import aifu.project.commondomain.repository.HistoryRepository;
+import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HistoryService {
     private final HistoryRepository historyRepository;
+    private final ExecuteUtil executeUtil;
 
     public void add(Booking booking) {
         History history = new History();
@@ -30,10 +36,15 @@ public class HistoryService {
         historyRepository.save(history);
     }
 
-    public String getHistory(Long chatId, String lang) {
-        List<History> allHistories = historyRepository.findAllByUser_ChatId(chatId);
-        if (allHistories == null || allHistories.isEmpty())
-            return MessageUtil.get(MessageKeys.BOOKING_HISTORY_EMPTY, lang);
+    public PartList getHistory(Long chatId, String lang, int pageNumber) {
+        Pageable pageable = PageRequest.of(--pageNumber, 3);
+        Page<History> historyPage = historyRepository.findAllByUserChatId(chatId, pageable);
+        List<History> allHistories = historyPage.getContent();
+
+        if (allHistories.isEmpty()) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_HISTORY_EMPTY, lang);
+            return null;
+        }
 
         StringBuilder messageText = new StringBuilder();
 
@@ -62,7 +73,7 @@ public class HistoryService {
                 }
         );
 
-        return messageText.toString();
+        return new PartList(messageText.toString(), ++pageNumber, historyPage.getTotalPages());
     }
 
 }

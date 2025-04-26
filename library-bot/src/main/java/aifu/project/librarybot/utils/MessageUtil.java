@@ -2,6 +2,7 @@ package aifu.project.librarybot.utils;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -34,5 +35,13 @@ public class MessageUtil {
         deleteMessage.setChatId(chatId);
         deleteMessage.setMessageId(messageId);
         return deleteMessage;
+    }
+
+    public static EditMessageText editMessageText(String chatId, Integer messageId, String text) {
+        EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(messageId);
+        editMessageText.setText(text);
+        return editMessageText;
     }
 }

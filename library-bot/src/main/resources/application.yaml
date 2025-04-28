@@ -19,6 +19,7 @@ bot:
   name:
     AIFU Library
 
+
 springdoc:
   api-docs:
     path: /v1-api

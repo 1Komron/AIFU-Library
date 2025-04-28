@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -151,6 +152,20 @@ public class BookingService {
 
     public Booking getBooking(Long chatId, Integer bookId) {
         return bookingRepository.findByBookIdAndUserChatId(bookId, chatId);
+    }
+
+    public List<Booking> getOverdueBookings() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        return bookingRepository.findByDueDate(tomorrow);
+    }
+
+    public List<Booking> getExpiredBookings() {
+        LocalDate now = LocalDate.now();
+        List<Booking> byDueDateBefore = bookingRepository.findByDueDateBefore(now);
+        byDueDateBefore.forEach(booking -> booking.setStatus(Status.OVERDUE));
+
+        bookingRepository.saveAll(byDueDateBefore);
+        return byDueDateBefore;
     }
 
     private String getBookingStatusMessage(Status status, String lang) {

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -33,4 +34,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllWithBooksByUser_ChatId(Long chatId);
 
+    @Query("""
+        SELECT b
+          FROM Booking b
+          JOIN FETCH b.user u
+         WHERE b.dueDate < :now
+    """)
+    List<Booking> findByDueDateBefore(LocalDate now);
+
+    @Query("""
+        SELECT b
+          FROM Booking b
+          JOIN FETCH b.user u
+         WHERE b.dueDate = :tomorrow
+    """)
+    List<Booking> findByDueDate(LocalDate tomorrow);
 }

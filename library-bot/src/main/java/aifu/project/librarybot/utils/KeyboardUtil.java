@@ -203,4 +203,16 @@ public class KeyboardUtil {
         return keyboardMarkup;
     }
 
+    public static InlineKeyboardMarkup getExtendKeyboard(String lang) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText(MessageUtil.get(MessageKeys.BOOKING_EXTEND_BUTTON, lang));
+        button.setCallbackData("extend");
+        row.add(button);
+        rows.add(row);
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
 }

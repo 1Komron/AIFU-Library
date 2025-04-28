@@ -3,7 +3,7 @@ package aifu.project.commondomain.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -18,7 +18,7 @@ public class History {
     @ManyToOne
     private BookCopy book;
 
-    private LocalDateTime givenAt;
-    private LocalDateTime dueDate;
-    private LocalDateTime returnedAt;
+    private LocalDate givenAt;
+    private LocalDate dueDate;
+    private LocalDate returnedAt;
 }

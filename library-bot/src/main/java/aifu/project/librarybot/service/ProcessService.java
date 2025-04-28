@@ -177,7 +177,8 @@ public class ProcessService {
 
             case PROFILE -> {
                 String profile = userService.showProfile(chatId, lang);
-                executeUtil.executeMessage(chatId.toString(), profile, lang);
+                SendMessage message = MessageUtil.createMessage(chatId.toString(), profile);
+                executeUtil.execute(message);
             }
 
             case SETTINGS -> buttonService.changeLangButton(chatId);

@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class HistoryService {
         history.setBook(booking.getBook());
         history.setGivenAt(booking.getGivenAt());
         history.setDueDate(booking.getDueDate());
-        history.setReturnedAt(LocalDateTime.now());
+        history.setReturnedAt(LocalDate.now());
 
         historyRepository.save(history);
     }

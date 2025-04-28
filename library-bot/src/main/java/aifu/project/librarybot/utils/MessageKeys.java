@@ -60,6 +60,9 @@ public class MessageKeys {
     public static final String BOOKING_RETURN_REJECTED = "booking.return.rejected";
     public static final String BOOKING_RETURN_NOT_FOUND= "booking.return.not_found";
     public static final String BOOKING_WAIT_RETURN_APPROVAL= "booking.wait_for_return_approval";
+    public static final String BOOKING_DUE_EXPIRING= "booking.due.expiring";
+    public static final String BOOKING_DUE_EXPIRED= "booking.due.expired";
+    public static final String BOOKING_EXTEND_BUTTON= "booking.extend.button";
 
 
     public static final String MESSAGE_INVALID_FORMAT = "message.invalid.format";

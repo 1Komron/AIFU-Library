@@ -1,12 +1,21 @@
 spring:
   application:
-    name:
-      library-web
+    name: library-web
   datasource:
     url: jdbc:postgresql://localhost:5432/aifu_library
-    password: root123
     username: postgres
+    password: root123
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+file:
+  upload-dir: E:/files/
+

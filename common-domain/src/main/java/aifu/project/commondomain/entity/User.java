@@ -4,8 +4,8 @@ import aifu.project.commondomain.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
-@Table(name = "users", indexes = {
+        @Entity
+        @Table(name = "users", indexes = {
         @Index(name = "idx_chatId", columnList = "chatId")
 })
 @Data

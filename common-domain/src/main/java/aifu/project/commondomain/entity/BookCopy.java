@@ -24,6 +24,7 @@ public class BookCopy {
     private boolean isTaken = false;
 
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_book_id")
     private BaseBook book;

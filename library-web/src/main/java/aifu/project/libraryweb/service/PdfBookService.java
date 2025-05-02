@@ -9,4 +9,6 @@ public interface PdfBookService {
     PdfBookDTO getOne(Integer id);
     PdfBookDTO update(Integer id, PdfBookDTO dto);
     void delete(Integer id);
+
+    byte[] downloadPdf(Integer id);
 }

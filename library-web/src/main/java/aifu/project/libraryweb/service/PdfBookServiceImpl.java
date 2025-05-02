@@ -8,6 +8,10 @@ import aifu.project.libraryweb.mapper.PdfBookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -16,6 +20,7 @@ public class PdfBookServiceImpl implements PdfBookService {
 
     private final PdfBookRepository pdfBookRepository;
     private final CategoryService categoryService;
+    private final String fileStorageLocation = "E:/files/pdf";
 
     @Override
     public PdfBookDTO create(Integer categoryId, PdfBookDTO dto) {
@@ -65,5 +70,24 @@ public class PdfBookServiceImpl implements PdfBookService {
     @Override
     public void delete(Integer id) {
         pdfBookRepository.deleteById(id);
+    }
+
+    private String getPdfFileNameById(Integer id) {
+        return "book_" + id + ".pdf";
+
+    }
+
+    public byte[] downloadPdf(Integer id) {
+        PdfBook pdfBook = pdfBookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("PDF Book not found with id: " + id));
+
+        String fileName = pdfBook.getPdfUrl(); // pdfUrl - bazada saqlangan fayl nomi
+        Path filePath = Paths.get(fileStorageLocation, fileName);
+        try {
+            return Files.readAllBytes(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Faylni o'qishda xatolik yuz berdi: " + fileName, e);
+        }
+
     }
 }

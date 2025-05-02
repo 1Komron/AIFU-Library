@@ -7,6 +7,8 @@ import aifu.project.commondomain.entity.User;
 import aifu.project.commondomain.entity.enums.BookingRequestStatus;
 import aifu.project.commondomain.repository.BookingRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BookingRequestService {
     private final BookingRequestRepository bookingRequestRepository;
+    private static final Logger log = LoggerFactory.getLogger(BookingRequestService.class);
 
     public void create(Booking booking, BookingRequestStatus status) {
         BookingRequest bookingRequest = new BookingRequest();
@@ -21,7 +24,11 @@ public class BookingRequestService {
         bookingRequest.setBookCopy(booking.getBook());
         bookingRequest.setStatus(status);
 
-        bookingRequestRepository.save(bookingRequest);
+        try {
+            bookingRequestRepository.save(bookingRequest);
+        }catch(Exception e) {
+            log.error("Невозможно создать заявку: копия книги уже занята (bookCopyId={})", booking.getBook().getId());
+        }
     }
 
     public void create(User user, BookCopy bookCopy, BookingRequestStatus status) {

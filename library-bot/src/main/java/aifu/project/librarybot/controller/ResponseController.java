@@ -1,9 +1,6 @@
 package aifu.project.librarybot.controller;
 
-import aifu.project.commondomain.payload.BorrowBookResponse;
-import aifu.project.commondomain.payload.RegistrationResponse;
-import aifu.project.commondomain.payload.ResponseMessage;
-import aifu.project.commondomain.payload.ReturnBookResponse;
+import aifu.project.commondomain.payload.*;
 import aifu.project.librarybot.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +20,11 @@ public class ResponseController {
     @PostMapping("/book/borrow")
     public ResponseEntity<ResponseMessage> borrowBookResponse(@RequestBody BorrowBookResponse borrowBookResponse) {
         return responseService.borrowBookResponse(borrowBookResponse);
+    }
+
+    @PostMapping("/book/extend")
+    public ResponseEntity<ResponseMessage> extendBookResponse(@RequestBody ExtendBookResponse extendBookResponse) {
+        return responseService.extendBookResponse(extendBookResponse);
     }
 
     @PostMapping("/book/return")

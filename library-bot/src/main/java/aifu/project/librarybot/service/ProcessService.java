@@ -277,7 +277,7 @@ public class ProcessService {
     private void processExtend(Long chatId, String lang, String data) {
         if (data.startsWith("extend_")) {
             String inv = data.substring("extend_".length());
-            bookingService.createExtendReturnDeadlineRequest(chatId, lang, inv);
+            bookingService.createExtendReturnDeadline(chatId, lang, inv);
         }
     }
 

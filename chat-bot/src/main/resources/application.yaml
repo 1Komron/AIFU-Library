@@ -1,0 +1,17 @@
+spring:
+  application:
+    name:
+      chat-bot
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aifu_library_chat
+    password: root123
+    username: postgres
+bot:
+  name:
+    AIFU Library | Chat
+  token:
+    7825208862:AAHfHSmv-893obbmu8JOQ8GzO3T-TtuJE-c

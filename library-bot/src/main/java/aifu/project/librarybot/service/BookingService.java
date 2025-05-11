@@ -2,11 +2,13 @@ package aifu.project.librarybot.service;
 
 import aifu.project.commondomain.entity.*;
 import aifu.project.commondomain.entity.enums.BookingRequestStatus;
+import aifu.project.commondomain.entity.enums.NotificationType;
 import aifu.project.commondomain.entity.enums.Status;
 import aifu.project.commondomain.payload.PartList;
 import aifu.project.commondomain.repository.BookCopyRepository;
 import aifu.project.commondomain.repository.BookingRepository;
 import aifu.project.commondomain.repository.UserRepository;
+import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.exceptions.BookCopyNotFoundException;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
@@ -14,6 +16,7 @@ import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +38,9 @@ public class BookingService {
     private final BookCopyRepository bookCopyRepository;
     private final ExecuteUtil executeUtil;
     private final TransactionalService transactionalService;
+    private final NotificationService notificationService;
     private final UserRepository userRepository;
+    private final RabbitTemplate rabbitTemplate;
 
     @Transactional
     @SneakyThrows
@@ -60,7 +65,10 @@ public class BookingService {
         bookCopyRepository.save(bookCopy);
 
         User user = userRepository.findByChatId(chatId);
-        bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
+        BookingRequest request = bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
+
+        Notification notification = notificationService.createNotification(user, NotificationType.BORROW, request.getId());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_BORROW, notification);
 
         return true;
     }
@@ -92,9 +100,11 @@ public class BookingService {
                     (booking.getStatus() == Status.APPROVED || booking.getStatus() == Status.OVERDUE)) {
                 isTaken.set(true);
 
-                bookingRequestService.create(booking, BookingRequestStatus.RETURN);
+                BookingRequest request = bookingRequestService.create(booking.getUser(), bookCopy, BookingRequestStatus.RETURN);
 
-                //kutibxonachiga api chiqariladi
+                User user = userRepository.findByChatId(chatId);
+                Notification notification = notificationService.createNotification(user, NotificationType.RETURN, request.getId());
+                rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_RETURN, notification);
             }
         });
 
@@ -104,6 +114,26 @@ public class BookingService {
         }
 
         return true;
+    }
+
+    @Transactional
+    public void createExtendReturnDeadline(Long chatId, String lang, String inv) {
+        Booking booking = bookingRepository.findBookingByUser_ChatIdAndBook_InventoryNumber(chatId, inv);
+        if (booking == null) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
+            return;
+        }
+        if (booking.getDueDate().isAfter(LocalDate.now().plusDays(1))) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_DENIED_TO_EARLY, lang);
+            return;
+        }
+
+        BookingRequest request = bookingRequestService.create(booking.getUser(), booking.getBook(), BookingRequestStatus.EXTEND);
+        executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
+
+        User user = booking.getUser();
+        Notification notification = notificationService.createNotification(user, NotificationType.EXTEND, request.getId());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND, notification);
     }
 
     public PartList getBookList(Long chatId, String lang, int pageNumber) {
@@ -148,7 +178,7 @@ public class BookingService {
         return getPartList(allBookings, lang, pageNumber, bookingPage.getTotalPages());
     }
 
-    private PartList getPartList(List<Booking> allBookings, String lang, int pageNumber,int totalPages) {
+    private PartList getPartList(List<Booking> allBookings, String lang, int pageNumber, int totalPages) {
         String template = MessageUtil.get(MessageKeys.BOOKING_INFO, lang);
 
         StringBuilder messageText = new StringBuilder();
@@ -245,21 +275,6 @@ public class BookingService {
         InlineKeyboardMarkup inlineKeyboardMarkup = KeyboardUtil.getExtendBookingsInventoryNumber(inventoryNumbers);
         message.setReplyMarkup(inlineKeyboardMarkup);
         executeUtil.execute(message);
-    }
-
-    public void createExtendReturnDeadlineRequest(Long chatId, String lang, String inv) {
-        Booking booking = bookingRepository.findBookingByUser_ChatIdAndBook_InventoryNumber(chatId, inv);
-        if (booking == null) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
-            return;
-        }
-        if (booking.getDueDate().isAfter(LocalDate.now().plusDays(1))) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_DENIED_TO_EARLY, lang);
-            return;
-        }
-
-        bookingRequestService.create(booking, BookingRequestStatus.EXTEND);
-        executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
     }
 
     public void extendReturnDeadline(Long chatId, Integer bookId) {

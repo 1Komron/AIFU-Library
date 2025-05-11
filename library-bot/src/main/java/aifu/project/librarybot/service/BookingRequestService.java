@@ -18,33 +18,38 @@ public class BookingRequestService {
     private final BookingRequestRepository bookingRequestRepository;
     private static final Logger log = LoggerFactory.getLogger(BookingRequestService.class);
 
-    public void create(Booking booking, BookingRequestStatus status) {
-        BookingRequest bookingRequest = new BookingRequest();
-        bookingRequest.setUser(booking.getUser());
-        bookingRequest.setBookCopy(booking.getBook());
-        bookingRequest.setStatus(status);
+//    public void create(Booking booking, BookingRequestStatus status) {
+//        BookingRequest bookingRequest = new BookingRequest();
+//        bookingRequest.setUser(booking.getUser());
+//        bookingRequest.setBookCopy(booking.getBook());
+//        bookingRequest.setStatus(status);
+//
+//        try {
+//            bookingRequestRepository.save(bookingRequest);
+//        } catch (Exception e) {
+//            log.error("Невозможно создать заявку: копия книги уже занята (bookCopyId={})", booking.getBook().getId());
+//        }
+//    }
 
-        try {
-            bookingRequestRepository.save(bookingRequest);
-        }catch(Exception e) {
-            log.error("Невозможно создать заявку: копия книги уже занята (bookCopyId={})", booking.getBook().getId());
-        }
-    }
-
-    public void create(User user, BookCopy bookCopy, BookingRequestStatus status) {
+    public BookingRequest create(User user, BookCopy bookCopy, BookingRequestStatus status) {
         BookingRequest bookingRequest = new BookingRequest();
         bookingRequest.setUser(user);
         bookingRequest.setBookCopy(bookCopy);
         bookingRequest.setStatus(status);
 
-        bookingRequestRepository.save(bookingRequest);
+        try {
+            return bookingRequestRepository.save(bookingRequest);
+        } catch (Exception e) {
+            log.error("Невозможно создать заявку: копия книги уже занята (bookCopyId={})", bookCopy.getId());
+        }
+        return null;
     }
 
     public void delete(BookingRequest bookingRequest) {
         bookingRequestRepository.delete(bookingRequest);
     }
 
-    public BookingRequest getBookingResponse(Long chatId, Integer bookId, BookingRequestStatus status) {
-        return bookingRequestRepository.findBookingRequestByUserChatIdAndBookCopyIdAndStatus(chatId, bookId, status);
+    public BookingRequest getBookingResponse(Long chatId, Integer bookCopyId, BookingRequestStatus status) {
+        return bookingRequestRepository.findBookingRequestByUserChatIdAndBookCopyIdAndStatus(chatId, bookCopyId, status);
     }
 }

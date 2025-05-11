@@ -30,3 +30,5 @@ internal:
   token:
     94e637a1ff9a4c8e87de5198d78a5bc2c3067d76b9d2417ea54721370b7fd52e
 
+server:
+  port: 8081

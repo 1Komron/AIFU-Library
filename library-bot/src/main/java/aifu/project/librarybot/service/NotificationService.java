@@ -3,7 +3,7 @@ package aifu.project.librarybot.service;
 import aifu.project.commondomain.entity.Notification;
 import aifu.project.commondomain.entity.enums.RequestType;
 import aifu.project.commondomain.payload.ResponseMessage;
-import aifu.project.commondomain.repository.NotificationRepository;
+import aifu.project.librarybot.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

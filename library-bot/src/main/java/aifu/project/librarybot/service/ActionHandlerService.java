@@ -5,7 +5,7 @@ import aifu.project.commondomain.entity.Booking;
 import aifu.project.commondomain.entity.BookingRequest;
 import aifu.project.commondomain.entity.RegisterRequest;
 import aifu.project.commondomain.payload.ResponseMessage;
-import aifu.project.commondomain.repository.BookCopyRepository;
+import aifu.project.librarybot.repository.BookCopyRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;

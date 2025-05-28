@@ -18,8 +18,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @SpringBootApplication
 @EntityScan({"aifu.project.commondomain.entity"})
-@EnableJpaRepositories({"aifu.project.commondomain.repository"})
-@ComponentScan({"aifu.project.librarybot", "aifu.project.commondomain"})
 @EnableScheduling
 @EnableTransactionManagement
 @Slf4j

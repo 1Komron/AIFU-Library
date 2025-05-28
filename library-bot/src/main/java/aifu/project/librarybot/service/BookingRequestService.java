@@ -4,7 +4,7 @@ import aifu.project.commondomain.entity.BookCopy;
 import aifu.project.commondomain.entity.BookingRequest;
 import aifu.project.commondomain.entity.User;
 import aifu.project.commondomain.entity.enums.BookingRequestStatus;
-import aifu.project.commondomain.repository.BookingRequestRepository;
+import aifu.project.librarybot.repository.BookingRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

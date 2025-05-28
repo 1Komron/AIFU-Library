@@ -1,8 +1,8 @@
 package aifu.project.commondomain.mapper;
 
 import aifu.project.commondomain.entity.User;
-import aifu.project.commondomain.payload.WebDTO;
 import aifu.project.commondomain.payload.BotUserDTO;
+import aifu.project.commondomain.payload.WebDTO;
 
 public class UserMapper {
 

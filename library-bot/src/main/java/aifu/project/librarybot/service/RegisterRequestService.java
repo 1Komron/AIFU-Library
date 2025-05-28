@@ -2,7 +2,8 @@ package aifu.project.librarybot.service;
 
 import aifu.project.commondomain.entity.User;
 import aifu.project.commondomain.entity.RegisterRequest;
-import aifu.project.commondomain.repository.RegisterRequestRepository;
+
+import aifu.project.librarybot.repository.RegisterRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

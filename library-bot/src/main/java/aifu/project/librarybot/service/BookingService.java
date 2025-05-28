@@ -8,11 +8,11 @@ import aifu.project.commondomain.entity.enums.Status;
 import aifu.project.commondomain.exceptions.BookCopyNotFoundException;
 import aifu.project.commondomain.exceptions.UserNotFoundException;
 import aifu.project.commondomain.payload.PartList;
-import aifu.project.commondomain.repository.BookCopyRepository;
-import aifu.project.commondomain.repository.BookingRepository;
-import aifu.project.commondomain.repository.NotificationRepository;
-import aifu.project.commondomain.repository.UserRepository;
 import aifu.project.librarybot.config.RabbitMQConfig;
+import aifu.project.librarybot.repository.BookCopyRepository;
+import aifu.project.librarybot.repository.BookingRepository;
+import aifu.project.librarybot.repository.NotificationRepository;
+import aifu.project.librarybot.repository.UserRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
@@ -40,11 +40,11 @@ import static aifu.project.commondomain.mapper.NotificationMapper.notificationTo
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final NotificationRepository notificationRepository;
-    private final BookingRequestService bookingRequestService;
+    private final UserRepository userRepository;
     private final BookCopyRepository bookCopyRepository;
+    private final BookingRequestService bookingRequestService;
     private final ExecuteUtil executeUtil;
     private final TransactionalService transactionalService;
-    private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
 
     @Transactional

@@ -1,28 +1,39 @@
 package aifu.project.librarybot.service;
 
+import aifu.project.commondomain.entity.Notification;
+import aifu.project.commondomain.entity.RegisterRequest;
 import aifu.project.commondomain.entity.User;
+import aifu.project.commondomain.entity.enums.NotificationType;
+import aifu.project.commondomain.entity.enums.RequestType;
+import aifu.project.commondomain.exceptions.UserNotFoundException;
+import aifu.project.commondomain.mapper.NotificationMapper;
 import aifu.project.commondomain.mapper.UserMapper;
 import aifu.project.commondomain.payload.BotUserDTO;
+import aifu.project.commondomain.repository.NotificationRepository;
 import aifu.project.commondomain.repository.UserRepository;
+import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
     private final UserLanguageService userLanguageService;
     private final RegisterService registerService;
+    private final RegisterRequestService registerRequestService;
+    private final RabbitTemplate rabbitTemplate;
     private final ExecuteUtil executeUtil;
 
     public boolean exists(Long chatId) {
@@ -59,6 +70,7 @@ public class UserService {
         registerService.addMessageId(chatId, execute.getMessageId());
     }
 
+    @Transactional
     public void saveUser(BotUserDTO userDTO) {
         if (userDTO == null || userRepository.existsUserByChatId(userDTO.getChatId())) {
             return;
@@ -67,10 +79,18 @@ public class UserService {
         User user = UserMapper.fromBotDTO(userDTO);
 
         userRepository.save(user);
+
+        RegisterRequest registerRequest = registerRequestService.create(user);
+
+        Notification notification = new Notification(user, registerRequest.getId(), NotificationType.REGISTER, RequestType.REGISTER);
+        notificationRepository.save(notification);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_REGISTER,
+                NotificationMapper.notificationToDTO(notification));
     }
 
     public void saveUser(Long chatId) {
-        User user = userRepository.findByChatId(chatId);
+        User user = userRepository.findByChatId(chatId)
+                .orElseThrow(() -> new UserNotFoundException("User not found bu chatId: " + chatId));
         user.setActive(true);
         userRepository.save(user);
     }
@@ -88,7 +108,8 @@ public class UserService {
     }
 
     public String showProfile(Long chatId, String lang) {
-        User user = userRepository.findByChatId(chatId);
+        User user = userRepository.findByChatId(chatId)
+                .orElseThrow(() -> new UserNotFoundException("User not found bu chatId: " + chatId));
 
         String template = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, lang);
         return String.format(template, user.getName(), user.getSurname(), user.getPhone(), user.getFaculty(), user.getCourse(), user.getGroup());

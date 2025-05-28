@@ -3,8 +3,12 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/chat-bot/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-domain/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/library-bot/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/library-web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/src/main/java" charset="UTF-8" />
   </component>
 </project>

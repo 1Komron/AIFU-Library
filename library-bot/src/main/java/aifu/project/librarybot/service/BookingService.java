@@ -3,13 +3,16 @@ package aifu.project.librarybot.service;
 import aifu.project.commondomain.entity.*;
 import aifu.project.commondomain.entity.enums.BookingRequestStatus;
 import aifu.project.commondomain.entity.enums.NotificationType;
+import aifu.project.commondomain.entity.enums.RequestType;
 import aifu.project.commondomain.entity.enums.Status;
+import aifu.project.commondomain.exceptions.BookCopyNotFoundException;
+import aifu.project.commondomain.exceptions.UserNotFoundException;
 import aifu.project.commondomain.payload.PartList;
 import aifu.project.commondomain.repository.BookCopyRepository;
 import aifu.project.commondomain.repository.BookingRepository;
+import aifu.project.commondomain.repository.NotificationRepository;
 import aifu.project.commondomain.repository.UserRepository;
 import aifu.project.librarybot.config.RabbitMQConfig;
-import aifu.project.librarybot.exceptions.BookCopyNotFoundException;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
@@ -30,15 +33,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static aifu.project.commondomain.mapper.NotificationMapper.notificationToDTO;
+
 @Service
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
+    private final NotificationRepository notificationRepository;
     private final BookingRequestService bookingRequestService;
     private final BookCopyRepository bookCopyRepository;
     private final ExecuteUtil executeUtil;
     private final TransactionalService transactionalService;
-    private final NotificationService notificationService;
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
 
@@ -64,11 +69,15 @@ public class BookingService {
         bookCopy.setTaken(true);
         bookCopyRepository.save(bookCopy);
 
-        User user = userRepository.findByChatId(chatId);
-        BookingRequest request = bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
+        User user = userRepository.findByChatId(chatId)
+                .orElseThrow(() -> new UserNotFoundException("User not found by chatId: " + chatId));
 
-        Notification notification = notificationService.createNotification(user, NotificationType.BORROW, request.getId());
-        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_BORROW, notification);
+        BookingRequest bookingRequest = bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
+
+        Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.BORROW, RequestType.BOOKING);
+        notificationRepository.save(notification);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_BORROW,
+                notificationToDTO(notification));
 
         return true;
     }
@@ -100,11 +109,15 @@ public class BookingService {
                     (booking.getStatus() == Status.APPROVED || booking.getStatus() == Status.OVERDUE)) {
                 isTaken.set(true);
 
-                BookingRequest request = bookingRequestService.create(booking.getUser(), bookCopy, BookingRequestStatus.RETURN);
+                BookingRequest bookingRequest = bookingRequestService.create(booking.getUser(), bookCopy, BookingRequestStatus.RETURN);
 
-                User user = userRepository.findByChatId(chatId);
-                Notification notification = notificationService.createNotification(user, NotificationType.RETURN, request.getId());
-                rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_RETURN, notification);
+                User user = userRepository.findByChatId(chatId)
+                        .orElseThrow(() -> new UserNotFoundException("User not found by chatId: " + chatId));
+
+                Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.RETURN, RequestType.BOOKING);
+                notificationRepository.save(notification);
+                rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_RETURN,
+                        notificationToDTO(notification));
             }
         });
 
@@ -128,12 +141,14 @@ public class BookingService {
             return;
         }
 
-        BookingRequest request = bookingRequestService.create(booking.getUser(), booking.getBook(), BookingRequestStatus.EXTEND);
+        BookingRequest bookingRequest = bookingRequestService.create(booking.getUser(), booking.getBook(), BookingRequestStatus.EXTEND);
         executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
 
         User user = booking.getUser();
-        Notification notification = notificationService.createNotification(user, NotificationType.EXTEND, request.getId());
-        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND, notification);
+        Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.EXTEND, RequestType.BOOKING);
+        notificationRepository.save(notification);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND,
+                notificationToDTO(notification));
     }
 
     public PartList getBookList(Long chatId, String lang, int pageNumber) {

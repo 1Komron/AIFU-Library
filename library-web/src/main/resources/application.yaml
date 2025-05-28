@@ -16,9 +16,7 @@ spring:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+  config:
+    import: application-private.yaml
 file:
   upload-dir: E:/files/
-
-internal:
-  token:
-    94e637a1ff9a4c8e87de5198d78a5bc2c3067d76b9d2417ea54721370b7fd52e

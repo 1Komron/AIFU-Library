@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResponseMessage> deleteNotification(@RequestBody Long notificationId) {
-        return notificationService.deleteNotification(notificationId);
-    }
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<ResponseMessage> deleteNotification(@PathVariable Long id) {
+//        return notificationService.deleteNotification(id);
+//    }
 
     @GetMapping("/get/unread")
     public ResponseEntity<ResponseMessage> getUnreadNotification(@RequestParam(defaultValue = "1") int pageNumber,

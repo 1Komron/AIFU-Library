@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.controller;
 
 import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.libraryweb.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,11 @@ public class NotificationController {
     public ResponseEntity<ResponseMessage> getUnreadNotification(@RequestParam(defaultValue = "1") int pageNumber,
                                                                  @RequestParam(defaultValue = "8") int pageSize) {
         return notificationService.getUnreadNotifications(pageNumber, pageSize);
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ResponseMessage> getNotificationDetails(@PathVariable String id) {
+        return notificationService.getDetails(id);
     }
 
     @GetMapping("/get/all")

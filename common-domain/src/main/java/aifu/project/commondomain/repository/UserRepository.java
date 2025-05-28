@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.beans.Transient;
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -16,7 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByChatIdAndIsActive(Long chatId, boolean isActive);
 
-    User findByChatId(Long chatId);
+    Optional<User> findByChatId(Long chatId);
+
+    @Query("select u from User u where u.role = 'LIBRARIAN'")
+    Optional<User> findLibrarian();
 
     @Transient
     @Modifying

@@ -10,6 +10,8 @@
       <option name="customHeaders">
         <set>
           <option value="Internal-Token" />
+          <option value="X-Auth-Token" />
+          <option value="X-User-Id" />
         </set>
       </option>
     </inspection_tool>

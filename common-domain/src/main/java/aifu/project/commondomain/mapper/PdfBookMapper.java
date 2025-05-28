@@ -3,9 +3,7 @@ package aifu.project.commondomain.mapper;
 import aifu.project.commondomain.dto.PdfBookDTO;
 import aifu.project.commondomain.entity.Category;
 import aifu.project.commondomain.entity.PdfBook;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PdfBookMapper {
 
     // Entity -> DTO
@@ -47,5 +45,7 @@ public class PdfBookMapper {
         pdfBook.setIsbn(pdfBookDTO.getIsbn());
         return pdfBook;
     }
+
+    private PdfBookMapper() {}
 
 }

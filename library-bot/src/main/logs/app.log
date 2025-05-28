@@ -354,3 +354,56 @@ Consider defining a bean of type 'aifu.project.librarybot.repository.UserReposit
 2025-05-28 11:30:34.740 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-05-28 11:30:34.743 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2025-05-28 11:30:34.752 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-05-28 11:45:50.043 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 1360 (E:\realProikt\AIFU-Library\library-bot\target\classes started by User in E:\realProikt\AIFU-Library)
+2025-05-28 11:45:50.046 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-05-28 11:45:51.602 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-28 11:45:51.730 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 114 ms. Found 10 JPA repository interfaces.
+2025-05-28 11:45:52.498 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-05-28 11:45:52.516 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-05-28 11:45:52.518 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-05-28 11:45:52.519 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-05-28 11:45:52.611 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-05-28 11:45:52.611 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2456 ms
+2025-05-28 11:45:52.886 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-28 11:45:52.990 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-28 11:45:53.041 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-05-28 11:45:53.463 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-28 11:45:53.508 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-05-28 11:45:53.837 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@34bddf43
+2025-05-28 11:45:53.840 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-05-28 11:45:53.973 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-28 11:45:55.811 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-28 11:45:56.000 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.000 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uka0w7ge936nm2tr502svepufau" of relation "book_copy" does not exist, skipping
+2025-05-28 11:45:56.005 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.006 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "ukm43k14j57ewxuhgdagppx3p20" of relation "booking" does not exist, skipping
+2025-05-28 11:45:56.010 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.011 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uk9x0tnv5tl5rm9mw6ksdb95h91" of relation "booking_request" does not exist, skipping
+2025-05-28 11:45:56.016 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.017 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uk46ccwnsi9409t36lurvtyljak" of relation "category" does not exist, skipping
+2025-05-28 11:45:56.027 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.028 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uknr2rmfhq6wfp39vcduy7iketb" of relation "users" does not exist, skipping
+2025-05-28 11:45:56.034 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.034 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uk6dotkott2kjsp8vw4d0m25fb7" of relation "users" does not exist, skipping
+2025-05-28 11:45:56.039 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2025-05-28 11:45:56.039 [main] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - constraint "ukdu5v5sr43g5bfnji4vb8hg5s3" of relation "users" does not exist, skipping
+2025-05-28 11:45:56.094 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-28 11:45:56.843 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-28 11:45:59.050 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-05-28 11:45:59.241 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-28 11:45:59.321 [main] INFO  o.s.v.b.OptionalValidatorFactoryBean - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-05-28 11:46:00.090 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-05-28 11:46:00.112 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-05-28 11:46:00.131 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 11.285 seconds (process running for 12.747)
+2025-05-28 11:46:08.524 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-05-28 11:46:08.531 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-05-28 11:46:08.542 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-28 11:46:08.545 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-05-28 11:46:08.553 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

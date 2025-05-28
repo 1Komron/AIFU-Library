@@ -32,7 +32,6 @@ public class HistoryService {
         history.setGivenAt(booking.getGivenAt());
         history.setDueDate(booking.getDueDate());
         history.setReturnedAt(LocalDate.now());
-
         historyRepository.save(history);
     }
 

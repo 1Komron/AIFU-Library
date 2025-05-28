@@ -10,4 +10,6 @@ import java.util.Collection;
 @Repository
 public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
 
+    boolean existsByIsbn(String isbn);
 }
+

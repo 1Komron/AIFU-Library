@@ -1,8 +1,11 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.libraryweb.dto.CategoryDTO;
+import aifu.project.commondomain.dto.CategoryDTO;
+import aifu.project.commondomain.dto.PdfBookDTO;
 import aifu.project.libraryweb.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,30 +15,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final   CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @PostMapping
-    public CategoryDTO create(@RequestBody CategoryDTO dto) {
-        return categoryService.create(dto);
+    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryDTO dto) {
+        return ResponseEntity.ok(categoryService.create(dto));
     }
 
     @PutMapping("/{id}")
-    public CategoryDTO update(@PathVariable Integer id, @RequestBody CategoryDTO dto) {
-        return categoryService.update(id, dto);
+    public ResponseEntity<CategoryDTO> update(@PathVariable Integer id, @Valid @RequestBody CategoryDTO dto) {
+        return ResponseEntity.ok(categoryService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public CategoryDTO getById(@PathVariable Integer id) {
-        return categoryService.getById(id);
+    public ResponseEntity<CategoryDTO> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.getById(id));
     }
 
     @GetMapping
-    public List<CategoryDTO> getAll() {
-        return categoryService.getAll();
+    public ResponseEntity<List<CategoryDTO>> getAll() {
+        return ResponseEntity.ok(categoryService.getAll());
     }
+
+    @GetMapping("/{id}/pdf-books")
+    public ResponseEntity<List<PdfBookDTO>> getBooksByCategoryId(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.getBooksByCategoryId(id));
+    }
+
+
 }

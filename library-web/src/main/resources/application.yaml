@@ -8,14 +8,16 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
 
-
+    properties:
+      hibernate:
+        format_sql: true
   servlet:
     multipart:
       enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
-file:
-  upload-dir: E:/files/
+      max-file-size: 100MB
+      max-request-size: 110MB
 
+file:
+  upload-dir: E:/files

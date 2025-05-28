@@ -1,59 +1,52 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.libraryweb.dto.PdfBookDTO;
+import aifu.project.commondomain.dto.PdfBookDTO;
 import aifu.project.libraryweb.service.PdfBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pdf-books")
+    @RequestMapping("/api/pdfbooks")
 @RequiredArgsConstructor
 public class PdfBookController {
-
     private final PdfBookService pdfBookService;
+    private final StandardServletMultipartResolver multipartResolver;
 
-    // Admin uchun kitob yaratish
-    @PostMapping("/admin/create/{categoryId}")
-    public PdfBookDTO create(@PathVariable Integer categoryId,
-                             @RequestBody PdfBookDTO dto) {
+    @PostMapping
+    public PdfBookDTO create(@RequestParam Integer categoryId, @RequestBody PdfBookDTO dto) {
         return pdfBookService.create(categoryId, dto);
     }
 
-    // Admin uchun kitobni yangilash
-    @PutMapping("/admin/{id}")
-    public PdfBookDTO update(@PathVariable Integer id,
-                             @RequestBody PdfBookDTO dto) {
-        return pdfBookService.update(id, dto);
-    }
-
-    // Admin uchun kitobni o'chirish
-    @DeleteMapping("/admin/{id}")
-    public void delete(@PathVariable Integer id) {
-        pdfBookService.delete(id);
-    }
-
-    // Barcha kitoblarni ko‘rish (Admin va User uchun)
     @GetMapping("/category/{categoryId}")
     public List<PdfBookDTO> getAllByCategory(@PathVariable Integer categoryId) {
         return pdfBookService.getAllByCategory(categoryId);
     }
 
-    // Foydalanuvchi uchun kitobni ko‘rish
     @GetMapping("/{id}")
     public PdfBookDTO getOne(@PathVariable Integer id) {
+
         return pdfBookService.getOne(id);
     }
 
-    // Foydalanuvchi uchun kitobni yuklab olish
+    @PutMapping("/{id}")
+    public PdfBookDTO update(@PathVariable Integer id, @RequestBody PdfBookDTO dto) {
+        return pdfBookService.update(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        pdfBookService.delete(id);
+    }
+
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
-        byte[] pdfContent = pdfBookService.downloadPdf(id);
+        byte[] pdfData = pdfBookService.downloadPdf(id);
         return ResponseEntity.ok()
-                .header("Content-Type", "application/pdf")
-                .header("Content-Disposition", "attachment; filename=\"book" + id + ".pdf\"")
-                .body(pdfContent);
+                .header("Content-Disposition", "attachment; filename=book_" + id + ".pdf")
+                .body(pdfData);
     }
 }

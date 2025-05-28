@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="aifu_library@localhost" uuid="eb2dc07e-c839-436c-9e28-4d9ab2f7659e">
+    <data-source source="LOCAL" name="aifu_library@localhost" uuid="bce7e857-64cd-45f0-b1ae-21d757581a54">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

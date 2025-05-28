@@ -21,6 +21,8 @@ public class BookCopy {
     private String inventoryNumber;
     private String shelfLocation;
     private String notes;
+
+    @Builder.Default
     private boolean isTaken = false;
 
 

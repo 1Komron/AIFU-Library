@@ -5,7 +5,7 @@ import aifu.project.commondomain.dto.PdfBookDTO;
 import aifu.project.commondomain.entity.Category;
 import aifu.project.commondomain.mapper.CategoryMapper;
 import aifu.project.commondomain.mapper.PdfBookMapper;
-import aifu.project.commondomain.repository.CategoryRepository;
+import aifu.project.libraryweb.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

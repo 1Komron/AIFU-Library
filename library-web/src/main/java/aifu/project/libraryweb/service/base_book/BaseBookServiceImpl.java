@@ -1,10 +1,10 @@
-package aifu.project.libraryweb.service.BaseBook;
+package aifu.project.libraryweb.service.base_book;
 
 import aifu.project.commondomain.dto.BaseBookDTO;
 import aifu.project.commondomain.entity.BaseBook;
 import aifu.project.commondomain.entity.Category;
 import aifu.project.commondomain.mapper.BaseBookMapper;
-import aifu.project.commondomain.repository.BaseBookRepository;
+import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

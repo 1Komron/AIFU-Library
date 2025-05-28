@@ -1,4 +1,4 @@
-package aifu.project.commondomain.repository;
+package aifu.project.libraryweb.repository;
 
 import aifu.project.commondomain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

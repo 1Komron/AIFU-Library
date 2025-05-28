@@ -4,7 +4,7 @@ import aifu.project.commondomain.dto.PdfBookDTO;
 import aifu.project.commondomain.entity.Category;
 import aifu.project.commondomain.entity.PdfBook;
 import aifu.project.commondomain.mapper.PdfBookMapper;
-import aifu.project.commondomain.repository.PdfBookRepository;
+import aifu.project.libraryweb.repository.PdfBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

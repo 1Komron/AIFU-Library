@@ -1,4 +1,4 @@
-package aifu.project.commondomain.repository;
+package aifu.project.libraryweb.repository;
 
 import aifu.project.commondomain.entity.Booking;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,9 @@
 spring:
   application:
     name: library-web
+  config:
+    import:
+      application-private.yaml
   datasource:
     url: jdbc:postgresql://localhost:5432/aifu_library
     username: postgres
@@ -8,7 +11,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
     properties:
       hibernate:

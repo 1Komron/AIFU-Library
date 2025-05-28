@@ -1,16 +1,15 @@
-package aifu.project.libraryweb.service.BaseBook;
+package aifu.project.libraryweb.service.base_book;
 
 import aifu.project.commondomain.dto.BookCopyDTO;
 import aifu.project.commondomain.entity.BaseBook;
 import aifu.project.commondomain.entity.BookCopy;
 import aifu.project.commondomain.mapper.BookCopyMapper;
-import aifu.project.commondomain.repository.BookCopyRepository;
-import aifu.project.commondomain.repository.BaseBookRepository;
+import aifu.project.libraryweb.repository.BaseBookRepository;
+import aifu.project.libraryweb.repository.BookCopyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,15 @@ public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
     private final BaseBookRepository baseBookRepository;
 
+    private static final String BASE_BOOK_NOT_FOUND = "BaseBook not found with id: ";
+
     @Override
     public BookCopyDTO create(BookCopyDTO dto) {
         if (bookCopyRepository.existsByInventoryNumber(dto.getInventoryNumber())) {
             throw new RuntimeException("Inventory number already exists: " + dto.getInventoryNumber());
         }
         BaseBook baseBook = baseBookRepository.findById(dto.getBaseBookId())
-                .orElseThrow(() -> new RuntimeException("BaseBook not found with id: " + dto.getBaseBookId()));
+                .orElseThrow(() -> new RuntimeException(BASE_BOOK_NOT_FOUND + dto.getBaseBookId()));
         BookCopy copy = BookCopyMapper.toEntity(dto, baseBook);
         BookCopy saved = bookCopyRepository.save(copy);
         return BookCopyMapper.toDto(saved);
@@ -40,7 +41,7 @@ public class BookCopyServiceImpl implements BookCopyService {
             throw new RuntimeException("Inventory number already exists: " + dto.getInventoryNumber());
         }
         BaseBook baseBook = baseBookRepository.findById(dto.getBaseBookId())
-                .orElseThrow(() -> new RuntimeException("BaseBook not found with id: " + dto.getBaseBookId()));
+                .orElseThrow(() -> new RuntimeException(BASE_BOOK_NOT_FOUND + dto.getBaseBookId()));
         existing.setInventoryNumber(dto.getInventoryNumber());
         existing.setShelfLocation(dto.getShelfLocation());
         existing.setNotes(dto.getNotes());
@@ -67,10 +68,10 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public List<BookCopyDTO> getAllByBaseBook(Integer baseBookId) {
         BaseBook baseBook = baseBookRepository.findById(baseBookId)
-                .orElseThrow(() -> new RuntimeException("BaseBook not found with id: " + baseBookId));
+                .orElseThrow(() -> new RuntimeException(BASE_BOOK_NOT_FOUND + baseBookId));
         return bookCopyRepository.findAllByBook(baseBook)
                 .stream()
                 .map(BookCopyMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

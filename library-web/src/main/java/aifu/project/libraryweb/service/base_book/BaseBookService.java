@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service.BaseBook;
+package aifu.project.libraryweb.service.base_book;
 
 import aifu.project.commondomain.dto.BaseBookDTO;
 import java.util.List;

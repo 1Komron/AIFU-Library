@@ -1,10 +1,13 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.commondomain.dto.CategoryDTO;
-import aifu.project.commondomain.dto.PdfBookDTO;
-import aifu.project.libraryweb.service.CategoryService;
+import aifu.project.commondomain.dto.pdf_book_dto.CreateCategoryDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.UpdateCategoryDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.CategoryResponseDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.PdfBookResponseDTO;
+import aifu.project.libraryweb.service.pdf_book_Service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,35 +21,39 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryDTO dto) {
+    public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CreateCategoryDTO dto) {
         return ResponseEntity.ok(categoryService.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> update(@PathVariable Integer id, @Valid @RequestBody CategoryDTO dto) {
+    public ResponseEntity<CategoryResponseDTO> update(@PathVariable Integer id, @Valid @RequestBody UpdateCategoryDTO dto) {
         return ResponseEntity.ok(categoryService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        categoryService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
+        try{
+            categoryService.delete(id);
+            return ResponseEntity.noContent().build();
+        }catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getById(@PathVariable Integer id) {
+    public ResponseEntity<CategoryResponseDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(categoryService.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAll() {
+    public ResponseEntity<List<CategoryResponseDTO>> getAll() {
         return ResponseEntity.ok(categoryService.getAll());
     }
 
     @GetMapping("/{id}/pdf-books")
-    public ResponseEntity<List<PdfBookDTO>> getBooksByCategoryId(@PathVariable Integer id) {
+    public ResponseEntity<List<PdfBookResponseDTO>> getBooksByCategoryId(@PathVariable Integer id) {
         return ResponseEntity.ok(categoryService.getBooksByCategoryId(id));
     }
-
-
 }

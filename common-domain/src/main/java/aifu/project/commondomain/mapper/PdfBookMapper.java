@@ -1,51 +1,99 @@
 package aifu.project.commondomain.mapper;
 
-import aifu.project.commondomain.dto.PdfBookDTO;
+
+import aifu.project.commondomain.dto.pdf_book_dto.PdfBookCreateDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.PdfBookResponseDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.PdfBookUpdateDTO;
 import aifu.project.commondomain.entity.Category;
 import aifu.project.commondomain.entity.PdfBook;
 
+import java.time.LocalDate;
+
 public class PdfBookMapper {
 
-    // Entity -> DTO
-    public static PdfBookDTO toDto(PdfBook pdfBook) {
-        if (pdfBook == null) return null;
-        PdfBookDTO pdfBookDTO = new PdfBookDTO();
-        pdfBookDTO.setId(pdfBook.getId());
-        pdfBookDTO.setAuthor(pdfBook.getAuthor());
-        pdfBookDTO.setPdfUrl(pdfBook.getPdfUrl());
-        pdfBookDTO.setImageUrl(pdfBook.getImageUrl());
-        pdfBookDTO.setTitle(pdfBook.getTitle());
-        pdfBookDTO.setPublicationYear(pdfBook.getPublicationYear());
-        pdfBookDTO.setLocalDate(pdfBook.getLocalDate());
-        pdfBookDTO.setPageCount(pdfBook.getPageCount());
-        pdfBookDTO.setLanguage(pdfBook.getLanguage());
-        pdfBookDTO.setScript(pdfBook.getScript());
-        pdfBookDTO.setPublisher(pdfBook.getPublisher());
-        pdfBookDTO.setIsbn(pdfBook.getIsbn());
-        pdfBookDTO.setSize(pdfBook.getSize());
 
-        return pdfBookDTO;
+    // POST → Entity
+    public static PdfBook toEntity(PdfBookCreateDTO dto) {
+        return PdfBook.builder()
+                .author(dto.getAuthor())
+                .title(dto.getTitle())
+                .publicationYear(dto.getPublicationYear())
+                .pdfUrl(dto.getPdfUrl())
+                .imageUrl(dto.getImageUrl())
+                .script(dto.getScript())
+                .language(dto.getLanguage())
+                .publisher(dto.getPublisher())
+                .pageCount(dto.getPageCount())
+                .isbn(dto.getIsbn())
+                .size(dto.getSize())
+                .localDate(LocalDate.now())
+                .build();
     }
 
-    // DTO -> Entity
-    public PdfBook toEntity(PdfBookDTO pdfBookDTO, Category category) {
-        if (pdfBookDTO == null) return null;
-        PdfBook pdfBook = new PdfBook();
-        pdfBook.setId(pdfBookDTO.getId());
-        pdfBook.setAuthor(pdfBookDTO.getAuthor());
-        pdfBook.setTitle(pdfBookDTO.getTitle());
-        pdfBook.setPublicationYear(pdfBookDTO.getPublicationYear());
-        pdfBook.setLocalDate(pdfBookDTO.getLocalDate());
-        pdfBook.setPdfUrl(pdfBookDTO.getPdfUrl());
-        pdfBook.setImageUrl(pdfBookDTO.getImageUrl());
-        pdfBook.setScript(pdfBookDTO.getScript());
-        pdfBook.setLanguage(pdfBookDTO.getLanguage());
-        pdfBook.setPageCount(pdfBookDTO.getPageCount());
-        pdfBook.setPublisher(pdfBookDTO.getPublisher());
-        pdfBook.setIsbn(pdfBookDTO.getIsbn());
-        return pdfBook;
+    /**     PATCH
+     * UpdateDTO → Entity (mavjud obyektni yangilash)
+     */
+    public static void updateEntity(PdfBookUpdateDTO dto, PdfBook entity) {
+
+        if (dto.getAuthor() != null) {
+            entity.setAuthor(dto.getAuthor());
+        }
+        if (dto.getTitle() != null) {
+            entity.setTitle(dto.getTitle());
+        }
+        if (dto.getPublicationYear() != null) {
+            entity.setPublicationYear(dto.getPublicationYear());
+        }
+        if (dto.getSize() != null) {
+            entity.setSize(dto.getSize());
+        }
+        if (dto.getPdfUrl() != null) {
+            entity.setPdfUrl(dto.getPdfUrl());
+        }
+        if (dto.getImageUrl() != null) {
+            entity.setImageUrl(dto.getImageUrl());
+        }
+        if (dto.getScript() != null) {
+            entity.setScript(dto.getScript());
+        }
+        if (dto.getLanguage() != null) {
+            entity.setLanguage(dto.getLanguage());
+        }
+        if (dto.getPublisher() != null) {
+            entity.setPublisher(dto.getPublisher());
+        }
+        if (dto.getPageCount() != null) {
+            entity.setPageCount(dto.getPageCount());
+        }
+        if (dto.getIsbn() != null) {
+            entity.setIsbn(dto.getIsbn());
+        }
+        if (dto.getCategoryId() != null) {
+            entity.setCategory(Category.builder().id(dto.getCategoryId()).build());
+        }
+
     }
 
-    private PdfBookMapper() {}
+    // Entity → Response DTO
 
-}
+    public static PdfBookResponseDTO toDto(PdfBook entity) {
+        return PdfBookResponseDTO.builder()
+                .id(entity.getId())
+                .size(entity.getSize())
+                .author(entity.getAuthor())
+                .title(entity.getTitle())
+                .publicationYear(entity.getPublicationYear())
+                .pdfUrl(entity.getPdfUrl())
+                .imageUrl(entity.getImageUrl())
+                .isbn(entity.getIsbn())
+                .pageCount(entity.getPageCount())
+                .publisher(entity.getPublisher())
+                .language(entity.getLanguage())
+                .script(entity.getScript())
+                .localDate(entity.getLocalDate())
+                .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)
+                .build();
+    }
+
+
+ }

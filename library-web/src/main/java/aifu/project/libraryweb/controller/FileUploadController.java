@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.libraryweb.service.FileStorageService;
+import aifu.project.commondomain.dto.pdf_book_dto.FileUploadResponseDTO;
+import aifu.project.libraryweb.service.pdf_book_Service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,11 @@ public class FileUploadController {
         return ResponseEntity.ok(Map.of("url", url));
     }
 
+    // FileUploadController.java
     @PostMapping(value = "/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String, String>> uploadPdf(@RequestPart("file") MultipartFile file)
-            throws IOException, InterruptedException {
-        String url = fileStorageService.save(file, "pdf");
-        return ResponseEntity.ok(Map.of("url", url));
-
+    public ResponseEntity<FileUploadResponseDTO> uploadPdf(@RequestPart("file") MultipartFile file) throws IOException {
+        FileUploadResponseDTO response = fileStorageService.saveWithSize(file, "pdf");
+        return ResponseEntity.ok(response);
     }
 
 }

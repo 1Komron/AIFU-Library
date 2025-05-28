@@ -20,6 +20,7 @@ public class NotificationController {
     @GetMapping("/get/unread")
     public ResponseEntity<ResponseMessage> getUnreadNotification(@RequestParam(defaultValue = "1") int pageNumber,
                                                                  @RequestParam(defaultValue = "8") int pageSize) {
+
         return notificationService.getUnreadNotifications(pageNumber, pageSize);
     }
 

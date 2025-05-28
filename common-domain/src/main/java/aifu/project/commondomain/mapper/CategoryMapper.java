@@ -1,26 +1,35 @@
 package aifu.project.commondomain.mapper;
 
-import aifu.project.commondomain.dto.CategoryDTO;
-
+import aifu.project.commondomain.dto.pdf_book_dto.CreateCategoryDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.CategoryResponseDTO;
+import aifu.project.commondomain.dto.pdf_book_dto.UpdateCategoryDTO;
 import aifu.project.commondomain.entity.Category;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryMapper {
-    public static CategoryDTO toDto(Category entity) {
-        if (entity == null) return null;
-        return CategoryDTO.builder()
+
+    // CreateCategoryDTO → Category
+    public static Category toEntity(CreateCategoryDTO dto) {
+        return Category.builder()
+                .name(dto.getName())
+                .build();
+    }
+
+    // Category → CategoryResponseDTO
+    public static CategoryResponseDTO toDto(Category entity) {
+        return CategoryResponseDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .build();
     }
 
-    public static Category toEntity(CategoryDTO dto) {
-        if (dto == null) return null;
-        return Category.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .build();
-
+    // UpdateCategoryDTO → Category (mavjud entityni yangilash)
+    public static void updateEntity(UpdateCategoryDTO dto, Category entity) {
+        if (dto.getName() != null) {
+            entity.setName(dto.getName());
+        }
     }
+
+
 }

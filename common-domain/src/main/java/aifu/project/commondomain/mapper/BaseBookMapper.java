@@ -1,6 +1,6 @@
 package aifu.project.commondomain.mapper;
 
-import aifu.project.commondomain.dto.BaseBookDTO;
+import aifu.project.commondomain.dto.live_dto.BaseBookDTO;
 import aifu.project.commondomain.entity.BaseBook;
 import aifu.project.commondomain.entity.Category;
 

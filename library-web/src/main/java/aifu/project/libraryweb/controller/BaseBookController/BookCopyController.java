@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.controller.BaseBookController;
 
-import aifu.project.commondomain.dto.BookCopyDTO;
-import aifu.project.libraryweb.service.BaseBook.BookCopyService;
+import aifu.project.commondomain.dto.live_dto.BookCopyDTO;
+import aifu.project.libraryweb.service.base_book.BookCopyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

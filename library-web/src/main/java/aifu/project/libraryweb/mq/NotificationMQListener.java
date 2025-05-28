@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.mq;
+/*package aifu.project.libraryweb.mq;
 
 import aifu.project.commondomain.entity.Notification;
 import aifu.project.commondomain.payload.NotificationDTO;
@@ -32,3 +32,4 @@ public class NotificationMQListener {
         notificationSender.send(notification);
     }
 }
+*/

@@ -28,7 +28,7 @@ public class Booking {
     @PrePersist
     public void initializeDates() {
         this.givenAt = LocalDate.now();
-        this.dueDate = this.givenAt.plusDays(4);
+        this.dueDate = this.givenAt.plusDays(5);
     }
 
 }

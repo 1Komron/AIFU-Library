@@ -203,14 +203,37 @@ public class KeyboardUtil {
         return keyboardMarkup;
     }
 
-    public static InlineKeyboardMarkup getExtendKeyboard(String lang) {
+    public static InlineKeyboardMarkup getExtendKeyboard(String lang, String type) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setText(MessageUtil.get(MessageKeys.BOOKING_EXTEND_BUTTON, lang));
-        button.setCallbackData("extend");
+        button.setCallbackData(type);
         row.add(button);
+        rows.add(row);
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getExtendBookingsInventoryNumber(List<String> inventoryNumbers) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton button;
+
+        int count = 0;
+        for (String number : inventoryNumbers) {
+            button = new InlineKeyboardButton();
+            button.setText(number);
+            button.setCallbackData("extend_" + number);
+            if (count % 3 == 0) {
+                rows.add(row);
+                row = new ArrayList<>();
+            }
+            row.add(button);
+            count++;
+        }
         rows.add(row);
         keyboardMarkup.setKeyboard(rows);
         return keyboardMarkup;

@@ -46,8 +46,13 @@ public class MessageKeys {
     public static final String BOOK_ALREADY_TAKEN = "book.already.taken";
     public static final String BOOK_SEND_INVENTORY = "book.send.inventory";
     public static final String BOOK_BORROW_WAITING_APPROVAL = "book.borrow.waiting.approval";
+    public static final String BOOK_EXTEND_WAITING_APPROVAL = "book.extend.waiting.approval";
     public static final String BOOK_BORROW_APPROVED = "book.borrow.approved";
     public static final String BOOK_BORROW_REJECTED = "book.borrow.rejected";
+    public static final String BOOK_EXTEND_ACCEPTED = "book.extend.accepted";
+    public static final String BOOK_EXTEND_REJECTED = "book.extend.rejected";
+    public static final String BOOK_EXTEND_DENIED_TO_EARLY = "book.extend.denied.too_early";
+    public static final String BOOK_REMINDER_NONE = "book.reminder.none";
 
     public static final String BOOKING_INFO = "booking.info";
     public static final String BOOKING_HISTORY = "booking.history";
@@ -63,6 +68,7 @@ public class MessageKeys {
     public static final String BOOKING_DUE_EXPIRING= "booking.due.expiring";
     public static final String BOOKING_DUE_EXPIRED= "booking.due.expired";
     public static final String BOOKING_EXTEND_BUTTON= "booking.extend.button";
+    public static final String SELECT_INV= "select.inv";
 
 
     public static final String MESSAGE_INVALID_FORMAT = "message.invalid.format";

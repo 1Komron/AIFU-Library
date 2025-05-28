@@ -36,6 +36,9 @@ public class ProcessService {
 
     private static final String BOOKING_LIST = "bookingList";
     private static final String HISTORY = "history";
+    private static final String EXTEND = "extend";
+    private static final String EXPIRING = "expiring";
+    private static final String EXPIRED = "expired";
 
     private static final Map<String, Map<String, Command>> COMMAND_MAP = Map.of(
             "uz", Map.of(
@@ -245,6 +248,36 @@ public class ProcessService {
             userService.registerUser(chatId, callbackQuery.getMessage().getMessageId());
         } else if (data.startsWith("back_") || data.startsWith("next_")) {
             processControl(data, chatId, lang, callbackQuery.getMessage().getMessageId());
+        } else if (data.startsWith(EXPIRING)) {
+            processExpiring(chatId, lang, data);
+        } else if (data.startsWith(EXPIRED)) {
+            processExpired(chatId, lang, data);
+        } else if (data.startsWith(EXTEND)) {
+            processExtend(chatId, lang, data);
+        }
+    }
+
+    private void processExpired(Long chatId, String lang, String data) {
+        if (data.equals(EXPIRED)) {
+            handlePagedList(() -> bookingService.getExpiredBookList(chatId, lang, 1),
+                    chatId, lang, EXPIRED);
+            bookingService.expiredBooking(chatId, lang);
+        }
+    }
+
+    private void processExpiring(Long chatId, String lang, String data) {
+        if (data.equals(EXPIRING)) {
+            handlePagedList(() -> bookingService.getExpiringBookList(chatId, lang, 1),
+                    chatId, lang, EXPIRING);
+            bookingService.expiringBooking(chatId, lang);
+        }
+    }
+
+    @SneakyThrows
+    private void processExtend(Long chatId, String lang, String data) {
+        if (data.startsWith("extend_")) {
+            String inv = data.substring("extend_".length());
+            bookingService.createExtendReturnDeadline(chatId, lang, inv);
         }
     }
 
@@ -255,19 +288,37 @@ public class ProcessService {
         AtomicInteger pageNumber = new AtomicInteger(Integer.parseInt(split[2]));
 
         if (step.equals("next")) {
-            if (type.equals(BOOKING_LIST))
-                editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.incrementAndGet()),
-                        chatId, lang, type, messageId);
-            else if (type.equals(HISTORY))
-                editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.incrementAndGet()),
-                        chatId, lang, type, messageId);
+            switch (type) {
+                case BOOKING_LIST ->
+                        editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.incrementAndGet()),
+                                chatId, lang, type, messageId);
+                case HISTORY ->
+                        editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.incrementAndGet()),
+                                chatId, lang, type, messageId);
+                case EXPIRED ->
+                        editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, pageNumber.incrementAndGet()),
+                                chatId, lang, type, messageId);
+                case EXPIRING ->
+                        editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, pageNumber.incrementAndGet()),
+                                chatId, lang, type, messageId);
+                default -> throw new IllegalStateException("Unexpected value: " + type);
+            }
         } else if (step.equals("back")) {
-            if (type.equals(BOOKING_LIST))
-                editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.decrementAndGet()),
-                        chatId, lang, type, messageId);
-            else if (type.equals(HISTORY))
-                editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.decrementAndGet()),
-                        chatId, lang, type, messageId);
+            switch (type) {
+                case BOOKING_LIST ->
+                        editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.decrementAndGet()),
+                                chatId, lang, type, messageId);
+                case HISTORY ->
+                        editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.decrementAndGet()),
+                                chatId, lang, type, messageId);
+                case EXPIRED ->
+                        editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, pageNumber.decrementAndGet()),
+                                chatId, lang, type, messageId);
+                case EXPIRING ->
+                        editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, pageNumber.decrementAndGet()),
+                                chatId, lang, type, messageId);
+                default -> throw new IllegalStateException("Unexpected value: " + type);
+            }
         }
     }
 

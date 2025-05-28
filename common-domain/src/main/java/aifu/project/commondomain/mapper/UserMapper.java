@@ -1,8 +1,8 @@
 package aifu.project.commondomain.mapper;
 
 import aifu.project.commondomain.entity.User;
-import aifu.project.commondomain.payload.WebDTO;
 import aifu.project.commondomain.payload.BotUserDTO;
+import aifu.project.commondomain.payload.WebDTO;
 
 public class UserMapper {
 
@@ -21,7 +21,6 @@ public class UserMapper {
         dto.setName(user.getName());
         dto.setSurname(user.getSurname());
         dto.setPhone(user.getPhone());
-        dto.setEmail(user.getEmail());
         dto.setFaculty(user.getFaculty());
         dto.setCourse(user.getCourse());
         dto.setGroup(user.getGroup());

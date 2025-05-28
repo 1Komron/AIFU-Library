@@ -5,7 +5,7 @@ import aifu.project.commondomain.entity.BookCopy;
 import aifu.project.commondomain.entity.Booking;
 import aifu.project.commondomain.entity.History;
 import aifu.project.commondomain.payload.PartList;
-import aifu.project.commondomain.repository.HistoryRepository;
+import aifu.project.librarybot.repository.HistoryRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;

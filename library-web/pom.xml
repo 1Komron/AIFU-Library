@@ -40,8 +40,6 @@
             <artifactId>common-domain</artifactId>
             <version>1.0.0</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

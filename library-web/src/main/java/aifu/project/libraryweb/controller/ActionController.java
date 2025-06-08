@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/action")
+@RequestMapping("/api/action")
 @RequiredArgsConstructor
 public class ActionController {
     private final ActionService actionService;

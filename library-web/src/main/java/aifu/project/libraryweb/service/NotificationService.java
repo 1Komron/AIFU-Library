@@ -120,6 +120,7 @@ public class NotificationService {
 
         return new BookingRequestDTO(
                 UserMapper.toBotDTO(bookingRequest.getUser()),
+                bookCopy.getId(),
                 book.getAuthor(),
                 book.getTitle(),
                 book.getIsbn(),

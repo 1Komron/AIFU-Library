@@ -2,10 +2,10 @@ package aifu.project.libraryweb.service.base_book;
 
 import aifu.project.commondomain.dto.BaseBookDTO;
 import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.Category;
+import aifu.project.commondomain.entity.BaseBookCategory;
 import aifu.project.commondomain.mapper.BaseBookMapper;
 import aifu.project.libraryweb.repository.BaseBookRepository;
-import aifu.project.libraryweb.service.CategoryService;
+import aifu.project.libraryweb.service.BaseBookCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +17,15 @@ import java.util.stream.Collectors;
 public class BaseBookServiceImpl implements BaseBookService {
 
     private final BaseBookRepository baseBookRepository;
-    private final CategoryService categoryService;
+    private final BaseBookCategoryService categoryService;
+
 
     @Override
     public BaseBookDTO create(BaseBookDTO dto) {
         if (baseBookRepository.existsByIsbn(dto.getIsbn())) {
             throw new RuntimeException("ISBN already exists: " + dto.getIsbn());
         }
-        Category category = categoryService.getEntityById(dto.getCategoryId());
+        BaseBookCategory category = categoryService.getEntityById(dto.getCategoryId());
         BaseBook book = BaseBookMapper.toEntity(dto, category);
         BaseBook saved = baseBookRepository.save(book);
         return BaseBookMapper.toDto(saved);
@@ -37,7 +38,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         if (!existing.getIsbn().equals(dto.getIsbn()) && baseBookRepository.existsByIsbn(dto.getIsbn())) {
             throw new RuntimeException("ISBN already exists: " + dto.getIsbn());
         }
-        Category category = categoryService.getEntityById(dto.getCategoryId());
+        BaseBookCategory category = categoryService.getEntityById(dto.getCategoryId());
         existing.setAuthor(dto.getAuthor());
         existing.setTitle(dto.getTitle());
         existing.setSeries(dto.getSeries());

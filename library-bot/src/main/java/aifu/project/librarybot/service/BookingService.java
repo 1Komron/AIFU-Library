@@ -99,7 +99,7 @@ public class BookingService {
         List<Booking> allBookings = bookingRepository.findAllWithBooksByUser_ChatId(chatId);
 
         if (allBookings.isEmpty()) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_LIST_EMPTY, lang);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_RETURN_NOT_FOUND, lang);
             return false;
         }
 

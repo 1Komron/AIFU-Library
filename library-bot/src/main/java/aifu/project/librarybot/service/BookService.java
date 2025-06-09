@@ -3,11 +3,13 @@ package aifu.project.librarybot.service;
 import aifu.project.commondomain.entity.BaseBook;
 import aifu.project.commondomain.entity.BaseBookCategory;
 import aifu.project.commondomain.payload.PartList;
+import aifu.project.commondomain.payload.ResponseMessage;
 import aifu.project.librarybot.repository.BaseBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,5 +54,10 @@ public class BookService {
         }
 
         return sb.toString();
+    }
+
+    public ResponseEntity<ResponseMessage> countBooks() {
+        long count = bookRepository.count();
+        return ResponseEntity.ok(new ResponseMessage(true, "Book count", count));
     }
 }

@@ -9,6 +9,7 @@ import aifu.project.commondomain.exceptions.UserNotFoundException;
 import aifu.project.commondomain.mapper.NotificationMapper;
 import aifu.project.commondomain.mapper.UserMapper;
 import aifu.project.commondomain.payload.BotUserDTO;
+import aifu.project.commondomain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.NotificationRepository;
 import aifu.project.librarybot.repository.UserRepository;
@@ -19,6 +20,7 @@ import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -121,5 +123,10 @@ public class UserService {
 
     public void deleteUser(Long chatId) {
         userRepository.deleteByChatId(chatId);
+    }
+
+    public ResponseEntity<ResponseMessage> countUsers() {
+        long count = userRepository.getUsersCount();
+        return ResponseEntity.ok(new ResponseMessage(true, "Users count", count));
     }
 }

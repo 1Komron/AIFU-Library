@@ -1,7 +1,7 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.BookingRequest;
-import aifu.project.commondomain.entity.enums.BookingRequestStatus;
+import aifu.project.common_domain.entity.BookingRequest;
+import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

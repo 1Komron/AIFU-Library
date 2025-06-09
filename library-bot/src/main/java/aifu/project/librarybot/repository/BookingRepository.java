@@ -1,6 +1,6 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.Booking;
+import aifu.project.common_domain.entity.Booking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

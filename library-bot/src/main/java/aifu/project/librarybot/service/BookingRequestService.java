@@ -1,9 +1,9 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.BookCopy;
-import aifu.project.commondomain.entity.BookingRequest;
-import aifu.project.commondomain.entity.User;
-import aifu.project.commondomain.entity.enums.BookingRequestStatus;
+import aifu.project.common_domain.entity.BookCopy;
+import aifu.project.common_domain.entity.BookingRequest;
+import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.librarybot.repository.BookingRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

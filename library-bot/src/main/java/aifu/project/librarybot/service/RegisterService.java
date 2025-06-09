@@ -1,6 +1,6 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.payload.BotUserDTO;
+import aifu.project.common_domain.payload.BotUserDTO;
 import aifu.project.librarybot.enums.RegistrationStep;
 import aifu.project.librarybot.session.RegistrationState;
 import aifu.project.librarybot.utils.ExecuteUtil;

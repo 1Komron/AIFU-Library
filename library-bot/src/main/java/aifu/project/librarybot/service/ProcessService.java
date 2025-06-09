@@ -1,6 +1,6 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.payload.PartList;
+import aifu.project.common_domain.payload.PartList;
 import aifu.project.librarybot.enums.Command;
 import aifu.project.librarybot.enums.RegistrationStep;
 import aifu.project.librarybot.enums.TransactionStep;

@@ -1,6 +1,6 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.RegisterRequest;
+import aifu.project.common_domain.entity.RegisterRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

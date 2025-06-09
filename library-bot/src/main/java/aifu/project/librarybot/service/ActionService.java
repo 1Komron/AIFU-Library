@@ -1,10 +1,10 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.BookingRequest;
-import aifu.project.commondomain.entity.RegisterRequest;
-import aifu.project.commondomain.entity.enums.BookingRequestStatus;
-import aifu.project.commondomain.entity.enums.RequestType;
-import aifu.project.commondomain.payload.*;
+import aifu.project.common_domain.entity.BookingRequest;
+import aifu.project.common_domain.entity.RegisterRequest;
+import aifu.project.common_domain.entity.enums.BookingRequestStatus;
+import aifu.project.common_domain.entity.enums.RequestType;
+import aifu.project.common_domain.payload.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

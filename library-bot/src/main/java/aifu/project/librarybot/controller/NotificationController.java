@@ -1,6 +1,6 @@
 package aifu.project.librarybot.controller;
 
-import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

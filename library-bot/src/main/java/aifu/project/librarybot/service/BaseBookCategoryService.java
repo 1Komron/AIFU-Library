@@ -1,6 +1,6 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.BaseBookCategory;
+import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.librarybot.repository.BaseBookCategoryRepository;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import lombok.RequiredArgsConstructor;

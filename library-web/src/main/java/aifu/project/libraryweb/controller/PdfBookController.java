@@ -1,9 +1,9 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.commondomain.dto.pdf_book_dto.PdfBookCreateDTO;
-import aifu.project.commondomain.dto.pdf_book_dto.PdfBookResponseDTO;
-import aifu.project.commondomain.dto.pdf_book_dto.PdfBookUpdateDTO;
-import aifu.project.libraryweb.service.pdf_book_Service.PdfBookService;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
+import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

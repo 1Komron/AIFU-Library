@@ -1,15 +1,15 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.Notification;
-import aifu.project.commondomain.entity.RegisterRequest;
-import aifu.project.commondomain.entity.User;
-import aifu.project.commondomain.entity.enums.NotificationType;
-import aifu.project.commondomain.entity.enums.RequestType;
-import aifu.project.commondomain.exceptions.UserNotFoundException;
-import aifu.project.commondomain.mapper.NotificationMapper;
-import aifu.project.commondomain.mapper.UserMapper;
-import aifu.project.commondomain.payload.BotUserDTO;
-import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.common_domain.entity.Notification;
+import aifu.project.common_domain.entity.RegisterRequest;
+import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.enums.NotificationType;
+import aifu.project.common_domain.entity.enums.RequestType;
+import aifu.project.common_domain.exceptions.UserNotFoundException;
+import aifu.project.common_domain.mapper.NotificationMapper;
+import aifu.project.common_domain.mapper.UserMapper;
+import aifu.project.common_domain.payload.BotUserDTO;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.NotificationRepository;
 import aifu.project.librarybot.repository.UserRepository;

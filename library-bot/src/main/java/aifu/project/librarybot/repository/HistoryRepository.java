@@ -1,6 +1,6 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.History;
+import aifu.project.common_domain.entity.History;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

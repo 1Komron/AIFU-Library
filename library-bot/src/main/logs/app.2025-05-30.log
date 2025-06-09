@@ -1238,8 +1238,8 @@ java.util.MissingFormatArgumentException: Format specifier '%d'
 2025-05-30 20:59:09.110 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
 2025-05-30 20:59:09.131 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 8.535 seconds (process running for 9.3)
 2025-05-30 20:59:20.754 [AIFU Library Telegram Executor] INFO  o.a.l.s.MemorySegmentIndexInputProvider - Using MemorySegmentIndexInput with Java 21; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
-2025-05-30 20:59:21.087 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
-org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
+2025-05-30 20:59:21.087 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
+org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
 	at org.hibernate.collection.spi.AbstractPersistentCollection.throwLazyInitializationException(AbstractPersistentCollection.java:635)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.withTemporarySessionIfNeeded(AbstractPersistentCollection.java:219)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.initialize(AbstractPersistentCollection.java:614)
@@ -1297,8 +1297,8 @@ org.hibernate.LazyInitializationException: failed to lazily initialize a collect
 2025-05-30 21:03:24.126 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
 2025-05-30 21:03:24.138 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 7.852 seconds (process running for 8.654)
 2025-05-30 21:03:32.630 [AIFU Library Telegram Executor] INFO  o.a.l.s.MemorySegmentIndexInputProvider - Using MemorySegmentIndexInput with Java 21; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
-2025-05-30 21:03:32.979 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
-org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
+2025-05-30 21:03:32.979 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
+org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
 	at org.hibernate.collection.spi.AbstractPersistentCollection.throwLazyInitializationException(AbstractPersistentCollection.java:635)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.withTemporarySessionIfNeeded(AbstractPersistentCollection.java:219)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.initialize(AbstractPersistentCollection.java:614)
@@ -1355,8 +1355,8 @@ org.hibernate.LazyInitializationException: failed to lazily initialize a collect
 2025-05-30 21:05:40.705 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
 2025-05-30 21:05:40.724 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 7.894 seconds (process running for 8.713)
 2025-05-30 21:05:50.420 [AIFU Library Telegram Executor] INFO  o.a.l.s.MemorySegmentIndexInputProvider - Using MemorySegmentIndexInput with Java 21; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
-2025-05-30 21:05:50.714 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Unable to locate Attribute with the given name [{copies,category}] on this ManagedType [aifu.project.commondomain.entity.BaseBook]
-org.springframework.dao.InvalidDataAccessApiUsageException: Unable to locate Attribute with the given name [{copies,category}] on this ManagedType [aifu.project.commondomain.entity.BaseBook]
+2025-05-30 21:05:50.714 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Unable to locate Attribute with the given name [{copies,category}] on this ManagedType [aifu.project.common_domain.entity.BaseBook]
+org.springframework.dao.InvalidDataAccessApiUsageException: Unable to locate Attribute with the given name [{copies,category}] on this ManagedType [aifu.project.common_domain.entity.BaseBook]
 	at org.springframework.orm.jpa.EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(EntityManagerFactoryUtils.java:371)
 	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:246)
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:560)
@@ -1377,7 +1377,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: Unable to locate Att
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
 	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
-Caused by: java.lang.IllegalArgumentException: Unable to locate Attribute with the given name [{copies,category}] on this ManagedType [aifu.project.commondomain.entity.BaseBook]
+Caused by: java.lang.IllegalArgumentException: Unable to locate Attribute with the given name [{copies,category}] on this ManagedType [aifu.project.common_domain.entity.BaseBook]
 	at org.hibernate.metamodel.model.domain.AbstractManagedType.checkNotNull(AbstractManagedType.java:225)
 	at org.hibernate.metamodel.model.domain.AbstractManagedType.getAttribute(AbstractManagedType.java:148)
 	at org.hibernate.graph.spi.GraphImplementor.findOrCreateAttributeNode(GraphImplementor.java:78)

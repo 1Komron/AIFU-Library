@@ -1,14 +1,14 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.*;
-import aifu.project.commondomain.entity.enums.BookingRequestStatus;
-import aifu.project.commondomain.entity.enums.NotificationType;
-import aifu.project.commondomain.entity.enums.RequestType;
-import aifu.project.commondomain.entity.enums.Status;
-import aifu.project.commondomain.exceptions.BookCopyNotFoundException;
-import aifu.project.commondomain.exceptions.UserNotFoundException;
-import aifu.project.commondomain.payload.PartList;
-import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.common_domain.entity.*;
+import aifu.project.common_domain.entity.enums.BookingRequestStatus;
+import aifu.project.common_domain.entity.enums.NotificationType;
+import aifu.project.common_domain.entity.enums.RequestType;
+import aifu.project.common_domain.entity.enums.Status;
+import aifu.project.common_domain.exceptions.BookCopyNotFoundException;
+import aifu.project.common_domain.exceptions.UserNotFoundException;
+import aifu.project.common_domain.payload.PartList;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookCopyRepository;
 import aifu.project.librarybot.repository.BookingRepository;
@@ -35,7 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static aifu.project.commondomain.mapper.NotificationMapper.notificationToDTO;
+import static aifu.project.common_domain.mapper.NotificationMapper.notificationToDTO;
 
 @Service
 @RequiredArgsConstructor

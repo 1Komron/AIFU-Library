@@ -1,6 +1,6 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.PdfBook;
+import aifu.project.common_domain.entity.PdfBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

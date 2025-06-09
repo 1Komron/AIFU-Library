@@ -1,6 +1,6 @@
 package aifu.project.librarybot.scheduler;
 
-import aifu.project.commondomain.entity.User;
+import aifu.project.common_domain.entity.User;
 import aifu.project.librarybot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

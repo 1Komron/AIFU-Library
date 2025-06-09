@@ -1,6 +1,6 @@
 package aifu.project.librarybot.controller;
 
-import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.service.BookService;
 import aifu.project.librarybot.service.BookingService;
 import aifu.project.librarybot.service.UserService;

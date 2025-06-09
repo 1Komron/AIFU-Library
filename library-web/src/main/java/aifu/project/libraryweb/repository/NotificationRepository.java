@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.repository;
 
-import aifu.project.commondomain.entity.Notification;
-import aifu.project.commondomain.entity.enums.RequestType;
+import aifu.project.common_domain.entity.Notification;
+import aifu.project.common_domain.entity.enums.RequestType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

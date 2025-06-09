@@ -188,15 +188,15 @@
 2025-06-07 23:27:49.123 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
 2025-06-07 23:27:49.138 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
 2025-06-07 23:27:49.150 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 8.494 seconds (process running for 9.255)
-2025-06-07 23:28:19.537 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
-org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
+2025-06-07 23:28:19.537 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
+org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
 	at org.hibernate.collection.spi.AbstractPersistentCollection.throwLazyInitializationException(AbstractPersistentCollection.java:635)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.withTemporarySessionIfNeeded(AbstractPersistentCollection.java:219)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.initialize(AbstractPersistentCollection.java:614)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.read(AbstractPersistentCollection.java:138)
 	at org.hibernate.collection.spi.PersistentBag.toString(PersistentBag.java:587)
 	at java.base/java.lang.String.valueOf(String.java:4465)
-	at aifu.project.commondomain.entity.BaseBook.toString(BaseBook.java:13)
+	at aifu.project.common_domain.entity.BaseBook.toString(BaseBook.java:13)
 	at java.base/java.lang.String.valueOf(String.java:4465)
 	at java.base/java.lang.StringBuilder.append(StringBuilder.java:173)
 	at java.base/java.util.AbstractCollection.toString(AbstractCollection.java:459)
@@ -249,15 +249,15 @@ org.hibernate.LazyInitializationException: failed to lazily initialize a collect
 2025-06-07 23:29:22.935 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
 2025-06-07 23:29:22.952 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
 2025-06-07 23:29:22.970 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 9.691 seconds (process running for 10.726)
-2025-06-07 23:29:28.354 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Could not initialize proxy [aifu.project.commondomain.entity.BaseBookCategory#1] - no session
-org.hibernate.LazyInitializationException: Could not initialize proxy [aifu.project.commondomain.entity.BaseBookCategory#1] - no session
+2025-06-07 23:29:28.354 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Could not initialize proxy [aifu.project.common_domain.entity.BaseBookCategory#1] - no session
+org.hibernate.LazyInitializationException: Could not initialize proxy [aifu.project.common_domain.entity.BaseBookCategory#1] - no session
 	at org.hibernate.proxy.AbstractLazyInitializer.initialize(AbstractLazyInitializer.java:174)
 	at org.hibernate.proxy.AbstractLazyInitializer.getImplementation(AbstractLazyInitializer.java:328)
 	at org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor.intercept(ByteBuddyInterceptor.java:44)
 	at org.hibernate.proxy.ProxyConfiguration$InterceptorDispatcher.intercept(ProxyConfiguration.java:102)
-	at aifu.project.commondomain.entity.BaseBookCategory$HibernateProxy$jIkGXGxB.toString(Unknown Source)
+	at aifu.project.common_domain.entity.BaseBookCategory$HibernateProxy$jIkGXGxB.toString(Unknown Source)
 	at java.base/java.lang.String.valueOf(String.java:4465)
-	at aifu.project.commondomain.entity.BaseBook.toString(BaseBook.java:13)
+	at aifu.project.common_domain.entity.BaseBook.toString(BaseBook.java:13)
 	at java.base/java.lang.String.valueOf(String.java:4465)
 	at java.base/java.lang.StringBuilder.append(StringBuilder.java:173)
 	at java.base/java.util.AbstractCollection.toString(AbstractCollection.java:459)
@@ -310,15 +310,15 @@ org.hibernate.LazyInitializationException: Could not initialize proxy [aifu.proj
 2025-06-07 23:30:03.010 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
 2025-06-07 23:30:03.026 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
 2025-06-07 23:30:03.043 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 8.121 seconds (process running for 8.846)
-2025-06-07 23:30:09.978 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
-org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.commondomain.entity.BaseBook.copies: could not initialize proxy - no Session
+2025-06-07 23:30:09.978 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
+org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: aifu.project.common_domain.entity.BaseBook.copies: could not initialize proxy - no Session
 	at org.hibernate.collection.spi.AbstractPersistentCollection.throwLazyInitializationException(AbstractPersistentCollection.java:635)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.withTemporarySessionIfNeeded(AbstractPersistentCollection.java:219)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.initialize(AbstractPersistentCollection.java:614)
 	at org.hibernate.collection.spi.AbstractPersistentCollection.read(AbstractPersistentCollection.java:138)
 	at org.hibernate.collection.spi.PersistentBag.toString(PersistentBag.java:587)
 	at java.base/java.lang.String.valueOf(String.java:4465)
-	at aifu.project.commondomain.entity.BaseBook.toString(BaseBook.java:13)
+	at aifu.project.common_domain.entity.BaseBook.toString(BaseBook.java:13)
 	at java.base/java.lang.String.valueOf(String.java:4465)
 	at java.base/java.lang.StringBuilder.append(StringBuilder.java:173)
 	at java.base/java.util.AbstractCollection.toString(AbstractCollection.java:459)

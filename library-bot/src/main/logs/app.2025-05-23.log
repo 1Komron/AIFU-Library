@@ -103,7 +103,7 @@
 	Maximum pool size: undefined/unknown
 2025-05-23 11:00:53.937 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-05-23 11:00:53.940 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-05-23 11:00:54.036 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'telegramBot' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/config/TelegramBot.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'updateController' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/controller/UpdateController.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'processService' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/service/ProcessService.class]: Unsatisfied dependency expressed through constructor parameter 2: Error creating bean with name 'userService' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'aifu.project.commondomain.repository.UserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2025-05-23 11:00:54.036 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'telegramBot' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/config/TelegramBot.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'updateController' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/controller/UpdateController.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'processService' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/service/ProcessService.class]: Unsatisfied dependency expressed through constructor parameter 2: Error creating bean with name 'userService' defined in file [/home/komronbek/Projects/AIFU_Library/library-bot/target/classes/aifu/project/librarybot/service/UserService.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'aifu.project.common_domain.repository.UserRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-05-23 11:00:54.036 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-05-23 11:00:54.038 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2025-05-23 11:00:54.060 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
@@ -119,12 +119,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in aifu.project.librarybot.service.UserService required a bean of type 'aifu.project.commondomain.repository.UserRepository' that could not be found.
+Parameter 0 of constructor in aifu.project.librarybot.service.UserService required a bean of type 'aifu.project.common_domain.repository.UserRepository' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'aifu.project.commondomain.repository.UserRepository' in your configuration.
+Consider defining a bean of type 'aifu.project.common_domain.repository.UserRepository' in your configuration.
 
 2025-05-23 11:01:53.025 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 128328 (/home/komronbek/Projects/AIFU_Library/library-bot/target/classes started by komronbek in /home/komronbek/Projects/AIFU_Library)
 2025-05-23 11:01:53.026 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"

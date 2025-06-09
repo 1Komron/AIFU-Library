@@ -1,7 +1,6 @@
 package aifu.project.libraryweb.sender;
 
-import aifu.project.commondomain.entity.Notification;
-import aifu.project.commondomain.payload.NotificationDTO;
+import aifu.project.common_domain.payload.NotificationDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;

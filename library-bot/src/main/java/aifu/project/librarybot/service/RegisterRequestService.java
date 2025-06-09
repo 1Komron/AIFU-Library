@@ -1,7 +1,7 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.User;
-import aifu.project.commondomain.entity.RegisterRequest;
+import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.RegisterRequest;
 
 import aifu.project.librarybot.repository.RegisterRequestRepository;
 import lombok.RequiredArgsConstructor;

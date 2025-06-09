@@ -1,6 +1,6 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.User;
+import aifu.project.common_domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

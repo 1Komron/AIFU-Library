@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.lucene;
 
-import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.PdfBook;
+import aifu.project.common_domain.entity.BaseBook;
+import aifu.project.common_domain.entity.PdfBook;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;

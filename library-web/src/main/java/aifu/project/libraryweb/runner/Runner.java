@@ -1,6 +1,6 @@
 package aifu.project.libraryweb.runner;
 
-import aifu.project.commondomain.entity.BaseBook;
+import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.libraryweb.lucene.CustomAnalyzer;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.awt.print.Book;
 import java.nio.file.Path;
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.BaseBookCategory;
-import aifu.project.commondomain.payload.PartList;
-import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.common_domain.entity.BaseBook;
+import aifu.project.common_domain.entity.BaseBookCategory;
+import aifu.project.common_domain.payload.PartList;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.repository.BaseBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

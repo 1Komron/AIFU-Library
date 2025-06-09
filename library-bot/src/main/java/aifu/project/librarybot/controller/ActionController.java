@@ -1,6 +1,6 @@
 package aifu.project.librarybot.controller;
 
-import aifu.project.commondomain.payload.*;
+import aifu.project.common_domain.payload.*;
 import aifu.project.librarybot.service.ActionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

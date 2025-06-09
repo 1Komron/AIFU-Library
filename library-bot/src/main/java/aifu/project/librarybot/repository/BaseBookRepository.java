@@ -1,7 +1,7 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.BaseBookCategory;
+import aifu.project.common_domain.entity.BaseBook;
+import aifu.project.common_domain.entity.BaseBookCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

@@ -1,8 +1,8 @@
 package aifu.project.libraryweb.controller;
 
 
-import aifu.project.commondomain.payload.*;
-import aifu.project.libraryweb.service.bot_Service.ActionService;
+import aifu.project.common_domain.payload.*;
+import aifu.project.libraryweb.service.bot_service.ActionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

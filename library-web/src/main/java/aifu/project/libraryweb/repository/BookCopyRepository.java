@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.repository;
 
-import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.BookCopy;
+import aifu.project.common_domain.entity.BaseBook;
+import aifu.project.common_domain.entity.BookCopy;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

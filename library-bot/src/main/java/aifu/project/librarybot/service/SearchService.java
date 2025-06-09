@@ -1,10 +1,10 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.commondomain.dto.SearchDTO;
-import aifu.project.commondomain.dto.SearchPart;
-import aifu.project.commondomain.entity.BaseBook;
-import aifu.project.commondomain.entity.BookCopy;
-import aifu.project.commondomain.payload.PartList;
+import aifu.project.common_domain.dto.SearchDTO;
+import aifu.project.common_domain.dto.SearchPart;
+import aifu.project.common_domain.entity.BaseBook;
+import aifu.project.common_domain.entity.BookCopy;
+import aifu.project.common_domain.payload.PartList;
 import aifu.project.librarybot.lucene.LuceneSearchService;
 import aifu.project.librarybot.repository.BaseBookRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;

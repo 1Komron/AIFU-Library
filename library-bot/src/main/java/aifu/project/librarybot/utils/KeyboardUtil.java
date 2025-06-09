@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class KeyboardUtil {
     private KeyboardUtil() {
@@ -39,6 +40,7 @@ public class KeyboardUtil {
 
         keyboardMarkup.setKeyboard(rows);
         keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
         return keyboardMarkup;
     }
 
@@ -235,6 +237,55 @@ public class KeyboardUtil {
             count++;
         }
         rows.add(row);
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getSearchInlineButtons(String lang) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setCallbackData("search_list");
+        button.setText(MessageUtil.get(MessageKeys.SEARCH_LIST_BUTTON, lang));
+
+        row.add(button);
+        rows.add(row);
+        row = new ArrayList<>();
+        button = new InlineKeyboardButton();
+        button.setCallbackData("search_search");
+        button.setText(MessageUtil.get(MessageKeys.SEARCH_SEARCH_BUTTON, lang));
+        row.add(button);
+        rows.add(row);
+
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getCategoryListInlineButtons(Map<Integer, String> categoryList) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton button;
+
+        int count = 0;
+        for (Map.Entry<Integer, String> entry : categoryList.entrySet()) {
+            button = new InlineKeyboardButton();
+            button.setText(entry.getValue());
+            button.setCallbackData("search_category_" + entry.getKey());
+            row.add(button);
+
+            if (count % 2 != 0) {
+                rows.add(row);
+                row = new ArrayList<>();
+            }
+            count++;
+        }
+        if (!row.isEmpty()) {
+            rows.add(row);
+        }
+
         keyboardMarkup.setKeyboard(rows);
         return keyboardMarkup;
     }

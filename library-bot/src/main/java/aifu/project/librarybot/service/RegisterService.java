@@ -9,12 +9,14 @@ import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RegisterService {
     private final ConcurrentHashMap<Long, RegistrationState> registrationState = new ConcurrentHashMap<>();
@@ -22,6 +24,49 @@ public class RegisterService {
 
     public void createRegistrationState(Long chatId) {
         registrationState.put(chatId, new RegistrationState(null, new BotUserDTO(), null));
+    }
+
+    public void checkRegistrationState(Long chatId, Integer messageId, String text) {
+        registrationState.computeIfAbsent(chatId, k -> setBotUserToNewRegistrationState(chatId, messageId, text));
+    }
+
+    private RegistrationState setBotUserToNewRegistrationState(Long chatId, Integer messageId, String text) {
+        BotUserDTO botUserDTO = new BotUserDTO();
+        botUserDTO.setChatId(chatId);
+
+        log.info("Restoring registration state for chatId={} from message:\n{}", chatId, text);
+
+        String[] lines = text.split("\\R");
+
+        if (lines.length < 6) {
+            log.warn("Incomplete registration message from chatId={}: only {} lines received", chatId, lines.length);
+            throw new IllegalArgumentException("Incomplete registration data.");
+        }
+
+        for (int i = 0; i < lines.length; i++) {
+            String[] parts = lines[i].split(":", 2);
+
+            String part = null;
+            if (parts.length == 2) {
+                part = parts[1].trim().equals("-") ? null : parts[1].trim();
+            }
+
+            switch (i) {
+                case 0 -> botUserDTO.setName(part);
+                case 1 -> botUserDTO.setSurname(part);
+                case 2 -> botUserDTO.setPhone(part);
+                case 3 -> botUserDTO.setFaculty(part);
+                case 4 -> botUserDTO.setCourse(part);
+                case 5 -> botUserDTO.setGroup(part);
+                default -> {
+                    log.error("Unexpected line in the registration message: {}", lines[i]);
+                    throw new IllegalArgumentException("Error while restoring registration state: unexpected line index " + i);
+                }
+            }
+        }
+
+        log.info("Bot user successfully restored from message: {}", botUserDTO);
+        return new RegistrationState(messageId, botUserDTO, null);
     }
 
     public void addMessageId(Long chatId, Integer messageId) {

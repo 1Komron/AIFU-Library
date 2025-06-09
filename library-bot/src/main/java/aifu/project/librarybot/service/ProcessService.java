@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -33,12 +34,18 @@ public class ProcessService {
     private final TransactionalService transactionalService;
     private final HistoryService historyService;
     private final BookingService bookingService;
+    private final SearchService searchService;
+    private final BaseBookCategoryService categoryService;
+    private final BookService bookService;
 
     private static final String BOOKING_LIST = "bookingList";
     private static final String HISTORY = "history";
     private static final String EXTEND = "extend";
     private static final String EXPIRING = "expiring";
     private static final String EXPIRED = "expired";
+    private static final String SEARCH = "search";
+    private static final String CATEGORY_LIST = "list";
+    private static final String BOOK = "book";
 
     private static final Map<String, Map<String, Command>> COMMAND_MAP = Map.of(
             "uz", Map.of(
@@ -47,7 +54,8 @@ public class ProcessService {
                     "Mening kitoblarim 📚", Command.MY_BOOKS,
                     "Tarix 🗞", Command.HISTORY,
                     "Mening profilim 👤", Command.PROFILE,
-                    "Sozlamalar ⚙️", Command.SETTINGS
+                    "Sozlamalar ⚙️", Command.SETTINGS,
+                    "Qidirish \uD83D\uDD0D", Command.SEARCH
             ),
             "ru", Map.of(
                     "Взять книгу 📥", Command.BORROW,
@@ -55,7 +63,8 @@ public class ProcessService {
                     "Мои книги 📚", Command.MY_BOOKS,
                     "История 🗞", Command.HISTORY,
                     "Мой профиль 👤", Command.PROFILE,
-                    "Настройки ⚙️", Command.SETTINGS
+                    "Настройки ⚙️", Command.SETTINGS,
+                    "Поиск \uD83D\uDD0D", Command.SEARCH
             ),
             "en", Map.of(
                     "Borrow Book 📥", Command.BORROW,
@@ -63,7 +72,8 @@ public class ProcessService {
                     "My Books 📚", Command.MY_BOOKS,
                     "History 🗞", Command.HISTORY,
                     "My Profile 👤", Command.PROFILE,
-                    "Settings ⚙️", Command.SETTINGS
+                    "Settings ⚙️", Command.SETTINGS,
+                    "Search \uD83D\uDD0D", Command.SEARCH
             ),
             "zh", Map.of(
                     "借书 📥", Command.BORROW,
@@ -71,10 +81,10 @@ public class ProcessService {
                     "我的书 📚", Command.MY_BOOKS,
                     "历史记录 🗞", Command.HISTORY,
                     "我的资料 👤", Command.PROFILE,
-                    "设置 ⚙️", Command.SETTINGS
+                    "设置 ⚙️", Command.SETTINGS,
+                    "搜索 \uD83D\uDD0D", Command.SEARCH
             )
     );
-
 
     public void processTextMessage(Message message) {
         Long chatId = message.getChatId();
@@ -128,6 +138,8 @@ public class ProcessService {
                 return true;
             }
             case SEARCH -> {
+                handlePagedList(() -> searchService.search(chatId, SEARCH + "|" + text, lang, 1),
+                        chatId, lang, SEARCH + "|" + text);
                 return true;
             }
             default -> {
@@ -186,6 +198,13 @@ public class ProcessService {
 
             case SETTINGS -> buttonService.changeLangButton(chatId);
 
+            case SEARCH -> {
+                String message = MessageUtil.get(MessageKeys.SEARCH_MESSAGE, lang);
+                SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), message);
+                sendMessage.setReplyMarkup(KeyboardUtil.getSearchInlineButtons(lang));
+                executeUtil.execute(sendMessage);
+            }
+
         }
     }
 
@@ -229,31 +248,72 @@ public class ProcessService {
         executeUtil.execute(editMessageText);
     }
 
+    @SneakyThrows
+    private void editCategoryListMessage(
+            Supplier<InlineKeyboardMarkup> supplier,
+            Long chatId,
+            Integer messageId
+    ) {
+        InlineKeyboardMarkup markup = supplier.get();
+        if (markup == null) return;
+
+        EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
+        edit.setReplyMarkup(markup);
+        edit.setChatId(chatId);
+        edit.setMessageId(messageId);
+
+        executeUtil.execute(edit);
+    }
+
     private boolean isSettings(String text, String lang) {
         return COMMAND_MAP.getOrDefault(lang, Collections.emptyMap())
                 .get(text) == Command.SETTINGS;
     }
 
+    @SneakyThrows
     public void processCallBack(CallbackQuery callbackQuery) {
+        executeUtil.answerCallback(callbackQuery.getId());
+
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
         String lang = userLanguageService.getLanguage(chatId.toString());
+        Integer messageId = callbackQuery.getMessage().getMessageId();
+        String text = callbackQuery.getMessage().getText();
+
 
         if (data.equals("uz") || data.equals("ru") || data.equals("en") || data.equals("zh")) {
             userLanguageService.setLanguage(chatId.toString(), data);
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.LANGUAGE_CHANGED, data));
-        } else if (data.startsWith("register"))
-            processCallBackDataRegister(chatId, data);
-        else if (data.startsWith("login")) {
-            userService.registerUser(chatId, callbackQuery.getMessage().getMessageId());
+        } else if (data.startsWith("register")) {
+            processCallBackDataRegister(chatId, data, messageId, text);
+        } else if (data.startsWith("login")) {
+            userService.registerUser(chatId, messageId);
         } else if (data.startsWith("back_") || data.startsWith("next_")) {
-            processControl(data, chatId, lang, callbackQuery.getMessage().getMessageId());
+            processControl(data, chatId, lang, messageId);
         } else if (data.startsWith(EXPIRING)) {
             processExpiring(chatId, lang, data);
         } else if (data.startsWith(EXPIRED)) {
             processExpired(chatId, lang, data);
         } else if (data.startsWith(EXTEND)) {
             processExtend(chatId, lang, data);
+        } else if (data.startsWith("search_")) {
+            processSearch(chatId, lang, data);
+        }
+    }
+
+    @SneakyThrows
+    private void processSearch(Long chatId, String lang, String data) {
+        data = data.substring("search_".length());
+        if (data.equals(SEARCH)) {
+            transactionalService.putState(chatId, TransactionStep.SEARCH);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.SEARCH_SEARCH_MESSAGE, lang);
+        } else if (data.equals("list")) {
+            SendMessage sendMessage = new SendMessage(chatId.toString(), MessageUtil.get(MessageKeys.SEARCH_CHOOSE, lang));
+            sendMessage.setReplyMarkup(categoryService.getCategoryPartList(1, lang));
+            executeUtil.execute(sendMessage);
+        } else if (data.startsWith("category_")) {
+            String finalData = data.substring("category_".length());
+            handlePagedList(() -> bookService.getBookList(finalData, 1), chatId, lang, BOOK + "|" + finalData);
         }
     }
 
@@ -284,49 +344,73 @@ public class ProcessService {
     private void processControl(String data, Long chatId, String lang, Integer messageId) {
         String[] split = data.split("_");
         String step = split[0];
-        String type = split[1];
-        AtomicInteger pageNumber = new AtomicInteger(Integer.parseInt(split[2]));
+        String rawType = split[1];
+        int page = Integer.parseInt(split[2]);
 
-        if (step.equals("next")) {
-            switch (type) {
-                case BOOKING_LIST ->
-                        editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.incrementAndGet()),
-                                chatId, lang, type, messageId);
-                case HISTORY ->
-                        editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.incrementAndGet()),
-                                chatId, lang, type, messageId);
-                case EXPIRED ->
-                        editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, pageNumber.incrementAndGet()),
-                                chatId, lang, type, messageId);
-                case EXPIRING ->
-                        editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, pageNumber.incrementAndGet()),
-                                chatId, lang, type, messageId);
-                default -> throw new IllegalStateException("Unexpected value: " + type);
+        PageContext context = resolvePageContext(rawType, page);
+
+        if ("next".equals(step)) {
+            handleNextStep(context, chatId, lang, messageId);
+        } else if ("back".equals(step)) {
+            handleBackStep(context, chatId, lang, messageId);
+        }
+    }
+
+    private PageContext resolvePageContext(String rawType, int page) {
+        String searchText = rawType.startsWith(SEARCH) ? rawType.substring(SEARCH.length() + 1) : null;
+        String categoryId = rawType.startsWith(BOOK) ? rawType.split("\\|")[1] : null;
+
+        String type;
+        if (searchText != null) {
+            type = SEARCH;
+        } else if (categoryId != null) {
+            type = BOOK;
+        } else {
+            type = rawType;
+        }
+
+        return new PageContext(type, searchText, categoryId, new AtomicInteger(page));
+    }
+
+    private void handleNextStep(PageContext ctx, Long chatId, String lang, Integer messageId) {
+        handleStep(ctx, chatId, lang, messageId, true);
+    }
+
+    private void handleBackStep(PageContext ctx, Long chatId, String lang, Integer messageId) {
+        handleStep(ctx, chatId, lang, messageId, false);
+    }
+
+    private void handleStep(PageContext ctx, Long chatId, String lang, Integer messageId, boolean next) {
+        int page = next ? ctx.page.incrementAndGet() : ctx.page.decrementAndGet();
+
+        switch (ctx.type) {
+            case BOOKING_LIST ->
+                    editMessagePagedList(() -> bookingService.getBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case HISTORY ->
+                    editMessagePagedList(() -> historyService.getHistory(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case EXPIRED ->
+                    editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case EXPIRING ->
+                    editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case SEARCH -> {
+                String request = ctx.type + "|" + ctx.searchText;
+                editMessagePagedList(() -> searchService.search(chatId, request, lang, page), chatId, lang, request, messageId);
             }
-        } else if (step.equals("back")) {
-            switch (type) {
-                case BOOKING_LIST ->
-                        editMessagePagedList(() -> bookingService.getBookList(chatId, lang, pageNumber.decrementAndGet()),
-                                chatId, lang, type, messageId);
-                case HISTORY ->
-                        editMessagePagedList(() -> historyService.getHistory(chatId, lang, pageNumber.decrementAndGet()),
-                                chatId, lang, type, messageId);
-                case EXPIRED ->
-                        editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, pageNumber.decrementAndGet()),
-                                chatId, lang, type, messageId);
-                case EXPIRING ->
-                        editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, pageNumber.decrementAndGet()),
-                                chatId, lang, type, messageId);
-                default -> throw new IllegalStateException("Unexpected value: " + type);
-            }
+            case CATEGORY_LIST ->
+                    editCategoryListMessage(() -> categoryService.getCategoryPartList(page, lang), chatId, messageId);
+            case BOOK -> editMessagePagedList(() -> bookService.getBookList(ctx.categoryId, page), chatId, lang,
+                    BOOK + "|" + ctx.categoryId, messageId);
+            default -> throw new IllegalStateException("Unexpected value: " + ctx.type);
         }
     }
 
     @SneakyThrows
-    private void processCallBackDataRegister(Long chatId, String data) {
+    private void processCallBackDataRegister(Long chatId, String data, Integer messageId, String text) {
         data = data.substring("register_".length());
 
         String lang = userLanguageService.getLanguage(chatId.toString());
+
+        registerService.checkRegistrationState(chatId, messageId, text);
 
         switch (data) {
             case "name" -> {
@@ -414,4 +498,9 @@ public class ProcessService {
 
         buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.PHONE_ADDED, userLanguageService.getLanguage(chatId.toString())));
     }
+
+    private record PageContext(String type, String searchText, String categoryId, AtomicInteger page) {
+    }
 }
+
+

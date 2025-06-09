@@ -2,6 +2,7 @@ package aifu.project.commondomain.mapper;
 
 import aifu.project.commondomain.dto.live_dto.BaseBookDTO;
 import aifu.project.commondomain.entity.BaseBook;
+import aifu.project.commondomain.entity.BaseBookCategory;
 import aifu.project.commondomain.entity.Category;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class BaseBookMapper {
                 .build();
     }
 
-    public static BaseBook toEntity(BaseBookDTO dto, Category category) {
+    public static BaseBook toEntity(BaseBookDTO dto, BaseBookCategory category) {
         if (dto == null) return null;
         return BaseBook.builder()
                 .id(dto.getId())

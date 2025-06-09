@@ -8,6 +8,7 @@ import aifu.project.commondomain.entity.enums.Status;
 import aifu.project.commondomain.exceptions.BookCopyNotFoundException;
 import aifu.project.commondomain.exceptions.UserNotFoundException;
 import aifu.project.commondomain.payload.PartList;
+import aifu.project.commondomain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookCopyRepository;
 import aifu.project.librarybot.repository.BookingRepository;
@@ -23,6 +24,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -99,7 +101,7 @@ public class BookingService {
         List<Booking> allBookings = bookingRepository.findAllWithBooksByUser_ChatId(chatId);
 
         if (allBookings.isEmpty()) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_LIST_EMPTY, lang);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_RETURN_NOT_FOUND, lang);
             return false;
         }
 
@@ -303,5 +305,10 @@ public class BookingService {
         booking.setStatus(Status.APPROVED);
 
         bookingRepository.save(booking);
+    }
+
+    public ResponseEntity<ResponseMessage> countAllBookings() {
+        long count = bookingRepository.count();
+        return ResponseEntity.ok(new ResponseMessage(true,"Booking count", count));
     }
 }

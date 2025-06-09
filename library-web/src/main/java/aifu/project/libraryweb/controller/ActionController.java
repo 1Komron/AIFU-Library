@@ -1,5 +1,6 @@
 package aifu.project.libraryweb.controller;
 
+
 import aifu.project.commondomain.payload.*;
 import aifu.project.libraryweb.service.boot_Service.ActionService;
 import jakarta.validation.Valid;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/action")
+@RequestMapping("/api/action")
 @RequiredArgsConstructor
 public class ActionController {
     private final ActionService actionService;

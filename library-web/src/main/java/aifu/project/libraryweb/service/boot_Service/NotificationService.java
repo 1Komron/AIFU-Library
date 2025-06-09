@@ -1,4 +1,4 @@
-/*package aifu.project.libraryweb.service.boot_Service;
+package aifu.project.libraryweb.service.boot_Service;
 
 import aifu.project.commondomain.entity.*;
 import aifu.project.commondomain.entity.enums.RequestType;
@@ -9,6 +9,9 @@ import aifu.project.commondomain.payload.BookingRequestDTO;
 import aifu.project.commondomain.payload.BotUserDTO;
 import aifu.project.commondomain.payload.RegisterRequestDTO;
 import aifu.project.commondomain.payload.ResponseMessage;
+import aifu.project.libraryweb.repository.BookingRequestRepository;
+import aifu.project.libraryweb.repository.NotificationRepository;
+import aifu.project.libraryweb.repository.RegisterRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -117,6 +120,7 @@ public class NotificationService {
 
         return new BookingRequestDTO(
                 UserMapper.toBotDTO(bookingRequest.getUser()),
+                bookCopy.getId(),
                 book.getAuthor(),
                 book.getTitle(),
                 book.getIsbn(),
@@ -124,4 +128,3 @@ public class NotificationService {
         );
     }
 }
-*/

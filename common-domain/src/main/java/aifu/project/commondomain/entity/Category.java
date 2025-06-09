@@ -25,9 +25,4 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<PdfBook> books = new ArrayList<>();
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<BaseBook> baseBooks = new ArrayList<>();
-
 }

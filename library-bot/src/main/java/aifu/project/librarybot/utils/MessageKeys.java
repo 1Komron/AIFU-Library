@@ -70,6 +70,13 @@ public class MessageKeys {
     public static final String BOOKING_EXTEND_BUTTON= "booking.extend.button";
     public static final String SELECT_INV= "select.inv";
 
+    public static final String SEARCH_MESSAGE= "search.message";
+    public static final String SEARCH_NOT_FOUND= "search.notfound";
+    public static final String SEARCH_LIST_BUTTON= "search.list.button";
+    public static final String SEARCH_SEARCH_BUTTON= "search.search.button";
+    public static final String SEARCH_SEARCH_MESSAGE= "search.search.message";
+    public static final String SEARCH_BOOK= "search.book";
+    public static final String SEARCH_CHOOSE= "search.choose";
 
     public static final String MESSAGE_INVALID_FORMAT = "message.invalid.format";
 

@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service.boot_Service;
+package aifu.project.libraryweb.service.bot_Service;
 
 import aifu.project.commondomain.entity.*;
 import aifu.project.commondomain.entity.enums.RequestType;

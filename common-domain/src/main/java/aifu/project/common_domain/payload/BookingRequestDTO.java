@@ -1,6 +1,7 @@
 package aifu.project.common_domain.payload;
 
 public record BookingRequestDTO(
+
         BotUserDTO user,
         Integer bookId,
         String author,
@@ -8,5 +9,7 @@ public record BookingRequestDTO(
         String isbn,
         String inventoryNumber
 
+
 ) {
+
 }

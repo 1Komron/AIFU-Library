@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
@@ -18,11 +19,16 @@ public class PdfBookController {
 
     private final PdfBookService pdfBookService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PdfBookResponseDTO>> getAll() {
-        List<PdfBookResponseDTO> books = pdfBookService.getAll();
+    @GetMapping("/list")
+    public ResponseEntity<List<PdfBookPreviewDTO>> getList(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        List<PdfBookPreviewDTO> books = pdfBookService.getList(pageNumber, pageSize);
         return ResponseEntity.ok(books);
     }
+
+
 
     @PostMapping("/{categoryId}")
     public ResponseEntity<PdfBookResponseDTO> create(@PathVariable Integer categoryId,@Valid @RequestBody PdfBookCreateDTO dto) {

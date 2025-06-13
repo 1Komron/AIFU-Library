@@ -31,5 +31,7 @@ public class PdfBookCreateDTO {
 
     private Double size;
 
+    private String description;
+
 
 }

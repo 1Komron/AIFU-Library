@@ -40,4 +40,6 @@ public class PdfBookResponseDTO {
 
     private LocalDate localDate;
 
+    private String discription;
+
 }

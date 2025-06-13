@@ -2,6 +2,7 @@ package aifu.project.common_domain.mapper;
 
 
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
 import aifu.project.common_domain.entity.Category;
@@ -27,6 +28,7 @@ public class PdfBookMapper {
                 .isbn(dto.getIsbn())
                 .size(dto.getSize())
                 .localDate(LocalDate.now())
+                .discription(dto.getDescription())
                 .build();
     }
 
@@ -68,6 +70,9 @@ public class PdfBookMapper {
         if (dto.getIsbn() != null) {
             entity.setIsbn(dto.getIsbn());
         }
+        if(dto.getDescription() != null) {
+            entity.setDiscription(dto.getDescription());
+        }
         if (dto.getCategoryId() != null) {
             entity.setCategory(Category.builder().id(dto.getCategoryId()).build());
         }
@@ -91,7 +96,18 @@ public class PdfBookMapper {
                 .language(entity.getLanguage())
                 .script(entity.getScript())
                 .localDate(entity.getLocalDate())
+                .discription(entity.getDiscription())
                 .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)
+                .build();
+    }
+
+
+    public static PdfBookPreviewDTO toPreviewDto(PdfBook entity) {
+        return PdfBookPreviewDTO.builder()
+                .author(entity.getAuthor())
+                .title(entity.getTitle())
+                .imageUrl(entity.getImageUrl())
+                .categoryId(entity.getCategory() != null ? entity.getCategory().getId() :null)
                 .build();
     }
 

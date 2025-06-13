@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.service.pdf_book_service;
 
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
 import aifu.project.common_domain.entity.Category;
@@ -10,6 +11,9 @@ import aifu.project.libraryweb.repository.PdfBookRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,12 +50,14 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
     @Override
-    public List<PdfBookResponseDTO> getAll() {
-        List<PdfBook> books = pdfBookRepository.findAll();
-        return books.stream()
-                .map(PdfBookMapper::toDto)
-                .toList();
+    public List<PdfBookPreviewDTO> getList(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<PdfBook> page = pdfBookRepository.findAll(pageable);
+        return page.getContent().stream()
+                .map(PdfBookMapper::toPreviewDto)
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public PdfBookResponseDTO getOne(Integer id) {

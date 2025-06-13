@@ -1,9 +1,6 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.common_domain.dto.pdf_book_dto.CreateCategoryDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.UpdateCategoryDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.CategoryResponseDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.libraryweb.service.pdf_book_service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +50,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/pdf-books")
-    public ResponseEntity<List<PdfBookResponseDTO>> getBooksByCategoryId(@PathVariable Integer id) {
+    public ResponseEntity<List<PdfBookPreviewDTO>> getBooksByCategoryId(@PathVariable Integer id) {
         return ResponseEntity.ok(categoryService.getBooksByCategoryId(id));
     }
 }

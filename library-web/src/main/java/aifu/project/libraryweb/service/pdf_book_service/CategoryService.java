@@ -29,6 +29,6 @@ public interface CategoryService {
     Category getEntityById(Integer categoryId);
 
     // Category bo'yicha kitoblarni olish
-    List<PdfBookResponseDTO> getBooksByCategoryId(Integer categoryId);
+    List<PdfBookPreviewDTO> getBooksByCategoryId(Integer categoryId);
 
 }

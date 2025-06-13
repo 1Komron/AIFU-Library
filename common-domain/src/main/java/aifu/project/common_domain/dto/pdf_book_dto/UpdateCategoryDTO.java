@@ -9,6 +9,5 @@ import lombok.*;
 @Builder
 public class UpdateCategoryDTO {
 
-    
     private String name;
 }

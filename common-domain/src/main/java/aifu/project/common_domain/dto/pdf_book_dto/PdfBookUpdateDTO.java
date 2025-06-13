@@ -32,4 +32,6 @@ public class PdfBookUpdateDTO {
 
     private Double size;
 
+    private String description;
+
 }

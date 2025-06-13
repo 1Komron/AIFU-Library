@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = getEntityById(id);
 
-        List<PdfBookResponseDTO> books = getBooksByCategoryId(id);
+        List<PdfBookPreviewDTO> books = getBooksByCategoryId(id);
          if(!books.isEmpty()) {
              throw new IllegalStateException("Cannot delete category with ID "
                      + id + " because it has associated books.");         }
@@ -70,13 +70,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<PdfBookResponseDTO> getBooksByCategoryId(Integer categoryId) {
+    public List<PdfBookPreviewDTO> getBooksByCategoryId(Integer categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
 
         return category.getBooks()
                 .stream()
-                .map(PdfBookMapper::toDto)
+                .map(PdfBookMapper::toPreviewDto)
                 .collect(Collectors.toList());
     }
 }

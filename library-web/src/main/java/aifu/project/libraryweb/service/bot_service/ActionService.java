@@ -18,14 +18,21 @@ public class ActionService {
     @Value("${internal.token}")
     private String token;
 
-    private static final String URL_BOT_BORROW = "http://localhost:8081/action/book/borrow";
-    private static final String URL_BOT_RETURN = "http://localhost:8081/action/book/return";
-    private static final String URL_BOT_EXTEND = "http://localhost:8081/action/book/extend";
-    private static final String URL_BOT_REGISTRATION = "http://localhost:8081/action/registration";
+    @Value("${action.borrow}")
+    private String urlBorrow;
+
+    @Value("${action.return}")
+    private String urlReturn;
+
+    @Value("${action.extend}")
+    private String urlExtend;
+
+    @Value("${action.registration}")
+    private String urlRegistration;
 
     @Transactional
     public ResponseEntity<ResponseMessage> registerResponse(RegistrationRequest request) {
-        ResponseEntity<ResponseMessage> apiResponse = post(request, URL_BOT_REGISTRATION);
+        ResponseEntity<ResponseMessage> apiResponse = post(request, urlRegistration);
         ResponseMessage responseBody = apiResponse.getBody();
         if (apiResponse.getStatusCode().is2xxSuccessful() && responseBody != null && responseBody.data() != null)
             notificationSender.send(((Number) responseBody.data()).longValue());
@@ -35,7 +42,7 @@ public class ActionService {
 
     @Transactional
     public ResponseEntity<ResponseMessage> borrowBookResponse(BorrowBookRequest request) {
-        ResponseEntity<ResponseMessage> apiResponse = post(request, URL_BOT_BORROW);
+        ResponseEntity<ResponseMessage> apiResponse = post(request, urlBorrow);
         ResponseMessage responseBody = apiResponse.getBody();
         if (apiResponse.getStatusCode().is2xxSuccessful() && responseBody != null && responseBody.data() != null)
             notificationSender.send(((Number) responseBody.data()).longValue());
@@ -45,7 +52,7 @@ public class ActionService {
 
     @Transactional
     public ResponseEntity<ResponseMessage> extendBookResponse(ExtendBookRequest request) {
-        ResponseEntity<ResponseMessage> apiResponse = post(request, URL_BOT_EXTEND);
+        ResponseEntity<ResponseMessage> apiResponse = post(request, urlExtend);
         ResponseMessage responseBody = apiResponse.getBody();
         if (apiResponse.getStatusCode().is2xxSuccessful() && responseBody != null && responseBody.data() != null)
             notificationSender.send(((Number) responseBody.data()).longValue());
@@ -55,7 +62,7 @@ public class ActionService {
 
     @Transactional
     public ResponseEntity<ResponseMessage> returnBookResponse(ReturnBookRequest request) {
-        ResponseEntity<ResponseMessage> apiResponse = post(request, URL_BOT_RETURN);
+        ResponseEntity<ResponseMessage> apiResponse = post(request, urlReturn);
         ResponseMessage responseBody = apiResponse.getBody();
         if (apiResponse.getStatusCode().is2xxSuccessful() && responseBody != null && responseBody.data() != null)
             notificationSender.send(((Number) responseBody.data()).longValue());

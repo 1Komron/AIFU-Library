@@ -74,4 +74,9 @@ public class BookCopyServiceImpl implements BookCopyService {
                 .map(BookCopyMapper::toDto)
                 .toList();
     }
+
+    @Override
+    public long count() {
+       return bookCopyRepository.count();
+    }
 }

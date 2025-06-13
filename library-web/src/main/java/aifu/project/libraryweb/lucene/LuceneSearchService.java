@@ -52,8 +52,13 @@ public class LuceneSearchService {
                 transliteratedToRussian, transliteratedToEnglish,
                 queryStr)) {
             try {
-                Query query = parser.parse(QueryParserBase.escape(value) + "~");
-                finalQuery.add(query, BooleanClause.Occur.SHOULD);
+                String escaped = QueryParserBase.escape(value);
+
+                finalQuery.add(parser.parse("\"" + escaped + "\""), BooleanClause.Occur.SHOULD);
+
+                finalQuery.add(parser.parse(escaped + "*"), BooleanClause.Occur.SHOULD);
+
+                finalQuery.add(parser.parse(escaped + "~2"), BooleanClause.Occur.SHOULD);
             } catch (ParseException e) {
                 log.error("Parsing exception: {} — {}", value, e.getMessage());
             }

@@ -3,6 +3,7 @@ package aifu.project.libraryweb.repository;
 import aifu.project.common_domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.beans.Transient;
@@ -19,4 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transient
     @Modifying
     void deleteByChatId(Long chatId);
+
+    @Query("select count(*) from User u where u.role = 'USER'")
+    long getUsersCount();
 }

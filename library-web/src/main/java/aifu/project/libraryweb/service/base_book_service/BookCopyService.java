@@ -9,4 +9,5 @@ public interface BookCopyService {
     void delete(Integer id);
     BookCopyDTO getById(Integer id);
     List<BookCopyDTO> getAllByBaseBook(Integer baseBookId);
+    long count();
 }

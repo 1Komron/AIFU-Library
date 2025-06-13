@@ -9,4 +9,5 @@ public interface BaseBookService {
     void delete(Integer id);
     BaseBookDTO getById(Integer id);
     List<BaseBookDTO> getAll();
+    long countBooks();
 }

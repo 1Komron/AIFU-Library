@@ -1,5 +1,7 @@
 package aifu.project.librarybot.service;
 
+import aifu.project.common_domain.dto.BookingDiagramDTO;
+import aifu.project.common_domain.dto.BookingResponse;
 import aifu.project.common_domain.entity.*;
 import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.common_domain.entity.enums.NotificationType;
@@ -8,7 +10,6 @@ import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookCopyNotFoundException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.payload.PartList;
-import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookCopyRepository;
 import aifu.project.librarybot.repository.BookingRepository;
@@ -24,7 +25,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -46,14 +46,11 @@ public class BookingService {
     private final BookCopyRepository bookCopyRepository;
     private final BookingRequestService bookingRequestService;
     private final ExecuteUtil executeUtil;
-    private final TransactionalService transactionalService;
     private final RabbitTemplate rabbitTemplate;
 
     @Transactional
     @SneakyThrows
     public boolean borrowBook(Long chatId, String inventoryNumber, String lang) {
-        transactionalService.clearState(chatId);
-
         BookCopy bookCopy;
         try {
             bookCopy = bookCopyRepository.findByInventoryNumber(inventoryNumber)
@@ -87,8 +84,6 @@ public class BookingService {
     @Transactional
     @SneakyThrows
     public boolean returnBook(Long chatId, String inventoryNumber, String lang) {
-        transactionalService.clearState(chatId);
-
         BookCopy bookCopy;
         try {
             bookCopy = bookCopyRepository.findByInventoryNumber(inventoryNumber)
@@ -307,8 +302,34 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
-    public ResponseEntity<ResponseMessage> countAllBookings() {
-        long count = bookingRepository.count();
-        return ResponseEntity.ok(new ResponseMessage(true,"Booking count", count));
+    public long countAllBookings() {
+        return bookingRepository.count();
+    }
+
+
+    public BookingDiagramDTO getBookingDiagram() {
+        return bookingRepository.getDiagramData();
+    }
+
+    public List<BookingResponse> getListBookingsToday(int pageNumber, int pageSize, Status status) {
+        Pageable pageableRequest = PageRequest.of(pageNumber, pageSize);
+        Page<Booking> pageable = bookingRepository.findAllBookingByGivenAtAndStatus(
+                LocalDate.now(), status, pageableRequest);
+
+        return getBookingResponseList(pageable.getContent());
+    }
+
+
+    private List<BookingResponse> getBookingResponseList(List<Booking> bookingList) {
+        return bookingList.stream()
+                .map(b -> new BookingResponse(b.getId(), b.getUser().getName(), b.getUser().getSurname()))
+                .toList();
+    }
+
+    public long getQuantityPerMonth(int month) {
+        LocalDate now = LocalDate.now();
+        LocalDate from = LocalDate.of(now.getYear(), month, 1);
+        LocalDate to = from.plusMonths(1);
+        return bookingRepository.countByGivenAtBetween(from,to.minusDays(1));
     }
 }

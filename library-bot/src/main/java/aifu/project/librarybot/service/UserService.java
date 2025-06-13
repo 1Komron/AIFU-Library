@@ -124,9 +124,4 @@ public class UserService {
     public void deleteUser(Long chatId) {
         userRepository.deleteByChatId(chatId);
     }
-
-    public ResponseEntity<ResponseMessage> countUsers() {
-        long count = userRepository.getUsersCount();
-        return ResponseEntity.ok(new ResponseMessage(true, "Users count", count));
-    }
 }

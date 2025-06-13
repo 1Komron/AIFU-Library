@@ -78,4 +78,9 @@ public class BaseBookServiceImpl implements BaseBookService {
                 .map(BaseBookMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public long countBooks() {
+        return baseBookRepository.count();
+    }
 }

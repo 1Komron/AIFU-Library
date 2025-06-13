@@ -1,7 +1,7 @@
-/*package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller;
 
-import aifu.project.commondomain.payload.ResponseMessage;
-import aifu.project.libraryweb.service.boot_Service.NotificationService;
+import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.libraryweb.service.bot_service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,4 +35,3 @@ public class NotificationController {
         return notificationService.getAllNotifications(pageNumber, pageSize);
     }
 }
-*/

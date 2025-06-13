@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
     @Query(
@@ -17,6 +19,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
               JOIN FETCH h.book bc
               JOIN FETCH bc.book
              WHERE h.user.chatId = :chatId
+                     order by h.returnedAt
         """,
             countQuery = """
             SELECT COUNT(h)
@@ -28,4 +31,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
             @Param("chatId") Long chatId,
             Pageable pageable
     );
+
+    long countByGivenAtBetween(LocalDate givenAtAfter, LocalDate givenAtBefore);
 }

@@ -29,11 +29,16 @@ public class NotificationService {
     private final BookingRequestRepository bookingRequestRepository;
     private final RegisterRequestRepository registerRequestRepository;
 
-    private static final String NOTIFICATION_DELETE = "http://localhost:8081/notification/delete";
-    private static final String NOTIFICATION_UNREAD = "http://localhost:8081/notification/get/unread";
-    private static final String NOTIFICATION_ALL = "http://localhost:8081/notification/get/all";
-
     private static final String INTERNAL_TOKEN = "Internal-Token";
+
+    @Value("${notification.delete}")
+    private String delete;
+
+    @Value("${notification.unread}")
+    private String unread;
+
+    @Value("${notification.getAll}")
+    private String getAll;
 
     @Value("${internal.token}")
     private String internalToken;
@@ -44,7 +49,7 @@ public class NotificationService {
         HttpEntity<Long> requestEntity = new HttpEntity<>(notificationId, headers);
 
         return restTemplate.exchange(
-                NOTIFICATION_DELETE,
+                delete,
                 HttpMethod.DELETE,
                 requestEntity,
                 ResponseMessage.class
@@ -52,7 +57,7 @@ public class NotificationService {
     }
 
     public ResponseEntity<ResponseMessage> getUnreadNotifications(Integer pageNumber, Integer pageSize) {
-        String url = NOTIFICATION_UNREAD + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+        String url = unread + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
         HttpHeaders headers = new HttpHeaders();
         headers.set(INTERNAL_TOKEN, this.internalToken);
 
@@ -65,7 +70,7 @@ public class NotificationService {
     }
 
     public ResponseEntity<ResponseMessage> getAllNotifications(Integer pageNumber, Integer pageSize) {
-        String url = NOTIFICATION_ALL + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+        String url = getAll + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
         HttpHeaders headers = new HttpHeaders();
         headers.set(INTERNAL_TOKEN, this.internalToken);
 

@@ -45,14 +45,18 @@ public class LuceneSearchService {
 
         BooleanQuery.Builder finalQuery = new BooleanQuery.Builder();
 
-
         for (String value : List.of(layout, layoutReverse,
                 correctedToRussian, correctedToEnglish,
                 transliteratedToRussian, transliteratedToEnglish,
                 queryStr)) {
             try {
-                Query query = parser.parse(QueryParserBase.escape(value) + "~");
-                finalQuery.add(query, BooleanClause.Occur.SHOULD);
+                String escaped = QueryParserBase.escape(value);
+
+                finalQuery.add(parser.parse("\"" + escaped + "\""), BooleanClause.Occur.SHOULD);
+
+                finalQuery.add(parser.parse(escaped + "*"), BooleanClause.Occur.SHOULD);
+
+                finalQuery.add(parser.parse(escaped + "~1"), BooleanClause.Occur.SHOULD);
             } catch (ParseException e) {
                 log.error("Parsing exception: {} — {}", value, e.getMessage());
             }
@@ -60,7 +64,7 @@ public class LuceneSearchService {
 
         try (DirectoryReader reader = DirectoryReader.open(getDirectory())) {
             IndexSearcher searcher = new IndexSearcher(reader);
-            TopDocs topDocs = searcher.search(finalQuery.build(), 20);
+            TopDocs topDocs = searcher.search(finalQuery.build(), 10);
 
             List<Document> results = new ArrayList<>();
             for (ScoreDoc doc : topDocs.scoreDocs) {

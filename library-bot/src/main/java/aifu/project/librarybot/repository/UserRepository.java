@@ -24,7 +24,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transient
     @Modifying
     void deleteByChatId(Long chatId);
-
-    @Query("select count(*) from User u where u.role = 'USER'")
-    long getUsersCount();
 }

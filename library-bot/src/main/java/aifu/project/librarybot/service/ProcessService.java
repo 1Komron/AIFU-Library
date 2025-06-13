@@ -121,6 +121,13 @@ public class ProcessService {
 
     @SneakyThrows
     private boolean processInput(Long chatId, String text, String lang) {
+        System.out.println(text);
+        System.out.println("COMMAND_MAP.get(text) = " + COMMAND_MAP.get(text));
+        if (COMMAND_MAP.get(lang).containsKey(text)) {
+            transactionalService.clearState(chatId);
+            return false;
+        }
+
         TransactionStep state = transactionalService.getState(chatId);
 
         if (state == null)
@@ -128,21 +135,28 @@ public class ProcessService {
 
         switch (state) {
             case BORROW -> {
+                transactionalService.clearState(chatId);
+
                 if (bookingService.borrowBook(chatId, text, lang))
                     executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_BORROW_WAITING_APPROVAL, lang);
                 return true;
             }
             case RETURN -> {
+                transactionalService.clearState(chatId);
+
                 if (bookingService.returnBook(chatId, text, lang))
                     executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang);
                 return true;
             }
             case SEARCH -> {
-                handlePagedList(() -> searchService.search(chatId, SEARCH + "|" + text, lang, 1),
+                transactionalService.clearState(chatId);
+
+                handlePagedList(() -> searchService.search(chatId, SEARCH + "|" + normalizeUserInput(text), lang, 1),
                         chatId, lang, SEARCH + "|" + text);
                 return true;
             }
             default -> {
+                transactionalService.clearState(chatId);
                 return false;
             }
         }
@@ -500,6 +514,10 @@ public class ProcessService {
     }
 
     private record PageContext(String type, String searchText, String categoryId, AtomicInteger page) {
+    }
+
+    private String normalizeUserInput(String input) {
+        return input.replaceAll("[^\\p{L}\\p{Nd} ]+", "").trim().toLowerCase();
     }
 }
 

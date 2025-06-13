@@ -1,8 +1,11 @@
 package aifu.project.librarybot.repository;
 
+import aifu.project.common_domain.dto.BookingDiagramDTO;
 import aifu.project.common_domain.entity.Booking;
+import aifu.project.common_domain.entity.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -20,6 +24,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                         JOIN FETCH b.book bc
                         JOIN FETCH bc.book bb
                        WHERE b.user.chatId = :chatId
+                       order by b.givenAt desc
                     """,
             countQuery = """
                       SELECT COUNT(b)
@@ -87,4 +92,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.user.chatId = :chatId AND b.dueDate = :tomorrow")
     List<Booking> findAllExpiringBookings(Long chatId, LocalDate tomorrow);
+
+    @Query("""
+            select new aifu.project.common_domain.dto.BookingDiagramDTO(
+                   count(b),
+                   sum(case when b.status = 'OVERDUE' then 1 else 0 end))
+                        from Booking b""")
+    BookingDiagramDTO getDiagramData();
+
+    Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
+
+    long countByGivenAtBetween(LocalDate givenAtAfter, LocalDate givenAtBefore);
 }

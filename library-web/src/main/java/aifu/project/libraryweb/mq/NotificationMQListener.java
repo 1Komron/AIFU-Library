@@ -1,7 +1,6 @@
-/*package aifu.project.libraryweb.mq;
+package aifu.project.libraryweb.mq;
 
-import aifu.project.commondomain.entity.Notification;
-import aifu.project.commondomain.payload.NotificationDTO;
+import aifu.project.common_domain.payload.NotificationDTO;
 import aifu.project.libraryweb.sender.NotificationSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -32,4 +31,3 @@ public class NotificationMQListener {
         notificationSender.send(notification);
     }
 }
-*/

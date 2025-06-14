@@ -9,7 +9,6 @@ import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.mapper.NotificationMapper;
 import aifu.project.common_domain.mapper.UserMapper;
 import aifu.project.common_domain.payload.BotUserDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.NotificationRepository;
 import aifu.project.librarybot.repository.UserRepository;
@@ -20,12 +19,10 @@ import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +30,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private final UserLanguageService userLanguageService;
-    private final RegisterService registerService;
     private final RegisterRequestService registerRequestService;
     private final RabbitTemplate rabbitTemplate;
     private final ExecuteUtil executeUtil;
@@ -51,25 +47,6 @@ public class UserService {
         KeyboardUtil.getLoginRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
 
         executeUtil.execute(sendMessage);
-    }
-
-    @SneakyThrows
-    public void registerUser(Long chatId, Integer messageId) {
-        String text = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, userLanguageService.getLanguage(chatId.toString()));
-        SendMessage sendMessage = new SendMessage(chatId.toString(),
-                text.formatted("-", "-", "-", "-", "-", "-"));
-
-        KeyboardUtil.getRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
-
-        registerService.checkHaveRegistrationState(chatId);
-
-        DeleteMessage deleteMessage = MessageUtil.deleteMessage(chatId.toString(), messageId);
-
-        executeUtil.execute(deleteMessage);
-
-        Message execute = executeUtil.execute(sendMessage);
-
-        registerService.addMessageId(chatId, execute.getMessageId());
     }
 
     @Transactional
@@ -119,6 +96,10 @@ public class UserService {
 
     public boolean isInactive(Long chatId) {
         return !userRepository.existsByChatIdAndIsActive(chatId, true);
+    }
+
+    public boolean existsUser(Long chatId) {
+        return userRepository.existsUserByChatId(chatId);
     }
 
     public void deleteUser(Long chatId) {

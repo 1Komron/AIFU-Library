@@ -12,6 +12,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RegisterService {
     private final ConcurrentHashMap<Long, RegistrationState> registrationState = new ConcurrentHashMap<>();
     private final ExecuteUtil executeUtil;
+    private final UserService userService;
+    private final UserLanguageService userLanguageService;
 
     public void createRegistrationState(Long chatId) {
         registrationState.put(chatId, new RegistrationState(null, new BotUserDTO(), null));
@@ -28,6 +33,32 @@ public class RegisterService {
 
     public void checkRegistrationState(Long chatId, Integer messageId, String text) {
         registrationState.computeIfAbsent(chatId, k -> setBotUserToNewRegistrationState(chatId, messageId, text));
+    }
+
+    public void removeRegistrationStep(Long chatId) {
+        registrationState.get(chatId).setStep(null);
+    }
+
+    @SneakyThrows
+    public void registerUser(Long chatId, Integer messageId, String lang) {
+        if (userService.existsUser(chatId)) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
+            return;
+        }
+
+        String text = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, userLanguageService.getLanguage(chatId.toString()));
+        SendMessage sendMessage = new SendMessage(chatId.toString(),
+                text.formatted("-", "-", "-", "-", "-", "-"));
+
+        KeyboardUtil.getRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
+
+        checkHaveRegistrationState(chatId);
+
+        deleteOldMessage(chatId.toString(), messageId, lang, true);
+
+        Message execute = executeUtil.execute(sendMessage);
+
+        addMessageId(chatId, execute.getMessageId());
     }
 
     private RegistrationState setBotUserToNewRegistrationState(Long chatId, Integer messageId, String text) {
@@ -101,10 +132,6 @@ public class RegisterService {
         return state.getStep();
     }
 
-    public void removeRegistrationStep(Long chatId) {
-        registrationState.get(chatId).setStep(null);
-    }
-
     @SneakyThrows
     public void processRegistrationStep(Long chatId, String text, String lang) {
         RegistrationState state = registrationState.get(chatId);
@@ -115,7 +142,8 @@ public class RegisterService {
                 Integer lastMessageId = setName(chatId, text);
                 removeRegistrationStep(chatId);
 
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
+                deleteOldMessage(chatId.toString(), lastMessageId, lang, false);
+
                 Integer newMessageId = getRegisterState(chatId, lang);
                 addMessageId(chatId, newMessageId);
             }
@@ -123,7 +151,8 @@ public class RegisterService {
                 Integer lastMessageId = setSurname(chatId, text);
                 removeRegistrationStep(chatId);
 
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
+                deleteOldMessage(chatId.toString(), lastMessageId, lang, false);
+
                 Integer newMessageId = getRegisterState(chatId, lang);
                 addMessageId(chatId, newMessageId);
             }
@@ -131,7 +160,8 @@ public class RegisterService {
                 Integer lastMessageId = setPhone(chatId, text);
                 removeRegistrationStep(chatId);
 
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
+                deleteOldMessage(chatId.toString(), lastMessageId, lang, false);
+
                 Integer newMessageId = getRegisterState(chatId, lang);
                 addMessageId(chatId, newMessageId);
             }
@@ -139,7 +169,8 @@ public class RegisterService {
                 Integer lastMessageId = setFaculty(chatId, text);
                 removeRegistrationStep(chatId);
 
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
+                deleteOldMessage(chatId.toString(), lastMessageId, lang, false);
+
                 Integer newMessageId = getRegisterState(chatId, lang);
                 addMessageId(chatId, newMessageId);
             }
@@ -147,7 +178,8 @@ public class RegisterService {
                 Integer lastMessageId = setCourse(chatId, text);
                 removeRegistrationStep(chatId);
 
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
+                deleteOldMessage(chatId.toString(), lastMessageId, lang, false);
+
                 Integer newMessageId = getRegisterState(chatId, lang);
                 addMessageId(chatId, newMessageId);
             }
@@ -155,11 +187,30 @@ public class RegisterService {
                 Integer lastMessageId = setGroup(chatId, text);
                 removeRegistrationStep(chatId);
 
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
+                deleteOldMessage(chatId.toString(), lastMessageId, lang, false);
+
                 Integer newMessageId = getRegisterState(chatId, lang);
                 addMessageId(chatId, newMessageId);
             }
             default -> throw new IllegalStateException("Unexpected value: " + step);
+        }
+    }
+
+    private void deleteOldMessage(String chatId, Integer lastMessageId, String lang, boolean login) {
+        try {
+            executeUtil.execute(MessageUtil.deleteMessage(chatId, lastMessageId));
+        } catch (TelegramApiException e) {
+            if (e instanceof TelegramApiRequestException reqEx &&
+                    reqEx.getApiResponse() != null &&
+                    reqEx.getApiResponse().contains("message can't be deleted")) {
+
+                if (login)
+                    executeUtil.executeMessage(chatId, MessageKeys.INLINE_BUTTON_EXPIRED, lang);
+
+                log.warn("The message cannot be deleted, it is too old or has already been deleted. MessageId: {}.", lastMessageId);
+            } else {
+                log.error("Error deleting message", e);
+            }
         }
     }
 

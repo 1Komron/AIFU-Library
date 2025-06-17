@@ -1,39 +1,15 @@
 package aifu.project.common_domain.mapper;
 
-import aifu.project.common_domain.dto.live_dto.BaseBookDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookUpdateDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 
-import java.util.ArrayList;
-
 public class BaseBookMapper {
-    public static BaseBookDTO toDto(BaseBook entity) {
-        if (entity == null) return null;
-        return BaseBookDTO.builder()
-                .id(entity.getId())
-                .author(entity.getAuthor())
-                .title(entity.getTitle())
-                .series(entity.getSeries())
-                .titleDetails(entity.getTitleDetails())
-                .publicationYear(entity.getPublicationYear())
-                .publisher(entity.getPublisher())
-                .publicationCity(entity.getPublicationCity())
-                .isbn(entity.getIsbn())
-                .pageCount(entity.getPageCount())
-                .language(entity.getLanguage())
-                .price(entity.getPrice())
-                .udc(entity.getUdc())
-                .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)
-                .copies(entity.getCopies() != null
-                        ? entity.getCopies().stream().map(BookCopyMapper::toDto).toList()
-                        : new ArrayList<>())
-                .build();
-    }
 
-    public static BaseBook toEntity(BaseBookDTO dto, BaseBookCategory category) {
-        if (dto == null) return null;
+    public static BaseBook toEntity(BaseBookCreateDTO dto, BaseBookCategory category) {
         return BaseBook.builder()
-                .id(dto.getId())
                 .author(dto.getAuthor())
                 .title(dto.getTitle())
                 .series(dto.getSeries())
@@ -44,9 +20,41 @@ public class BaseBookMapper {
                 .isbn(dto.getIsbn())
                 .pageCount(dto.getPageCount())
                 .language(dto.getLanguage())
-                .price(dto.getPrice())
                 .udc(dto.getUdc())
                 .category(category)
                 .build();
+    }
+
+    public static BaseBookResponseDTO toResponseDTO(BaseBook entity) {
+        BaseBookResponseDTO dto = new BaseBookResponseDTO();
+        dto.setId(entity.getId());
+        dto.setAuthor(entity.getAuthor());
+        dto.setTitle(entity.getTitle());
+        dto.setSeries(entity.getSeries());
+        dto.setTitleDetails(entity.getTitleDetails());
+        dto.setPublicationYear(entity.getPublicationYear());
+        dto.setPublisher(entity.getPublisher());
+        dto.setPublicationCity(entity.getPublicationCity());
+        dto.setIsbn(entity.getIsbn());
+        dto.setPageCount(entity.getPageCount());
+        dto.setLanguage(entity.getLanguage());
+        dto.setUdc(entity.getUdc());
+        dto.setCategoryId(entity.getCategory().getId());
+        return dto;
+    }
+
+    public static void updateEntity(BaseBook entity, BaseBookUpdateDTO dto, BaseBookCategory category) {
+        entity.setAuthor(dto.getAuthor());
+        entity.setTitle(dto.getTitle());
+        entity.setSeries(dto.getSeries());
+        entity.setTitleDetails(dto.getTitleDetails());
+        entity.setPublicationYear(dto.getPublicationYear());
+        entity.setPublisher(dto.getPublisher());
+        entity.setPublicationCity(dto.getPublicationCity());
+        entity.setIsbn(dto.getIsbn());
+        entity.setPageCount(dto.getPageCount());
+        entity.setLanguage(dto.getLanguage());
+        entity.setUdc(dto.getUdc());
+        entity.setCategory(category);
     }
 }

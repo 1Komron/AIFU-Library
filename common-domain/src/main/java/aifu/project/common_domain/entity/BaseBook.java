@@ -14,22 +14,35 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class BaseBook {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer id;
 
     private String author;
+
     private String title;
+
     private String series;
+
     private String titleDetails;
+
     private int publicationYear;
+
     private String publisher;
+
     private String publicationCity;
+
     private String isbn;
+
     private int pageCount;
+
     private String language;
-    private Double price;
+
     private String udc;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -39,6 +52,7 @@ public class BaseBook {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<BookCopy> copies = new ArrayList<>();
+
 }
 
 

@@ -1,82 +1,68 @@
 package aifu.project.libraryweb.service.base_book_service;
 
-import aifu.project.common_domain.dto.live_dto.BookCopyDTO;
+import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
+import aifu.project.common_domain.dto.live_dto.BookCopyResponseDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.mapper.BookCopyMapper;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.repository.BookCopyRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class BookCopyServiceImpl implements BookCopyService {
 
     private final BookCopyRepository bookCopyRepository;
     private final BaseBookRepository baseBookRepository;
 
-    private static final String BASE_BOOK_NOT_FOUND = "BaseBook not found with id: ";
-
-    @Override
-    public BookCopyDTO create(BookCopyDTO dto) {
-        if (bookCopyRepository.existsByInventoryNumber(dto.getInventoryNumber())) {
-            throw new RuntimeException("Inventory number already exists: " + dto.getInventoryNumber());
-        }
-        BaseBook baseBook = baseBookRepository.findById(dto.getBaseBookId())
-                .orElseThrow(() -> new RuntimeException(BASE_BOOK_NOT_FOUND + dto.getBaseBookId()));
-        BookCopy copy = BookCopyMapper.toEntity(dto, baseBook);
-        BookCopy saved = bookCopyRepository.save(copy);
-        return BookCopyMapper.toDto(saved);
+    public BookCopyServiceImpl(BookCopyRepository bookCopyRepository, BaseBookRepository baseBookRepository) {
+        this.bookCopyRepository = bookCopyRepository;
+        this.baseBookRepository = baseBookRepository;
     }
 
     @Override
-    public BookCopyDTO update(Integer id, BookCopyDTO dto) {
-        BookCopy existing = bookCopyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BookCopy not found with id: " + id));
-        if (!existing.getInventoryNumber().equals(dto.getInventoryNumber()) &&
-                bookCopyRepository.existsByInventoryNumber(dto.getInventoryNumber())) {
-            throw new RuntimeException("Inventory number already exists: " + dto.getInventoryNumber());
-        }
+    public BookCopyResponseDTO create(BookCopyCreateDTO dto) {
         BaseBook baseBook = baseBookRepository.findById(dto.getBaseBookId())
-                .orElseThrow(() -> new RuntimeException(BASE_BOOK_NOT_FOUND + dto.getBaseBookId()));
-        existing.setInventoryNumber(dto.getInventoryNumber());
-        existing.setShelfLocation(dto.getShelfLocation());
-        existing.setNotes(dto.getNotes());
-        existing.setBook(baseBook);
-        BookCopy updated = bookCopyRepository.save(existing);
-        return BookCopyMapper.toDto(updated);
+                .orElseThrow(() -> new RuntimeException("BaseBook not found"));
+
+        BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
+        bookCopyRepository.save(entity);
+        return BookCopyMapper.toResponseDTO(entity);
+    }
+
+    @Override
+    public BookCopyResponseDTO update(Integer id, BookCopyCreateDTO dto) {
+        return null;
+    }
+
+    @Override
+    public List<BookCopyResponseDTO> getAll() {
+        return bookCopyRepository.findAll().stream()
+                .map(BookCopyMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookCopyResponseDTO getOne(Integer id) {
+        BookCopy entity = bookCopyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("BookCopy not found"));
+        return BookCopyMapper.toResponseDTO(entity);
+    }
+
+    @Override
+    public List<BookCopyResponseDTO> getAllByBaseBook(Integer baseBookId) {
+        return List.of();
     }
 
     @Override
     public void delete(Integer id) {
-        if (!bookCopyRepository.existsById(id)) {
-            throw new RuntimeException("BookCopy not found with id: " + id);
-        }
         bookCopyRepository.deleteById(id);
     }
-
-    @Override
-    public BookCopyDTO getById(Integer id) {
-        BookCopy copy = bookCopyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BookCopy not found with id: " + id));
-        return BookCopyMapper.toDto(copy);
-    }
-
-    @Override
-    public List<BookCopyDTO> getAllByBaseBook(Integer baseBookId) {
-        BaseBook baseBook = baseBookRepository.findById(baseBookId)
-                .orElseThrow(() -> new RuntimeException(BASE_BOOK_NOT_FOUND + baseBookId));
-        return bookCopyRepository.findAllByBook(baseBook)
-                .stream()
-                .map(BookCopyMapper::toDto)
-                .toList();
-    }
-
     @Override
     public long count() {
-       return bookCopyRepository.count();
+        return bookCopyRepository.count();
     }
 }

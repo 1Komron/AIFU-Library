@@ -1,20 +1,18 @@
 package aifu.project.common_domain.dto.live_dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class BookCopyDTO {
+
+public class BookCopyResponseDTO {
+
     private Integer id;
 
     private String inventoryNumber;
 
     private String shelfLocation;
-
-    private String notes;
 
     private Integer baseBookId;
 }

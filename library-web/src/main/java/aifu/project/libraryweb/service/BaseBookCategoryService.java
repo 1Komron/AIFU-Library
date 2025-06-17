@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BaseBookCategoryService {
+public class BaseBookCategoryService{
     private final BaseBookCategoryRepository categoryRepository;
 
     public BaseBookCategory getEntityById(Integer categoryId) {

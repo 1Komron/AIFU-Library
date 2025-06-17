@@ -1,29 +1,27 @@
 package aifu.project.common_domain.mapper;
 
-import aifu.project.common_domain.dto.live_dto.BookCopyDTO;
-import aifu.project.common_domain.entity.BookCopy;
+import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
+import aifu.project.common_domain.dto.live_dto.BookCopyResponseDTO;
 import aifu.project.common_domain.entity.BaseBook;
+import aifu.project.common_domain.entity.BookCopy;
 
 public class BookCopyMapper {
-    public static BookCopyDTO toDto(BookCopy entity) {
-        if (entity == null) return null;
-        return BookCopyDTO.builder()
-                .id(entity.getId())
-                .inventoryNumber(entity.getInventoryNumber())
-                .shelfLocation(entity.getShelfLocation())
-                .notes(entity.getNotes())
-                .baseBookId(entity.getBook() != null ? entity.getBook().getId() : null)
-                .build();
-    }
 
-    public static BookCopy toEntity(BookCopyDTO dto, BaseBook baseBook) {
-        if (dto == null) return null;
+    public static BookCopy toEntity(BookCopyCreateDTO dto, BaseBook baseBook) {
         return BookCopy.builder()
-                .id(dto.getId())
                 .inventoryNumber(dto.getInventoryNumber())
                 .shelfLocation(dto.getShelfLocation())
-                .notes(dto.getNotes())
                 .book(baseBook)
                 .build();
     }
+
+    public static BookCopyResponseDTO toResponseDTO(BookCopy entity) {
+        BookCopyResponseDTO dto = new BookCopyResponseDTO();
+        dto.setId(entity.getId());
+        dto.setInventoryNumber(entity.getInventoryNumber());
+        dto.setShelfLocation(entity.getShelfLocation());
+        dto.setBaseBookId(entity.getBook().getId());
+        return dto;
+    }
+
 }

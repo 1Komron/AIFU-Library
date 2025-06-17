@@ -1,46 +1,20 @@
 package aifu.project.common_domain.dto.live_dto;
 
-import lombok.*;
+import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class BaseBookDTO {
-
+@Data
+public class BaseBookResponseDTO {
     private Integer id;
-
     private String author;
-
     private String title;
-
     private String series;
-
     private String titleDetails;
-
-    private int publicationYear;
-
+    private Integer publicationYear;
     private String publisher;
-
     private String publicationCity;
-
     private String isbn;
-
-    private int pageCount;
-
+    private Integer pageCount;
     private String language;
-
-    private Double price;
-
     private String udc;
-
     private Integer categoryId;
-
-    private List<BookCopyDTO> copies = new ArrayList<>();
-
-
 }

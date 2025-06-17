@@ -19,4 +19,6 @@ public class BaseBookCategory {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+
 }

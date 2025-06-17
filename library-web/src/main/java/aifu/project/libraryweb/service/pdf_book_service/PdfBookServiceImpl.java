@@ -125,6 +125,9 @@ public class PdfBookServiceImpl implements PdfBookService {
 
         } catch (IOException e) {
             throw new RuntimeException("Faylni o'qishda xatolik: " + e.getMessage(), e);
+
         }
+
     }
+
 }

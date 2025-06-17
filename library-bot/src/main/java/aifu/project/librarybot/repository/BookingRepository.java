@@ -103,4 +103,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
 
     long countByGivenAtBetween(LocalDate givenAtAfter, LocalDate givenAtBefore);
+
+    boolean existsBookingByUser_Id(Long userId);
+
+    boolean existsBookingByUser_ChatId(Long userChatId);
 }

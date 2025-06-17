@@ -11,4 +11,8 @@ public interface BookingRequestRepository extends JpaRepository<BookingRequest, 
     BookingRequest findBookingRequestByUserChatIdAndBookCopyIdAndStatus(Long chatId, Integer bookCopyId, BookingRequestStatus status);
 
     Optional<BookingRequest> findBookingRequestById(Long id);
+
+    boolean existsBookingRequestByUser_Id(Long userId);
+
+    boolean existsBookingRequestByUser_ChatId(Long userChatId);
 }

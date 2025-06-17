@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface RegisterRequestRepository extends JpaRepository<RegisterRequest, Long> {
 
     RegisterRequest findByUser_ChatId(long l);
+
+    boolean existsRegisterRequestByUser_Id(Long userId);
 }

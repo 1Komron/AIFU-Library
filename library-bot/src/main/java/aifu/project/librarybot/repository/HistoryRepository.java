@@ -33,4 +33,8 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     );
 
     long countByGivenAtBetween(LocalDate givenAtAfter, LocalDate givenAtBefore);
+
+    boolean existsHistoriesByUser_Id(Long id);
+
+    boolean existsHistoriesByUser_ChatId(Long userChatId);
 }

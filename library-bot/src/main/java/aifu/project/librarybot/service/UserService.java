@@ -19,6 +19,7 @@ import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -31,6 +32,9 @@ public class UserService {
     private final NotificationRepository notificationRepository;
     private final UserLanguageService userLanguageService;
     private final RegisterRequestService registerRequestService;
+    private final HistoryService historyService;
+    private final BookingService bookingService;
+    private final BookingRequestService bookingRequestService;
     private final RabbitTemplate rabbitTemplate;
     private final ExecuteUtil executeUtil;
 
@@ -102,7 +106,47 @@ public class UserService {
         return userRepository.existsUserByChatId(chatId);
     }
 
-    public void deleteUser(Long chatId) {
+    @Transactional
+    public String removeUser(Long chatId) {
+        boolean hasHistoryForUser = historyService.hasHistoryForUserChatId(chatId);
+        boolean hasBooking = bookingService.hasBookingForUserChatId(chatId);
+        boolean hasRequest = bookingRequestService.hasRequestForUserChatId(chatId);
+
+        if (hasHistoryForUser)
+            return "history";
+
+        if (hasBooking)
+            return "booking";
+
+        if (hasRequest)
+            return "request";
+
         userRepository.deleteByChatId(chatId);
+        return null;
+    }
+
+    public ResponseEntity<String> deleteUser(Long userId) {
+        if (!userRepository.existsUserById(userId)) {
+            return ResponseEntity.badRequest().build();
+        }
+        boolean hasHistoryForUser = historyService.hasHistoryForUser(userId);
+        boolean hasBooking = bookingService.hasBookingForUser(userId);
+        boolean hasRequest = bookingRequestService.hasRequestForUser(userId);
+        boolean hasRegisterRequest = registerRequestService.hasRequestForUser(userId);
+
+        if (hasHistoryForUser)
+            return ResponseEntity.ok("history");
+
+        if (hasBooking)
+            return ResponseEntity.ok("booking");
+
+        if (hasRequest)
+            return ResponseEntity.ok("request");
+
+        if (hasRegisterRequest)
+            return ResponseEntity.ok("registerRequest");
+
+        userRepository.deleteById(userId);
+        return ResponseEntity.ok("deleted");
     }
 }

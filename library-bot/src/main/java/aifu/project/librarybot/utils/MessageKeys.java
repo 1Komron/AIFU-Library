@@ -13,9 +13,12 @@ public class MessageKeys {
     public static final String BUTTON_BACK = "button.back";
     public static final String BUTTON_NEXT = "button.next";
 
+    public static final String INLINE_BUTTON_EXPIRED = "inline.button.expired";
+
     public static final String LANGUAGE_CHANGED = "language.changed";
     public static final String LANGUAGE_CHOOSE = "language.choose";
 
+    public static final String REGISTER_RE_REGISTER = "register.re-register";
     public static final String REGISTER_LOGIN = "register.login";
     public static final String REGISTER_LOGIN_BUTTON = "register.login.button";
     public static final String REGISTER_MESSAGE = "register.message";

@@ -1,5 +1,6 @@
 package aifu.project.librarybot.service;
 
+import aifu.project.common_domain.payload.BookPartList;
 import aifu.project.common_domain.payload.PartList;
 import aifu.project.librarybot.enums.Command;
 import aifu.project.librarybot.enums.RegistrationStep;
@@ -103,26 +104,13 @@ public class ProcessService {
         processButtons(chatId, text, lang);
     }
 
-    private boolean processStart(Long chatId, String text, String lang) {
-        if (text.equals("/start")) {
-            userLanguageService.checkLanguage(String.valueOf(chatId), lang);
-
-            buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.WELCOME_MESSAGE,
-                    userLanguageService.getLanguage(String.valueOf(chatId))));
-
-            if (userService.exists(chatId))
-                userService.loginRegister(chatId);
-
+    @SneakyThrows
+    private boolean processInput(Long chatId, String text, String lang) {
+        if (text.equals("/menu")) {
+            buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.WELCOME_MESSAGE, lang));
             return true;
         }
 
-        return false;
-    }
-
-    @SneakyThrows
-    private boolean processInput(Long chatId, String text, String lang) {
-        System.out.println(text);
-        System.out.println("COMMAND_MAP.get(text) = " + COMMAND_MAP.get(text));
         if (COMMAND_MAP.get(lang).containsKey(text)) {
             transactionalService.clearState(chatId);
             return false;
@@ -160,18 +148,6 @@ public class ProcessService {
                 return false;
             }
         }
-    }
-
-    @SneakyThrows
-    private boolean processRegistration(Long chatId, String text, String lang) {
-        if (registerService.isRegistering(chatId) && registerService.getRegistrationStep(chatId) != null) {
-            if (!RegistrationStep.PHONE.equals(registerService.getRegistrationStep(chatId)))
-                registerService.processRegistrationStep(chatId, text, lang);
-            else
-                executeUtil.executeMessage(chatId.toString(), MessageKeys.MESSAGE_INVALID_FORMAT, lang);
-            return true;
-        }
-        return false;
     }
 
     @SneakyThrows
@@ -223,73 +199,12 @@ public class ProcessService {
     }
 
     @SneakyThrows
-    private void handlePagedList(
-            Supplier<PartList> supplier,
-            Long chatId,
-            String lang,
-            String keyboardType
-    ) {
-        PartList part = supplier.get();
-        if (part == null) return;
-
-        String text = part.list();
-        SendMessage msg = MessageUtil.createMessage(chatId.toString(), text);
-        InlineKeyboardMarkup markup =
-                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
-        if (markup != null)
-            msg.setReplyMarkup(markup);
-        executeUtil.execute(msg);
-    }
-
-    @SneakyThrows
-    private void editMessagePagedList(
-            Supplier<PartList> supplier,
-            Long chatId,
-            String lang,
-            String keyboardType,
-            Integer messageId
-    ) {
-        PartList part = supplier.get();
-        if (part == null) return;
-
-        String text = part.list();
-        EditMessageText editMessageText = MessageUtil.editMessageText(chatId.toString(), messageId, text);
-        InlineKeyboardMarkup markup =
-                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
-        if (markup != null)
-            editMessageText.setReplyMarkup(markup);
-
-        executeUtil.execute(editMessageText);
-    }
-
-    @SneakyThrows
-    private void editCategoryListMessage(
-            Supplier<InlineKeyboardMarkup> supplier,
-            Long chatId,
-            Integer messageId
-    ) {
-        InlineKeyboardMarkup markup = supplier.get();
-        if (markup == null) return;
-
-        EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
-        edit.setReplyMarkup(markup);
-        edit.setChatId(chatId);
-        edit.setMessageId(messageId);
-
-        executeUtil.execute(edit);
-    }
-
-    private boolean isSettings(String text, String lang) {
-        return COMMAND_MAP.getOrDefault(lang, Collections.emptyMap())
-                .get(text) == Command.SETTINGS;
-    }
-
-    @SneakyThrows
     public void processCallBack(CallbackQuery callbackQuery) {
         executeUtil.answerCallback(callbackQuery.getId());
 
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
+
         String lang = userLanguageService.getLanguage(chatId.toString());
         Integer messageId = callbackQuery.getMessage().getMessageId();
         String text = callbackQuery.getMessage().getText();
@@ -299,9 +214,9 @@ public class ProcessService {
             userLanguageService.setLanguage(chatId.toString(), data);
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.LANGUAGE_CHANGED, data));
         } else if (data.startsWith("register")) {
-            processCallBackDataRegister(chatId, data, messageId, text);
+            processCallBackDataRegister(chatId, data, messageId, text, lang);
         } else if (data.startsWith("login")) {
-            userService.registerUser(chatId, messageId);
+            registerService.registerUser(chatId, messageId, lang);
         } else if (data.startsWith("back_") || data.startsWith("next_")) {
             processControl(data, chatId, lang, messageId);
         } else if (data.startsWith(EXPIRING)) {
@@ -312,12 +227,49 @@ public class ProcessService {
             processExtend(chatId, lang, data);
         } else if (data.startsWith("search_")) {
             processSearch(chatId, lang, data);
+        } else if (data.startsWith("bookId_")) {
+            String searchResult = searchService.getSearchResult(data.substring("bookId_".length()), lang);
+            executeUtil.execute(new SendMessage(chatId.toString(), searchResult));
         }
+    }
+
+    private boolean processStart(Long chatId, String text, String lang) {
+        if (text.equals("/start")) {
+            userLanguageService.checkLanguage(String.valueOf(chatId), lang);
+
+            buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.WELCOME_MESSAGE,
+                    userLanguageService.getLanguage(String.valueOf(chatId))));
+
+            if (userService.exists(chatId))
+                userService.loginRegister(chatId);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @SneakyThrows
+    private boolean processRegistration(Long chatId, String text, String lang) {
+        if (registerService.isRegistering(chatId) && registerService.getRegistrationStep(chatId) != null) {
+            if (!RegistrationStep.PHONE.equals(registerService.getRegistrationStep(chatId)))
+                registerService.processRegistrationStep(chatId, text, lang);
+            else
+                executeUtil.executeMessage(chatId.toString(), MessageKeys.MESSAGE_INVALID_FORMAT, lang);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isSettings(String text, String lang) {
+        return COMMAND_MAP.getOrDefault(lang, Collections.emptyMap())
+                .get(text) == Command.SETTINGS;
     }
 
     @SneakyThrows
     private void processSearch(Long chatId, String lang, String data) {
         data = data.substring("search_".length());
+
         if (data.equals(SEARCH)) {
             transactionalService.putState(chatId, TransactionStep.SEARCH);
             executeUtil.executeMessage(chatId.toString(), MessageKeys.SEARCH_SEARCH_MESSAGE, lang);
@@ -327,7 +279,7 @@ public class ProcessService {
             executeUtil.execute(sendMessage);
         } else if (data.startsWith("category_")) {
             String finalData = data.substring("category_".length());
-            handlePagedList(() -> bookService.getBookList(finalData, 1), chatId, lang, BOOK + "|" + finalData);
+            handleBookSelect(() -> bookService.getBookList(finalData, 1), chatId, lang, BOOK + "|" + finalData);
         }
     }
 
@@ -370,59 +322,13 @@ public class ProcessService {
         }
     }
 
-    private PageContext resolvePageContext(String rawType, int page) {
-        String searchText = rawType.startsWith(SEARCH) ? rawType.substring(SEARCH.length() + 1) : null;
-        String categoryId = rawType.startsWith(BOOK) ? rawType.split("\\|")[1] : null;
-
-        String type;
-        if (searchText != null) {
-            type = SEARCH;
-        } else if (categoryId != null) {
-            type = BOOK;
-        } else {
-            type = rawType;
-        }
-
-        return new PageContext(type, searchText, categoryId, new AtomicInteger(page));
-    }
-
-    private void handleNextStep(PageContext ctx, Long chatId, String lang, Integer messageId) {
-        handleStep(ctx, chatId, lang, messageId, true);
-    }
-
-    private void handleBackStep(PageContext ctx, Long chatId, String lang, Integer messageId) {
-        handleStep(ctx, chatId, lang, messageId, false);
-    }
-
-    private void handleStep(PageContext ctx, Long chatId, String lang, Integer messageId, boolean next) {
-        int page = next ? ctx.page.incrementAndGet() : ctx.page.decrementAndGet();
-
-        switch (ctx.type) {
-            case BOOKING_LIST ->
-                    editMessagePagedList(() -> bookingService.getBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
-            case HISTORY ->
-                    editMessagePagedList(() -> historyService.getHistory(chatId, lang, page), chatId, lang, ctx.type, messageId);
-            case EXPIRED ->
-                    editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
-            case EXPIRING ->
-                    editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
-            case SEARCH -> {
-                String request = ctx.type + "|" + ctx.searchText;
-                editMessagePagedList(() -> searchService.search(chatId, request, lang, page), chatId, lang, request, messageId);
-            }
-            case CATEGORY_LIST ->
-                    editCategoryListMessage(() -> categoryService.getCategoryPartList(page, lang), chatId, messageId);
-            case BOOK -> editMessagePagedList(() -> bookService.getBookList(ctx.categoryId, page), chatId, lang,
-                    BOOK + "|" + ctx.categoryId, messageId);
-            default -> throw new IllegalStateException("Unexpected value: " + ctx.type);
-        }
-    }
-
     @SneakyThrows
-    private void processCallBackDataRegister(Long chatId, String data, Integer messageId, String text) {
+    private void processCallBackDataRegister(Long chatId, String data, Integer messageId, String text, String lang) {
+        if (userService.existsUser(chatId)) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
+            return;
+        }
         data = data.substring("register_".length());
-
-        String lang = userLanguageService.getLanguage(chatId.toString());
 
         registerService.checkRegistrationState(chatId, messageId, text);
 
@@ -506,11 +412,142 @@ public class ProcessService {
     @SneakyThrows
     public void processRegisterPhone(Message message) {
         Long chatId = message.getChatId();
+        String lang = userLanguageService.getLanguage(chatId.toString());
+
+        if (userService.existsUser(chatId)) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
+            return;
+        }
+
         String phone = message.getContact().getPhoneNumber();
 
         registerService.processRegistrationStep(chatId, phone, userLanguageService.getLanguage(chatId.toString()));
 
         buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.PHONE_ADDED, userLanguageService.getLanguage(chatId.toString())));
+    }
+
+    private PageContext resolvePageContext(String rawType, int page) {
+        String searchText = rawType.startsWith(SEARCH) ? rawType.substring(SEARCH.length() + 1) : null;
+        String categoryId = rawType.startsWith(BOOK) ? rawType.split("\\|")[1] : null;
+
+        String type;
+        if (searchText != null) {
+            type = SEARCH;
+        } else if (categoryId != null) {
+            type = BOOK;
+        } else {
+            type = rawType;
+        }
+
+        return new PageContext(type, searchText, categoryId, new AtomicInteger(page));
+    }
+
+    private void handleStep(PageContext ctx, Long chatId, String lang, Integer messageId, boolean next) {
+        int page = next ? ctx.page.incrementAndGet() : ctx.page.decrementAndGet();
+
+        switch (ctx.type) {
+            case BOOKING_LIST ->
+                    editMessagePagedList(() -> bookingService.getBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case HISTORY ->
+                    editMessagePagedList(() -> historyService.getHistory(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case EXPIRED ->
+                    editMessagePagedList(() -> bookingService.getExpiredBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case EXPIRING ->
+                    editMessagePagedList(() -> bookingService.getExpiringBookList(chatId, lang, page), chatId, lang, ctx.type, messageId);
+            case SEARCH -> {
+                String request = ctx.type + "|" + ctx.searchText;
+                editMessagePagedList(() -> searchService.search(chatId, request, lang, page), chatId, lang, request, messageId);
+            }
+            case CATEGORY_LIST ->
+                    editCategoryListMessage(() -> categoryService.getCategoryPartList(page, lang), chatId, messageId);
+            case BOOK -> editBookSelect(() -> bookService.getBookList(ctx.categoryId, page), chatId, lang,
+                    BOOK + "|" + ctx.categoryId, messageId);
+            default -> throw new IllegalStateException("Unexpected value: " + ctx.type);
+        }
+    }
+
+    @SneakyThrows
+    private void handlePagedList(Supplier<PartList> supplier, Long chatId, String lang, String keyboardType) {
+        PartList part = supplier.get();
+        if (part == null) return;
+
+        String text = part.list();
+        SendMessage msg = MessageUtil.createMessage(chatId.toString(), text);
+        InlineKeyboardMarkup markup =
+                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
+        if (markup != null)
+            msg.setReplyMarkup(markup);
+        executeUtil.execute(msg);
+    }
+
+    @SneakyThrows
+    private void editMessagePagedList(Supplier<PartList> supplier, Long chatId, String lang, String keyboardType, Integer messageId) {
+        PartList part = supplier.get();
+        if (part == null) return;
+
+        String text = part.list();
+        EditMessageText editMessageText = MessageUtil.editMessageText(chatId.toString(), messageId, text);
+        InlineKeyboardMarkup markup =
+                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
+        if (markup != null)
+            editMessageText.setReplyMarkup(markup);
+
+        executeUtil.execute(editMessageText);
+    }
+
+    @SneakyThrows
+    private void editCategoryListMessage(Supplier<InlineKeyboardMarkup> supplier, Long chatId, Integer messageId) {
+        InlineKeyboardMarkup markup = supplier.get();
+        if (markup == null) return;
+
+        EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
+        edit.setReplyMarkup(markup);
+        edit.setChatId(chatId);
+        edit.setMessageId(messageId);
+
+        executeUtil.execute(edit);
+    }
+
+    private void handleNextStep(PageContext ctx, Long chatId, String lang, Integer messageId) {
+        handleStep(ctx, chatId, lang, messageId, true);
+    }
+
+    private void handleBackStep(PageContext ctx, Long chatId, String lang, Integer messageId) {
+        handleStep(ctx, chatId, lang, messageId, false);
+    }
+
+    @SneakyThrows
+    private void handleBookSelect(Supplier<BookPartList> supplier, Long chatId, String lang, String keyboardType) {
+        BookPartList part = supplier.get();
+        if (part == null) return;
+
+        String text = part.list();
+        SendMessage msg = MessageUtil.createMessage(chatId.toString(), text);
+
+        InlineKeyboardMarkup controlMarkup =
+                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
+
+        InlineKeyboardMarkup markup = KeyboardUtil.mergeInlineMarkups((InlineKeyboardMarkup) part.markup(), controlMarkup);
+
+        msg.setReplyMarkup(markup);
+        executeUtil.execute(msg);
+    }
+
+    @SneakyThrows
+    private void editBookSelect(Supplier<BookPartList> supplier, Long chatId, String lang, String keyboardType, Integer messageId) {
+        BookPartList part = supplier.get();
+        if (part == null) return;
+
+        String text = part.list();
+        EditMessageText editMessageText = MessageUtil.editMessageText(chatId.toString(), messageId, text);
+
+        InlineKeyboardMarkup controlMarkup =
+                KeyboardUtil.controlInlineKeyboard(lang, part.currentPage(), part.totalPages(), keyboardType);
+
+        InlineKeyboardMarkup markup = KeyboardUtil.mergeInlineMarkups((InlineKeyboardMarkup) part.markup(), controlMarkup);
+
+        editMessageText.setReplyMarkup(markup);
+        executeUtil.execute(editMessageText);
     }
 
     private record PageContext(String type, String searchText, String categoryId, AtomicInteger page) {

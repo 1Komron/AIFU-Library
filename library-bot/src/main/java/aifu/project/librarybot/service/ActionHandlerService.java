@@ -14,9 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static aifu.project.librarybot.service.ActionService.INVALID_RESPONSE;
+import static aifu.project.librarybot.service.ActionService.INVALID_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -49,12 +48,9 @@ public class ActionHandlerService {
 
             return ResponseEntity.ok(new ResponseMessage(true, "Accepted and message sent from: " + chatId,
                     notificationId));
-        } catch (TelegramApiException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
 
     }
@@ -74,12 +70,9 @@ public class ActionHandlerService {
 
             executeUtil.execute(message);
             return ResponseEntity.ok(new ResponseMessage(true, "Rejected", notificationId));
-        } catch (TelegramApiException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 
@@ -103,7 +96,7 @@ public class ActionHandlerService {
             return ResponseEntity.ok(new ResponseMessage(true, "success", notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 
@@ -117,7 +110,7 @@ public class ActionHandlerService {
             return ResponseEntity.ok(new ResponseMessage(true, "Rejected", notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 
@@ -137,7 +130,7 @@ public class ActionHandlerService {
                     notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 
@@ -145,11 +138,33 @@ public class ActionHandlerService {
     public ResponseEntity<ResponseMessage> registrationReject(Long chatId, String lang,
                                                               Long notificationId, RegisterRequest registerRequest) {
         try {
-            userService.deleteUser(chatId);
-
             notificationService.deleteNotification(notificationId);
 
             registerRequestService.delete(registerRequest);
+
+            String removeUser = userService.removeUser(chatId);
+            if (removeUser != null) {
+                switch (removeUser) {
+                    case "booking" -> {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseMessage(false, "The student has the book. Deletion is not possible until the book is returned.", null));
+                    }
+                    case "request" -> {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseMessage(false, "The student has an active book request. Please decline it before deleting the user.", null));
+                    }
+                    case "history" -> {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseMessage(false, "Unable to delete student", null));
+                    }
+                    default -> {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(new ResponseMessage(false, INVALID_REQUEST, null));
+                    }
+
+                }
+
+            }
 
             executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_REJECTED, lang);
 
@@ -157,7 +172,7 @@ public class ActionHandlerService {
                     .ok(new ResponseMessage(true, "Register rejected by chatId : " + chatId, notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 
@@ -176,7 +191,7 @@ public class ActionHandlerService {
                     notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 
@@ -195,7 +210,7 @@ public class ActionHandlerService {
                     notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
         }
     }
 }

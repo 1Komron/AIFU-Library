@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
@@ -19,5 +20,8 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
     List<BaseBook> findByIdIn(List<Integer> ids);
 
     Page<BaseBook> findByCategory(BaseBookCategory category, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"copies"}, type = EntityGraph.EntityGraphType.LOAD)
+    Optional<BaseBook> findBookById(Integer id);
 }
 

@@ -28,4 +28,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
             @Param("chatId") Long chatId,
             Pageable pageable
     );
+
+    boolean existsHistoriesByUser_Id(Long userId);
 }

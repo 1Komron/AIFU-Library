@@ -18,7 +18,7 @@ public class ActionService {
     private final ActionHandlerService actionHandlerService;
     private final NotificationService notificationService;
 
-    static final String INVALID_RESPONSE = "Invalid response";
+    static final String INVALID_REQUEST = "Invalid request";
 
     public ResponseEntity<ResponseMessage> registerStudent(RegistrationRequest request) {
         String chatId = request.chatId();
@@ -27,12 +27,12 @@ public class ActionService {
         RegisterRequest response = registerRequestService.getRegisterRequest(chatId);
         if (response == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         Long notificationId = notificationService.getNotificationId(response.getId(), RequestType.REGISTER);
         if (notificationId == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         return Boolean.TRUE.equals(request.accept())
                 ? actionHandlerService.registrationAccept(Long.parseLong(chatId), lang, notificationId, response)
@@ -47,12 +47,12 @@ public class ActionService {
         BookingRequest bookingRequest = bookingRequestService.getBookingRequest(chatId, bookId, BookingRequestStatus.BORROW);
         if (bookingRequest == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         Long notificationId = notificationService.getNotificationId(bookingRequest.getId(), RequestType.BOOKING);
         if (notificationId == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         return Boolean.TRUE.equals(request.accept())
                 ? actionHandlerService.borrowBookAccept(bookingRequest, chatId, lang, notificationId)
@@ -67,12 +67,12 @@ public class ActionService {
         BookingRequest bookingRequest = bookingRequestService.getBookingRequest(chatId, bookId, BookingRequestStatus.EXTEND);
         if (bookingRequest == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         Long notificationId = notificationService.getNotificationId(bookingRequest.getId(), RequestType.BOOKING);
         if (notificationId == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         return Boolean.TRUE.equals(request.accept())
                 ? actionHandlerService.extendBookAccept(bookId, bookingRequest, chatId, lang, notificationId)
@@ -87,12 +87,12 @@ public class ActionService {
         BookingRequest bookingRequest = bookingRequestService.getBookingRequest(chatId, bookId, BookingRequestStatus.RETURN);
         if (bookingRequest == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         Long notificationId = notificationService.getNotificationId(bookingRequest.getId(), RequestType.BOOKING);
         if (notificationId == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_RESPONSE, null));
+                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
 
         return Boolean.TRUE.equals(request.accept())
                 ? actionHandlerService.returnBookAccept(bookingRequest, chatId, lang, notificationId)

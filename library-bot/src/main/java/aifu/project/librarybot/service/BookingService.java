@@ -332,4 +332,12 @@ public class BookingService {
         LocalDate to = from.plusMonths(1);
         return bookingRepository.countByGivenAtBetween(from,to.minusDays(1));
     }
+
+    public boolean hasBookingForUser(Long userId) {
+        return bookingRepository.existsBookingByUser_Id(userId);
+    }
+
+    public boolean hasBookingForUserChatId(Long chatId) {
+        return bookingRepository.existsBookingByUser_ChatId(chatId);
+    }
 }

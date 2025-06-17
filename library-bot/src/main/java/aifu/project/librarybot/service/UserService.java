@@ -9,7 +9,6 @@ import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.mapper.NotificationMapper;
 import aifu.project.common_domain.mapper.UserMapper;
 import aifu.project.common_domain.payload.BotUserDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.NotificationRepository;
 import aifu.project.librarybot.repository.UserRepository;
@@ -24,8 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +31,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private final UserLanguageService userLanguageService;
-    private final RegisterService registerService;
     private final RegisterRequestService registerRequestService;
+    private final HistoryService historyService;
+    private final BookingService bookingService;
+    private final BookingRequestService bookingRequestService;
     private final RabbitTemplate rabbitTemplate;
     private final ExecuteUtil executeUtil;
 
@@ -51,25 +51,6 @@ public class UserService {
         KeyboardUtil.getLoginRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
 
         executeUtil.execute(sendMessage);
-    }
-
-    @SneakyThrows
-    public void registerUser(Long chatId, Integer messageId) {
-        String text = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, userLanguageService.getLanguage(chatId.toString()));
-        SendMessage sendMessage = new SendMessage(chatId.toString(),
-                text.formatted("-", "-", "-", "-", "-", "-"));
-
-        KeyboardUtil.getRegisterInlineKeyboard(sendMessage, userLanguageService.getLanguage(chatId.toString()));
-
-        registerService.checkHaveRegistrationState(chatId);
-
-        DeleteMessage deleteMessage = MessageUtil.deleteMessage(chatId.toString(), messageId);
-
-        executeUtil.execute(deleteMessage);
-
-        Message execute = executeUtil.execute(sendMessage);
-
-        registerService.addMessageId(chatId, execute.getMessageId());
     }
 
     @Transactional
@@ -121,7 +102,51 @@ public class UserService {
         return !userRepository.existsByChatIdAndIsActive(chatId, true);
     }
 
-    public void deleteUser(Long chatId) {
+    public boolean existsUser(Long chatId) {
+        return userRepository.existsUserByChatId(chatId);
+    }
+
+    @Transactional
+    public String removeUser(Long chatId) {
+        boolean hasHistoryForUser = historyService.hasHistoryForUserChatId(chatId);
+        boolean hasBooking = bookingService.hasBookingForUserChatId(chatId);
+        boolean hasRequest = bookingRequestService.hasRequestForUserChatId(chatId);
+
+        if (hasHistoryForUser)
+            return "history";
+
+        if (hasBooking)
+            return "booking";
+
+        if (hasRequest)
+            return "request";
+
         userRepository.deleteByChatId(chatId);
+        return null;
+    }
+
+    public ResponseEntity<String> deleteUser(Long userId) {
+        if (!userRepository.existsUserById(userId)) {
+            return ResponseEntity.badRequest().build();
+        }
+        boolean hasHistoryForUser = historyService.hasHistoryForUser(userId);
+        boolean hasBooking = bookingService.hasBookingForUser(userId);
+        boolean hasRequest = bookingRequestService.hasRequestForUser(userId);
+        boolean hasRegisterRequest = registerRequestService.hasRequestForUser(userId);
+
+        if (hasHistoryForUser)
+            return ResponseEntity.ok("history");
+
+        if (hasBooking)
+            return ResponseEntity.ok("booking");
+
+        if (hasRequest)
+            return ResponseEntity.ok("request");
+
+        if (hasRegisterRequest)
+            return ResponseEntity.ok("registerRequest");
+
+        userRepository.deleteById(userId);
+        return ResponseEntity.ok("deleted");
     }
 }

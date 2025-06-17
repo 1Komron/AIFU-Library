@@ -38,4 +38,12 @@ public class BookingRequestService {
     public BookingRequest getBookingRequest(Long chatId, Integer bookCopyId, BookingRequestStatus status) {
         return bookingRequestRepository.findBookingRequestByUserChatIdAndBookCopyIdAndStatus(chatId, bookCopyId, status);
     }
+
+    public boolean hasRequestForUser(Long userId) {
+        return bookingRequestRepository.existsBookingRequestByUser_Id(userId);
+    }
+
+    public boolean hasRequestForUserChatId(Long chatId) {
+        return bookingRequestRepository.existsBookingRequestByUser_ChatId(chatId);
+    }
 }

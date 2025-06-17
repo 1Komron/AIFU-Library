@@ -4,6 +4,7 @@ import aifu.project.common_domain.dto.SearchDTO;
 import aifu.project.common_domain.dto.SearchPart;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BookCopy;
+import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.payload.PartList;
 import aifu.project.librarybot.lucene.LuceneSearchService;
 import aifu.project.librarybot.repository.BaseBookRepository;
@@ -42,7 +43,7 @@ public class SearchService {
         }
 
         SearchPart searchPart = customPageable(optionalList.get(), page);
-        return getSearchResult(searchPart, chatId, lang);
+        return getSearchResult(searchPart, lang);
     }
 
     private SearchPart customPageable(List<SearchDTO> books, int page) {
@@ -51,7 +52,6 @@ public class SearchService {
         int size = books.size();
 
         int totalPages = (int) Math.ceil((double) size / pageSize);
-
 
         if (page < 0 || page >= totalPages) {
             throw new RuntimeException("Page must be between 0 and " + (totalPages - 1));
@@ -64,7 +64,7 @@ public class SearchService {
     }
 
     @SneakyThrows
-    public PartList getSearchResult(SearchPart part, Long chatId, String lang) {
+    public PartList getSearchResult(SearchPart part, String lang) {
         List<Integer> bookIds = part.searchDTOs().stream()
                 .map(SearchDTO::id)
                 .toList();
@@ -76,7 +76,7 @@ public class SearchService {
             int notTakenCopies = getNotTakenCopies(copies);
 
             String template = MessageUtil.get(MessageKeys.SEARCH_BOOK, lang);
-            String formatted = template.formatted(book.getId(), book.getAuthor(), book.getTitle(),
+            String formatted = template.formatted(book.getAuthor(), book.getTitle(),
                     book.getIsbn(), book.getCategory().getName(), book.getPublicationYear(),
                     book.getLanguage(), book.getTitleDetails(),
                     copies.size(), notTakenCopies);
@@ -84,6 +84,23 @@ public class SearchService {
             sb.append(formatted).append("\n");
         });
         return new PartList(sb.toString(), part.currentPage(), part.totalPages());
+    }
+
+    public String getSearchResult(String id, String lang) {
+        Integer bookId = Integer.parseInt(id);
+
+        BaseBook book = baseBookRepository.findBookById(bookId)
+                .orElseThrow(() -> new BaseBookNotFoundException("Base book not found by bookId" + bookId));
+
+        List<BookCopy> copies = book.getCopies();
+        int notTakenCopies = getNotTakenCopies(copies);
+
+        String template = MessageUtil.get(MessageKeys.SEARCH_BOOK, lang);
+
+        return template.formatted(book.getAuthor(), book.getTitle(),
+                book.getIsbn(), book.getCategory().getName(), book.getPublicationYear(),
+                book.getLanguage(), book.getTitleDetails(),
+                copies.size(), notTakenCopies);
     }
 
     private int getNotTakenCopies(List<BookCopy> copies) {

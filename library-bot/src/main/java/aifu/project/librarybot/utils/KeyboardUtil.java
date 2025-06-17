@@ -1,5 +1,6 @@
 package aifu.project.librarybot.utils;
 
+import aifu.project.common_domain.entity.BaseBook;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -284,6 +285,42 @@ public class KeyboardUtil {
         }
         if (!row.isEmpty()) {
             rows.add(row);
+        }
+
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getBookSelectButtons(List<BaseBook> bookList) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton button;
+
+        for (int i = 0; i < bookList.size(); i++) {
+            button = new InlineKeyboardButton();
+            button.setText(String.valueOf(i + 1));
+            button.setCallbackData("bookId_" + bookList.get(i).getId());
+            row.add(button);
+        }
+
+        rows.add(row);
+        keyboardMarkup.setKeyboard(rows);
+        return keyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup mergeInlineMarkups(InlineKeyboardMarkup markup1, InlineKeyboardMarkup markup2) {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        if (markup1 != null) {
+            List<List<InlineKeyboardButton>> markup1Keyboard = markup1.getKeyboard();
+            rows.addAll(markup1Keyboard);
+        }
+
+        if (markup2 != null) {
+            List<List<InlineKeyboardButton>> markup2Keyboard = markup2.getKeyboard();
+            rows.addAll(markup2Keyboard);
         }
 
         keyboardMarkup.setKeyboard(rows);

@@ -23,3 +23,7 @@ notification:
     http://localhost:8081/notification/get/unread
   getAll:
     http://localhost:8081/notification/get/all
+
+user:
+  BaseUri:
+    http://localhost:8081/api/user

@@ -27,4 +27,8 @@ public class RegisterRequestService {
     public void delete(RegisterRequest request) {
         registerRequestRepository.delete(request);
     }
+
+    public boolean hasRequestForUser(Long userId) {
+        return registerRequestRepository.existsRegisterRequestByUser_Id(userId);
+    }
 }

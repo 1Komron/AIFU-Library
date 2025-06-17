@@ -81,4 +81,17 @@ public class HistoryService {
         LocalDate to = from.plusMonths(1);
         return historyRepository.countByGivenAtBetween(from, to.minusDays(1));
     }
+
+    public List<History> getHistoryList() {
+        return historyRepository.findAll();
+    }
+
+    public boolean hasHistoryForUser(Long id) {
+        return historyRepository.existsHistoriesByUser_Id(id);
+    }
+
+    public boolean hasHistoryForUserChatId(Long id) {
+        return historyRepository.existsHistoriesByUser_ChatId(id);
+    }
+
 }

@@ -1,5 +1,6 @@
 package aifu.project.common_domain.mapper;
 
+import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookUpdateDTO;
@@ -39,7 +40,7 @@ public class BaseBookMapper {
         dto.setPageCount(entity.getPageCount());
         dto.setLanguage(entity.getLanguage());
         dto.setUdc(entity.getUdc());
-        dto.setCategoryId(entity.getCategory().getId());
+        dto.setCategory(new BaseBookCategoryDTO(entity.getCategory().getId(), entity.getCategory().getName()));
         return dto;
     }
 
@@ -56,5 +57,8 @@ public class BaseBookMapper {
         entity.setLanguage(dto.getLanguage());
         entity.setUdc(dto.getUdc());
         entity.setCategory(category);
+    }
+
+    private BaseBookMapper() {
     }
 }

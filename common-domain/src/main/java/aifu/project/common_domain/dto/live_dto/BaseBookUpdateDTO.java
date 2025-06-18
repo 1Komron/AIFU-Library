@@ -13,7 +13,7 @@ public class BaseBookUpdateDTO {
 
     private String titleDetails;
 
-    private int publicationYear;
+    private Integer publicationYear;
 
     private String publisher;
 
@@ -21,7 +21,7 @@ public class BaseBookUpdateDTO {
 
     private String isbn;
 
-    private int pageCount;
+    private Integer pageCount;
 
     private String language;
 

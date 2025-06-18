@@ -17,7 +17,6 @@ import java.util.List;
 
 public class BaseBook {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -45,11 +44,14 @@ public class BaseBook {
 
     private String udc;
 
+    @Builder.Default
+    private boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private BaseBookCategory category;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "book", orphanRemoval = true)
     @Builder.Default
     private List<BookCopy> copies = new ArrayList<>();
 

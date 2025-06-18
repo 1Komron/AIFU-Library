@@ -8,6 +8,7 @@ aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO.class
 aifu/project/common_domain/entity/enums/Status.class
 aifu/project/common_domain/mapper/BaseBookMapper.class
 aifu/project/common_domain/payload/WebDTO.class
+aifu/project/common_domain/exceptions/BaseBookCategoryNotFoundException.class
 aifu/project/common_domain/dto/live_dto/BookCopyResponseDTO.class
 aifu/project/common_domain/mapper/PdfBookMapper.class
 aifu/project/common_domain/payload/BookPartList.class
@@ -66,6 +67,8 @@ aifu/project/common_domain/payload/NotificationDTO.class
 aifu/project/common_domain/dto/live_dto/BookCopyCreateDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookUpdateDTO.class
 aifu/project/common_domain/payload/RegisterRequestDTO.class
+aifu/project/common_domain/dto/UpdateCategoryRequest.class
+aifu/project/common_domain/dto/CreateCategoryRequest.class
 aifu/project/common_domain/dto/pdf_book_dto/UpdateCategoryDTO.class
 aifu/project/common_domain/payload/ExtendBookRequest.class
 aifu/project/common_domain/payload/ResponseMessage.class

@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.handler;
 
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
+import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseBookCategoryNotFoundException.class)
     public ResponseEntity<ResponseMessage> handleBaseBookCategoryNotFoundException(BaseBookCategoryNotFoundException e) {
-        log.error("Base book category not found exception. Message: {}", e.getMessage());
+        log.error("Base book category not found. Message: {}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ResponseMessage(false, "Category not found", e.getMessage()));
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(BaseBookNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleBaseBookNotFoundException(BaseBookNotFoundException e) {
+        log.error("Base book not found. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ResponseMessage> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error("Illegal argument exception. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -1,9 +1,11 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/BaseBookCategoryDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/BookingDiagramDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/BookingResponse.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/CreateCategoryRequest.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/PageContext.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/SearchDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/SearchPart.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/UpdateCategoryRequest.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookCategoryCreateDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookCategoryResponseDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO.java
@@ -35,6 +37,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/enums/RequestType.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/enums/Role.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/enums/Status.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/BaseBookCategoryNotFoundException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/BaseBookNotFoundException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/BookCopyNotFoundException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/NotificationNotFoundException.java

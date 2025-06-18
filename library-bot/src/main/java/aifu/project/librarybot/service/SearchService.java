@@ -90,7 +90,7 @@ public class SearchService {
         Integer bookId = Integer.parseInt(id);
 
         BaseBook book = baseBookRepository.findBookById(bookId)
-                .orElseThrow(() -> new BaseBookNotFoundException("Base book not found by bookId" + bookId));
+                .orElseThrow(() -> new BaseBookNotFoundException( + bookId));
 
         List<BookCopy> copies = book.getCopies();
         int notTakenCopies = getNotTakenCopies(copies);

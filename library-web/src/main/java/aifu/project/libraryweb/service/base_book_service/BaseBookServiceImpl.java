@@ -9,8 +9,10 @@ import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.mapper.BaseBookMapper;
 import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.libraryweb.lucene.LuceneIndexService;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,20 +22,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BaseBookServiceImpl implements BaseBookService {
 
     private final BaseBookRepository baseBookRepository;
     private final BaseBookCategoryRepository categoryRepository;
-
-    public BaseBookServiceImpl(BaseBookRepository baseBookRepository, BaseBookCategoryRepository categoryRepository) {
-        this.baseBookRepository = baseBookRepository;
-        this.categoryRepository = categoryRepository;
-    }
+    private final LuceneIndexService luceneIndexService;
 
     @Override
     public ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto) {
@@ -45,6 +45,13 @@ public class BaseBookServiceImpl implements BaseBookService {
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
 
         log.info("Base book created: {}", entity);
+
+        try {
+            luceneIndexService.indexBaseBooks(entity);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseMessage(true, "Base book create successfully", responseDTO));
     }
@@ -119,6 +126,12 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         log.info("Base book updated: {}.\nUpdated fields: {}", entity, updates.keySet());
 
+        try {
+            luceneIndexService.indexBaseBooks(entity);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
         return ResponseEntity.ok(new ResponseMessage(true, "Successfully updated", responseDTO));
     }
@@ -133,6 +146,12 @@ public class BaseBookServiceImpl implements BaseBookService {
         baseBookRepository.save(entity);
 
         log.info("Base book deleted by id: {}", id);
+
+        try {
+            luceneIndexService.deleteBaseBookIndex(id);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book deleted successfully", id));
     }

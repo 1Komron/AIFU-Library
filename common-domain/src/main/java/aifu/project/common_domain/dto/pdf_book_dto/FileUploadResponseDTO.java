@@ -10,6 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileUploadResponseDTO {
+
     private String url;
+
     private Double sizeMB;
+
 }

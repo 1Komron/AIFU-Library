@@ -10,11 +10,13 @@ import lombok.*;
 @Builder
 public class PdfBookPreviewDTO {
 
+    private Integer id;
+
     private String author;
 
     private String title;
 
     private String imageUrl;
 
-    private Category category;
+    private CategoryPreviewDTO categoryPreviewDTO;
 }

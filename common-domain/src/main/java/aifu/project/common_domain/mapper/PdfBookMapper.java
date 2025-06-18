@@ -1,10 +1,7 @@
 package aifu.project.common_domain.mapper;
 
 
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.entity.PdfBook;
 
@@ -28,7 +25,7 @@ public class PdfBookMapper {
                 .isbn(dto.getIsbn())
                 .size(dto.getSize())
                 .localDate(LocalDate.now())
-                .discription(dto.getDescription())
+                .description(dto.getDescription())
                 .build();
     }
 
@@ -71,7 +68,7 @@ public class PdfBookMapper {
             entity.setIsbn(dto.getIsbn());
         }
         if(dto.getDescription() != null) {
-            entity.setDiscription(dto.getDescription());
+            entity.setDescription(dto.getDescription());
         }
         if (dto.getCategoryId() != null) {
             entity.setCategory(Category.builder().id(dto.getCategoryId()).build());
@@ -97,20 +94,28 @@ public class PdfBookMapper {
                 .language(entity.getLanguage())
                 .script(entity.getScript())
                 .localDate(entity.getLocalDate())
-                .discription(entity.getDiscription())
-                .category(entity.getCategory())
+                .description(entity.getDescription())
+                .categoryPreview(toCategoryPreviewDTO(entity.getCategory()))
                 .build();
     }
 
 
     public static PdfBookPreviewDTO toPreviewDto(PdfBook entity) {
         return PdfBookPreviewDTO.builder()
+                .id(entity.getId())
                 .author(entity.getAuthor())
                 .title(entity.getTitle())
                 .imageUrl(entity.getImageUrl())
-                .category(entity.getCategory())
+                .categoryPreviewDTO(toCategoryPreviewDTO(entity.getCategory()))
                 .build();
     }
 
+    private static CategoryPreviewDTO toCategoryPreviewDTO(Category category) {
+        if (category == null) return null;
 
+        return CategoryPreviewDTO.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
+    }
  }

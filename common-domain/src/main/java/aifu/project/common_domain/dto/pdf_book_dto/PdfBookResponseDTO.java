@@ -23,10 +23,7 @@ public class PdfBookResponseDTO {
 
     private Integer publicationYear;
 
-    private Category category;
-
-    private String categoryName;
-
+    private CategoryPreviewDTO categoryPreview;
     private String pdfUrl;
 
     private String imageUrl;
@@ -43,6 +40,6 @@ public class PdfBookResponseDTO {
 
     private LocalDate localDate;
 
-    private String discription;
+    private String description;
 
 }

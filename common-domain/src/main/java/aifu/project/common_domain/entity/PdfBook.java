@@ -42,7 +42,7 @@ public class PdfBook {
 
     private String script;
 
-    private String discription;
+    private String description;
 
     @Builder.Default
     private LocalDate localDate = LocalDate.now();

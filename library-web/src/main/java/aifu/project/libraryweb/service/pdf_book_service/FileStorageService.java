@@ -82,6 +82,7 @@ public class FileStorageService {
         String url = "/uploads/" + subDir + "/" + filename;
         return url;
     }
+
     public FileUploadResponseDTO saveWithSize(MultipartFile file, String subDir) throws IOException {
         String url = save(file, subDir); // Mavjud save metodi
         double sizeMb = file.getSize() / 1024.0 / 1024.0;

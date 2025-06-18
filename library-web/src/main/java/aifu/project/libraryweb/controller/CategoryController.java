@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.*;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,16 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CreateCategoryDTO dto) {
-        return ResponseEntity.ok(categoryService.create(dto));
+    public ResponseEntity<ResponseMessage> create(
+            @Valid @RequestBody CreateCategoryDTO dto) {
+        CategoryResponseDTO response = categoryService.create(dto);
+        ResponseMessage body = new ResponseMessage(
+                true,
+                "Category muvaffaqiyatli yaratildi",
+                        response
+        );
+        
+        return ResponseEntity.ok(body);
     }
 
     @PutMapping("/{id}")

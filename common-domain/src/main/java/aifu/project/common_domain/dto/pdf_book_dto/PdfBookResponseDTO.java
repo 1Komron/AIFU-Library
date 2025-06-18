@@ -1,5 +1,6 @@
 package aifu.project.common_domain.dto.pdf_book_dto;
 
+import aifu.project.common_domain.entity.Category;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -22,7 +23,9 @@ public class PdfBookResponseDTO {
 
     private Integer publicationYear;
 
-    private Integer categoryId;
+    private Category category;
+
+    private String categoryName;
 
     private String pdfUrl;
 

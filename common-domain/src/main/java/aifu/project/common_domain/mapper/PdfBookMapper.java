@@ -77,6 +77,7 @@ public class PdfBookMapper {
             entity.setCategory(Category.builder().id(dto.getCategoryId()).build());
         }
 
+
     }
 
     // Entity → Response DTO
@@ -97,7 +98,7 @@ public class PdfBookMapper {
                 .script(entity.getScript())
                 .localDate(entity.getLocalDate())
                 .discription(entity.getDiscription())
-                .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)
+                .category(entity.getCategory())
                 .build();
     }
 
@@ -107,7 +108,7 @@ public class PdfBookMapper {
                 .author(entity.getAuthor())
                 .title(entity.getTitle())
                 .imageUrl(entity.getImageUrl())
-                .categoryId(entity.getCategory() != null ? entity.getCategory().getId() :null)
+                .category(entity.getCategory())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package aifu.project.common_domain.dto.pdf_book_dto;
 
+import aifu.project.common_domain.entity.Category;
 import lombok.*;
 
 @Getter
@@ -15,5 +16,5 @@ public class PdfBookPreviewDTO {
 
     private String imageUrl;
 
-    private Integer categoryId;
+    private Category category;
 }

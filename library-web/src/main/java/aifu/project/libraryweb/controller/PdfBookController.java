@@ -42,6 +42,7 @@ public class PdfBookController {
         return ResponseEntity.ok(updatedBook);
     }
 
+    /// ////////////////////////////////////////////////////////////////////////////
     @GetMapping("/{id}")
     public ResponseEntity<PdfBookResponseDTO> getOne(@PathVariable Integer id) {
         PdfBookResponseDTO book = pdfBookService.getOne(id);

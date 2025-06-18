@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationMQListener {
     private final NotificationSender notificationSender;
-
+/*
     @RabbitListener(queues = "queue.borrow")
     public void handleBorrow(NotificationDTO notification) {
         notificationSender.send(notification);
@@ -29,5 +29,6 @@ public class NotificationMQListener {
     @RabbitListener(queues = "queue.register")
     public void handleRegister(NotificationDTO notification) {
         notificationSender.send(notification);
-    }
+        }
+        */
 }

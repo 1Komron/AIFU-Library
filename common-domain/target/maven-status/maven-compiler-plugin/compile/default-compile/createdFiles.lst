@@ -47,6 +47,7 @@ aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO$CategoryResponse
 aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.class
 aifu/project/common_domain/exceptions/NotificationNotFoundException.class
 aifu/project/common_domain/dto/SearchDTO.class
+aifu/project/common_domain/dto/live_dto/BaseBookCategoryDTO.class
 aifu/project/common_domain/payload/UserShortDTO.class
 aifu/project/common_domain/entity/User.class
 aifu/project/common_domain/dto/SearchPart.class

@@ -18,5 +18,7 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
     Page<BaseBook> findByIsDeletedFalse(Pageable pageable);
 
     Optional<BaseBook> findByIdAndIsDeletedFalse(Integer id);
+
+    boolean existsByIdAndIsDeletedFalse(Integer baseBookId);
 }
 

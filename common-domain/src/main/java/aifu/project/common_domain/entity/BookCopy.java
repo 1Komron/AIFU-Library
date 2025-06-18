@@ -29,6 +29,9 @@ public class BookCopy {
     @Builder.Default
     private boolean isTaken = false;
 
+    @Builder.Default
+    private boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_book_id")
     private BaseBook book;

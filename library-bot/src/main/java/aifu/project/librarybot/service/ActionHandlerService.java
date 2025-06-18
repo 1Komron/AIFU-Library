@@ -200,7 +200,10 @@ public class ActionHandlerService {
         try {
             BookCopy bookCopy = bookingRequest.getBookCopy();
             bookCopy.setTaken(false);
+
             bookCopyRepository.save(bookCopy);
+
+            bookingRequestService.delete(bookingRequest);
 
             notificationService.deleteNotification(notificationId);
 

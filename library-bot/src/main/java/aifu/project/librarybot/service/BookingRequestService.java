@@ -6,16 +6,14 @@ import aifu.project.common_domain.entity.User;
 import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.librarybot.repository.BookingRequestRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingRequestService {
     private final BookingRequestRepository bookingRequestRepository;
-    private static final Logger log = LoggerFactory.getLogger(BookingRequestService.class);
 
     public BookingRequest create(User user, BookCopy bookCopy, BookingRequestStatus status) {
         BookingRequest bookingRequest = new BookingRequest();

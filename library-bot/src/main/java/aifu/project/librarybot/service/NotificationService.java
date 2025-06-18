@@ -1,9 +1,17 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.common_domain.entity.Notification;
+import aifu.project.common_domain.entity.*;
 import aifu.project.common_domain.entity.enums.RequestType;
+import aifu.project.common_domain.exceptions.NotificationNotFoundException;
+import aifu.project.common_domain.exceptions.RequestNotFoundException;
+import aifu.project.common_domain.mapper.UserMapper;
+import aifu.project.common_domain.payload.BookingRequestDTO;
+import aifu.project.common_domain.payload.BotUserDTO;
+import aifu.project.common_domain.payload.RegisterRequestDTO;
 import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.librarybot.repository.BookingRequestRepository;
 import aifu.project.librarybot.repository.NotificationRepository;
+import aifu.project.librarybot.repository.RegisterRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +27,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NotificationService {
     private final NotificationRepository notificationRepository;
+    private final BookingRequestRepository bookingRequestRepository;
+    private final RegisterRequestRepository registerRequestRepository;
 
     public void deleteNotification(Long notificationId) {
         Notification notification = notificationRepository.getNotificationById(notificationId);
@@ -32,21 +42,6 @@ public class NotificationService {
     public Long getNotificationId(Long requestId, RequestType type) {
         return notificationRepository.findNotificationIdByRequestIdAndRequestType(requestId, type);
     }
-
-    /**
-     * public ResponseEntity<ResponseMessage> deleteNotification(Long notificationId) {
-     * Notification notification = notificationRepository.getNotificationById(notificationId);
-     * <p>
-     * if (notification == null)
-     * return ResponseEntity
-     * .status(HttpStatus.NOT_FOUND)
-     * .body(new ResponseMessage(false, "Notification not found by id" + notificationId, null));
-     * <p>
-     * notificationRepository.delete(notification);
-     * <p>
-     * return ResponseEntity.ok(new ResponseMessage(true, "Notification deleted", notification));
-     * }
-     */
 
     public ResponseEntity<ResponseMessage> getUnreadNotifications(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "notificationTime"));
@@ -80,5 +75,56 @@ public class NotificationService {
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "All notifications", pageInfo));
+    }
+
+    public ResponseEntity<ResponseMessage> get(String notificationId) {
+        Notification notification;
+        try {
+            notification = notificationRepository.findNotificationById(Long.parseLong(notificationId))
+                    .orElseThrow(() -> new NotificationNotFoundException("Not found by id: " + notificationId));
+        } catch (ClassCastException e) {
+            throw new NotificationNotFoundException("Not found by id: " + notificationId);
+        }
+
+        notification.setRead(true);
+        notificationRepository.save(notification);
+        Object data = getRequestBody(notification.getRequestType(), notification.getRequestId());
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification detail", data));
+    }
+
+    private Object getRequestBody(RequestType type, Long requestId) {
+        if (type == RequestType.BOOKING) {
+            BookingRequest bookingRequest = bookingRequestRepository.findById(requestId)
+                    .orElseThrow(() -> new RequestNotFoundException("Booking request not found by requestId: " + requestId));
+
+            return createBookingRequestDTO(bookingRequest);
+        } else {
+            RegisterRequest registerRequest = registerRequestRepository.findById(requestId)
+                    .orElseThrow(() -> new RequestNotFoundException("Register request not found by requestId: " + requestId));
+
+            return createRegisterRequestDTO(registerRequest);
+        }
+    }
+
+    private RegisterRequestDTO createRegisterRequestDTO(RegisterRequest registerRequest) {
+        User user = registerRequest.getUser();
+        BotUserDTO botDTO = UserMapper.toBotDTO(user);
+
+        return new RegisterRequestDTO(botDTO, registerRequest.getCreatedAt());
+    }
+
+    private BookingRequestDTO createBookingRequestDTO(BookingRequest bookingRequest) {
+        BookCopy bookCopy = bookingRequest.getBookCopy();
+        BaseBook book = bookCopy.getBook();
+
+        return new BookingRequestDTO(
+                UserMapper.toBotDTO(bookingRequest.getUser()),
+                bookCopy.getId(),
+                book.getAuthor(),
+                book.getTitle(),
+                book.getIsbn(),
+                bookCopy.getInventoryNumber()
+        );
     }
 }

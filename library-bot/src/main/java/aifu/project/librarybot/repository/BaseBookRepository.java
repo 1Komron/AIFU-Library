@@ -19,9 +19,9 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
     @EntityGraph(attributePaths = {"copies", "category"}, type = EntityGraph.EntityGraphType.LOAD)
     List<BaseBook> findByIdIn(List<Integer> ids);
 
-    Page<BaseBook> findByCategory(BaseBookCategory category, Pageable pageable);
+    Page<BaseBook> findByCategoryAndIsDeletedFalse(BaseBookCategory category, Pageable pageable);
 
     @EntityGraph(attributePaths = {"copies"}, type = EntityGraph.EntityGraphType.LOAD)
-    Optional<BaseBook> findBookById(Integer id);
+    Optional<BaseBook> findBookByIdAndIsDeletedFalse(Integer id);
 }
 

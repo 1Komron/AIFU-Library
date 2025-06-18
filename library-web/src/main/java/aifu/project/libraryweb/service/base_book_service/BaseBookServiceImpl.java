@@ -27,7 +27,7 @@ public class BaseBookServiceImpl implements BaseBookService {
 
     @Override
     public BaseBookResponseDTO create(BaseBookCreateDTO dto) {
-        BaseBookCategory category = categoryRepository.findById(dto.getCategoryId());
+        BaseBookCategory category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new RuntimeException("Category Not Found"));
 
         BaseBook entity = BaseBookMapper.toEntity(dto, category);
         baseBookRepository.save(entity);
@@ -53,7 +53,8 @@ public class BaseBookServiceImpl implements BaseBookService {
         BaseBook entity = baseBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BaseBook not found"));
 
-        BaseBookCategory category = categoryRepository.findById(dto.getCategoryId());
+        BaseBookCategory category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category Not Found"));
 
         BaseBookMapper.updateEntity(entity, dto, category);
         baseBookRepository.save(entity);

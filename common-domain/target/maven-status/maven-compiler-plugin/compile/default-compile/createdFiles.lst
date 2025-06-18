@@ -4,9 +4,11 @@ aifu/project/common_domain/entity/BaseBook.class
 aifu/project/common_domain/entity/BaseBookCategory.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryResponseDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO.class
+aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO.class
 aifu/project/common_domain/entity/enums/Status.class
 aifu/project/common_domain/mapper/BaseBookMapper.class
 aifu/project/common_domain/payload/WebDTO.class
+aifu/project/common_domain/dto/live_dto/BookCopyResponseDTO.class
 aifu/project/common_domain/mapper/PdfBookMapper.class
 aifu/project/common_domain/payload/BookPartList.class
 aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO$CreateCategoryDTOBuilder.class
@@ -21,6 +23,7 @@ aifu/project/common_domain/mapper/NotificationMapper.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO.class
 aifu/project/common_domain/entity/BaseBookCategory$BaseBookCategoryBuilder.class
 aifu/project/common_domain/payload/BotDTO.class
+aifu/project/common_domain/dto/BaseBookCategoryDTO.class
 aifu/project/common_domain/entity/BookCopy$BookCopyBuilder.class
 aifu/project/common_domain/entity/enums/BookingRequestStatus.class
 aifu/project/common_domain/entity/enums/Role.class
@@ -30,6 +33,7 @@ aifu/project/common_domain/entity/enums/NotificationType.class
 aifu/project/common_domain/payload/PartList.class
 aifu/project/common_domain/payload/ReturnBookRequest.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookPreviewDTO$PdfBookPreviewDTOBuilder.class
+aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO$BaseBookCreateDTOBuilder.class
 aifu/project/common_domain/payload/BorrowBookRequest.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO$PdfBookResponseDTOBuilder.class
 aifu/project/common_domain/dto/BookingResponse.class
@@ -42,7 +46,6 @@ aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO$CategoryResponse
 aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.class
 aifu/project/common_domain/exceptions/NotificationNotFoundException.class
 aifu/project/common_domain/dto/SearchDTO.class
-aifu/project/common_domain/dto/live_dto/BaseBookDTO.class
 aifu/project/common_domain/payload/UserShortDTO.class
 aifu/project/common_domain/entity/User.class
 aifu/project/common_domain/dto/SearchPart.class
@@ -54,15 +57,15 @@ aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO.class
 aifu/project/common_domain/entity/Category.class
 aifu/project/common_domain/entity/BaseBook$BaseBookBuilder.class
 aifu/project/common_domain/mapper/CategoryMapper.class
+aifu/project/common_domain/dto/live_dto/BaseBookResponseDTO.class
 aifu/project/common_domain/entity/BookingRequest.class
 aifu/project/common_domain/entity/BookCopy.class
-aifu/project/common_domain/dto/live_dto/BookCopyDTO.class
 aifu/project/common_domain/exceptions/RequestNotFoundException.class
 aifu/project/common_domain/exceptions/BaseBookNotFoundException.class
 aifu/project/common_domain/payload/NotificationDTO.class
+aifu/project/common_domain/dto/live_dto/BookCopyCreateDTO.class
+aifu/project/common_domain/dto/live_dto/BaseBookUpdateDTO.class
 aifu/project/common_domain/payload/RegisterRequestDTO.class
-aifu/project/common_domain/dto/live_dto/BaseBookDTO$BaseBookDTOBuilder.class
-aifu/project/common_domain/dto/live_dto/BookCopyDTO$BookCopyDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/UpdateCategoryDTO.class
 aifu/project/common_domain/payload/ExtendBookRequest.class
 aifu/project/common_domain/payload/ResponseMessage.class

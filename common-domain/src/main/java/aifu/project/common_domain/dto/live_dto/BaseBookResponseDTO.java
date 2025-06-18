@@ -16,5 +16,5 @@ public class BaseBookResponseDTO {
     private Integer pageCount;
     private String language;
     private String udc;
-    private Integer categoryId;
+    private BaseBookCategoryDTO category;
 }

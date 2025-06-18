@@ -2,10 +2,12 @@ package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
+import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.payload.BookPartList;
 import aifu.project.librarybot.repository.BaseBookRepository;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -21,12 +24,18 @@ public class BookService {
     private final BaseBookCategoryService categoryService;
 
     public BookPartList getBookList(String categoryId, int page) {
-        BaseBookCategory category = categoryService.getCategory(Integer.valueOf(categoryId))
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        BaseBookCategory category;
+        try {
+            category = categoryService.getCategory(Integer.valueOf(categoryId))
+                    .orElseThrow(() -> new BaseBookCategoryNotFoundException(Integer.valueOf(categoryId)));
+        } catch (BaseBookCategoryNotFoundException e) {
+            log.error("BaseBookCategory not found. Message: {}", e.getMessage());
+            throw e;
+        }
 
         Pageable pageable = PageRequest.of(--page, 5);
 
-        Page<BaseBook> books = bookRepository.findByCategory(category, pageable);
+        Page<BaseBook> books = bookRepository.findByCategoryAndIsDeletedFalse(category, pageable);
 
         return getBookPartList(books);
     }
@@ -38,7 +47,7 @@ public class BookService {
 
         String list = getBookList(bookList);
 
-        return new BookPartList(list, books.getNumber() + 1, books.getTotalPages(),selectButtons);
+        return new BookPartList(list, books.getNumber() + 1, books.getTotalPages(), selectButtons);
     }
 
     private String getBookList(List<BaseBook> books) {

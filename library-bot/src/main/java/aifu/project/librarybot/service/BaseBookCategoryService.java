@@ -23,7 +23,7 @@ public class BaseBookCategoryService {
 
     public InlineKeyboardMarkup getCategoryPartList(int page, String lang) {
         Pageable pageable = PageRequest.of(--page, 6);
-        Page<BaseBookCategory> part = repository.findAll(pageable);
+        Page<BaseBookCategory> part = repository.findByIsDeletedFalse(pageable);
 
         HashMap<Integer, String> map = new HashMap<>();
         part.getContent().forEach(category -> map.put(category.getId(), category.getName()));
@@ -50,6 +50,6 @@ public class BaseBookCategoryService {
     }
 
     public Optional<BaseBookCategory> getCategory(Integer id) {
-      return repository.findById(id);
+        return repository.findByIdAndIsDeletedFalse(id);
     }
 }

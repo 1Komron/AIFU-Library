@@ -17,12 +17,12 @@ action:
     http://localhost:8081/action/registration
 
 notification:
-  delete:
-    http://localhost:8081/notification/delete
   unread:
-    http://localhost:8081/notification/get/unread
+    http://localhost:8081/notification/unread
   getAll:
-    http://localhost:8081/notification/get/all
+    http://localhost:8081/notification
+  get:
+    http://localhost:8081/notification
 
 user:
   BaseUri:

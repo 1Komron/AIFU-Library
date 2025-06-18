@@ -53,8 +53,8 @@ public class BookingService {
     public boolean borrowBook(Long chatId, String inventoryNumber, String lang) {
         BookCopy bookCopy;
         try {
-            bookCopy = bookCopyRepository.findByInventoryNumber(inventoryNumber)
-                    .orElseThrow(() -> new BookCopyNotFoundException(inventoryNumber));
+            bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
+                    .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_INVENTORY_NUMBER + inventoryNumber));
         } catch (BookCopyNotFoundException e) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
             return false;
@@ -86,8 +86,8 @@ public class BookingService {
     public boolean returnBook(Long chatId, String inventoryNumber, String lang) {
         BookCopy bookCopy;
         try {
-            bookCopy = bookCopyRepository.findByInventoryNumber(inventoryNumber)
-                    .orElseThrow(() -> new BookCopyNotFoundException(inventoryNumber));
+            bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
+                    .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_INVENTORY_NUMBER + inventoryNumber));
         } catch (BookCopyNotFoundException e) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
             return false;
@@ -330,7 +330,7 @@ public class BookingService {
         LocalDate now = LocalDate.now();
         LocalDate from = LocalDate.of(now.getYear(), month, 1);
         LocalDate to = from.plusMonths(1);
-        return bookingRepository.countByGivenAtBetween(from,to.minusDays(1));
+        return bookingRepository.countByGivenAtBetween(from, to.minusDays(1));
     }
 
     public boolean hasBookingForUser(Long userId) {

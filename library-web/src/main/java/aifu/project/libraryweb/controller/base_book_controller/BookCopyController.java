@@ -1,14 +1,14 @@
 package aifu.project.libraryweb.controller.base_book_controller;
 
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
-import aifu.project.common_domain.dto.live_dto.BookCopyResponseDTO;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/book-copies")
@@ -17,38 +17,35 @@ public class BookCopyController {
     private final BookCopyService bookCopyService;
 
     @PostMapping
-    public ResponseEntity<BookCopyResponseDTO> create(@Valid @RequestBody BookCopyCreateDTO dto) {
-        return ResponseEntity.ok(bookCopyService.create(dto));
+    public ResponseEntity<ResponseMessage> create(@Valid @RequestBody BookCopyCreateDTO dto) {
+        return bookCopyService.create(dto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BookCopyResponseDTO> update(@PathVariable Integer id, @Valid @RequestBody BookCopyCreateDTO dto) {
-        return ResponseEntity.ok(bookCopyService.update(id,dto));
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody Map<String,Object> updates) {
+        return bookCopyService.update(id, updates);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        bookCopyService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
+        return bookCopyService.delete(id);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookCopyResponseDTO> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(bookCopyService.getOne(id));
+    public ResponseEntity<ResponseMessage> getById(@PathVariable Integer id) {
+        return bookCopyService.getOne(id);
     }
 
-    @GetMapping("/base-book/{baseBookId}")
-    public ResponseEntity<List<BookCopyResponseDTO>> getAllByBaseBook(@PathVariable Integer baseBookId) {
-        return ResponseEntity.ok(bookCopyService.getAllByBaseBook(baseBookId));
+    @GetMapping("/base-book/{id}")
+    public ResponseEntity<ResponseMessage> getAllByBaseBook(@PathVariable Integer id,
+                                                            @RequestParam(defaultValue = "1") int pageNumber,
+                                                            @RequestParam(defaultValue = "10") int pageSize) {
+        return bookCopyService.getAllByBaseBook(id, pageNumber, pageSize);
     }
 
     @GetMapping
-    public ResponseEntity<List<BookCopyResponseDTO>> getAll() {
-        return ResponseEntity.ok(bookCopyService.getAll());
-    }
-
-    @GetMapping("/count")
-    public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(bookCopyService.count());
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(defaultValue = "1") int pageNumber,
+                                                  @RequestParam(defaultValue = "10") int pageSize) {
+        return bookCopyService.getAll(pageNumber, pageSize);
     }
 }

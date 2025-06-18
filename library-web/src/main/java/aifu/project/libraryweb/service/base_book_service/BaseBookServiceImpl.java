@@ -3,72 +3,161 @@ package aifu.project.libraryweb.service.base_book_service;
 
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
-import aifu.project.common_domain.dto.live_dto.BaseBookUpdateDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
+import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
+import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.mapper.BaseBookMapper;
+import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.libraryweb.lucene.LuceneIndexService;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class BaseBookServiceImpl implements BaseBookService {
 
     private final BaseBookRepository baseBookRepository;
     private final BaseBookCategoryRepository categoryRepository;
+    private final LuceneIndexService luceneIndexService;
 
-    public BaseBookServiceImpl(BaseBookRepository baseBookRepository, BaseBookCategoryRepository categoryRepository) {
-        this.baseBookRepository = baseBookRepository;
-        this.categoryRepository = categoryRepository;
+    @Override
+    public ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto) {
+        BaseBookCategory category = categoryRepository
+                .findByIdAndIsDeletedFalse(dto.getCategoryId())
+                .orElseThrow(() -> new BaseBookCategoryNotFoundException(dto.getCategoryId()));
+
+        BaseBook entity = baseBookRepository.save(BaseBookMapper.toEntity(dto, category));
+        BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
+
+        log.info("Base book created: {}", entity);
+
+        try {
+            luceneIndexService.indexBaseBooks(entity);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseMessage(true, "Base book create successfully", responseDTO));
     }
 
     @Override
-    public BaseBookResponseDTO create(BaseBookCreateDTO dto) {
-        BaseBookCategory category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new RuntimeException("Category Not Found"));
+    public ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+        Page<BaseBook> page = baseBookRepository.findByIsDeletedFalse(pageable);
 
-        BaseBook entity = BaseBookMapper.toEntity(dto, category);
-        baseBookRepository.save(entity);
-        return BaseBookMapper.toResponseDTO(entity);
-    }
-
-    @Override
-    public List<BaseBookResponseDTO> getAll() {
-        return baseBookRepository.findAll().stream()
+        List<BaseBookResponseDTO> list = page
+                .stream()
                 .map(BaseBookMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
+
+        Map<String, Object> map = Map.of(
+                "list", list,
+                "currentPage", page.getNumber() + 1,
+                "totalPages", page.getTotalPages(),
+                "totalElements", page.getTotalElements()
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book list", map));
     }
 
     @Override
-    public BaseBookResponseDTO getOne(Integer id) {
-        BaseBook entity = baseBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BaseBook not found"));
-        return BaseBookMapper.toResponseDTO(entity);
+    public ResponseEntity<ResponseMessage> getOne(Integer id) {
+        BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new BaseBookNotFoundException(id));
+
+        BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(entity);
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book by id: " + id, dto));
     }
 
     @Override
-    public BaseBookResponseDTO update(Integer id, BaseBookUpdateDTO dto) {
-        BaseBook entity = baseBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BaseBook not found"));
+    public ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates) {
+        BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new BaseBookNotFoundException(id));
 
-        BaseBookCategory category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category Not Found"));
+        for (Map.Entry<String, Object> entry : updates.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
 
-        BaseBookMapper.updateEntity(entity, dto, category);
+            if (key == null)
+                throw new IllegalArgumentException("Key is null");
+
+            if (value == null)
+                throw new IllegalArgumentException("Value is null");
+
+            switch (key) {
+                case "title" -> entity.setTitle((String) value);
+                case "author" -> entity.setAuthor((String) value);
+                case "series" -> entity.setSeries((String) value);
+                case "titleDetails" -> entity.setTitleDetails((String) value);
+                case "publicationYear" -> entity.setPublicationYear(Integer.parseInt(value.toString()));
+                case "publisher" -> entity.setPublisher((String) value);
+                case "publicationCity" -> entity.setPublicationCity((String) value);
+                case "isbn" -> entity.setIsbn((String) value);
+                case "pageCount" -> entity.setPageCount(Integer.parseInt(value.toString()));
+                case "language" -> entity.setLanguage((String) value);
+                case "udc" -> entity.setUdc((String) value);
+                case "categoryId" -> {
+                    Integer categoryId = Integer.parseInt(value.toString());
+                    BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(categoryId)
+                            .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
+                    entity.setCategory(category);
+                }
+                default -> throw new IllegalArgumentException("Invalid field: " + key);
+            }
+        }
+
         baseBookRepository.save(entity);
-        return BaseBookMapper.toResponseDTO(entity);
+
+        log.info("Base book updated: {}.\nUpdated fields: {}", entity, updates.keySet());
+
+        try {
+            luceneIndexService.indexBaseBooks(entity);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
+        return ResponseEntity.ok(new ResponseMessage(true, "Successfully updated", responseDTO));
     }
 
+
     @Override
-    public void delete(Integer id) {
-        baseBookRepository.deleteById(id);
+    public ResponseEntity<ResponseMessage> delete(Integer id) {
+        BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new BaseBookNotFoundException(id));
+
+        entity.setDeleted(true);
+        baseBookRepository.save(entity);
+
+        log.info("Base book deleted by id: {}", id);
+
+        try {
+            luceneIndexService.deleteBaseBookIndex(id);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book deleted successfully", id));
     }
 
     @Override
     public long countBooks() {
-        return 0;
+        return baseBookRepository.count();
     }
-
 }

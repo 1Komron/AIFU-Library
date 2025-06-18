@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.lucene;
 
 import aifu.project.common_domain.dto.SearchDTO;
+import aifu.project.common_domain.payload.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
@@ -11,6 +12,7 @@ import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class LuceneSearchService {
         return FSDirectory.open(Path.of("lucene-index/" + type));
     }
 
-    public Optional<List<SearchDTO>> searchBooks(String queryStr, String type) throws Exception {
+    public ResponseEntity<ResponseMessage> searchBooks(String queryStr, String type) throws Exception {
         String layout = KeyboardLayoutCorrector.correctLayout(queryStr);
         String layoutReverse = KeyboardLayoutCorrector.correctLayoutReverse(queryStr);
 
@@ -74,7 +76,7 @@ public class LuceneSearchService {
             }
 
             if (results.isEmpty())
-                return Optional.empty();
+                return ResponseEntity.noContent().build();
 
             List<SearchDTO> list = results.stream()
                     .map(doc -> new SearchDTO(
@@ -83,7 +85,7 @@ public class LuceneSearchService {
                             doc.get("title")))
                     .toList();
 
-            return Optional.of(list);
+            return ResponseEntity.ok(new ResponseMessage(true, "Book list", list));
         }
     }
 }

@@ -1,16 +1,15 @@
 package aifu.project.common_domain.dto.live_dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
-
 public class BaseBookCreateDTO {
 
+    private Integer categoryId;
     private String author;
     private String title;
     private String series;
@@ -22,5 +21,4 @@ public class BaseBookCreateDTO {
     private Integer pageCount;
     private String language;
     private String udc;
-    private Integer categoryId;
 }

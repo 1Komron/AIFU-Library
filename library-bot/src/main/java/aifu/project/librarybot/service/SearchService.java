@@ -89,8 +89,8 @@ public class SearchService {
     public String getSearchResult(String id, String lang) {
         Integer bookId = Integer.parseInt(id);
 
-        BaseBook book = baseBookRepository.findBookById(bookId)
-                .orElseThrow(() -> new BaseBookNotFoundException("Base book not found by bookId" + bookId));
+        BaseBook book = baseBookRepository.findBookByIdAndIsDeletedFalse(bookId)
+                .orElseThrow(() -> new BaseBookNotFoundException( + bookId));
 
         List<BookCopy> copies = book.getCopies();
         int notTakenCopies = getNotTakenCopies(copies);

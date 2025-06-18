@@ -1,16 +1,21 @@
 package aifu.project.libraryweb.service.base_book_service;
 
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
-import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
-import aifu.project.common_domain.dto.live_dto.BaseBookUpdateDTO;
+import aifu.project.common_domain.payload.ResponseMessage;
+import org.springframework.http.ResponseEntity;
 
-import java.util.List;
+import java.util.Map;
 
 public interface BaseBookService {
-    BaseBookResponseDTO create(BaseBookCreateDTO  dto);
-    List<BaseBookResponseDTO> getAll();
-    BaseBookResponseDTO getOne(Integer id);
-    BaseBookResponseDTO update(Integer id, BaseBookUpdateDTO dto);
-    void delete(Integer id);
+    ResponseEntity<ResponseMessage> create(BaseBookCreateDTO  dto);
+
+    ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize);
+
+    ResponseEntity<ResponseMessage> getOne(Integer id);
+
+    ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates);
+
+    ResponseEntity<ResponseMessage> delete(Integer id);
+
     long countBooks();
 }

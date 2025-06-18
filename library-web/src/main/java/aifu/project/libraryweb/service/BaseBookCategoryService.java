@@ -8,12 +8,14 @@ import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BaseBookCategoryService {
@@ -24,6 +26,8 @@ public class BaseBookCategoryService {
         category.setName(request.name());
         category = categoryRepository.save(category);
         BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
+
+        log.info("BaseBookCategory create: {}", category);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseMessage(true, "Category created", dto));
@@ -37,6 +41,8 @@ public class BaseBookCategoryService {
         category = categoryRepository.save(category);
         BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
 
+        log.info("BaseBookCategory name update: {}", category);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Category updated", dto));
     }
 
@@ -46,6 +52,9 @@ public class BaseBookCategoryService {
 
         category.setDeleted(true);
         categoryRepository.save(category);
+
+        log.info("BaseBookCategory deleted: {}", category);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Category deleted", id));
     }
 

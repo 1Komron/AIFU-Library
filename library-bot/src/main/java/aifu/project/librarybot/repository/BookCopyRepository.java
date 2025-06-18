@@ -10,7 +10,7 @@ import java.util.Collection;
 
 
 public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
-    Optional<BookCopy> findByInventoryNumber(String inventoryNumber);
+    Optional<BookCopy> findByInventoryNumberAndIsDeletedFalse(String inventoryNumber);
 
     long countByBook(BaseBook book);
 
@@ -22,6 +22,4 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
     boolean existsByInventoryNumberAndIsTakenTrue(String inventoryNumber);
 
     List<BookCopy> findAllByBook(BaseBook book);
-
-
 }

@@ -33,6 +33,7 @@ import java.util.Map;
 public class BaseBookServiceImpl implements BaseBookService {
 
     private final BaseBookRepository baseBookRepository;
+    private final BookCopyService bookCopyService;
     private final BaseBookCategoryRepository categoryRepository;
     private final LuceneIndexService luceneIndexService;
 
@@ -62,9 +63,18 @@ public class BaseBookServiceImpl implements BaseBookService {
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         Page<BaseBook> page = baseBookRepository.findByIsDeletedFalse(pageable);
 
-        List<BaseBookResponseDTO> list = page
+        List<Map<String, Object>> list = page
                 .stream()
-                .map(BaseBookMapper::toResponseDTO)
+                .map(book -> {
+                    BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(book);
+                    Map<String, Long> countMap = bookCopyService.getTotalAndTakenCount(book.getId());
+
+                    return Map.of(
+                            "book", dto,
+                            "totalCount", countMap.get("total"),
+                            "takenCount", countMap.get("taken")
+                    );
+                })
                 .toList();
 
         Map<String, Object> map = Map.of(
@@ -77,13 +87,22 @@ public class BaseBookServiceImpl implements BaseBookService {
         return ResponseEntity.ok(new ResponseMessage(true, "Base book list", map));
     }
 
+
     @Override
     public ResponseEntity<ResponseMessage> getOne(Integer id) {
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
 
         BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(entity);
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book by id: " + id, dto));
+        Map<String, Long> mapCount = bookCopyService.getTotalAndTakenCount(entity.getId());
+
+        Map<String, Object> map = Map.of(
+                "book", dto,
+                "totalCount", mapCount.get("total"),
+                "takenCount", mapCount.get("taken")
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book by id: " + id, map));
     }
 
     @Override

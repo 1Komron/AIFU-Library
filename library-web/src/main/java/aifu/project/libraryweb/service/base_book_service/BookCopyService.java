@@ -21,5 +21,7 @@ public interface BookCopyService {
 
     ResponseEntity<ResponseMessage> deleteByBaseBook(Integer baseBookId);
 
+    Map<String,Long> getTotalAndTakenCount(Integer baseBookId);
+
     long count();
 }

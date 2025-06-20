@@ -173,6 +173,16 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    public Map<String, Long> getTotalAndTakenCount(Integer baseBookId) {
+        long total = bookCopyRepository.countByBook_IdAndIsDeletedFalse(baseBookId);
+        long count = bookCopyRepository.countByBook_IdAndIsTakenTrueAndIsDeletedFalse(baseBookId);
+        return Map.of(
+                "total", total,
+                "taken", count
+        );
+    }
+
+    @Override
     public long count() {
         return bookCopyRepository.count();
     }

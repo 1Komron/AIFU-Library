@@ -68,7 +68,7 @@ public class BookingService {
         bookCopy.setTaken(true);
         bookCopyRepository.save(bookCopy);
 
-        User user = userRepository.findByChatId(chatId)
+        User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
                 .orElseThrow(() -> new UserNotFoundException("User not found by chatId: " + chatId));
 
         BookingRequest bookingRequest = bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
@@ -108,7 +108,7 @@ public class BookingService {
 
                 BookingRequest bookingRequest = bookingRequestService.create(booking.getUser(), bookCopy, BookingRequestStatus.RETURN);
 
-                User user = userRepository.findByChatId(chatId)
+                User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
                         .orElseThrow(() -> new UserNotFoundException("User not found by chatId: " + chatId));
 
                 Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.RETURN, RequestType.BOOKING);

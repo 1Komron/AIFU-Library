@@ -1,5 +1,6 @@
 package aifu.project.librarybot.controller;
 
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-      return   userService.deleteUser(id);
+    public ResponseEntity<ResponseMessage> deleteUser(@PathVariable Long id) {
+        return userService.deleteUser(id);
     }
 }

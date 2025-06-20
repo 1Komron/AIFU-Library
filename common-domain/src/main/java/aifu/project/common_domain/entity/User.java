@@ -36,5 +36,7 @@ public class User implements Serializable {
     @Column(unique = true)
     private Long chatId;
 
-    boolean isActive = false;
+    private boolean isActive = false;
+
+    private boolean isDeleted = false;
 }

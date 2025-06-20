@@ -5,10 +5,12 @@ import aifu.project.common_domain.entity.RegisterRequest;
 import aifu.project.common_domain.entity.User;
 import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
+import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.mapper.NotificationMapper;
 import aifu.project.common_domain.mapper.UserMapper;
 import aifu.project.common_domain.payload.BotUserDTO;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.NotificationRepository;
 import aifu.project.librarybot.repository.UserRepository;
@@ -23,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
+import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FOUND_BY_CHAT_ID;
 
 
 @Service
@@ -39,7 +43,7 @@ public class UserService {
     private final ExecuteUtil executeUtil;
 
     public boolean exists(Long chatId) {
-        return !userRepository.existsUserByChatId(chatId);
+        return !userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
     }
 
     @SneakyThrows
@@ -55,12 +59,14 @@ public class UserService {
 
     @Transactional
     public void saveUser(BotUserDTO userDTO) {
-        if (userDTO == null || userRepository.existsUserByChatId(userDTO.getChatId())) {
+        if (userDTO == null || userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(userDTO.getChatId())) {
             return;
         }
 
-        User user = UserMapper.fromBotDTO(userDTO);
+        Long id = userRepository.returnUserId(userDTO.getChatId());
 
+        User user = UserMapper.fromBotDTO(userDTO);
+        user.setId(id);
         userRepository.save(user);
 
         RegisterRequest registerRequest = registerRequestService.create(user);
@@ -72,8 +78,8 @@ public class UserService {
     }
 
     public void saveUser(Long chatId) {
-        User user = userRepository.findByChatId(chatId)
-                .orElseThrow(() -> new UserNotFoundException("User not found bu chatId: " + chatId));
+        User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + chatId));
         user.setActive(true);
         userRepository.save(user);
     }
@@ -91,62 +97,47 @@ public class UserService {
     }
 
     public String showProfile(Long chatId, String lang) {
-        User user = userRepository.findByChatId(chatId)
-                .orElseThrow(() -> new UserNotFoundException("User not found bu chatId: " + chatId));
+        User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + chatId));
 
         String template = MessageUtil.get(MessageKeys.REGISTER_MESSAGE, lang);
         return String.format(template, user.getName(), user.getSurname(), user.getPhone(), user.getFaculty(), user.getCourse(), user.getGroup());
     }
 
     public boolean isInactive(Long chatId) {
-        return !userRepository.existsByChatIdAndIsActive(chatId, true);
+        return !userRepository.existsByChatIdAndIsActiveAndIsDeletedFalse(chatId, true);
     }
 
     public boolean existsUser(Long chatId) {
-        return userRepository.existsUserByChatId(chatId);
+        return userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
     }
 
-    @Transactional
-    public String removeUser(Long chatId) {
-        boolean hasHistoryForUser = historyService.hasHistoryForUserChatId(chatId);
-        boolean hasBooking = bookingService.hasBookingForUserChatId(chatId);
-        boolean hasRequest = bookingRequestService.hasRequestForUserChatId(chatId);
+    public void removeUser(Long chatId) {
+        User user = userRepository.findByChatId(chatId)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + chatId));
 
-        if (hasHistoryForUser)
-            return "history";
-
-        if (hasBooking)
-            return "booking";
-
-        if (hasRequest)
-            return "request";
-
-        userRepository.deleteByChatId(chatId);
-        return null;
+        user.setActive(false);
+        user.setDeleted(true);
+        userRepository.save(user);
     }
 
-    public ResponseEntity<String> deleteUser(Long userId) {
-        if (!userRepository.existsUserById(userId)) {
-            return ResponseEntity.badRequest().build();
-        }
-        boolean hasHistoryForUser = historyService.hasHistoryForUser(userId);
-        boolean hasBooking = bookingService.hasBookingForUser(userId);
-        boolean hasRequest = bookingRequestService.hasRequestForUser(userId);
-        boolean hasRegisterRequest = registerRequestService.hasRequestForUser(userId);
+    public ResponseEntity<ResponseMessage> deleteUser(Long userId) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));
 
-        if (hasHistoryForUser)
-            return ResponseEntity.ok("history");
+        if (bookingService.hasBookingForUser(userId))
+            throw new UserDeletionException("The user cannot be deleted because he has active book reservations.");
 
-        if (hasBooking)
-            return ResponseEntity.ok("booking");
+        if (bookingRequestService.hasRequestForUser(userId))
+            throw new UserDeletionException("The user cannot be deleted because they have outstanding book checkout or return requests.");
 
-        if (hasRequest)
-            return ResponseEntity.ok("request");
+        if (registerRequestService.hasRequestForUser(userId))
+            throw new UserDeletionException("The user cannot be deleted because he has an active registration request.");
 
-        if (hasRegisterRequest)
-            return ResponseEntity.ok("registerRequest");
+        user.setDeleted(true);
+        user.setActive(false);
+        userRepository.save(user);
 
-        userRepository.deleteById(userId);
-        return ResponseEntity.ok("deleted");
+        return ResponseEntity.ok(new ResponseMessage(true, "User successfully deleted", null));
     }
 }

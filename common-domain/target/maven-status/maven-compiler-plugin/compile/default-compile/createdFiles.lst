@@ -16,6 +16,7 @@ aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO$CreateCategoryDTOB
 aifu/project/common_domain/payload/BotUserDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryResponseDTO$BaseBookCategoryResponseDTOBuilder.class
 aifu/project/common_domain/mapper/BaseBookCategoryMapper.class
+aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO.class
 aifu/project/common_domain/entity/Booking.class
 aifu/project/common_domain/mapper/BookCopyMapper.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookCreateDTO$PdfBookCreateDTOBuilder.class
@@ -36,6 +37,7 @@ aifu/project/common_domain/payload/ReturnBookRequest.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookPreviewDTO$PdfBookPreviewDTOBuilder.class
 aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO$BaseBookCreateDTOBuilder.class
 aifu/project/common_domain/payload/BorrowBookRequest.class
+aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO$CategoryPreviewDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO$PdfBookResponseDTOBuilder.class
 aifu/project/common_domain/dto/BookingResponse.class
 aifu/project/common_domain/mapper/UserMapper.class

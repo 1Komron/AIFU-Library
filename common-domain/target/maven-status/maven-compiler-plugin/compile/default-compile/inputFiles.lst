@@ -14,6 +14,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookUpdateDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BookCopyCreateDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BookCopyResponseDTO.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.java

@@ -142,29 +142,7 @@ public class ActionHandlerService {
 
             registerRequestService.delete(registerRequest);
 
-            String removeUser = userService.removeUser(chatId);
-            if (removeUser != null) {
-                switch (removeUser) {
-                    case "booking" -> {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ResponseMessage(false, "The student has the book. Deletion is not possible until the book is returned.", null));
-                    }
-                    case "request" -> {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ResponseMessage(false, "The student has an active book request. Please decline it before deleting the user.", null));
-                    }
-                    case "history" -> {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ResponseMessage(false, "Unable to delete student", null));
-                    }
-                    default -> {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ResponseMessage(false, INVALID_REQUEST, null));
-                    }
-
-                }
-
-            }
+            userService.removeUser(chatId);
 
             executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_REJECTED, lang);
 

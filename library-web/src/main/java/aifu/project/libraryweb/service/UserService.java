@@ -42,7 +42,7 @@ public class UserService {
 
     public ResponseEntity<ResponseMessage> getUserList(int pageNumber, int size) {
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
-        Page<User> userPage = userRepository.findAllByRole(Role.USER, pageable);
+        Page<User> userPage = userRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
 
         Map<String, Object> map = Map.of(
                 "data", getUserShortDTO(userPage.getContent()),
@@ -54,7 +54,7 @@ public class UserService {
 
     public ResponseEntity<ResponseMessage> getInactiveUsers(int pageNumber, int size) {
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
-        Page<User> userPage = userRepository.findAllByRoleAndIsActive(Role.USER, false, pageable);
+        Page<User> userPage = userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable);
 
         Map<String, Object> map = Map.of(
                 "data", getUserShortDTO(userPage.getContent()),
@@ -94,44 +94,12 @@ public class UserService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Internal-Token", token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> exchange = restTemplate.exchange(
+        ResponseEntity<ResponseMessage> exchange = restTemplate.exchange(
                 useBaseUri + "/" + id,
                 HttpMethod.DELETE,
                 entity,
-                String.class);
+                ResponseMessage.class);
 
-        if (exchange.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, "User not found by id: " + id, null));
-        }
-
-        String message = exchange.getBody();
-        switch (Objects.requireNonNull(message)) {
-            case "booking" -> {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ResponseMessage(false, "The student has the book. Deletion is not possible until the book is returned.", null));
-            }
-            case "request" -> {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ResponseMessage(false, "The student has an active book request. Please decline it before deleting the user.", null));
-            }
-            case "history" -> {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ResponseMessage(false, "Unable to delete student", null));
-            }
-            case "registerRequest" -> {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ResponseMessage(false, "The student has submitted a registration request. Please reject the request before deleting the student.", null));
-            }
-            case "deleted" -> {
-                return ResponseEntity
-                        .ok(new ResponseMessage(true, "User has been deleted. By id: " + id, null));
-            }
-            default -> {
-                log.error("Invalid request to delete user: {}", id);
-                return ResponseEntity
-                        .ok(new ResponseMessage(true, "Invalid request", null));
-            }
-        }
+        return exchange;
     }
 }

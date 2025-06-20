@@ -3,10 +3,13 @@ package aifu.project.libraryweb.service;
 import aifu.project.common_domain.dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.CreateCategoryRequest;
 import aifu.project.common_domain.dto.UpdateCategoryRequest;
+import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
+import aifu.project.common_domain.exceptions.CategoryDeletionException;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
+import aifu.project.libraryweb.repository.BaseBookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BaseBookCategoryService {
     private final BaseBookCategoryRepository categoryRepository;
+    private final BaseBookRepository baseBookRepository;
 
     public ResponseEntity<ResponseMessage> create(CreateCategoryRequest request) {
         BaseBookCategory category = new BaseBookCategory();
@@ -49,6 +53,14 @@ public class BaseBookCategoryService {
     public ResponseEntity<ResponseMessage> delete(Integer id) {
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
+
+        List<BaseBook> baseBookList = baseBookRepository.findByCategory_IdAndIsDeletedFalse(id);
+
+        boolean allBooksDeleted = baseBookList.stream()
+                .allMatch(BaseBook::isDeleted);
+
+        if (!allBooksDeleted)
+            throw new CategoryDeletionException("The category cannot be deleted: not all books in it have been deleted.");
 
         category.setDeleted(true);
         categoryRepository.save(category);

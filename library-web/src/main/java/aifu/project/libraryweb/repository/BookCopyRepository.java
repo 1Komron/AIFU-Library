@@ -28,4 +28,6 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
     Optional<BookCopy> findByIdAndIsDeletedFalse(Integer id);
 
     Page<BookCopy> findByBookIdAndIsDeletedFalse(Integer baseBookId, Pageable pageable);
+
+    List<BookCopy> findByBook_IdAndIsDeletedFalse(Integer bookId);
 }

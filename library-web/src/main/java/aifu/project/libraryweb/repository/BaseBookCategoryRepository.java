@@ -13,4 +13,6 @@ public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCatego
     List<BaseBookCategoryDTO> findAllByIsDeletedFalse();
 
     Optional<BaseBookCategory> findByIdAndIsDeletedFalse(Integer id);
+
+    boolean existsByIdAndIsDeletedFalse(Integer categoryId);
 }

@@ -36,7 +36,6 @@ public class UserService {
     private final NotificationRepository notificationRepository;
     private final UserLanguageService userLanguageService;
     private final RegisterRequestService registerRequestService;
-    private final HistoryService historyService;
     private final BookingService bookingService;
     private final BookingRequestService bookingRequestService;
     private final RabbitTemplate rabbitTemplate;

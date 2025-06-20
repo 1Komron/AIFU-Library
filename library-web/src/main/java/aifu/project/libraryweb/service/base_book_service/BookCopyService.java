@@ -19,5 +19,7 @@ public interface BookCopyService {
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 
+    ResponseEntity<ResponseMessage> deleteByBaseBook(Integer baseBookId);
+
     long count();
 }

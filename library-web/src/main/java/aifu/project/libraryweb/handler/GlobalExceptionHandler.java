@@ -2,6 +2,8 @@ package aifu.project.libraryweb.handler;
 
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
+import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
+import aifu.project.common_domain.exceptions.CategoryDeletionException;
 import aifu.project.common_domain.payload.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,22 @@ public class GlobalExceptionHandler {
         log.error("Illegal argument exception. Message: {}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(BookCopyIsTakenException.class)
+    public ResponseEntity<ResponseMessage> handleBookCopyIsTakenException(BookCopyIsTakenException e) {
+        log.error("Book copy has been taken. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(CategoryDeletionException.class)
+    public ResponseEntity<ResponseMessage> handleCategoryDeletionException(CategoryDeletionException e) {
+        log.error("Category deletion has been deleted. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 

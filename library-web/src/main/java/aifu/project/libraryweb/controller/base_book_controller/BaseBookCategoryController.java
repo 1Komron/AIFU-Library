@@ -20,12 +20,12 @@ public class BaseBookCategoryController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseMessage> update(@PathVariable int id, @RequestBody UpdateCategoryRequest request) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody UpdateCategoryRequest request) {
         return baseBookCategoryService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseMessage> delete(@PathVariable int id) {
+    public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
         return baseBookCategoryService.delete(id);
     }
 

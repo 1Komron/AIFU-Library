@@ -31,6 +31,11 @@ public class BookCopyController {
         return bookCopyService.delete(id);
     }
 
+    @DeleteMapping
+    public ResponseEntity<ResponseMessage> deleteByBaseBook(@RequestParam Integer baseBookId) {
+        return bookCopyService.deleteByBaseBook(baseBookId);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseMessage> getById(@PathVariable Integer id) {
         return bookCopyService.getOne(id);

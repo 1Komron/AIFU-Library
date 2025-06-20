@@ -7,6 +7,7 @@ import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
+import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
 import aifu.project.common_domain.mapper.BaseBookMapper;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.lucene.LuceneIndexService;
@@ -155,6 +156,33 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book deleted successfully", id));
     }
+
+    public ResponseEntity<ResponseMessage> deleteByCategory(Integer categoryId) {
+        if (!categoryRepository.existsByIdAndIsDeletedFalse(categoryId)) {
+            throw new BaseBookCategoryNotFoundException(categoryId);
+        }
+
+        List<BaseBook> books = baseBookRepository.findByCategory_IdAndIsDeletedFalse(categoryId);
+
+        boolean canDeleteAll = books.stream()
+                .allMatch(book -> book.getCopies().stream()
+                        .allMatch(copy -> copy.isDeleted() && !copy.isTaken())
+                );
+
+        if (!canDeleteAll) {
+            throw new BookCopyIsTakenException("Some copies of the books are still active or in the hands of users.");
+        }
+
+        for (BaseBook book : books) {
+            book.setDeleted(true);
+        }
+        baseBookRepository.saveAll(books);
+
+        log.info("All Base book deleted by Category id: {}. BaseBook list: {}", categoryId, books);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Books in category successfully deleted", null));
+    }
+
 
     @Override
     public long countBooks() {

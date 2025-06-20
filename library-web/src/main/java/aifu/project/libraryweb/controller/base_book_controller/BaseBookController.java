@@ -4,6 +4,7 @@ import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.base_book_service.BaseBookService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,11 @@ public class BaseBookController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
         return baseBookService.delete(id);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ResponseMessage> deleteByCategory(@NotNull @RequestParam Integer categoryId) {
+        return baseBookService.deleteByCategory(categoryId);
     }
 
     @GetMapping("/{id}")

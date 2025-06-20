@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface BaseBookService {
-    ResponseEntity<ResponseMessage> create(BaseBookCreateDTO  dto);
+    ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto);
 
     ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize);
 
@@ -16,6 +16,8 @@ public interface BaseBookService {
     ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates);
 
     ResponseEntity<ResponseMessage> delete(Integer id);
+
+    ResponseEntity<ResponseMessage> deleteByCategory(Integer id);
 
     long countBooks();
 }

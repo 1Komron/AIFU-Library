@@ -20,12 +20,12 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="AIFU_Library" options="-parameters" />
+      <module name="AIFU_Library" options="" />
       <module name="chat-bot" options="-parameters" />
       <module name="common" options="-parameters" />
-      <module name="common-domain" options="-parameters" />
-      <module name="library-bot" options="-parameters" />
-      <module name="library-web" options="-parameters" />
+      <module name="common-domain" options="" />
+      <module name="library-bot" options="" />
+      <module name="library-web" options="" />
       <module name="untitled" options="-parameters" />
     </option>
   </component>

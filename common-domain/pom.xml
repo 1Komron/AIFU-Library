@@ -6,8 +6,10 @@
     <parent>
         <groupId>aifu.project</groupId>
         <artifactId>AIFU_Library</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
 
     <artifactId>common-domain</artifactId>
     <version>1.0.0</version>
@@ -61,21 +63,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>repackage</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
+
         </plugins>
     </build>
+
 
 
 </project>

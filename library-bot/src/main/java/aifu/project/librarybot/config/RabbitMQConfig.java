@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,22 +25,22 @@ public class RabbitMQConfig {
 
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
 
-    @Bean
+    @Bean(name = "queueBorrow")
     public Queue queueBorrow() {
         return new Queue(QUEUE_BORROW, true);
     }
 
-    @Bean
+    @Bean(name = "queueExtend")
     public Queue queueExtend() {
         return new Queue(QUEUE_EXTEND, true);
     }
 
-    @Bean
+    @Bean(name = "queueReturn")
     public Queue queueReturn() {
         return new Queue(QUEUE_RETURN, true);
     }
 
-    @Bean
+    @Bean(name = "queueRegister")
     public Queue queueRegister() {
         return new Queue(QUEUE_REGISTER, true);
     }
@@ -50,23 +51,23 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding1(Queue queueBorrow, TopicExchange exchange) {
-        return BindingBuilder.bind(queueBorrow).to(exchange).with(KEY_BORROW);
+    public Binding binding1(@Qualifier("queueBorrow") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(KEY_BORROW);
     }
 
     @Bean
-    public Binding binding2(Queue queueExtend, TopicExchange exchange) {
-        return BindingBuilder.bind(queueExtend).to(exchange).with(KEY_EXTEND);
+    public Binding binding2(@Qualifier("queueExtend") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(KEY_EXTEND);
     }
 
     @Bean
-    public Binding binding3(Queue queueReturn, TopicExchange exchange) {
-        return BindingBuilder.bind(queueReturn).to(exchange).with(KEY_RETURN);
+    public Binding binding3(@Qualifier("queueReturn") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(KEY_RETURN);
     }
 
     @Bean
-    public Binding binding4(Queue queueRegister, TopicExchange exchange) {
-        return BindingBuilder.bind(queueRegister).to(exchange).with(KEY_REGISTER);
+    public Binding binding4(@Qualifier("queueRegister") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(KEY_REGISTER);
     }
 
     @Bean
@@ -74,4 +75,3 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 }
-

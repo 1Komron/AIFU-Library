@@ -19,4 +19,6 @@ public class PdfBookPreviewDTO {
     private String imageUrl;
 
     private CategoryPreviewDTO categoryPreviewDTO;
+
+
 }

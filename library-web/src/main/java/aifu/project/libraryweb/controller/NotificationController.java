@@ -19,6 +19,13 @@ public class NotificationController {
         return notificationService.getUnreadNotifications(pageNumber, pageSize);
     }
 
+    @GetMapping("/type")
+    public ResponseEntity<ResponseMessage> getNotificationByType(@RequestParam(defaultValue = "1") int pageNumber,
+                                                                 @RequestParam(defaultValue = "8") int pageSize,
+                                                                 @RequestParam String type) {
+        return notificationService.getNotificationByType(pageNumber, pageSize,type);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseMessage> getNotificationDetails(@PathVariable String id) {
         return notificationService.getDetails(id);

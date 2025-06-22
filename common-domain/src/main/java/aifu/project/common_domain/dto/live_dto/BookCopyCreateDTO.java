@@ -9,6 +9,8 @@ public class BookCopyCreateDTO {
 
     private String shelfLocation;
 
+    private String notes;
+
     private Integer baseBookId;
 
 }

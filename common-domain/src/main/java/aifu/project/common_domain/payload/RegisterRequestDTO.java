@@ -1,9 +1,8 @@
 package aifu.project.common_domain.payload;
 
-import java.time.LocalDateTime;
+import aifu.project.common_domain.entity.enums.RequestType;
 
 public record RegisterRequestDTO(
         BotUserDTO user,
-        LocalDateTime date
-) {
+        RequestType requestType) {
 }

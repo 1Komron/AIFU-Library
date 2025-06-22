@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -30,7 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
 
-    @Value("${user.BaseUri}")
+    @Value("${user.baseUri}")
     private String useBaseUri;
 
     @Value("${internal.token}")
@@ -52,9 +51,12 @@ public class UserService {
         return ResponseEntity.ok(new ResponseMessage(true, "User list", map));
     }
 
-    public ResponseEntity<ResponseMessage> getInactiveUsers(int pageNumber, int size) {
+    public ResponseEntity<ResponseMessage> getUsersByStatus(int pageNumber, int size, String status) {
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
-        Page<User> userPage = userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable);
+
+        Page<User> userPage = (status.equalsIgnoreCase("INACTIVE"))
+                ? userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable)
+                : userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, true, pageable);
 
         Map<String, Object> map = Map.of(
                 "data", getUserShortDTO(userPage.getContent()),
@@ -86,7 +88,8 @@ public class UserService {
 
     private List<UserShortDTO> getUserShortDTO(List<User> users) {
         return users.stream()
-                .map(user -> new UserShortDTO(user.getId(), user.getName(), user.getSurname(), user.getPhone()))
+                .map(user -> new UserShortDTO(user.getId(), user.getName(),
+                        user.getSurname(), user.getPhone(), user.isActive()))
                 .toList();
     }
 
@@ -94,12 +97,11 @@ public class UserService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Internal-Token", token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<ResponseMessage> exchange = restTemplate.exchange(
+
+        return restTemplate.exchange(
                 useBaseUri + "/" + id,
                 HttpMethod.DELETE,
                 entity,
                 ResponseMessage.class);
-
-        return exchange;
     }
 }

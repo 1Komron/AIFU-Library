@@ -14,5 +14,7 @@ public class BookCopyResponseDTO {
 
     private String shelfLocation;
 
+    private String notes;
+
     private Integer baseBookId;
 }

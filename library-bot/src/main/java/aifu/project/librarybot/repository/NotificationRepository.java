@@ -1,6 +1,8 @@
 package aifu.project.librarybot.repository;
 
+import aifu.project.common_domain.dto.NotificationShortDTO;
 import aifu.project.common_domain.entity.Notification;
+import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +23,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
     Long findNotificationIdByRequestIdAndRequestType(Long requestId, RequestType requestType);
 
     Optional<Notification> findNotificationById(Long id);
+
+    Page<NotificationShortDTO> findAllByNotificationType(NotificationType notificationType, Pageable pageable);
 }

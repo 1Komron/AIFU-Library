@@ -1,6 +1,8 @@
 package aifu.project.librarybot.service;
 
+import aifu.project.common_domain.dto.NotificationShortDTO;
 import aifu.project.common_domain.entity.*;
+import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 import aifu.project.common_domain.exceptions.NotificationNotFoundException;
 import aifu.project.common_domain.exceptions.RequestNotFoundException;
@@ -21,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -54,7 +58,7 @@ public class NotificationService {
         Map<String, Object> pageInfo = Map.of(
                 "pageNumber", page.getNumber() + 1,
                 "totalPages", page.getTotalPages(),
-                "data", page.get()
+                "data", getShortDTO(page.getContent())
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "All unread notifications", pageInfo));
@@ -71,7 +75,7 @@ public class NotificationService {
         Map<String, Object> pageInfo = Map.of(
                 "pageNumber", page.getNumber() + 1,
                 "totalPages", page.getTotalPages(),
-                "data", page.get()
+                "data", getShortDTO(page.getContent())
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "All notifications", pageInfo));
@@ -111,7 +115,7 @@ public class NotificationService {
         User user = registerRequest.getUser();
         BotUserDTO botDTO = UserMapper.toBotDTO(user);
 
-        return new RegisterRequestDTO(botDTO, registerRequest.getCreatedAt());
+        return new RegisterRequestDTO(botDTO, RequestType.REGISTER);
     }
 
     private BookingRequestDTO createBookingRequestDTO(BookingRequest bookingRequest) {
@@ -124,7 +128,35 @@ public class NotificationService {
                 book.getAuthor(),
                 book.getTitle(),
                 book.getIsbn(),
-                bookCopy.getInventoryNumber()
+                bookCopy.getInventoryNumber(),
+                RequestType.BOOKING
         );
+    }
+
+    private List<NotificationShortDTO> getShortDTO(List<Notification> notifications) {
+        return notifications.stream()
+                .map(notification ->
+                        new NotificationShortDTO(notification.getId(),
+                                notification.getUserName() + " " + notification.getUserSurname(),
+                                notification.getNotificationType(), notification.getNotificationTime()
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                                notification.isRead()))
+                .toList();
+    }
+
+    public ResponseEntity<ResponseMessage> getNotificationByType(int pageNumber, int pageSize, String type) {
+        NotificationType notificationType = NotificationType.getNotification(type);
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "notificationTime"));
+
+        Page<NotificationShortDTO> page = notificationRepository.findAllByNotificationType(notificationType, pageable);
+
+        Map<String, Object> map = Map.of(
+                "data", page.getContent(),
+                "currentPage", page.getNumber() + 1,
+                "totalPages", page.getTotalPages(),
+                "totalElements", page.getTotalElements()
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification list By: "+type, map));
     }
 }

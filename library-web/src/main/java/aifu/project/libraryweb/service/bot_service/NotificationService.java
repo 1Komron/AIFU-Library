@@ -26,6 +26,9 @@ public class NotificationService {
     @Value("${notification.get}")
     private String get;
 
+    @Value("${notification.type}")
+    private String type;
+
     @Value("${internal.token}")
     private String internalToken;
 
@@ -69,4 +72,17 @@ public class NotificationService {
         );
     }
 
+    public ResponseEntity<ResponseMessage> getNotificationByType(int pageNumber, int pageSize, String type) {
+        String url = this.type + "?type=" + type + "&pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(INTERNAL_TOKEN, this.internalToken);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+        return restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                ResponseMessage.class
+        );
+    }
 }

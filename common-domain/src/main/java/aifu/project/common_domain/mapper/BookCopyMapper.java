@@ -11,6 +11,7 @@ public class BookCopyMapper {
         return BookCopy.builder()
                 .inventoryNumber(dto.getInventoryNumber())
                 .shelfLocation(dto.getShelfLocation())
+                .notes(dto.getNotes())
                 .book(baseBook)
                 .build();
     }
@@ -20,8 +21,12 @@ public class BookCopyMapper {
         dto.setId(entity.getId());
         dto.setInventoryNumber(entity.getInventoryNumber());
         dto.setShelfLocation(entity.getShelfLocation());
+        dto.setNotes(entity.getNotes());
         dto.setBaseBookId(entity.getBook().getId());
         return dto;
+    }
+
+    private BookCopyMapper() {
     }
 
 }

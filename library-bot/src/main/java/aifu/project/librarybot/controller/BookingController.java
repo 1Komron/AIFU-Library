@@ -13,17 +13,20 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> getBookings(){
-        return bookingService.getBookingList();
+    public ResponseEntity<ResponseMessage> getBookings(@RequestParam(defaultValue = "1") int pageNum,
+                                                       @RequestParam(defaultValue = "10") int pageSize) {
+        return bookingService.getBookingList(pageNum, pageSize);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseMessage> getBookingById(@PathVariable Long id){
+    public ResponseEntity<ResponseMessage> getBookingById(@PathVariable Long id) {
         return bookingService.getBooking(id);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<ResponseMessage> getBookingByStatus(@RequestParam String status){
-        return bookingService.filterByStatus(status);
+    public ResponseEntity<ResponseMessage> getBookingByStatus(@RequestParam String status,
+                                                              @RequestParam(defaultValue = "1") int pageNum,
+                                                              @RequestParam(defaultValue = "10") int pageSize) {
+        return bookingService.filterByStatus(status, pageNum, pageSize);
     }
 }

@@ -23,14 +23,14 @@ public class BookingServiceImpl implements BookingService {
     private static final String TOKEN_HEADER = "Internal-Token";
 
     @Override
-    public ResponseEntity<ResponseMessage> getBookingList() {
+    public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(TOKEN_HEADER, this.internalToken);
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                this.bookingBaseUri,
+                this.bookingBaseUri + "?pageNum=" + pageNum + "&pageSize=" + pageSize,
                 HttpMethod.GET,
                 entity,
                 ResponseMessage.class);
@@ -51,14 +51,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> filterByStatus(String status) {
+    public ResponseEntity<ResponseMessage> filterByStatus(String status, int pageNum, int pageSize) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(TOKEN_HEADER, this.internalToken);
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                this.bookingBaseUri + "/filter?status=" + status,
+                this.bookingBaseUri + "/filter?status=" + status + "&pageNum=" + pageNum + "&pageSize=" + pageSize,
                 HttpMethod.GET,
                 entity,
                 ResponseMessage.class);

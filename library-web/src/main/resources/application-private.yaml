@@ -5,6 +5,9 @@ internal:
 statistics:
   baseUri:
     http://localhost:8081/api/statistics
+booking:
+  baseUri:
+    http://localhost:8081/api/admin/booking
 
 action:
   borrow:
@@ -23,7 +26,9 @@ notification:
     http://localhost:8081/notification
   get:
     http://localhost:8081/notification
+  type:
+    http://localhost:8081/notification/type
 
 user:
-  BaseUri:
+  baseUri:
     http://localhost:8081/api/user

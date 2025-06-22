@@ -2,14 +2,18 @@ package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.dto.BookingDiagramDTO;
 import aifu.project.common_domain.dto.BookingResponse;
+import aifu.project.common_domain.dto.BookingShortDTO;
+import aifu.project.common_domain.dto.BookingSummaryDTO;
 import aifu.project.common_domain.entity.*;
 import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookCopyNotFoundException;
+import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.payload.PartList;
+import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookCopyRepository;
 import aifu.project.librarybot.repository.BookingRepository;
@@ -25,6 +29,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -337,7 +342,23 @@ public class BookingService {
         return bookingRepository.existsBookingByUser_Id(userId);
     }
 
-    public boolean hasBookingForUserChatId(Long chatId) {
-        return bookingRepository.existsBookingByUser_ChatId(chatId);
+    public ResponseEntity<ResponseMessage> getBookingList() {
+        List<BookingShortDTO> data = bookingRepository.findAllBookingShortDTO();
+
+        return ResponseEntity.ok(new ResponseMessage(true, data.isEmpty() ? "Empty list" : "Booking list", data));
+    }
+
+    public ResponseEntity<ResponseMessage> getBooking(Long id) {
+        BookingSummaryDTO data = bookingRepository.findSummary(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found. By id: " + id));
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Booking by id: " + id, data));
+    }
+
+    public ResponseEntity<ResponseMessage> filterByStatus(String status) {
+        Status statusEnum = Status.getStatus(status);
+
+        List<BookingShortDTO> data = bookingRepository.findShortByStatus(statusEnum);
+        return ResponseEntity.ok(new ResponseMessage(true, data.isEmpty() ? "Empty list" : "Booking list", data));
     }
 }

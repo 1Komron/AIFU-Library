@@ -1,6 +1,8 @@
 package aifu.project.librarybot.repository;
 
 import aifu.project.common_domain.dto.BookingDiagramDTO;
+import aifu.project.common_domain.dto.BookingShortDTO;
+import aifu.project.common_domain.dto.BookingSummaryDTO;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.enums.Status;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -107,4 +110,58 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean existsBookingByUser_Id(Long userId);
 
     boolean existsBookingByUser_ChatId(Long userChatId);
+
+    @Query("""
+    SELECT new aifu.project.common_domain.dto.BookingShortDTO(
+        b.id,
+        base.title,
+        base.author,
+        b.dueDate,
+        b.givenAt,
+        b.status
+    )
+    FROM Booking b
+    JOIN b.book copy
+    JOIN copy.book base
+""")
+    List<BookingShortDTO> findAllBookingShortDTO();
+
+    @Query("""
+    SELECT new aifu.project.common_domain.dto.BookingSummaryDTO(
+        b.id,
+        base.title,
+        base.author,
+        copy.inventoryNumber,
+        b.dueDate,
+        b.givenAt,
+        b.status,
+        u.id,
+        u.name,
+        u.surname,
+        u.phone
+    )
+    FROM Booking b
+    JOIN b.book copy
+    JOIN copy.book base
+    JOIN b.user u
+    WHERE b.id = :id
+""")
+    Optional<BookingSummaryDTO> findSummary(@Param("id") Long id);
+
+    @Query("""
+    SELECT new aifu.project.common_domain.dto.BookingShortDTO(
+        b.id,
+        base.title,
+        base.author,
+        b.dueDate,
+        b.givenAt,
+        b.status
+    )
+    FROM Booking b
+    JOIN b.book copy
+    JOIN copy.book base
+    WHERE b.status = :status
+""")
+    List<BookingShortDTO> findShortByStatus(@Param("status") Status status);
+
 }

@@ -1,0 +1,870 @@
+2025-06-20 10:07:35.687 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 59965 (/home/komronbek/Projects/AIFU_Library/library-bot/target/classes started by komronbek in /home/komronbek/Projects/AIFU_Library)
+2025-06-20 10:07:35.689 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-06-20 10:07:36.121 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20 10:07:36.163 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 37 ms. Found 11 JPA repository interfaces.
+2025-06-20 10:07:36.428 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-06-20 10:07:36.435 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-06-20 10:07:36.436 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-20 10:07:36.436 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-06-20 10:07:36.461 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-20 10:07:36.462 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 747 ms
+2025-06-20 10:07:36.561 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20 10:07:36.583 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-06-20 10:07:36.598 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-20 10:07:36.719 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20 10:07:36.733 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-20 10:07:36.899 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5d5cd210
+2025-06-20 10:07:36.900 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-20 10:07:36.933 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20 10:07:37.493 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20 10:07:37.923 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 10:07:38.166 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-20 10:07:39.529 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-06-20 10:07:39.608 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20 10:07:39.634 [main] INFO  o.s.v.b.OptionalValidatorFactoryBean - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-06-20 10:07:39.920 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-06-20 10:07:39.928 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-06-20 10:07:39.936 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 4.578 seconds (process running for 4.897)
+2025-06-20 10:13:47.666 [AIFU Library Telegram Executor] WARN  a.p.l.service.RegisterService - The message cannot be deleted, it is too old or has already been deleted. MessageId: 4398.
+2025-06-20 10:14:40.451 [AIFU Library Telegram Executor] INFO  o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [localhost:5672]
+2025-06-20 10:14:40.547 [AIFU Library Telegram Executor] INFO  o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#52599443:0/SimpleConnection@2b2aa8c8 [delegate=amqp://guest@127.0.0.1:5672/, localPort=34894]
+2025-06-20 10:15:07.762 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-20 10:15:07.762 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-20 10:15:07.764 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-06-20 10:15:20.432 [http-nio-8081-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: aifu.project.common_domain.exceptions.NotificationNotFoundException: Not found by id: 5] with root cause
+aifu.project.common_domain.exceptions.NotificationNotFoundException: Not found by id: 5
+	at aifu.project.librarybot.service.NotificationService.lambda$get$0(NotificationService.java:84)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at aifu.project.librarybot.service.NotificationService.get(NotificationService.java:84)
+	at aifu.project.librarybot.controller.NotificationController.getNotificationDetails(NotificationController.java:30)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at aifu.project.librarybot.config.InternalTokenFilter.doFilterInternal(InternalTokenFilter.java:33)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-06-20 10:15:26.193 [http-nio-8081-exec-3] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: aifu.project.common_domain.exceptions.NotificationNotFoundException: Not found by id: 14] with root cause
+aifu.project.common_domain.exceptions.NotificationNotFoundException: Not found by id: 14
+	at aifu.project.librarybot.service.NotificationService.lambda$get$0(NotificationService.java:84)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at aifu.project.librarybot.service.NotificationService.get(NotificationService.java:84)
+	at aifu.project.librarybot.controller.NotificationController.getNotificationDetails(NotificationController.java:30)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at aifu.project.librarybot.config.InternalTokenFilter.doFilterInternal(InternalTokenFilter.java:33)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-06-20 10:54:08.617 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-20 10:54:08.619 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-06-20 10:54:08.638 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 10:54:08.640 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-20 10:54:08.645 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-06-20 10:54:11.764 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 122641 (/home/komronbek/Projects/AIFU_Library/library-bot/target/classes started by komronbek in /home/komronbek/Projects/AIFU_Library)
+2025-06-20 10:54:11.765 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-06-20 10:54:12.285 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20 10:54:12.336 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 46 ms. Found 11 JPA repository interfaces.
+2025-06-20 10:54:12.642 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-06-20 10:54:12.649 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-06-20 10:54:12.650 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-20 10:54:12.650 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-06-20 10:54:12.674 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-20 10:54:12.674 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 885 ms
+2025-06-20 10:54:12.787 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20 10:54:12.812 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-06-20 10:54:12.829 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-20 10:54:12.954 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20 10:54:12.969 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-20 10:54:13.147 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@36a1fd20
+2025-06-20 10:54:13.148 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-20 10:54:13.190 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20 10:54:13.785 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20 10:54:14.209 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 10:54:14.509 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-20 10:54:15.990 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-06-20 10:54:16.064 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20 10:54:16.090 [main] INFO  o.s.v.b.OptionalValidatorFactoryBean - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-06-20 10:54:16.368 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-06-20 10:54:16.379 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-06-20 10:54:16.390 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 4.984 seconds (process running for 5.442)
+2025-06-20 10:57:13.743 [AIFU Library Telegram Executor] INFO  o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [localhost:5672]
+2025-06-20 10:57:13.779 [AIFU Library Telegram Executor] INFO  o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#282c2bbd:0/SimpleConnection@18605755 [delegate=amqp://guest@127.0.0.1:5672/, localPort=50814]
+2025-06-20 10:57:30.929 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-20 10:57:30.929 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-20 10:57:30.931 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-06-20 11:00:31.521 [http-nio-8081-exec-4] ERROR a.p.l.handler.GlobalExceptionHandler - User deletion exception. Message: The user cannot be deleted because he has active book reservations.
+2025-06-20 11:01:17.822 [AIFU Library Telegram Executor] INFO  a.p.l.service.RegisterService - Restoring registration state for chatId=6360925985 from message:
+✅ Имя: -
+✅ Фамилия: -
+✅ Номер телефона: -
+✅ Факультет: -
+✅ Курс: -
+✅ Номер группы: -
+2025-06-20 11:01:17.825 [AIFU Library Telegram Executor] INFO  a.p.l.service.RegisterService - Bot user successfully restored from message: BotUserDTO(name=null, surname=null, phone=null, email=null, faculty=null, course=null, group=null, chatId=6360925985)
+2025-06-20 11:01:22.478 [AIFU Library Telegram Executor] WARN  a.p.l.service.RegisterService - The message cannot be deleted, it is too old or has already been deleted. MessageId: 4680.
+2025-06-20 11:04:14.330 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [429] Too Many Requests: retry after 8
+org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException: Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [429] Too Many Requests: retry after 8
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseInternal(PartialBotApiMethod.java:54)
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponse(PartialBotApiMethod.java:34)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage.deserializeResponse(BotApiMethodMessage.java:20)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage.deserializeResponse(BotApiMethodMessage.java:15)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1115)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.utils.ExecuteUtil.executeMessage(ExecuteUtil.java:22)
+	at aifu.project.librarybot.service.ProcessService.processCallBackDataRegister(ProcessService.java:328)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:217)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:04.309 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "String.hashCode()" because "<local3>" is null
+java.lang.NullPointerException: Cannot invoke "String.hashCode()" because "<local3>" is null
+	at aifu.project.librarybot.utils.MessageUtil.get(MessageUtil.java:15)
+	at aifu.project.librarybot.service.RegisterService.registerUser(RegisterService.java:49)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:219)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:06.905 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "String.hashCode()" because "<local3>" is null
+java.lang.NullPointerException: Cannot invoke "String.hashCode()" because "<local3>" is null
+	at aifu.project.librarybot.utils.MessageUtil.get(MessageUtil.java:15)
+	at aifu.project.librarybot.service.RegisterService.registerUser(RegisterService.java:49)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:219)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:10.584 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "String.hashCode()" because "<local3>" is null
+java.lang.NullPointerException: Cannot invoke "String.hashCode()" because "<local3>" is null
+	at aifu.project.librarybot.utils.MessageUtil.get(MessageUtil.java:15)
+	at aifu.project.librarybot.service.RegisterService.registerUser(RegisterService.java:49)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:219)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:13.823 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "String.hashCode()" because "<local3>" is null
+java.lang.NullPointerException: Cannot invoke "String.hashCode()" because "<local3>" is null
+	at aifu.project.librarybot.utils.MessageUtil.get(MessageUtil.java:15)
+	at aifu.project.librarybot.service.RegisterService.registerUser(RegisterService.java:49)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:219)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:16.488 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:18.581 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:19.801 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:20.987 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:21.291 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:21.518 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:24.428 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:24.735 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:25.589 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:25.701 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:26.315 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:40.982 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:41.451 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:41.953 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:42.411 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:42.825 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:43.231 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:05:51.147 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Cannot invoke "Object.hashCode()" because "pk" is null
+java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "pk" is null
+	at java.base/java.util.ImmutableCollections$MapN.probe(ImmutableCollections.java:1328)
+	at java.base/java.util.ImmutableCollections$MapN.get(ImmutableCollections.java:1242)
+	at aifu.project.librarybot.service.ProcessService.processInput(ProcessService.java:114)
+	at aifu.project.librarybot.service.ProcessService.processTextMessage(ProcessService.java:101)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:33)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-06-20 11:27:34.221 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-20 11:27:34.224 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-06-20 11:27:34.242 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 11:27:34.244 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-20 11:27:34.248 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-06-20 11:27:37.802 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 165565 (/home/komronbek/Projects/AIFU_Library/library-bot/target/classes started by komronbek in /home/komronbek/Projects/AIFU_Library)
+2025-06-20 11:27:37.803 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-06-20 11:27:38.291 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20 11:27:38.337 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 42 ms. Found 11 JPA repository interfaces.
+2025-06-20 11:27:38.627 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-06-20 11:27:38.635 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-06-20 11:27:38.636 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-20 11:27:38.636 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-06-20 11:27:38.662 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-20 11:27:38.662 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 833 ms
+2025-06-20 11:27:38.771 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20 11:27:38.802 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-06-20 11:27:38.820 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-20 11:27:38.959 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20 11:27:38.975 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-20 11:27:39.166 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5ffd35dd
+2025-06-20 11:27:39.167 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-20 11:27:39.206 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20 11:27:39.800 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20 11:27:40.220 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 11:27:40.474 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-20 11:27:42.883 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-06-20 11:27:42.959 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20 11:27:42.992 [main] INFO  o.s.v.b.OptionalValidatorFactoryBean - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-06-20 11:27:43.299 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-06-20 11:27:43.307 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-06-20 11:27:43.316 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 5.838 seconds (process running for 6.23)
+2025-06-20 11:31:18.855 [AIFU Library Telegram Executor] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 0, SQLState: 23505
+2025-06-20 11:31:18.856 [AIFU Library Telegram Executor] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.
+2025-06-20 11:31:18.863 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [uknr2rmfhq6wfp39vcduy7iketb]
+org.springframework.dao.DataIntegrityViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [uknr2rmfhq6wfp39vcduy7iketb]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:290)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:560)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:343)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy142.save(Unknown Source)
+	at aifu.project.librarybot.service.RegisterRequestService.create(RegisterRequestService.java:20)
+	at aifu.project.librarybot.service.UserService.saveUser(UserService.java:70)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
+	at aifu.project.librarybot.service.UserService$$SpringCGLIB$$0.saveUser(<generated>)
+	at aifu.project.librarybot.service.ProcessService.processCallBackDataRegister(ProcessService.java:389)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:217)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+Caused by: org.hibernate.exception.ConstraintViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:97)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:134)
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:55)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:55)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.doStaticInserts(InsertCoordinatorStandard.java:194)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.coordinateInsert(InsertCoordinatorStandard.java:132)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.insert(InsertCoordinatorStandard.java:104)
+	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:110)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644)
+	at org.hibernate.engine.spi.ActionQueue.executeInserts(ActionQueue.java:486)
+	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:269)
+	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:324)
+	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:393)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:307)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:223)
+	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:136)
+	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:177)
+	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:95)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:79)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:55)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:761)
+	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:745)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:320)
+	at jdk.proxy2/jdk.proxy2.$Proxy134.persist(Unknown Source)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:636)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:277)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:515)
+	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:284)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:731)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:174)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:149)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	... 24 common frames omitted
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:194)
+	... 70 common frames omitted
+2025-06-20 11:31:22.878 [AIFU Library Telegram Executor] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 0, SQLState: 23505
+2025-06-20 11:31:22.878 [AIFU Library Telegram Executor] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.
+2025-06-20 11:31:22.879 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [uknr2rmfhq6wfp39vcduy7iketb]
+org.springframework.dao.DataIntegrityViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [uknr2rmfhq6wfp39vcduy7iketb]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:290)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:560)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:343)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy142.save(Unknown Source)
+	at aifu.project.librarybot.service.RegisterRequestService.create(RegisterRequestService.java:20)
+	at aifu.project.librarybot.service.UserService.saveUser(UserService.java:70)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
+	at aifu.project.librarybot.service.UserService$$SpringCGLIB$$0.saveUser(<generated>)
+	at aifu.project.librarybot.service.ProcessService.processCallBackDataRegister(ProcessService.java:389)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:217)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+Caused by: org.hibernate.exception.ConstraintViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:97)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:134)
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:55)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:55)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.doStaticInserts(InsertCoordinatorStandard.java:194)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.coordinateInsert(InsertCoordinatorStandard.java:132)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.insert(InsertCoordinatorStandard.java:104)
+	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:110)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644)
+	at org.hibernate.engine.spi.ActionQueue.executeInserts(ActionQueue.java:486)
+	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:269)
+	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:324)
+	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:393)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:307)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:223)
+	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:136)
+	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:177)
+	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:95)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:79)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:55)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:761)
+	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:745)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:320)
+	at jdk.proxy2/jdk.proxy2.$Proxy134.persist(Unknown Source)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:636)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:277)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:515)
+	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:284)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:731)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:174)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:149)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	... 24 common frames omitted
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:194)
+	... 70 common frames omitted
+2025-06-20 11:31:28.406 [AIFU Library Telegram Executor] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 0, SQLState: 23505
+2025-06-20 11:31:28.406 [AIFU Library Telegram Executor] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.
+2025-06-20 11:31:28.407 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [uknr2rmfhq6wfp39vcduy7iketb]
+org.springframework.dao.DataIntegrityViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [uknr2rmfhq6wfp39vcduy7iketb]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:290)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:241)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:560)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:343)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy142.save(Unknown Source)
+	at aifu.project.librarybot.service.RegisterRequestService.create(RegisterRequestService.java:20)
+	at aifu.project.librarybot.service.UserService.saveUser(UserService.java:70)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
+	at aifu.project.librarybot.service.UserService$$SpringCGLIB$$0.saveUser(<generated>)
+	at aifu.project.librarybot.service.ProcessService.processCallBackDataRegister(ProcessService.java:389)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:217)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+Caused by: org.hibernate.exception.ConstraintViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.] [insert into users (chat_id,course,email,faculty,group_number,is_active,is_deleted,name,password,phone,role,surname,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:97)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:134)
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:55)
+	at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:55)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.doStaticInserts(InsertCoordinatorStandard.java:194)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.coordinateInsert(InsertCoordinatorStandard.java:132)
+	at org.hibernate.persister.entity.mutation.InsertCoordinatorStandard.insert(InsertCoordinatorStandard.java:104)
+	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:110)
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644)
+	at org.hibernate.engine.spi.ActionQueue.executeInserts(ActionQueue.java:486)
+	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:269)
+	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:324)
+	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:393)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:307)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:223)
+	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:136)
+	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:177)
+	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:95)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:79)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:55)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:761)
+	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:745)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:320)
+	at jdk.proxy2/jdk.proxy2.$Proxy134.persist(Unknown Source)
+	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:636)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:277)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:515)
+	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:284)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:731)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:174)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:149)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	... 24 common frames omitted
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "uknr2rmfhq6wfp39vcduy7iketb"
+  Подробности: Key (chat_id)=(7554583568) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2733)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2420)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:372)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:517)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:434)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:194)
+	... 70 common frames omitted
+2025-06-20 11:38:14.679 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-20 11:38:14.683 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-06-20 11:38:14.692 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 11:38:14.693 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-20 11:38:14.698 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-06-20 11:38:17.771 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 181024 (/home/komronbek/Projects/AIFU_Library/library-bot/target/classes started by komronbek in /home/komronbek/Projects/AIFU_Library)
+2025-06-20 11:38:17.772 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-06-20 11:38:18.240 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20 11:38:18.283 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 38 ms. Found 11 JPA repository interfaces.
+2025-06-20 11:38:18.565 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-06-20 11:38:18.572 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-06-20 11:38:18.573 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-20 11:38:18.573 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-06-20 11:38:18.600 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-20 11:38:18.600 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 798 ms
+2025-06-20 11:38:18.702 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20 11:38:18.725 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-06-20 11:38:18.741 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-20 11:38:18.864 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20 11:38:18.879 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-20 11:38:19.065 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@57920d6c
+2025-06-20 11:38:19.066 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-20 11:38:19.103 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20 11:38:19.687 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20 11:38:20.137 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 11:38:20.385 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-20 11:38:21.953 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-06-20 11:38:22.017 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20 11:38:22.047 [main] INFO  o.s.v.b.OptionalValidatorFactoryBean - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-06-20 11:38:22.401 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-06-20 11:38:22.410 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-06-20 11:38:22.418 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 4.968 seconds (process running for 5.314)
+2025-06-20 11:38:35.164 [AIFU Library Telegram Executor] INFO  a.p.l.service.RegisterService - Restoring registration state for chatId=7554583568 from message:
+✅ Имя: a
+✅ Фамилия: r
+✅ Номер телефона: +998909292118
+✅ Факультет: j
+✅ Курс: 2
+✅ Номер группы: 1
+2025-06-20 11:38:35.164 [AIFU Library Telegram Executor] INFO  a.p.l.service.RegisterService - Bot user successfully restored from message: BotUserDTO(name=a, surname=r, phone=+998909292118, email=null, faculty=j, course=2, group=1, chatId=7554583568)
+2025-06-20 11:38:35.217 [AIFU Library Telegram Executor] INFO  o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [localhost:5672]
+2025-06-20 11:38:35.260 [AIFU Library Telegram Executor] INFO  o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#4f5f4f7a:0/SimpleConnection@58e2d18f [delegate=amqp://guest@127.0.0.1:5672/, localPort=54978]
+2025-06-20 11:41:07.402 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-20 11:41:07.402 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-20 11:41:07.403 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-06-20 11:42:01.135 [http-nio-8081-exec-2] ERROR a.p.l.handler.GlobalExceptionHandler - User not found. Message: User not found by chatId: 153
+2025-06-20 11:49:19.200 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-20 11:49:19.204 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-06-20 11:49:19.231 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20 11:49:19.235 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-20 11:49:19.242 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

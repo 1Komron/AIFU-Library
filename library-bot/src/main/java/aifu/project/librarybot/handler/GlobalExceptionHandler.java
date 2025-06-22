@@ -1,5 +1,6 @@
 package aifu.project.librarybot.handler;
 
+import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
@@ -24,6 +25,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserDeletionException.class)
     public ResponseEntity<ResponseMessage> handleUserDeletionException(UserDeletionException e) {
         log.error("User deletion exception. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleBookingNotFoundException(BookingNotFoundException e) {
+        log.error("Booking not found. Message: {}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ResponseMessage(false, e.getMessage(), null));

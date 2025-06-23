@@ -14,6 +14,7 @@ import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.repository.BookingRequestRepository;
 import aifu.project.librarybot.repository.NotificationRepository;
 import aifu.project.librarybot.repository.RegisterRequestRepository;
+import aifu.project.librarybot.utils.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,8 @@ public class NotificationService {
     private final BookingRequestRepository bookingRequestRepository;
     private final RegisterRequestRepository registerRequestRepository;
 
+    private static final String NOTIFICATION_TIME = "notificationTime";
+
     public void deleteNotification(Long notificationId) {
         Notification notification = notificationRepository.getNotificationById(notificationId);
 
@@ -48,37 +51,31 @@ public class NotificationService {
     }
 
     public ResponseEntity<ResponseMessage> getUnreadNotifications(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "notificationTime"));
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
         Page<Notification> page = notificationRepository.findNotificationByIsRead(false, pageable);
         if (page.getTotalElements() == 0)
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .body(new ResponseMessage(false, "No unread notifications", null));
 
-        Map<String, Object> pageInfo = Map.of(
-                "pageNumber", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "data", getShortDTO(page.getContent())
-        );
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", getShortDTO(page.getContent()));
 
-        return ResponseEntity.ok(new ResponseMessage(true, "All unread notifications", pageInfo));
+        return ResponseEntity.ok(new ResponseMessage(true, "All unread notifications", map));
     }
 
     public ResponseEntity<ResponseMessage> getAllNotifications(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "notificationTime"));
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
         Page<Notification> page = notificationRepository.findAll(pageable);
         if (page.getTotalElements() == 0)
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .body(new ResponseMessage(false, "Empty", null));
 
-        Map<String, Object> pageInfo = Map.of(
-                "pageNumber", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "data", getShortDTO(page.getContent())
-        );
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", getShortDTO(page.getContent()));
 
-        return ResponseEntity.ok(new ResponseMessage(true, "All notifications", pageInfo));
+        return ResponseEntity.ok(new ResponseMessage(true, "All notifications", map));
     }
 
     public ResponseEntity<ResponseMessage> get(String notificationId) {
@@ -137,7 +134,7 @@ public class NotificationService {
         return notifications.stream()
                 .map(notification ->
                         new NotificationShortDTO(notification.getId(),
-                                notification.getUserName() + " " + notification.getUserSurname(),
+                                notification.getUserName(), notification.getUserSurname(),
                                 notification.getNotificationType(), notification.getNotificationTime()
                                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                                 notification.isRead()))
@@ -146,17 +143,13 @@ public class NotificationService {
 
     public ResponseEntity<ResponseMessage> getNotificationByType(int pageNumber, int pageSize, String type) {
         NotificationType notificationType = NotificationType.getNotification(type);
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "notificationTime"));
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
 
         Page<NotificationShortDTO> page = notificationRepository.findAllByNotificationType(notificationType, pageable);
 
-        Map<String, Object> map = Map.of(
-                "data", page.getContent(),
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
-        );
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", page.getContent());
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Notification list By: "+type, map));
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification list By: " + type, map));
     }
 }

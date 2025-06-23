@@ -43,10 +43,8 @@ public class UserService {
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<User> userPage = userRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
 
-        Map<String, Object> map = Map.of(
-                "data", getUserShortDTO(userPage.getContent()),
-                "pageInfo", Util.getPageInfo(userPage)
-        );
+        Map<String, Object> map = Util.getPageInfo(userPage);
+        map.put("data", getUserShortDTO(userPage.getContent()));
 
         return ResponseEntity.ok(new ResponseMessage(true, "User list", map));
     }
@@ -58,10 +56,8 @@ public class UserService {
                 ? userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable)
                 : userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, true, pageable);
 
-        Map<String, Object> map = Map.of(
-                "data", getUserShortDTO(userPage.getContent()),
-                "pageInfo", Util.getPageInfo(userPage)
-        );
+        Map<String, Object> map = Util.getPageInfo(userPage);
+        map.put("data", getUserShortDTO(userPage.getContent()));
 
         return ResponseEntity.ok(new ResponseMessage(true, "User list", map));
     }

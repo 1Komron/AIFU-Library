@@ -26,4 +26,6 @@ public interface PdfBookService {
 
     byte[] downloadPdf(Integer id);
 
+    List<PdfBookPreviewDTO> getBooksByCategoryId(Integer categoryId);
+
 }

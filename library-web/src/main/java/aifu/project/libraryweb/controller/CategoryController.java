@@ -1,34 +1,32 @@
 package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.*;
+import aifu.project.common_domain.entity.Category;
+import aifu.project.common_domain.mapper.CategoryMapper;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/categories")
+@RequestMapping("/api/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> create(
-            @Valid @RequestBody CreateCategoryDTO dto) {
+    public ResponseEntity<ResponseMessage> create(@Valid @RequestBody CreateCategoryDTO dto) {
         CategoryResponseDTO response = categoryService.create(dto);
         ResponseMessage body = new ResponseMessage(
                 true,
-                "Category muvaffaqiyatli yaratildi",
-                        response
+                "Category successfully created",
+                response
         );
-        
         return ResponseEntity.ok(body);
     }
 
@@ -36,61 +34,62 @@ public class CategoryController {
     public ResponseEntity<ResponseMessage> update(
             @PathVariable Integer id,
             @Valid @RequestBody UpdateCategoryDTO dto) {
-        CategoryResponseDTO response = categoryService.update(id, dto);
-        ResponseMessage body = new ResponseMessage(
-                true,
-                "Category muvaffaqiyatli uzgartirildi",
-                response
-        );
-        return ResponseEntity.ok(body);
+        try {
+            CategoryResponseDTO response = categoryService.update(id, dto);
+            ResponseMessage body = new ResponseMessage(
+                    true,
+                    "Category successfully updated",
+                    response
+            );
+            return ResponseEntity.ok(body);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(404)
+                    .body(new ResponseMessage(false, "Category not found", null));
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
         try {
             categoryService.delete(id);
-            ResponseMessage response = new ResponseMessage(
-                    true,
-                    "Category muvaffaqiyatli o'chirildi",
-                    null
+            return ResponseEntity.ok(
+                    new ResponseMessage(true, "Category successfully deleted", null)
             );
-            return ResponseEntity.ok(response); // yoki HttpStatus.NO_CONTENT ham bo'lishi mumkin
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(404)
+                    .body(new ResponseMessage(false, "Category not found", null));
         } catch (IllegalStateException e) {
-            ResponseMessage response = new ResponseMessage(
-                    false,
-                    "Xatolik yuz berdi: " + e.getMessage(),
-                    null
-            );
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (IllegalArgumentException e) {
-            ResponseMessage response = new ResponseMessage(
-                    false,
-                    "Category topilmadi: " + e.getMessage(),
-                    null
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity
+                    .status(400)
+                    .body(new ResponseMessage(false, "Cannot delete category with existing books", null));
         }
     }
 
+    @GetMapping
+    public ResponseEntity<ResponseMessage> getAll() {
+        List<CategoryResponseDTO> categories = categoryService.getAll();
+        ResponseMessage body = new ResponseMessage(
+                true,
+                "Categories retrieved successfully",
+                categories
+        );
+        return ResponseEntity.ok(body);
+    }
 
-    @GetMapping("/{id}/pdf-books")
-    public ResponseEntity<ResponseMessage> getBooksByCategoryId(@PathVariable Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseMessage> getOne(@PathVariable Integer id) {
         try {
-            List<PdfBookPreviewDTO> books = categoryService.getBooksByCategoryId(id);
-            ResponseMessage response = new ResponseMessage(
-                    true,
-                    "Ushbu categoryga tegishli kitoblar muvaffaqiyatli olindi",
-                    books
+            Category category = categoryService.getById(id);
+            CategoryResponseDTO dto = CategoryMapper.toDto(category);
+            return ResponseEntity.ok(
+                    new ResponseMessage(true, "Category successfully retrieved", dto)
             );
-            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            ResponseMessage response = new ResponseMessage(
-                    false,
-                    "Category topilmadi yoki unga tegishli kitoblar yo'q: " + e.getMessage(),
-                    null
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity
+                    .status(404)
+                    .body(new ResponseMessage(false, "Category not found", null));
         }
     }
-
 }

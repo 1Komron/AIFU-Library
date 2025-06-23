@@ -80,8 +80,6 @@ public class PdfBookController {
         );
     }
 
-
-
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
         try {
@@ -91,8 +89,6 @@ public class PdfBookController {
             return ResponseEntity.status(404).body(new ResponseMessage(false, "PDF book not found", null));
         }
     }
-
-
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
@@ -117,6 +113,24 @@ public class PdfBookController {
                 .header("Content-Type", "application/pdf")
                 .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
                 .body(pdfData);
+    }
+
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ResponseMessage> getBooksByCategory(@PathVariable Integer categoryId) {
+        try {
+            List<PdfBookPreviewDTO> books = pdfBookService.getBooksByCategoryId(categoryId);
+            ResponseMessage response = new ResponseMessage(
+                    true,
+                    "Kitoblar muvaffaqiyatli olindi",
+                    books
+            );
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(
+                    new ResponseMessage(false, "Category topilmadi: " + e.getMessage(), null)
+            );
+        }
     }
 
 }

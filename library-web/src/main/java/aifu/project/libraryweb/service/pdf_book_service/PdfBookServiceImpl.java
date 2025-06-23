@@ -41,7 +41,7 @@ public class PdfBookServiceImpl implements PdfBookService {
     @Override
     public PdfBookResponseDTO create(Integer categoryId, PdfBookCreateDTO dto) {
         // 1. Categoryni olib kelamiz
-        Category category = categoryService.getEntityById(categoryId);
+        Category category = categoryService.getById(categoryId);
 
         // 2. DTO dan Entity ga mapping (Mapper ishlatish)
         PdfBook book = PdfBookMapper.toEntity(dto);
@@ -88,7 +88,7 @@ public class PdfBookServiceImpl implements PdfBookService {
 
         // 2. Category yangilanmoqchi bo‘lsa, olib kelamiz
         if (dto.getCategoryId() != null) {
-            Category category = categoryService.getEntityById(dto.getCategoryId());
+            Category category = categoryService.getById(dto.getCategoryId());
             book.setCategory(category);
         }
 
@@ -113,14 +113,10 @@ public class PdfBookServiceImpl implements PdfBookService {
 
     @Override
     public void delete(Integer id) {
-        // 1. Avval PdfBook mavjudligini tekshiramiz
         PdfBook book = pdfBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PdfBook not found with id: " + id));
-
-        // 2. Repositorydan o‘chiramiz
         pdfBookRepository.deleteById(id);
 
-        // 3. Lucene indeksdan ham o‘chiramiz
         try {
             luceneIndexService.deletePDFBookIndex(id);
             log.info("Lucene index deleted for PdfBook ID: {}", id);
@@ -157,10 +153,18 @@ public class PdfBookServiceImpl implements PdfBookService {
         } catch (IOException e) {
             throw new RuntimeException("Faylni o'qishda xatolik: " + e.getMessage(), e);
 
+
         }
 
     }
 
+    @Override
+    public List<PdfBookPreviewDTO> getBooksByCategoryId(Integer categoryId) {
+        Category category = categoryService.getById(categoryId);
+        return category.getBooks().stream()
+                .map(PdfBookMapper::toPreviewDto)
+                .collect(Collectors.toList());
+    }
 
 
 }

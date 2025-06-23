@@ -41,7 +41,7 @@ java.lang.NullPointerException: null
 	at java.base/java.util.concurrent.ConcurrentHashMap.put(ConcurrentHashMap.java:1006)
 	at aifu.project.librarybot.scheduler.OverdueNotificationScheduler.lambda$sendOverdueNotifications$0(OverdueNotificationScheduler.java:37)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at aifu.project.librarybot.scheduler.OverdueNotificationScheduler.sendOverdueNotifications(OverdueNotificationScheduler.java:34)
+	at sendOverdueExpiringNotifications(OverdueNotificationScheduler.java:34)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

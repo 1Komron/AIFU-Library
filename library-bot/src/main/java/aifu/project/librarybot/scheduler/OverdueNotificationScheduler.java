@@ -30,7 +30,7 @@ public class OverdueNotificationScheduler {
     @Scheduled(cron = "0 0 8 * * *")
     @Transactional
 
-    public void sendOverdueNotifications() {
+    public void sendOverdueExpiringNotifications() {
         bookingService.getOverdueBookings().forEach(booking -> {
             String chatId = booking.getUser().getChatId().toString();
             String lang = userLanguageService.getLanguage(chatId);

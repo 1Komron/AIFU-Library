@@ -221,7 +221,7 @@ public class ProcessService {
             processControl(data, chatId, lang, messageId);
         } else if (data.startsWith(EXPIRING)) {
             processExpiring(chatId, lang, data);
-        } else if (data.startsWith(EXPIRED)) {
+        } else if (data.equals(EXPIRED)) {
             processExpired(chatId, lang, data);
         } else if (data.startsWith(EXTEND)) {
             processExtend(chatId, lang, data);
@@ -284,11 +284,9 @@ public class ProcessService {
     }
 
     private void processExpired(Long chatId, String lang, String data) {
-        if (data.equals(EXPIRED)) {
-            handlePagedList(() -> bookingService.getExpiredBookList(chatId, lang, 1),
-                    chatId, lang, EXPIRED);
-            bookingService.expiredBooking(chatId, lang);
-        }
+        handlePagedList(() -> bookingService.getExpiredBookList(chatId, lang, 1),
+                chatId, lang, EXPIRED);
+        bookingService.expiredBooking(chatId, lang);
     }
 
     private void processExpiring(Long chatId, String lang, String data) {

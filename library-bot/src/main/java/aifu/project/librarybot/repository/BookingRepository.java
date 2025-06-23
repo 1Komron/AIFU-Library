@@ -44,9 +44,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             SELECT b
             FROM Booking b
             JOIN FETCH b.user u
-            WHERE b.dueDate < :now
+            WHERE b.dueDate <= :now
             """)
-    List<Booking> findByDueDateBefore(@Param("now") LocalDate now);
+    List<Booking> findExpiredBookings(@Param("now") LocalDate now);
 
     @Query("""
             SELECT b
@@ -56,7 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             """)
     List<Booking> findByDueDate(@Param("tomorrow") LocalDate tomorrow);
 
-    @Query("SELECT b FROM Booking b WHERE b.user.chatId = :chatId AND b.dueDate < :date")
+    @Query("SELECT b FROM Booking b WHERE b.user.chatId = :chatId AND b.dueDate <= :date")
     List<Booking> findAllExpiredBookings(@Param("chatId") Long chatId, @Param("date") LocalDate date);
 
     @Query(
@@ -66,7 +66,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                     JOIN FETCH b.book bc
                     JOIN FETCH bc.book bb
                     WHERE b.user.chatId = :chatId
-                    AND b.dueDate < :date
+                    AND b.dueDate <= :date
                     """,
             countQuery = """
                     SELECT COUNT(b)
@@ -86,7 +86,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                     JOIN FETCH b.book bc
                     JOIN FETCH bc.book bb
                     WHERE b.user.chatId = :chatId
-                    AND b.dueDate = :tomorrow
+                    AND b.dueDate <= :tomorrow
                     """,
             countQuery = """
                     SELECT COUNT(b)

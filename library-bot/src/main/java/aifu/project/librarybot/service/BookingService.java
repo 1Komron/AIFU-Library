@@ -144,6 +144,11 @@ public class BookingService {
             return;
         }
 
+        if (bookingRequestService.existsRequest(booking.getBook())) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
+            return;
+        }
+
         BookingRequest bookingRequest = bookingRequestService.create(booking.getUser(), booking.getBook(), BookingRequestStatus.EXTEND);
         executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
 
@@ -244,7 +249,7 @@ public class BookingService {
 
     public List<Booking> getExpiredBookings() {
         LocalDate now = LocalDate.now();
-        List<Booking> byDueDateBefore = bookingRepository.findByDueDateBefore(now);
+        List<Booking> byDueDateBefore = bookingRepository.findExpiredBookings(now);
         byDueDateBefore.forEach(booking -> booking.setStatus(Status.OVERDUE));
 
         bookingRepository.saveAll(byDueDateBefore);

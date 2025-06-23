@@ -84,12 +84,18 @@ public class CategoryController {
             Category category = categoryService.getById(id);
             CategoryResponseDTO dto = CategoryMapper.toDto(category);
             return ResponseEntity.ok(
-                    new ResponseMessage(true, "Category successfully retrieved", dto)
+                    new ResponseMessage(true,
+                            "Category successfully retrieved",
+                            dto)
             );
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(404)
-                    .body(new ResponseMessage(false, "Category not found", null));
+                    .body(new ResponseMessage(false,
+                            "Category not found",
+                            null));
         }
+
     }
+
 }

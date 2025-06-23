@@ -13,8 +13,10 @@ import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.lucene.LuceneIndexService;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
+import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,30 +65,13 @@ public class BaseBookServiceImpl implements BaseBookService {
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         Page<BaseBook> page = baseBookRepository.findByIsDeletedFalse(pageable);
 
-        List<Map<String, Object>> list = page
-                .stream()
-                .map(book -> {
-                    BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(book);
-                    Map<String, Long> countMap = bookCopyService.getTotalAndTakenCount(book.getId());
+        List<Map<String, Object>> list = createBaseBookShortDTO(page.getContent());
 
-                    return Map.of(
-                            "book", dto,
-                            "totalCount", countMap.get("total"),
-                            "takenCount", countMap.get("taken")
-                    );
-                })
-                .toList();
-
-        Map<String, Object> map = Map.of(
-                "list", list,
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
-        );
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", list);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book list", map));
     }
-
 
     @Override
     public ResponseEntity<ResponseMessage> getOne(Integer id) {
@@ -202,9 +187,42 @@ public class BaseBookServiceImpl implements BaseBookService {
         return ResponseEntity.ok(new ResponseMessage(true, "Books in category successfully deleted", null));
     }
 
+    @Override
+    public ResponseEntity<ResponseMessage> getByCategory(Integer categoryId, int pageNumber, int pageSize) {
+        BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(categoryId)
+                .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
+
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+
+        Page<BaseBook> page = baseBookRepository.findAllByCategoryAndIsDeletedFalse(category, pageable);
+
+        Map<String, Object> map = Util.getPageInfo(page);
+
+        List<Map<String, Object>> data = createBaseBookShortDTO(page.getContent());
+        map.put("data", data);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book list. By categoryId: " + categoryId, map));
+    }
 
     @Override
     public long countBooks() {
         return baseBookRepository.count();
+    }
+
+    @NotNull
+    private List<Map<String, Object>> createBaseBookShortDTO(List<BaseBook> list) {
+        return list
+                .stream()
+                .map(book -> {
+                    BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(book);
+                    Map<String, Long> countMap = bookCopyService.getTotalAndTakenCount(book.getId());
+
+                    return Map.of(
+                            "book", dto,
+                            "totalCount", countMap.get("total"),
+                            "takenCount", countMap.get("taken")
+                    );
+                })
+                .toList();
     }
 }

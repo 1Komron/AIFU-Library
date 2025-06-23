@@ -38,6 +38,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static aifu.project.common_domain.mapper.NotificationMapper.notificationToDTO;
@@ -342,10 +343,18 @@ public class BookingService {
         return bookingRepository.existsBookingByUser_Id(userId);
     }
 
-    public ResponseEntity<ResponseMessage> getBookingList() {
-        List<BookingShortDTO> data = bookingRepository.findAllBookingShortDTO();
+    public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(--pageNum, pageSize);
+        Page<BookingShortDTO> page = bookingRepository.findAllBookingShortDTO(pageable);
 
-        return ResponseEntity.ok(new ResponseMessage(true, data.isEmpty() ? "Empty list" : "Booking list", data));
+        Map<String, Object> data = Map.of(
+                "data", page.getContent(),
+                "currentPage", page.getNumber() + 1,
+                "totalPages", page.getTotalPages(),
+                "totalElements", page.getTotalElements()
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
     }
 
     public ResponseEntity<ResponseMessage> getBooking(Long id) {
@@ -355,10 +364,19 @@ public class BookingService {
         return ResponseEntity.ok(new ResponseMessage(true, "Booking by id: " + id, data));
     }
 
-    public ResponseEntity<ResponseMessage> filterByStatus(String status) {
+    public ResponseEntity<ResponseMessage> filterByStatus(String status, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(--pageNum, pageSize);
         Status statusEnum = Status.getStatus(status);
 
-        List<BookingShortDTO> data = bookingRepository.findShortByStatus(statusEnum);
-        return ResponseEntity.ok(new ResponseMessage(true, data.isEmpty() ? "Empty list" : "Booking list", data));
+        Page<BookingShortDTO> page = bookingRepository.findShortByStatus(statusEnum, pageable);
+
+        Map<String, Object> data = Map.of(
+                "data", page.getContent(),
+                "currentPage", page.getNumber() + 1,
+                "totalPages", page.getTotalPages(),
+                "totalElements", page.getTotalElements()
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
     }
 }

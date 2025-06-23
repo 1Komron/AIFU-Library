@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -24,5 +25,21 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     Optional<Notification> findNotificationById(Long id);
 
-    Page<NotificationShortDTO> findAllByNotificationType(NotificationType notificationType, Pageable pageable);
+    @Query("""
+    SELECT new aifu.project.common_domain.dto.NotificationShortDTO(
+        n.id,
+        n.userName,
+        n.userSurname,
+        n.notificationType,
+        TO_CHAR(n.notificationTime, 'YYYY-MM-DD HH24:MI'),
+        n.isRead
+    )
+    FROM Notification n
+    WHERE n.notificationType = :notificationType
+""")
+    Page<NotificationShortDTO> findAllByNotificationType(
+            @Param("notificationType") NotificationType notificationType,
+            Pageable pageable
+    );
+
 }

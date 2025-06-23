@@ -48,4 +48,11 @@ public class BaseBookController {
                                                   @RequestParam(defaultValue = "10") int pageSize) {
         return baseBookService.getAll(pageNumber, pageSize);
     }
+
+    @GetMapping("/category")
+    public ResponseEntity<ResponseMessage> getByCategory(@NotNull @RequestParam Integer categoryId,
+                                                         @RequestParam(defaultValue = "1") int pageNumber,
+                                                         @RequestParam(defaultValue = "10") int pageSize) {
+        return baseBookService.getByCategory(categoryId,pageNumber, pageSize);
+    }
 }

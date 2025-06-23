@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.utils;
+package aifu.project.librarybot.utils;
 
 import org.springframework.data.domain.Page;
 

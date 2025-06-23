@@ -6,7 +6,7 @@ spring:
     name: library-web
   rabbitmq:
     host: rabbitmq
-    port: 5672
+    port: 61613
     username: guest
     password: guest
   datasource:

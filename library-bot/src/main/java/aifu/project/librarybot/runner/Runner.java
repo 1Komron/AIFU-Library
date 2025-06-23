@@ -12,6 +12,6 @@ public class Runner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         scheduler.sendOverdueExpiredNotifications();
-        scheduler.sendOverdueNotifications();
+        scheduler.sendOverdueExpiringNotifications();
     }
 }

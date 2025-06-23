@@ -16,11 +16,11 @@ spring:
   messages:
     basename: message
     encoding: UTF-8
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: guest
-    password: guest
+#  rabbitmq:
+#    host: rabbitmq
+#    port: 5672
+#    username: guest
+#    password: guest
 bot:
   token:
     7284272709:AAHVHFQTs6fG7ijdzg6cHwZI9MnjUSlJ9PU

@@ -1,5 +1,6 @@
 package aifu.project.librarybot.repository;
 
+import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.BookingRequest;
 import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 
@@ -15,4 +16,6 @@ public interface BookingRequestRepository extends JpaRepository<BookingRequest, 
     boolean existsBookingRequestByUser_Id(Long userId);
 
     boolean existsBookingRequestByUser_ChatId(Long userChatId);
+
+    boolean existsByBookCopy(BookCopy bookCopy);
 }

@@ -41,7 +41,7 @@ public class BookingRequestService {
         return bookingRequestRepository.existsBookingRequestByUser_Id(userId);
     }
 
-    public boolean hasRequestForUserChatId(Long chatId) {
-        return bookingRequestRepository.existsBookingRequestByUser_ChatId(chatId);
+    public boolean existsRequest(BookCopy book) {
+        return bookingRequestRepository.existsByBookCopy(book);
     }
 }

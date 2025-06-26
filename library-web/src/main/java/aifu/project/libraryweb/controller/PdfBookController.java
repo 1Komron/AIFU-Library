@@ -37,7 +37,7 @@ public class PdfBookController {
 
 
 
-    @PostMapping("/{categoryId}")
+    @PostMapping
     public ResponseEntity<ResponseMessage> create
 
             (@PathVariable Integer categoryId,

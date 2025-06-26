@@ -5,10 +5,12 @@ services:
     build:
       context: ./library-web
     container_name: library_web
+    environment:
+      - BOT_HOST=http://library-bot
+      - BOT_PORT=8081
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
       - rabbitmq
 
   bot:
@@ -18,30 +20,26 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres
       - rabbitmq
 
-  postgres:
-    image: postgres:15
-    container_name: postgres_db
-    environment:
-      POSTGRES_DB: aifu_library
-      POSTGRES_USER: aifu_user
-      POSTGRES_PASSWORD: secret
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-
   rabbitmq:
-    image: rabbitmq:3-management
-    container_name: aifu_rabbitmq
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
+      - "61613:61613"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    command: >
+      bash -c "rabbitmq-plugins enable --offline rabbitmq_management &&
+               rabbitmq-plugins enable --offline rabbitmq_stomp &&
+               rabbitmq-server"
+
 
 volumes:
   pgdata:

@@ -12,6 +12,7 @@ import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,7 @@ public class BaseBookCategoryService {
     }
 
     public ResponseEntity<ResponseMessage> getList() {
-        List<BaseBookCategoryDTO> list = categoryRepository.findAllByIsDeletedFalse();
+        List<BaseBookCategoryDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(Sort.Direction.ASC, "id"));
         return ResponseEntity.ok(new ResponseMessage(true, "All categories", list));
     }
 

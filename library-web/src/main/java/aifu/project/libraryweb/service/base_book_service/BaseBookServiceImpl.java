@@ -1,6 +1,8 @@
 package aifu.project.libraryweb.service.base_book_service;
 
 
+import aifu.project.common_domain.dto.BaseBookShortDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
 import aifu.project.common_domain.entity.BaseBook;
@@ -65,7 +67,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         Page<BaseBook> page = baseBookRepository.findByIsDeletedFalse(pageable);
 
-        List<Map<String, Object>> list = createBaseBookShortDTO(page.getContent());
+        List<BaseBookShortDTO> list = createBaseBookShortDTO(page.getContent());
 
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", list);
@@ -196,10 +198,10 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         Page<BaseBook> page = baseBookRepository.findAllByCategoryAndIsDeletedFalse(category, pageable);
 
-        Map<String, Object> map = Util.getPageInfo(page);
+        List<BaseBookShortDTO> list = createBaseBookShortDTO(page.getContent());
 
-        List<Map<String, Object>> data = createBaseBookShortDTO(page.getContent());
-        map.put("data", data);
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", list);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book list. By categoryId: " + categoryId, map));
     }
@@ -210,18 +212,18 @@ public class BaseBookServiceImpl implements BaseBookService {
     }
 
     @NotNull
-    private List<Map<String, Object>> createBaseBookShortDTO(List<BaseBook> list) {
+    private List<BaseBookShortDTO> createBaseBookShortDTO(List<BaseBook> list) {
         return list
                 .stream()
                 .map(book -> {
-                    BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(book);
                     Map<String, Long> countMap = bookCopyService.getTotalAndTakenCount(book.getId());
-
-                    return Map.of(
-                            "book", dto,
-                            "totalCount", countMap.get("total"),
-                            "takenCount", countMap.get("taken")
-                    );
+                    return new BaseBookShortDTO(book.getId(),
+                            book.getTitle(),
+                            book.getAuthor(),
+                            new BaseBookCategoryDTO(book.getCategory().getId(), book.getCategory().getName()),
+                            book.getIsbn(),
+                            countMap.get("total"),
+                            countMap.get("taken"));
                 })
                 .toList();
     }

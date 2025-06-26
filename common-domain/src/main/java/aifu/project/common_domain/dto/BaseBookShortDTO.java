@@ -8,7 +8,7 @@ public record BaseBookShortDTO(
         String author,
         BaseBookCategoryDTO category,
         String isbn,
-        Integer totalCopies,
-        Integer takenCopies
+        Long totalCopies,
+        Long takenCopies
 ) {
 }

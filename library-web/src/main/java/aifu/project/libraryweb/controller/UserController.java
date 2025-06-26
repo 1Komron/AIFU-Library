@@ -19,11 +19,10 @@ public class UserController {
         return userService.getUserList(pageNumber, size);
     }
 
-    @GetMapping("/status")
+    @GetMapping("/inactive")
     public ResponseEntity<ResponseMessage> getUsersByStatus(@RequestParam(defaultValue = "1") int pageNumber,
-                                                            @RequestParam(defaultValue = "10") int size,
-                                                            @NotNull @RequestParam String status) {
-        return userService.getUsersByStatus(pageNumber, size, status);
+                                                            @RequestParam(defaultValue = "10") int size) {
+        return userService.getUsersByStatus(pageNumber, size);
     }
 
     @GetMapping("/{id}")

@@ -49,12 +49,10 @@ public class UserService {
         return ResponseEntity.ok(new ResponseMessage(true, "User list", map));
     }
 
-    public ResponseEntity<ResponseMessage> getUsersByStatus(int pageNumber, int size, String status) {
+    public ResponseEntity<ResponseMessage> getUsersByStatus(int pageNumber, int size) {
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
 
-        Page<User> userPage = (status.equalsIgnoreCase("INACTIVE"))
-                ? userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable)
-                : userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, true, pageable);
+        Page<User> userPage = userRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable);
 
         Map<String, Object> map = Util.getPageInfo(userPage);
         map.put("data", getUserShortDTO(userPage.getContent()));

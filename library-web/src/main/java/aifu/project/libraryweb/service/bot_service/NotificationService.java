@@ -16,6 +16,8 @@ public class NotificationService {
     private final RestTemplate restTemplate;
 
     private static final String INTERNAL_TOKEN = "Internal-Token";
+    private static final String PAGE_NUMBER_PARAM = "?pageNumber=";
+    private static final String PAGE_SIZE_PARAM = "&pageSize=";
 
     @Value("${notification.unread}")
     private String unread;
@@ -34,7 +36,7 @@ public class NotificationService {
 
 
     public ResponseEntity<ResponseMessage> getUnreadNotifications(Integer pageNumber, Integer pageSize) {
-        String url = this.unread + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+        String url = this.unread + PAGE_NUMBER_PARAM + pageNumber + PAGE_SIZE_PARAM + pageSize;
         HttpHeaders headers = new HttpHeaders();
         headers.set(INTERNAL_TOKEN, this.internalToken);
 
@@ -47,7 +49,7 @@ public class NotificationService {
     }
 
     public ResponseEntity<ResponseMessage> getAllNotifications(Integer pageNumber, Integer pageSize) {
-        String url = this.getAll + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+        String url = this.getAll + PAGE_NUMBER_PARAM + pageNumber + PAGE_SIZE_PARAM + pageSize;
         HttpHeaders headers = new HttpHeaders();
         headers.set(INTERNAL_TOKEN, this.internalToken);
 
@@ -73,7 +75,7 @@ public class NotificationService {
     }
 
     public ResponseEntity<ResponseMessage> getNotificationByType(int pageNumber, int pageSize, String type) {
-        String url = this.type + "?type=" + type + "&pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+        String url = this.type + "?type=" + type + "&pageNumber=" + pageNumber + PAGE_SIZE_PARAM + pageSize;
         HttpHeaders headers = new HttpHeaders();
         headers.set(INTERNAL_TOKEN, this.internalToken);
 

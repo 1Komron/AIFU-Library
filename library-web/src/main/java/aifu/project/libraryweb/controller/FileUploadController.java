@@ -42,6 +42,7 @@ public class FileUploadController {
                 true,
                 "Pdf muvaffaqiyatli yuklandi",
                 response
+
         );
 
         return ResponseEntity.ok(body);

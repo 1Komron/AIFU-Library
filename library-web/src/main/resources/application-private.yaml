@@ -2,33 +2,29 @@ internal:
   token:
     94e637a1ff9a4c8e87de5198d78a5bc2c3067d76b9d2417ea54721370b7fd52e
 
+aifu:
+  external:
+    host: ${BOT_HOST:http://localhost}
+    port: ${BOT_PORT:8081}
+    base-url: ${aifu.external.host}:${aifu.external.port}
+
 statistics:
-  baseUri:
-    http://localhost:8081/api/statistics
+  baseUri: ${aifu.external.base-url}/api/statistics
+
 booking:
-  baseUri:
-    http://localhost:8081/api/admin/booking
+  baseUri: ${aifu.external.base-url}/api/admin/booking
 
 action:
-  borrow:
-    http://localhost:8081/action/book/borrow
-  return:
-    http://localhost:8081/action/book/return
-  extend:
-    http://localhost:8081/action/book/extend
-  registration:
-    http://localhost:8081/action/registration
+  borrow: ${aifu.external.base-url}/action/book/borrow
+  return: ${aifu.external.base-url}/action/book/return
+  extend: ${aifu.external.base-url}/action/book/extend
+  registration: ${aifu.external.base-url}/action/registration
 
 notification:
-  unread:
-    http://localhost:8081/notification/unread
-  getAll:
-    http://localhost:8081/notification
-  get:
-    http://localhost:8081/notification
-  type:
-    http://localhost:8081/notification/type
+  unread: ${aifu.external.base-url}/notification/unread
+  getAll: ${aifu.external.base-url}/notification
+  get: ${aifu.external.base-url}/notification
+  type: ${aifu.external.base-url}/notification/type
 
 user:
-  baseUri:
-    http://localhost:8081/api/user
+  baseUri: ${aifu.external.base-url}/api/user

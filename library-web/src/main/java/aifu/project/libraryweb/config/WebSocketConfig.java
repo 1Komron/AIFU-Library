@@ -17,7 +17,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
-    @Override
+   /* @Override
     public void configureMessageBroker(@NonNull MessageBrokerRegistry registry) {
         registry.enableStompBrokerRelay("/topic/notifications")
                 .setRelayHost("localhost")
@@ -26,5 +26,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setClientPasscode("guest");
 
         registry.setApplicationDestinationPrefixes("/app");
-    }
+    }*/
 }

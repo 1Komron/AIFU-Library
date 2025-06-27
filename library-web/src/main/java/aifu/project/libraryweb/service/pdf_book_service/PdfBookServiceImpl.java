@@ -19,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -125,38 +127,45 @@ public class PdfBookServiceImpl implements PdfBookService {
         }
     }
 
-
     @Override
+    public byte[] downloadPdf(Integer id) {
+        PdfBook pdfBook = pdfBookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("PDF Book not found with id: " + id));
+
+        String fileUrl = pdfBook.getPdfUrl();
+        if (fileUrl == null || fileUrl.trim().isEmpty()) {
+            throw new RuntimeException("PDF fayl URL topilmadi");
+        }
+
+        // Cloudinary-dan faylni olish (HTTP GET orqali)
+        try (InputStream in = new URL(fileUrl).openStream()) {
+            return in.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException("Clouddan faylni o'qishda xatolik: " + e.getMessage(), e);
+        }
+    }
+
+  /*  @Override
     public byte[] downloadPdf(Integer id) {
         // 1. PdfBook ni topish
         PdfBook pdfBook = pdfBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PDF Book not found with id: " + id));
-
-        // 2. PDF URL ni tekshirish
         String filePath = pdfBook.getPdfUrl();
         if (filePath == null || filePath.trim().isEmpty()) {
             throw new RuntimeException("PDF fayl URL topilmadi");
         }
-
-        // 3. Fayl yo'lini aniqlash
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         Path path = Paths.get(fileStorageLocation, "pdf", fileName);
-
-        // 4. Faylni o'qish
         try {
             if (!Files.exists(path)) {
                 throw new RuntimeException("Fayl topilmadi: " + path.toString());
             }
-
             return Files.readAllBytes(path);
-
         } catch (IOException e) {
             throw new RuntimeException("Faylni o'qishda xatolik: " + e.getMessage(), e);
-
-
         }
-
     }
+    */
 
     @Override
     public List<PdfBookPreviewDTO> getBooksByCategoryId(Integer categoryId) {

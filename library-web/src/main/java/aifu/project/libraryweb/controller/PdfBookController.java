@@ -9,7 +9,7 @@ import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,11 +37,11 @@ public class PdfBookController {
 
 
 
-    @PostMapping
+    @PostMapping("/category/{categoryId}")
     public ResponseEntity<ResponseMessage> create
 
             (@PathVariable Integer categoryId,
-            @Valid @RequestBody PdfBookCreateDTO dto){
+             @Valid @RequestBody PdfBookCreateDTO dto){
         PdfBookResponseDTO response = pdfBookService.create(categoryId, dto);
         ResponseMessage body = new ResponseMessage(
                 true,
@@ -89,31 +89,71 @@ public class PdfBookController {
             return ResponseEntity.status(404).body(new ResponseMessage(false, "PDF book not found", null));
         }
     }
-
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
-        byte[] pdfData = pdfBookService.downloadPdf(id);
-        PdfBookResponseDTO book = pdfBookService.getOne(id);
-        if (pdfData == null || pdfData.length == 0) {
+        try {
+            PdfBookResponseDTO book = pdfBookService.getOne(id);
+            byte[] pdfData = pdfBookService.downloadPdf(id);
+
+            if (pdfData == null || pdfData.length == 0) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(null);
+            }
+
+            // Fayl nomini tozalash
+            String author = book.getAuthor() != null ? book.getAuthor() : "Noma_lumMuallif";
+            String title = book.getTitle() != null ? book.getTitle() : "Noma_lumSarlavha";
+
+            String filename = (author + "_" + title)
+                    .replaceAll("[^a-zA-Z0-9.-]", "_")
+                    .replaceAll("_+", "_")
+                    + ".pdf";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition
+                    .attachment()
+                    .filename(filename)
+                    .build());
+
             return ResponseEntity
-                    .status(404)
-                    .header("Content-Type", "application/json")
+                    .ok()
+                    .headers(headers)
+                    .body(pdfData);
+
+        } catch (Exception ex) {
+            // Xatolikni logga yozish (shartli)
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
-        // Muallif va sarlavhadan fayl nomi yaratish
-        String author = book.getAuthor() != null ? book.getAuthor() : "Noma'lumMuallif";
-        String title = book.getTitle() != null ? book.getTitle() : "Noma'lumSarlavha";
-        // Fayl nomini tozalash (maxsus belgilarni olib tashlash)
-        String filename = (author + "_" + title)
-                .replaceAll("[^a-zA-Z0-9.-]", "_") // Noto'g'ri belgilarni "_" bilan almashtirish
-                .replaceAll("_+", "_") // Bir nechta "_" ni bittaga qisqartirish
-                + ".pdf";
-
-        return ResponseEntity.ok()
-                .header("Content-Type", "application/pdf")
-                .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
-                .body(pdfData);
     }
+
+//    @GetMapping("/download/{id}")
+//    public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
+//        byte[] pdfData = pdfBookService.downloadPdf(id);
+//        PdfBookResponseDTO book = pdfBookService.getOne(id);
+//        if (pdfData == null || pdfData.length == 0) {
+//            return ResponseEntity
+//                    .status(404)
+//                    .header("Content-Type", "application/json")
+//                    .body(null);
+//        }
+//        // Muallif va sarlavhadan fayl nomi yaratish
+//        String author = book.getAuthor() != null ? book.getAuthor() : "Noma'lumMuallif";
+//        String title = book.getTitle() != null ? book.getTitle() : "Noma'lumSarlavha";
+//        // Fayl nomini tozalash (maxsus belgilarni olib tashlash)
+//        String filename = (author + "_" + title)
+//                .replaceAll("[^a-zA-Z0-9.-]", "_") // Noto'g'ri belgilarni "_" bilan almashtirish
+//                .replaceAll("_+", "_") // Bir nechta "_" ni bittaga qisqartirish
+//                + ".pdf";
+//
+//        return ResponseEntity.ok()
+//                .header("Content-Type", "application/pdf")
+//                .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+//                .body(pdfData);
+//    }
 
 
     @GetMapping("/category/{categoryId}")

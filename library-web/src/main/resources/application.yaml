@@ -1,25 +1,16 @@
 spring:
   config:
-    import:
-      application-private.yaml
+    import: application-private.yaml
   application:
     name: library-web
-#  rabbitmq:
-#    host: rabbitmq
-#    port: 61613
-#    username: guest
-#    password: guest
   datasource:
-#    url: jdbc:postgresql://localhost:5432/aifu_library
-#    password: root123
     url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
-    password: root1234
     username: postgres
+    password: root1234
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
-
     properties:
       hibernate:
         format_sql: true
@@ -29,5 +20,9 @@ spring:
       max-file-size: 100MB
       max-request-size: 110MB
 
-file:
-  upload-dir: E:/files
+---
+
+cloudinary:
+  cloud_name: dfirqlklp
+  api_key: 575239947937242
+  api_secret: Cc5VKNT6F6RALyThRISMmFN45hA

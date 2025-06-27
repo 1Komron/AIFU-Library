@@ -39,10 +39,14 @@ public class RegisterService {
         registrationState.get(chatId).setStep(null);
     }
 
+    public void remove(Long chatId) {
+        registrationState.remove(chatId);
+    }
+
     @SneakyThrows
     public void registerUser(Long chatId, Integer messageId, String lang) {
-        if (userService.existsUser(chatId)) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
+        if (userService.isInactive(chatId)) {
+            executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
             return;
         }
 

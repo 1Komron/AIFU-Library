@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(Long chatId);
 
-    boolean existsByChatIdAndIsActiveAndIsDeletedFalse(Long chatId, boolean isActive);
+    boolean existsByChatIdAndIsActiveFalseAndIsDeletedFalse(Long chatId);
 
     Optional<User> findByChatIdAndIsDeletedFalse(Long chatId);
 

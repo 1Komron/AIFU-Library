@@ -1,5 +1,6 @@
 package aifu.project.common_domain.payload;
 
+import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 
 public record BookingRequestDTO(
@@ -9,7 +10,8 @@ public record BookingRequestDTO(
         String title,
         String isbn,
         String inventoryNumber,
-        RequestType requestType
+        RequestType requestType,
+        NotificationType notificationType
 ) {
 
 }

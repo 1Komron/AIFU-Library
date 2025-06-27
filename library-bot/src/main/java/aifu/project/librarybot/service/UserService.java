@@ -42,7 +42,7 @@ public class UserService {
     private final ExecuteUtil executeUtil;
 
     public boolean exists(Long chatId) {
-        return !userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
+        return userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
     }
 
     @SneakyThrows
@@ -58,15 +58,20 @@ public class UserService {
 
     @Transactional
     public void saveUser(BotUserDTO userDTO) {
-        if (userDTO == null || userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(userDTO.getChatId())) {
+        if (userDTO == null || exists(userDTO.getChatId())) {
             return;
         }
 
-        Long id = userRepository.returnUserId(userDTO.getChatId());
+        User u = UserMapper.fromBotDTO(userDTO);
+        System.out.println("check===================");
+        /// registartasiyadan otgan va bir yildan keyin inactive bolgan user id ni set qilib ketish
+        if (isInactive(userDTO.getChatId())) {
+            Long id = userRepository.returnUserId(userDTO.getChatId());
+            if (id != null)
+                u.setId(id);
+        }
 
-        User user = UserMapper.fromBotDTO(userDTO);
-        user.setId(id);
-        userRepository.save(user);
+        User user = userRepository.save(u);
 
         RegisterRequest registerRequest = registerRequestService.create(user);
 
@@ -85,14 +90,14 @@ public class UserService {
 
     @SneakyThrows
     public boolean checkUserStatus(Long chatId, String lang) {
-        if (exists(chatId)) {
-            loginRegister(chatId);
-            return false;
-        } else if (isInactive(chatId)) {
+        if (isInactive(chatId)) {
             executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
-            return false;
+            return true;
+        } else if (!exists(chatId)) {
+            loginRegister(chatId);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public String showProfile(Long chatId, String lang) {
@@ -104,11 +109,7 @@ public class UserService {
     }
 
     public boolean isInactive(Long chatId) {
-        return !userRepository.existsByChatIdAndIsActiveAndIsDeletedFalse(chatId, true);
-    }
-
-    public boolean existsUser(Long chatId) {
-        return userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
+        return userRepository.existsByChatIdAndIsActiveFalseAndIsDeletedFalse(chatId);
     }
 
     public void removeUser(Long chatId) {

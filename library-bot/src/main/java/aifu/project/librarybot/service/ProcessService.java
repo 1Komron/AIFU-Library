@@ -152,7 +152,7 @@ public class ProcessService {
 
     @SneakyThrows
     private void processButtons(Long chatId, String text, String lang) {
-        if (!isSettings(text, lang) && !userService.checkUserStatus(chatId, lang)) {
+        if (!isSettings(text, lang) && userService.checkUserStatus(chatId, lang)) {
             return;
         }
 
@@ -240,7 +240,7 @@ public class ProcessService {
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.WELCOME_MESSAGE,
                     userLanguageService.getLanguage(String.valueOf(chatId))));
 
-            if (userService.exists(chatId))
+            if (!userService.exists(chatId))
                 userService.loginRegister(chatId);
 
             return true;
@@ -322,10 +322,15 @@ public class ProcessService {
 
     @SneakyThrows
     private void processCallBackDataRegister(Long chatId, String data, Integer messageId, String text, String lang) {
-        if (userService.existsUser(chatId)) {
+        if (userService.isInactive(chatId)) {
+            executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
+            return;
+        }
+        if (userService.exists(chatId)) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
             return;
         }
+
         data = data.substring("register_".length());
 
         registerService.checkRegistrationState(chatId, messageId, text);
@@ -390,6 +395,7 @@ public class ProcessService {
                 if (lastMessageId == null)
                     return;
 
+                registerService.remove(chatId);
                 executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
 
                 buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.REGISTER_SAVE_MESSAGE, lang));
@@ -412,7 +418,11 @@ public class ProcessService {
         Long chatId = message.getChatId();
         String lang = userLanguageService.getLanguage(chatId.toString());
 
-        if (userService.existsUser(chatId)) {
+        if (userService.isInactive(chatId)) {
+            executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
+            return;
+        }
+        if (userService.exists(chatId)) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
             return;
         }

@@ -67,10 +67,6 @@ public class NotificationService {
     public ResponseEntity<ResponseMessage> getAllNotifications(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
         Page<Notification> page = notificationRepository.findAll(pageable);
-        if (page.getTotalElements() == 0)
-            return ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .body(new ResponseMessage(false, "Empty", null));
 
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", getShortDTO(page.getContent()));
@@ -89,33 +85,33 @@ public class NotificationService {
 
         notification.setRead(true);
         notificationRepository.save(notification);
-        Object data = getRequestBody(notification.getRequestType(), notification.getRequestId());
+        Object data = getRequestBody(notification.getRequestType(), notification.getRequestId(), notification.getNotificationType());
 
         return ResponseEntity.ok(new ResponseMessage(true, "Notification detail", data));
     }
 
-    private Object getRequestBody(RequestType type, Long requestId) {
+    private Object getRequestBody(RequestType type, Long requestId, NotificationType notificationType) {
         if (type == RequestType.BOOKING) {
             BookingRequest bookingRequest = bookingRequestRepository.findById(requestId)
                     .orElseThrow(() -> new RequestNotFoundException("Booking request not found by requestId: " + requestId));
 
-            return createBookingRequestDTO(bookingRequest);
+            return createBookingRequestDTO(bookingRequest, notificationType);
         } else {
             RegisterRequest registerRequest = registerRequestRepository.findById(requestId)
                     .orElseThrow(() -> new RequestNotFoundException("Register request not found by requestId: " + requestId));
 
-            return createRegisterRequestDTO(registerRequest);
+            return createRegisterRequestDTO(registerRequest, notificationType);
         }
     }
 
-    private RegisterRequestDTO createRegisterRequestDTO(RegisterRequest registerRequest) {
+    private RegisterRequestDTO createRegisterRequestDTO(RegisterRequest registerRequest, NotificationType notificationType) {
         User user = registerRequest.getUser();
         BotUserDTO botDTO = UserMapper.toBotDTO(user);
 
-        return new RegisterRequestDTO(botDTO, RequestType.REGISTER);
+        return new RegisterRequestDTO(botDTO, RequestType.REGISTER, notificationType);
     }
 
-    private BookingRequestDTO createBookingRequestDTO(BookingRequest bookingRequest) {
+    private BookingRequestDTO createBookingRequestDTO(BookingRequest bookingRequest, NotificationType notificationType) {
         BookCopy bookCopy = bookingRequest.getBookCopy();
         BaseBook book = bookCopy.getBook();
 
@@ -126,7 +122,9 @@ public class NotificationService {
                 book.getTitle(),
                 book.getIsbn(),
                 bookCopy.getInventoryNumber(),
-                RequestType.BOOKING
+                RequestType.BOOKING,
+                notificationType
+
         );
     }
 

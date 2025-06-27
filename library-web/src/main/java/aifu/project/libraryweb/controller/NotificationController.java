@@ -15,13 +15,13 @@ public class NotificationController {
 
     @GetMapping("/unread")
     public ResponseEntity<ResponseMessage> getUnreadNotification(@RequestParam(defaultValue = "1") int pageNumber,
-                                                                 @RequestParam(defaultValue = "4") int pageSize) {
+                                                                 @RequestParam(defaultValue = "10") int pageSize) {
         return notificationService.getUnreadNotifications(pageNumber, pageSize);
     }
 
     @GetMapping("/type")
     public ResponseEntity<ResponseMessage> getNotificationByType(@RequestParam(defaultValue = "1") int pageNumber,
-                                                                 @RequestParam(defaultValue = "4") int pageSize,
+                                                                 @RequestParam(defaultValue = "10") int pageSize,
                                                                  @RequestParam String type) {
         return notificationService.getNotificationByType(pageNumber, pageSize,type);
     }
@@ -33,7 +33,7 @@ public class NotificationController {
 
     @GetMapping
     public ResponseEntity<ResponseMessage> getAllNotifications(@RequestParam(defaultValue = "1") int pageNumber,
-                                                               @RequestParam(defaultValue = "4") int pageSize) {
+                                                               @RequestParam(defaultValue = "10") int pageSize) {
         return notificationService.getAllNotifications(pageNumber, pageSize);
     }
 }

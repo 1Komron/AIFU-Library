@@ -67,7 +67,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<ResponseMessage> getAll() {
         List<CategoryResponseDTO> categories = categoryService.getAll();
         ResponseMessage body = new ResponseMessage(

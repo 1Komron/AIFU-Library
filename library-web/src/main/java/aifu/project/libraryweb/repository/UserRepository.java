@@ -17,4 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByRoleAndIsDeletedFalse(Role role, Pageable pageable);
 
     Page<User> findByRoleAndIsActiveAndIsDeletedFalse(Role role, boolean active, Pageable pageable);
+
+    Page<User> findByIdAndRoleAndIsDeletedFalse(Long id, Role role, Pageable pageable);
+
+    Page<User> findByPhoneAndRoleAndIsDeletedFalse(String phone, Role role, Pageable pageable);
 }

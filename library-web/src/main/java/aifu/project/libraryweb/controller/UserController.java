@@ -19,6 +19,16 @@ public class UserController {
         return userService.getUserList(pageNumber, size);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ResponseMessage> getUsers(@RequestParam(defaultValue = "1") int pageNumber,
+                                                    @RequestParam(defaultValue = "10") int size,
+                                                    @RequestParam(required = false) Long id,
+                                                    @RequestParam(required = false) String phone,
+                                                    @RequestParam(defaultValue = "id") String sortBy,
+                                                    @RequestParam(defaultValue = "asc") String sortDir) {
+        return userService.getSearchUserList(pageNumber, size, id, phone, sortBy, sortDir);
+    }
+
     @GetMapping("/inactive")
     public ResponseEntity<ResponseMessage> getUsersByStatus(@RequestParam(defaultValue = "1") int pageNumber,
                                                             @RequestParam(defaultValue = "10") int size) {

@@ -1,5 +1,6 @@
 package aifu.project.libraryweb.service.base_book_service;
 
+import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BookCopyResponseDTO;
 import aifu.project.common_domain.entity.BaseBook;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -170,6 +172,12 @@ public class BookCopyServiceImpl implements BookCopyService {
         log.info("BookCopies deleted: {}, BaseBook id {}.", list, bookId);
 
         return ResponseEntity.ok(new ResponseMessage(true, "All copies have been removed.", null));
+    }
+
+
+    public Map<Integer, BookCopyStats> getStatsMap(List<Integer> bookIds) {
+        return bookCopyRepository.getStatsForBooks(bookIds).stream()
+                .collect(Collectors.toMap(BookCopyStats::baseBookId, stat -> stat));
     }
 
     @Override

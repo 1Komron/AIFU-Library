@@ -1,9 +1,11 @@
 package aifu.project.libraryweb.service.base_book_service;
 
+import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
 import aifu.project.common_domain.payload.ResponseMessage;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Map;
 
 public interface BookCopyService {
@@ -24,4 +26,6 @@ public interface BookCopyService {
     Map<String,Long> getTotalAndTakenCount(Integer baseBookId);
 
     long count();
+
+    Map<Integer, BookCopyStats> getStatsMap(List<Integer> bookIds);
 }

@@ -2,16 +2,14 @@ package aifu.project.common_domain.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "book")
 public class BookCopy {
 
     @Id
@@ -35,5 +33,4 @@ public class BookCopy {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_book_id")
     private BaseBook book;
-
 }

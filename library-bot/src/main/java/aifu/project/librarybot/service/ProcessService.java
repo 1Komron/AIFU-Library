@@ -530,6 +530,10 @@ public class ProcessService {
         if (part == null) return;
 
         String text = part.list();
+        if (text == null || text.isEmpty()) {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.SEARCH_LIST_EMPTY, lang);
+            return;
+        }
         SendMessage msg = MessageUtil.createMessage(chatId.toString(), text);
 
         InlineKeyboardMarkup controlMarkup =

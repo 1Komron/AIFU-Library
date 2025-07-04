@@ -40,8 +40,34 @@ public class UserService {
     }
 
     public ResponseEntity<ResponseMessage> getUserList(int pageNumber, int size) {
+
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
+
         Page<User> userPage = userRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
+
+        Map<String, Object> map = Util.getPageInfo(userPage);
+        map.put("data", getUserShortDTO(userPage.getContent()));
+
+        return ResponseEntity.ok(new ResponseMessage(true, "User list", map));
+    }
+
+    public ResponseEntity<ResponseMessage> getSearchUserList(int pageNumber,
+                                                       int size,
+                                                       Long id,
+                                                       String phone,
+                                                       String sortBy,
+                                                       String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(Sort.Direction.ASC, sortBy) : Sort.by(Sort.Direction.DESC, sortBy);
+        Pageable pageable = PageRequest.of(--pageNumber, size, sort);
+
+        Page<User> userPage;
+        if (id != null) {
+            userPage = userRepository.findByIdAndRoleAndIsDeletedFalse(id, Role.USER, pageable);
+        } else if (phone != null) {
+            userPage = userRepository.findByPhoneAndRoleAndIsDeletedFalse(phone, Role.USER, pageable);
+        } else {
+            userPage = userRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
+        }
 
         Map<String, Object> map = Util.getPageInfo(userPage);
         map.put("data", getUserShortDTO(userPage.getContent()));

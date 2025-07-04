@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pdfbooks")
@@ -24,9 +25,9 @@ public class PdfBookController {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage> getList(
             @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "12") int pageSize) {
 
-        List<PdfBookPreviewDTO> books = pdfBookService.getList(pageNumber, pageSize);
+        Map<String, Object> books = pdfBookService.getList(pageNumber, pageSize);
         ResponseMessage body = new ResponseMessage(
                 true,
                 "PDF book list retrieved successfully",

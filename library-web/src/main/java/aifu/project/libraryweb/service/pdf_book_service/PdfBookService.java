@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 
@@ -16,7 +17,7 @@ public interface PdfBookService {
 
     PdfBookResponseDTO create(Integer categoryId, PdfBookCreateDTO dto);
 
-    List<PdfBookPreviewDTO> getList(int pageNumber, int pageSize);
+    Map<String, Object> getList(int pageNumber, int pageSize);
 
     PdfBookResponseDTO getOne(Integer id);
 

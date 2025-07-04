@@ -10,6 +10,7 @@ import aifu.project.common_domain.mapper.PdfBookMapper;
 import aifu.project.libraryweb.lucene.LuceneIndexService;
 import aifu.project.libraryweb.repository.PdfBookRepository;
 
+import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,12 +67,18 @@ public class PdfBookServiceImpl implements PdfBookService {
 
 
     @Override
-    public List<PdfBookPreviewDTO> getList(int pageNumber, int pageSize) {
+    public Map<String, Object> getList(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<PdfBook> page = pdfBookRepository.findAll(pageable);
-        return page.getContent().stream()
+
+        Map<String, Object> map = Util.getPageInfo(page);
+
+        List<PdfBookPreviewDTO> list = page.getContent().stream()
                 .map(PdfBookMapper::toPreviewDto)
-                .collect(Collectors.toList());
+                .toList();
+
+        map.put("data", list);
+        return map;
     }
 
 

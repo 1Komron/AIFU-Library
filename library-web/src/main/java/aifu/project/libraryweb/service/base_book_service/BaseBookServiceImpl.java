@@ -2,6 +2,7 @@ package aifu.project.libraryweb.service.base_book_service;
 
 
 import aifu.project.common_domain.dto.BaseBookShortDTO;
+import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
@@ -18,7 +19,6 @@ import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -211,20 +211,27 @@ public class BaseBookServiceImpl implements BaseBookService {
         return baseBookRepository.count();
     }
 
-    @NotNull
-    private List<BaseBookShortDTO> createBaseBookShortDTO(List<BaseBook> list) {
-        return list
-                .stream()
+    private List<BaseBookShortDTO> createBaseBookShortDTO(List<BaseBook> books) {
+        List<Integer> bookIds = books.stream().map(BaseBook::getId).toList();
+        Map<Integer, BookCopyStats> statsMap = bookCopyService.getStatsMap(bookIds);
+
+        return books.stream()
                 .map(book -> {
-                    Map<String, Long> countMap = bookCopyService.getTotalAndTakenCount(book.getId());
-                    return new BaseBookShortDTO(book.getId(),
+                    BookCopyStats stats = statsMap.getOrDefault(book.getId(), new BookCopyStats(0L, 0L, book.getId()));
+                    return new BaseBookShortDTO(
+                            book.getId(),
                             book.getTitle(),
                             book.getAuthor(),
-                            new BaseBookCategoryDTO(book.getCategory().getId(), book.getCategory().getName()),
+                            new BaseBookCategoryDTO(
+                                    book.getCategory().getId(),
+                                    book.getCategory().getName()
+                            ),
                             book.getIsbn(),
-                            countMap.get("total"),
-                            countMap.get("taken"));
+                            stats.total(),
+                            stats.taken()
+                    );
                 })
                 .toList();
     }
+
 }

@@ -2,7 +2,6 @@ package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.UserService;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

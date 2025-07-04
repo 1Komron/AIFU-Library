@@ -76,6 +76,7 @@ public class MessageKeys {
     public static final String SEARCH_MESSAGE= "search.message";
     public static final String SEARCH_NOT_FOUND= "search.notfound";
     public static final String SEARCH_LIST_BUTTON= "search.list.button";
+    public static final String SEARCH_LIST_EMPTY= "search.list.empty";
     public static final String SEARCH_SEARCH_BUTTON= "search.search.button";
     public static final String SEARCH_SEARCH_MESSAGE= "search.search.message";
     public static final String SEARCH_BOOK= "search.book";

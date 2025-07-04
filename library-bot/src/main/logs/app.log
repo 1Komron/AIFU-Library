@@ -1621,3 +1621,281 @@ Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violate
 2025-06-26 11:36:06.729 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2025-06-26 11:36:06.740 [main] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@795faad (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
 2025-06-26 11:36:07.349 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-07-01 17:45:08.329 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 15496 (E:\realProikt\AIFU-Library\library-bot\target\classes started by User in E:\realProikt\AIFU-Library)
+2025-07-01 17:45:08.345 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-07-01 17:45:11.176 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-01 17:45:11.384 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 188 ms. Found 11 JPA repository interfaces.
+2025-07-01 17:45:12.864 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-07-01 17:45:12.897 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2025-07-01 17:45:12.902 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-01 17:45:12.903 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-07-01 17:45:13.143 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-01 17:45:13.145 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4631 ms
+2025-07-01 17:45:13.676 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-01 17:45:13.862 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-07-01 17:45:13.988 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-07-01 17:45:14.847 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-01 17:45:14.992 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-07-01 17:45:16.844 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2d593b56
+2025-07-01 17:45:16.847 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-07-01 17:45:17.303 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-01 17:45:20.319 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-01 17:45:23.940 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-01 17:45:24.816 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-01 17:45:28.764 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-07-01 17:45:28.943 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-01 17:45:29.018 [main] INFO  o.s.v.b.OptionalValidatorFactoryBean - Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-07-01 17:45:29.874 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2025-07-01 17:45:29.899 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-07-01 17:45:29.918 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 23.5 seconds (process running for 27.256)
+2025-07-01 17:45:41.193 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup query: [400] Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException: Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup query: [400] Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseInternal(PartialBotApiMethod.java:54)
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseSerializable(PartialBotApiMethod.java:44)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodSerializable.deserializeResponseFromPossibilities(BotApiMethodSerializable.java:31)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodSerializable.deserializeResponseMessageOrBoolean(BotApiMethodSerializable.java:24)
+	at org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup.deserializeResponse(EditMessageReplyMarkup.java:72)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1115)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.editCategoryListMessage(ProcessService.java:516)
+	at aifu.project.librarybot.service.ProcessService.handleStep(ProcessService.java:470)
+	at aifu.project.librarybot.service.ProcessService.handleNextStep(ProcessService.java:520)
+	at aifu.project.librarybot.service.ProcessService.processControl(ProcessService.java:317)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:221)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:45:44.088 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup query: [400] Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException: Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup query: [400] Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseInternal(PartialBotApiMethod.java:54)
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseSerializable(PartialBotApiMethod.java:44)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodSerializable.deserializeResponseFromPossibilities(BotApiMethodSerializable.java:31)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodSerializable.deserializeResponseMessageOrBoolean(BotApiMethodSerializable.java:24)
+	at org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup.deserializeResponse(EditMessageReplyMarkup.java:72)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1115)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.editCategoryListMessage(ProcessService.java:516)
+	at aifu.project.librarybot.service.ProcessService.handleStep(ProcessService.java:470)
+	at aifu.project.librarybot.service.ProcessService.handleNextStep(ProcessService.java:520)
+	at aifu.project.librarybot.service.ProcessService.processControl(ProcessService.java:317)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:221)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:45:44.956 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup query: [400] Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException: Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup query: [400] Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseInternal(PartialBotApiMethod.java:54)
+	at org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod.deserializeResponseSerializable(PartialBotApiMethod.java:44)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodSerializable.deserializeResponseFromPossibilities(BotApiMethodSerializable.java:31)
+	at org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodSerializable.deserializeResponseMessageOrBoolean(BotApiMethodSerializable.java:24)
+	at org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup.deserializeResponse(EditMessageReplyMarkup.java:72)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1115)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.editCategoryListMessage(ProcessService.java:516)
+	at aifu.project.librarybot.service.ProcessService.handleStep(ProcessService.java:470)
+	at aifu.project.librarybot.service.ProcessService.handleNextStep(ProcessService.java:520)
+	at aifu.project.librarybot.service.ProcessService.processControl(ProcessService.java:317)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:221)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:00.572 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:02.551 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:03.921 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:04.897 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:06.068 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:15.235 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:16.341 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:29.726 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:30.693 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:31.326 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:31.608 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:31.985 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:46:36.674 [AIFU Library Telegram Executor] ERROR o.t.t.u.DefaultBotSession - Text parameter can't be empty
+org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException: Text parameter can't be empty
+	at org.telegram.telegrambots.meta.api.methods.send.SendMessage.validate(SendMessage.java:138)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1140)
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1114)
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:64)
+	at aifu.project.librarybot.service.ProcessService.handleBookSelect(ProcessService.java:541)
+	at aifu.project.librarybot.service.ProcessService.processSearch(ProcessService.java:282)
+	at aifu.project.librarybot.service.ProcessService.processCallBack(ProcessService.java:229)
+	at aifu.project.librarybot.controller.UpdateController.update(UpdateController.java:35)
+	at aifu.project.librarybot.config.TelegramBot.onUpdateReceived(TelegramBot.java:30)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2025-07-01 17:57:02.200 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-01 17:57:02.222 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-07-01 17:57:02.243 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-01 17:57:02.247 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-07-01 17:57:03.238 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

@@ -82,6 +82,7 @@ public class PdfBookController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
+
         try {
             pdfBookService.delete(id);
             return ResponseEntity.ok(new ResponseMessage(true, "PDF book successfully deleted", null));

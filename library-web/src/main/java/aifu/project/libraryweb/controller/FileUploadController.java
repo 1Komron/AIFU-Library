@@ -32,6 +32,7 @@ public class FileUploadController {
                 Map.of("url",url)
         );
         return ResponseEntity.ok(body);
+
     }
 
     // FileUploadController.java

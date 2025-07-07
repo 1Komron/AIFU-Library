@@ -1,9 +1,6 @@
 package aifu.project.libraryweb.service.pdf_book_service;
 
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.entity.PdfBook;
 import aifu.project.common_domain.mapper.PdfBookMapper;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -181,6 +179,21 @@ public class PdfBookServiceImpl implements PdfBookService {
         return category.getBooks().stream()
                 .map(PdfBookMapper::toPreviewDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<PdfBookResponseDTO> search(PdfBookSearchCriteriaDTO criteria) {
+        Sort.Direction direction = criteria.getSortDr().equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(criteria.getPageNumber() - 1, criteria.getSize(), Sort.by(direction, criteria.getSortBy()));
+
+        Page<PdfBook> resultPage;
+        if ("author".equalsIgnoreCase(criteria.getField())) {
+            resultPage = pdfBookRepository.findByAuthorContainingIgnoreCase(criteria.getValue(), pageable);
+        } else {
+            resultPage = pdfBookRepository.findByTitleContainingIgnoreCase(criteria.getValue(), pageable);
+        }
+
+        return resultPage.map(PdfBookMapper::toDto);
     }
 
 

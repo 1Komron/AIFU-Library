@@ -1,14 +1,12 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,30 +130,7 @@ public class PdfBookController {
         }
     }
 
-//    @GetMapping("/download/{id}")
-//    public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
-//        byte[] pdfData = pdfBookService.downloadPdf(id);
-//        PdfBookResponseDTO book = pdfBookService.getOne(id);
-//        if (pdfData == null || pdfData.length == 0) {
-//            return ResponseEntity
-//                    .status(404)
-//                    .header("Content-Type", "application/json")
-//                    .body(null);
-//        }
-//        // Muallif va sarlavhadan fayl nomi yaratish
-//        String author = book.getAuthor() != null ? book.getAuthor() : "Noma'lumMuallif";
-//        String title = book.getTitle() != null ? book.getTitle() : "Noma'lumSarlavha";
-//        // Fayl nomini tozalash (maxsus belgilarni olib tashlash)
-//        String filename = (author + "_" + title)
-//                .replaceAll("[^a-zA-Z0-9.-]", "_") // Noto'g'ri belgilarni "_" bilan almashtirish
-//                .replaceAll("_+", "_") // Bir nechta "_" ni bittaga qisqartirish
-//                + ".pdf";
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Type", "application/pdf")
-//                .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
-//                .body(pdfData);
-//    }
+
 
 
     @GetMapping("/category/{categoryId}")
@@ -175,4 +150,26 @@ public class PdfBookController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String value,
+                                                  @RequestParam(required = false, defaultValue = "title") String field,
+                                                  @RequestParam(defaultValue = "1") int pageNumber,
+                                                  @RequestParam(defaultValue = "10") int size,
+                                                  @RequestParam(defaultValue = "id") String sortBy,
+                                                  @RequestParam(defaultValue = "asc") String sortDir) {
+
+        PdfBookSearchCriteriaDTO criteria = PdfBookSearchCriteriaDTO.builder()
+                .value(value)
+                .field(field)
+                .pageNumber(pageNumber)
+                .size(size)
+                .sortBy(sortBy)
+                .sortDr(sortDir)
+                .build();
+
+        Page<PdfBookResponseDTO> result = pdfBookService.search(criteria);
+        return ResponseEntity.ok(
+                new ResponseMessage(true, "Search completed successfully", result)
+        );
+    }
 }

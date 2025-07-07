@@ -34,7 +34,6 @@ public class ButtonService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(MessageUtil.get(MessageKeys.LANGUAGE_CHOOSE, userLanguageService.getLanguage(String.valueOf(chatId))));
-
         sendMessage.setReplyMarkup(keyboard);
         executeUtil.execute(sendMessage);
     }

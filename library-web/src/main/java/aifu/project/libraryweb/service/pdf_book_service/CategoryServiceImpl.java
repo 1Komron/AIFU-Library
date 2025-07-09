@@ -1,5 +1,10 @@
 package aifu.project.libraryweb.service.pdf_book_service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.mapper.CategoryMapper;
@@ -55,5 +60,25 @@ public class CategoryServiceImpl implements CategoryService {
                 .stream()
                 .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CategoryResponseDTO> search(CategorySearchCriteriaDTO criteria) {
+        Sort.Direction direction = criteria.getSortDr().equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(criteria.getPageNumber() - 1, criteria.getSize(), Sort.by(direction, criteria.getSortBy()));
+
+        Page<Category> categoryPage;
+        if (criteria.getId() != null) {
+            Category found = categoryRepository.findById(criteria.getId())
+                    .orElse(null);
+            List<Category> single = found == null ? List.of() : List.of(found);
+            categoryPage = new PageImpl<>(single, pageable, single.size());
+        } else if (criteria.getName() != null && !criteria.getName().isBlank()) {
+            categoryPage = categoryRepository.findByNameContainingIgnoreCase(criteria.getName(), pageable);
+        } else {
+            categoryPage = categoryRepository.findAll(pageable);
+        }
+
+        return categoryPage.map(CategoryMapper::toDto);
     }
 }

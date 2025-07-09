@@ -7,6 +7,7 @@ import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,6 +96,30 @@ public class CategoryController {
                             "Category not found",
                             null));
         }
+
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseMessage> search(@RequestParam(defaultValue = "1") int pageNumber,
+                                                  @RequestParam(defaultValue = "10") int size,
+                                                  @RequestParam(required = false) Integer id,
+                                                  @RequestParam(required = false) String name,
+                                                  @RequestParam(defaultValue = "id") String sortBy,
+                                                  @RequestParam(defaultValue = "asc") String sortDir) {
+
+        CategorySearchCriteriaDTO criteria = CategorySearchCriteriaDTO.builder()
+                .id(id)
+                .name(name)
+                .pageNumber(pageNumber)
+                .size(size)
+                .sortBy(sortBy)
+                .sortDr(sortDir)
+                .build();
+
+        Page<CategoryResponseDTO> result = categoryService.search(criteria);
+        return ResponseEntity.ok(
+                new ResponseMessage(true, "Search successful", result)
+        );
 
     }
 

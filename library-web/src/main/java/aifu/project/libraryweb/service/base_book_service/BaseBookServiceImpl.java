@@ -8,6 +8,7 @@ import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
+import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
@@ -119,7 +120,7 @@ public class BaseBookServiceImpl implements BaseBookService {
                 case "pageCount" -> entity.setPageCount(Integer.parseInt(value.toString()));
                 case "language" -> entity.setLanguage((String) value);
                 case "udc" -> entity.setUdc((String) value);
-                case "categoryId" -> {
+                case "category" -> {
                     Integer categoryId = Integer.parseInt(value.toString());
                     BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(categoryId)
                             .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
@@ -148,6 +149,14 @@ public class BaseBookServiceImpl implements BaseBookService {
     public ResponseEntity<ResponseMessage> delete(Integer id) {
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
+
+        boolean canDelete = entity.getCopies()
+                .stream()
+                .allMatch(BookCopy::isDeleted);
+
+        if (!canDelete)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessage(true, "Cannot be deleted. Copies of the book are available", id));
 
         entity.setDeleted(true);
         baseBookRepository.save(entity);

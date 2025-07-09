@@ -46,7 +46,6 @@ public class BaseBookController {
     @GetMapping
     public ResponseEntity<ResponseMessage> getAll(@RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize) {
-        System.out.println("check");
         return baseBookService.getAll(pageNumber, pageSize);
     }
 

@@ -14,7 +14,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-notification")
                 .setAllowedOriginPatterns("*")
-;    }
+                .withSockJS();
+    }
 
     @Override
     public void configureMessageBroker(@NonNull MessageBrokerRegistry registry) {
@@ -23,7 +24,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setRelayPort(61613)
                 .setClientLogin("guest")
                 .setClientPasscode("guest");
-
         registry.setApplicationDestinationPrefixes("/app");
     }
 }

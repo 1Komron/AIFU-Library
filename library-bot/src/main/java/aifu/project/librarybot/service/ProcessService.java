@@ -205,6 +205,7 @@ public class ProcessService {
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
 
+        System.out.println(data);
         String lang = userLanguageService.getLanguage(chatId.toString());
         Integer messageId = callbackQuery.getMessage().getMessageId();
         String text = callbackQuery.getMessage().getText();
@@ -428,6 +429,7 @@ public class ProcessService {
         }
 
         String phone = message.getContact().getPhoneNumber();
+        phone = phone.startsWith("+") ? phone : "+" + phone;
 
         registerService.processRegistrationStep(chatId, phone, userLanguageService.getLanguage(chatId.toString()));
 
@@ -436,7 +438,7 @@ public class ProcessService {
 
     private PageContext resolvePageContext(String rawType, int page) {
         String searchText = rawType.startsWith(SEARCH) ? rawType.substring(SEARCH.length() + 1) : null;
-        String categoryId = rawType.startsWith(BOOK) ? rawType.split("\\|")[1] : null;
+        String categoryId = rawType.equals(BOOK) ? rawType.split("\\|")[1] : null;
 
         String type;
         if (searchText != null) {

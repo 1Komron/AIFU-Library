@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/library-bot/pom.xml" />
         <option value="$PROJECT_DIR$/common-domain/pom.xml" />
         <option value="$PROJECT_DIR$/chat-bot/pom.xml" />
+        <option value="$PROJECT_DIR$/uhf-reader/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

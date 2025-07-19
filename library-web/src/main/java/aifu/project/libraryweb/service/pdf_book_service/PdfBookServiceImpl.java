@@ -66,7 +66,7 @@ public class PdfBookServiceImpl implements PdfBookService {
 
     @Override
     public Map<String, Object> getList(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,Sort.by(Sort.Direction.ASC,"id"));
         Page<PdfBook> page = pdfBookRepository.findAll(pageable);
 
         Map<String, Object> map = Util.getPageInfo(page);

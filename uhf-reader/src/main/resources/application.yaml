@@ -1,0 +1,8 @@
+spring:
+  application:
+    name:
+      uhf-reader
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aifu_library
+    username: postgres
+    password: root123

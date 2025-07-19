@@ -17,8 +17,10 @@ public class BookCopy {
     private Integer id;
 
     @Column(unique = true, nullable = false)
-
     private String inventoryNumber;
+
+    @Column(unique = true)
+    private String upc;
 
     private String shelfLocation;
 

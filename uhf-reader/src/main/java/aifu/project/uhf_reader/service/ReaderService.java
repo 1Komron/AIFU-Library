@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequiredArgsConstructor
 @Slf4j
 public class ReaderService {
+    private final BookingService bookingService;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private final AtomicBoolean isReading = new AtomicBoolean(false);
@@ -45,7 +46,14 @@ public class ReaderService {
                 if (!epcCache.containsKey(epc)) {
                     log.info("📦 Новая метка: {} RSSI: {}", epc, tag.getRssi());
                     epcCache.put(epc, now);
-                    executor.submit(this::triggerAlarm);
+
+                    if (!bookingService.isEpcBooked(epc)) {
+                        log.info("Ogirlgan kitob");
+                        executor.submit(this::triggerAlarm);
+                    } else {
+                        log.info("booking qilingan kitob");
+                        executor.submit(this::triggerSuccess);
+                    }
                 }
             }
         });
@@ -86,25 +94,43 @@ public class ReaderService {
         log.info("⛔ Инвентаризация остановлена (STOP)");
     }
 
+    private void triggerSuccess() {
+        MsgAppSetGpo gpo = new MsgAppSetGpo();
+        gpo.setGpo1(1);
+        client.sendSynMsg(gpo);
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            gpo.setGpo1(0);
+            client.sendSynMsg(gpo);
+            Thread.currentThread().interrupt();
+        }
+
+        gpo.setGpo1(0);
+        client.sendSynMsg(gpo);
+    }
+
     private void triggerAlarm() {
         if (alarmActive.get()) return;
 
         alarmActive.set(true);
 
-        MsgAppSetGpo enable = new MsgAppSetGpo();
-        enable.setGpo2(1);
-        client.sendSynMsg(enable);
+        MsgAppSetGpo gpo = new MsgAppSetGpo();
+        gpo.setGpo2(1);
+        client.sendSynMsg(gpo);
         log.info("🚨 Сигнализация ВКЛЮЧЕНА!");
 
         try {
             Thread.sleep(3000);
         } catch (InterruptedException ignored) {
-
+            gpo.setGpo2(0);
+            client.sendSynMsg(gpo);
+            Thread.currentThread().interrupt();
         }
 
-        MsgAppSetGpo disable = new MsgAppSetGpo();
-        disable.setGpo2(0);
-        client.sendSynMsg(disable);
+        gpo.setGpo2(0);
+        client.sendSynMsg(gpo);
         log.info("🔕 Сигнализация ВЫКЛЮЧЕНА!");
         alarmActive.set(false);
     }

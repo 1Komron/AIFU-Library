@@ -1,6 +1,6 @@
 package aifu.project.uhf_reader.runner;
 
-import aifu.project.uhf_rfid.service.RfidService;
+import aifu.project.uhf_reader.service.RfidService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

@@ -10,6 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "book")
+@Table(indexes = {
+        @Index(name = "idx_epc", columnList = "epc"),
+})
 public class BookCopy {
 
     @Id
@@ -20,7 +23,7 @@ public class BookCopy {
     private String inventoryNumber;
 
     @Column(unique = true)
-    private String upc;
+    private String epc;
 
     private String shelfLocation;
 

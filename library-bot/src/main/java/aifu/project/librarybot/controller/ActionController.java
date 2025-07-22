@@ -12,11 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class ActionController {
     private final ActionService actionService;
 
-    @PostMapping("/registration")
-    public ResponseEntity<ResponseMessage> registration(@RequestBody RegistrationRequest registrationRequest) {
-       return actionService.registerStudent(registrationRequest);
-    }
-
     @PostMapping("/book/borrow")
     public ResponseEntity<ResponseMessage> borrowBookResponse(@RequestBody BorrowBookRequest borrowBookRequest) {
         return actionService.borrowBookResponse(borrowBookRequest);

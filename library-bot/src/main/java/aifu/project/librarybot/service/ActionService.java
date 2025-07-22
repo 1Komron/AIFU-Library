@@ -1,7 +1,6 @@
 package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.entity.BookingRequest;
-import aifu.project.common_domain.entity.RegisterRequest;
 import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.common_domain.entity.enums.RequestType;
 import aifu.project.common_domain.payload.*;
@@ -14,30 +13,10 @@ import org.springframework.stereotype.Service;
 public class ActionService {
     private final UserLanguageService userLanguageService;
     private final BookingRequestService bookingRequestService;
-    private final RegisterRequestService registerRequestService;
     private final ActionHandlerService actionHandlerService;
     private final NotificationService notificationService;
 
     static final String INVALID_REQUEST = "Invalid request";
-
-    public ResponseEntity<ResponseMessage> registerStudent(RegistrationRequest request) {
-        String chatId = request.chatId();
-        String lang = userLanguageService.getLanguage(chatId);
-
-        RegisterRequest response = registerRequestService.getRegisterRequest(chatId);
-        if (response == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
-
-        Long notificationId = notificationService.getNotificationId(response.getId(), RequestType.REGISTER);
-        if (notificationId == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
-
-        return Boolean.TRUE.equals(request.accept())
-                ? actionHandlerService.registrationAccept(Long.parseLong(chatId), lang, notificationId, response)
-                : actionHandlerService.registrationReject(Long.parseLong(chatId), lang, notificationId, response);
-    }
 
     public ResponseEntity<ResponseMessage> borrowBookResponse(BorrowBookRequest request) {
         Long chatId = request.chatId();

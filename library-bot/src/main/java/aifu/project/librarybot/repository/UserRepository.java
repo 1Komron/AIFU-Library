@@ -14,20 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(Long chatId);
 
-    boolean existsByChatIdAndIsActiveFalseAndIsDeletedFalse(Long chatId);
-
     Optional<User> findByChatIdAndIsDeletedFalse(Long chatId);
-
-    @Transient
-    @Modifying
-    void deleteByChatId(Long chatId);
-
-    boolean existsUserById(Long id);
 
     Optional<User> findByIdAndIsDeletedFalse(Long userId);
 
     Optional<User> findByChatId(Long chatId);
 
-    @Query("select u.id from  User  u where  u.chatId =:chatId")
-    Long returnUserId(Long chatId);
+    User findByIsDeletedFalseAndPassportCode(String passportCode);
 }

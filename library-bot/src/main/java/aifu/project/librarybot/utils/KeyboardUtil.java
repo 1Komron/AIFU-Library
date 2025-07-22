@@ -79,63 +79,6 @@ public class KeyboardUtil {
         return keyboardMarkup;
     }
 
-    public static void getRegisterInlineKeyboard(SendMessage sendMessage, String lang) {
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_NAME, lang));
-        button.setCallbackData("register_name");
-        row.add(button);
-
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_SURNAME, lang));
-        button.setCallbackData("register_surname");
-        row.add(button);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_PHONE, lang));
-        button.setCallbackData("register_phone");
-        row.add(button);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_FACULTY, lang));
-        button.setCallbackData("register_faculty");
-        row.add(button);
-
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_COURSE, lang));
-        button.setCallbackData("register_course");
-        row.add(button);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_GROUP, lang));
-        button.setCallbackData("register_group");
-        row.add(button);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_CANCEL_BUTTON, lang));
-        button.setCallbackData("register_cancel");
-        row.add(button);
-
-        button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_SAVE_BUTTON, lang));
-        button.setCallbackData("register_save");
-        row.add(button);
-        rows.add(row);
-
-        keyboardMarkup.setKeyboard(rows);
-        sendMessage.setReplyMarkup(keyboardMarkup);
-    }
 
     public static void getLoginRegisterInlineKeyboard(SendMessage sendMessage, String language) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
@@ -143,31 +86,13 @@ public class KeyboardUtil {
 
         List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(MessageUtil.get(MessageKeys.REGISTER_LOGIN_BUTTON, language));
+        button.setText(MessageUtil.get(MessageKeys.LOGIN_BUTTON, language));
         button.setCallbackData("login");
         row.add(button);
         rows.add(row);
 
         keyboardMarkup.setKeyboard(rows);
         sendMessage.setReplyMarkup(keyboardMarkup);
-    }
-
-    public static ReplyKeyboardMarkup getSendContactKeyboard(String lang) {
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-
-        KeyboardRow row = new KeyboardRow();
-        KeyboardButton button = new KeyboardButton(MessageUtil.get(MessageKeys.REGISTER_PHONE, lang));
-        button.setRequestContact(true);
-        row.add(button);
-
-        ArrayList<KeyboardRow> keyboardRows = new ArrayList<>();
-        keyboardRows.add(row);
-
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(true);
-        keyboardMarkup.setKeyboard(keyboardRows);
-
-        return keyboardMarkup;
     }
 
     public static InlineKeyboardMarkup controlInlineKeyboard(String lang, int pageNumber, int totalPages, String type) {

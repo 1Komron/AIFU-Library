@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public class BotUserDTO {
     String name;
     String surname;
-    String phone;
     String email;
     String faculty;
     String course;

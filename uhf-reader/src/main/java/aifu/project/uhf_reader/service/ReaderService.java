@@ -1,7 +1,6 @@
 package aifu.project.uhf_reader.service;
 
 import com.gg.reader.api.dal.GClient;
-import com.gg.reader.api.protocol.gx.LogAppGpiStart;
 import com.gg.reader.api.protocol.gx.LogBaseEpcInfo;
 import com.gg.reader.api.protocol.gx.MsgAppSetGpo;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +18,13 @@ public class ReaderService {
     private final BookingService bookingService;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-    private final AtomicBoolean isReading = new AtomicBoolean(false);
     private final AtomicBoolean alarmActive = new AtomicBoolean(false);
-    private final AtomicBoolean awaitingStop = new AtomicBoolean(false);
     private final Map<String, Long> epcCache = new ConcurrentHashMap<>();
     private static final long REPEAT_DELAY_MS = 3000;
     private final GClient client;
 
     public void configureEventHandlers() {
         client.onTagEpcLog = this::handleTagEpcLog;
-        client.onGpiStart = this::handleGpiStart;
 
         scheduler.scheduleAtFixedRate(() -> {
             long now = System.currentTimeMillis();
@@ -37,7 +33,6 @@ public class ReaderService {
     }
 
     private void handleTagEpcLog(String name, LogBaseEpcInfo tag) {
-        if (!isReading.get()) return;
         executor.submit(() -> {
             if (tag != null && tag.getResult() == 0) {
                 String epc = tag.getEpc();
@@ -59,48 +54,13 @@ public class ReaderService {
         });
     }
 
-    private void handleGpiStart(String readerName, LogAppGpiStart info) {
-        int port = info.getGpiPort();
-        log.info("Port: {}", port);
-        if (port == 1) {
-            if (!awaitingStop.get()) {
-                executor.submit(this::startInventory);
-                awaitingStop.set(true);
-            } else {
-                awaitingStop.set(false);
-            }
-        } else if (port == 0) {
-            if (awaitingStop.get()) {
-                executor.submit(this::stopInventory);
-                awaitingStop.set(false);
-            } else {
-                awaitingStop.set(true);
-            }
-        }
-    }
-
-    private void startInventory() {
-        isReading.set(true);
-        log.info("📡 Инвентаризация началась (START)");
-    }
-
-    private void stopInventory() {
-        try {
-            Thread.sleep(3000); // имитируем задержку
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        isReading.set(false);
-        log.info("⛔ Инвентаризация остановлена (STOP)");
-    }
-
     private void triggerSuccess() {
         MsgAppSetGpo gpo = new MsgAppSetGpo();
         gpo.setGpo1(1);
         client.sendSynMsg(gpo);
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             gpo.setGpo1(0);
             client.sendSynMsg(gpo);
@@ -122,7 +82,7 @@ public class ReaderService {
         log.info("🚨 Сигнализация ВКЛЮЧЕНА!");
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         } catch (InterruptedException ignored) {
             gpo.setGpo2(0);
             client.sendSynMsg(gpo);

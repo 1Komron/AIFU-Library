@@ -4,37 +4,39 @@ import aifu.project.common_domain.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.io.Serializable;
 
 @Entity
 @Table(name = "users", indexes = {
-        @Index(name = "idx_chatId", columnList = "chatId")
+        @Index(name = "idx_chatId", columnList = "chatId"),
+        @Index(name = "idx_passport_code", columnList = "passportCode")
 })
 @Data
-public class User implements Serializable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private String surname;
-    @Column(unique = true)
-    private String phone;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    private String degree;
     private String faculty;
-    private String course;
-    @Column(name = "group_number")
-    private String group;
+
+    @Column(unique = true, nullable = false)
+    private String passportCode;
+
+    @Column(unique = true, nullable = false)
+    private String cardNumber;
+
+    @Column(unique = true)
+    private Long chatId;
 
     @Column(unique = true)
     private String email;
     private String password;
-
-    @Column(unique = true)
-    private Long chatId;
 
     private boolean isActive = false;
 

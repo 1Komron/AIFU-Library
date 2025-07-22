@@ -10,7 +10,6 @@ public class UserMapper {
         return new WebDTO(
                 user.getName(),
                 user.getSurname(),
-                user.getPhone(),
                 user.getEmail(),
                 user.getPassword()
         );
@@ -20,10 +19,7 @@ public class UserMapper {
         BotUserDTO dto = new BotUserDTO();
         dto.setName(user.getName());
         dto.setSurname(user.getSurname());
-        dto.setPhone(user.getPhone());
         dto.setFaculty(user.getFaculty());
-        dto.setCourse(user.getCourse());
-        dto.setGroup(user.getGroup());
         dto.setChatId(user.getChatId());
         return dto;
     }
@@ -33,7 +29,6 @@ public class UserMapper {
         User user = new User();
         user.setName(dto.name());
         user.setSurname(dto.surname());
-        user.setPhone(dto.phone());
         user.setEmail(dto.email());
         user.setPassword(dto.password());
         return user;
@@ -43,13 +38,12 @@ public class UserMapper {
         User user = new User();
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
-        user.setPhone(dto.getPhone());
         user.setEmail(dto.getEmail());
         user.setFaculty(dto.getFaculty());
-        user.setCourse(dto.getCourse());
-        user.setGroup(dto.getGroup());
         user.setChatId(dto.getChatId());
         return user;
     }
+
+    private UserMapper() {}
 
 }

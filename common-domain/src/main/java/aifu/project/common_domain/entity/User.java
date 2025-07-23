@@ -41,4 +41,5 @@ public class User {
     private boolean isActive = false;
 
     private boolean isDeleted = false;
+
 }

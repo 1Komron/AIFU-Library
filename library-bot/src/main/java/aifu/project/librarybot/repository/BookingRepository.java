@@ -141,8 +141,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                 b.status,
                 u.id,
                 u.name,
-                u.surname,
-                u.phone
+                u.surname
             )
             FROM Booking b
             JOIN b.book copy

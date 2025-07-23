@@ -27,8 +27,6 @@ public class ActionHandlerService {
     private final BookCopyRepository bookCopyRepository;
     private final NotificationService notificationService;
     private final HistoryService historyService;
-    private final RegisterRequestService registerRequestService;
-
 
     //kitob qaytarish vaqtini uzaytirishni qabul qilish
     public ResponseEntity<ResponseMessage> extendBookAccept(Integer bookId, BookingRequest bookingRequest,
@@ -108,46 +106,6 @@ public class ActionHandlerService {
 
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_RETURN_REJECTED, lang);
             return ResponseEntity.ok(new ResponseMessage(true, "Rejected", notificationId));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
-        }
-    }
-
-    //Registratsiyani qabul qilish
-    public ResponseEntity<ResponseMessage> registrationAccept(Long chatId, String lang,
-                                                              Long notificationId, RegisterRequest registerRequest) {
-        try {
-            userService.saveUser(chatId);
-
-            notificationService.deleteNotification(notificationId);
-
-            registerRequestService.delete(registerRequest);
-
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_APPROVED, lang);
-
-            return ResponseEntity.ok(new ResponseMessage(true, "Register accepted by chatId: " + chatId,
-                    notificationId));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(false, INVALID_REQUEST, null));
-        }
-    }
-
-    //Registratsiyani rad etish
-    public ResponseEntity<ResponseMessage> registrationReject(Long chatId, String lang,
-                                                              Long notificationId, RegisterRequest registerRequest) {
-        try {
-            notificationService.deleteNotification(notificationId);
-
-            registerRequestService.delete(registerRequest);
-
-            userService.removeUser(chatId);
-
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_REJECTED, lang);
-
-            return ResponseEntity
-                    .ok(new ResponseMessage(true, "Register rejected by chatId : " + chatId, notificationId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseMessage(false, INVALID_REQUEST, null));

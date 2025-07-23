@@ -3,7 +3,6 @@ package aifu.project.librarybot.service;
 import aifu.project.common_domain.payload.BookPartList;
 import aifu.project.common_domain.payload.PartList;
 import aifu.project.librarybot.enums.Command;
-import aifu.project.librarybot.enums.RegistrationStep;
 import aifu.project.librarybot.enums.TransactionStep;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
@@ -31,7 +30,6 @@ public class ProcessService {
     private final ButtonService buttonService;
     private final UserService userService;
     private final UserLanguageService userLanguageService;
-    private final RegisterService registerService;
     private final TransactionalService transactionalService;
     private final HistoryService historyService;
     private final BookingService bookingService;
@@ -95,9 +93,6 @@ public class ProcessService {
         if (processStart(chatId, text, message.getFrom().getLanguageCode()))
             return;
 
-        if (processRegistration(chatId, text, lang))
-            return;
-
         if (processInput(chatId, text, lang))
             return;
 
@@ -143,6 +138,12 @@ public class ProcessService {
                         chatId, lang, SEARCH + "|" + text);
                 return true;
             }
+            case LOGIN -> {
+                transactionalService.clearState(chatId);
+
+                userService.login(chatId, text, lang);
+                return true;
+            }
             default -> {
                 transactionalService.clearState(chatId);
                 return false;
@@ -152,7 +153,7 @@ public class ProcessService {
 
     @SneakyThrows
     private void processButtons(Long chatId, String text, String lang) {
-        if (!isSettings(text, lang) && userService.checkUserStatus(chatId, lang)) {
+        if (!isSettings(text, lang) && userService.checkUserStatus(chatId)) {
             return;
         }
 
@@ -205,25 +206,20 @@ public class ProcessService {
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
 
-        System.out.println(data);
         String lang = userLanguageService.getLanguage(chatId.toString());
         Integer messageId = callbackQuery.getMessage().getMessageId();
-        String text = callbackQuery.getMessage().getText();
-
 
         if (data.equals("uz") || data.equals("ru") || data.equals("en") || data.equals("zh")) {
             userLanguageService.setLanguage(chatId.toString(), data);
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.LANGUAGE_CHANGED, data));
-        } else if (data.startsWith("register")) {
-            processCallBackDataRegister(chatId, data, messageId, text, lang);
         } else if (data.startsWith("login")) {
-            registerService.registerUser(chatId, messageId, lang);
+            userService.sendLoginMessage(chatId, lang);
         } else if (data.startsWith("back_") || data.startsWith("next_")) {
             processControl(data, chatId, lang, messageId);
         } else if (data.startsWith(EXPIRING)) {
             processExpiring(chatId, lang, data);
         } else if (data.equals(EXPIRED)) {
-            processExpired(chatId, lang, data);
+            processExpired(chatId, lang);
         } else if (data.startsWith(EXTEND)) {
             processExtend(chatId, lang, data);
         } else if (data.startsWith("search_")) {
@@ -242,7 +238,7 @@ public class ProcessService {
                     userLanguageService.getLanguage(String.valueOf(chatId))));
 
             if (!userService.exists(chatId))
-                userService.loginRegister(chatId);
+                userService.sendLoginButton(chatId);
 
             return true;
         }
@@ -250,17 +246,6 @@ public class ProcessService {
         return false;
     }
 
-    @SneakyThrows
-    private boolean processRegistration(Long chatId, String text, String lang) {
-        if (registerService.isRegistering(chatId) && registerService.getRegistrationStep(chatId) != null) {
-            if (!RegistrationStep.PHONE.equals(registerService.getRegistrationStep(chatId)))
-                registerService.processRegistrationStep(chatId, text, lang);
-            else
-                executeUtil.executeMessage(chatId.toString(), MessageKeys.MESSAGE_INVALID_FORMAT, lang);
-            return true;
-        }
-        return false;
-    }
 
     private boolean isSettings(String text, String lang) {
         return COMMAND_MAP.getOrDefault(lang, Collections.emptyMap())
@@ -284,7 +269,7 @@ public class ProcessService {
         }
     }
 
-    private void processExpired(Long chatId, String lang, String data) {
+    private void processExpired(Long chatId, String lang) {
         handlePagedList(() -> bookingService.getExpiredBookList(chatId, lang, 1),
                 chatId, lang, EXPIRED);
         bookingService.expiredBooking(chatId, lang);
@@ -319,121 +304,6 @@ public class ProcessService {
         } else if ("back".equals(step)) {
             handleBackStep(context, chatId, lang, messageId);
         }
-    }
-
-    @SneakyThrows
-    private void processCallBackDataRegister(Long chatId, String data, Integer messageId, String text, String lang) {
-        if (userService.isInactive(chatId)) {
-            executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
-            return;
-        }
-        if (userService.exists(chatId)) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
-            return;
-        }
-
-        data = data.substring("register_".length());
-
-        registerService.checkRegistrationState(chatId, messageId, text);
-
-        switch (data) {
-            case "name" -> {
-                registerService.setRegistrationStep(chatId, RegistrationStep.NAME);
-                SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                        MessageUtil.get(MessageKeys.REGISTER_ENTER_NAME, lang));
-
-                executeUtil.execute(sendMessage);
-            }
-            case "surname" -> {
-                registerService.setRegistrationStep(chatId, RegistrationStep.SURNAME);
-
-                SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                        MessageUtil.get(MessageKeys.REGISTER_ENTER_SURNAME, lang));
-
-                executeUtil.execute(sendMessage);
-            }
-            case "phone" -> {
-                registerService.setRegistrationStep(chatId, RegistrationStep.PHONE);
-
-                SendMessage sendMessage =
-                        MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.BUTTON_SEND_CONTACT, lang));
-                sendMessage.setReplyMarkup(KeyboardUtil.getSendContactKeyboard(lang));
-
-                executeUtil.execute(sendMessage);
-            }
-            case "faculty" -> {
-                registerService.setRegistrationStep(chatId, RegistrationStep.FACULTY);
-                SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                        MessageUtil.get(MessageKeys.REGISTER_ENTER_FACULTY, lang));
-
-                executeUtil.execute(sendMessage);
-            }
-            case "course" -> {
-                registerService.setRegistrationStep(chatId, RegistrationStep.COURSE);
-                SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                        MessageUtil.get(MessageKeys.REGISTER_ENTER_COURSE, lang));
-
-                executeUtil.execute(sendMessage);
-            }
-            case "group" -> {
-                registerService.setRegistrationStep(chatId, RegistrationStep.GROUP);
-                SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                        MessageUtil.get(MessageKeys.REGISTER_ENTER_GROUP, lang));
-
-                executeUtil.execute(sendMessage);
-            }
-            case "save" -> {
-                if (!registerService.saveRegistration(chatId)) {
-                    SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(),
-                            MessageUtil.get(MessageKeys.REGISTER_INCOMPLETE, lang));
-                    executeUtil.execute(sendMessage);
-                    return;
-                }
-
-                userService.saveUser(registerService.getDTO(chatId));
-
-                Integer lastMessageId = registerService.clearRegistrationState(chatId);
-                if (lastMessageId == null)
-                    return;
-
-                registerService.remove(chatId);
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
-
-                buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.REGISTER_SAVE_MESSAGE, lang));
-            }
-            case "cancel" -> {
-                Integer lastMessageId = registerService.clearRegistrationState(chatId);
-                if (lastMessageId == null)
-                    return;
-
-                executeUtil.execute(MessageUtil.deleteMessage(chatId.toString(), lastMessageId));
-
-                buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.REGISTER_CANCEL_MESSAGE, lang));
-            }
-            default -> buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.REGISTER_CANCEL_MESSAGE, lang));
-        }
-    }
-
-    @SneakyThrows
-    public void processRegisterPhone(Message message) {
-        Long chatId = message.getChatId();
-        String lang = userLanguageService.getLanguage(chatId.toString());
-
-        if (userService.isInactive(chatId)) {
-            executeUtil.execute(MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.REGISTER_WAIT, lang)));
-            return;
-        }
-        if (userService.exists(chatId)) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.REGISTER_RE_REGISTER, lang);
-            return;
-        }
-
-        String phone = message.getContact().getPhoneNumber();
-        phone = phone.startsWith("+") ? phone : "+" + phone;
-
-        registerService.processRegistrationStep(chatId, phone, userLanguageService.getLanguage(chatId.toString()));
-
-        buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.PHONE_ADDED, userLanguageService.getLanguage(chatId.toString())));
     }
 
     private PageContext resolvePageContext(String rawType, int page) {

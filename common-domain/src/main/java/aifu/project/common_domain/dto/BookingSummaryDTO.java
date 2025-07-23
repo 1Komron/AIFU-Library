@@ -14,7 +14,6 @@ public record BookingSummaryDTO(
         Status status,
         Long userId,
         String name,
-        String surname,
-        String phone
+        String surname
 ) {
 }

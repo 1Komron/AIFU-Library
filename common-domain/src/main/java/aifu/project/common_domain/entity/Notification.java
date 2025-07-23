@@ -31,7 +31,6 @@ public class Notification {
         this.requestId = requestId;
         this.userName = user.getName();
         this.userSurname = user.getSurname();
-        this.phone = user.getPhone();
         this.notificationType = type;
         this.requestType = requestType;
         this.notificationTime = LocalDateTime.now();

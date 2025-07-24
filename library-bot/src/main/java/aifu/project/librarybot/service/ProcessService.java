@@ -117,20 +117,20 @@ public class ProcessService {
             return false;
 
         switch (state) {
-            case BORROW -> {
-                transactionalService.clearState(chatId);
-
-                if (bookingService.borrowBook(chatId, text, lang))
-                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_BORROW_WAITING_APPROVAL, lang);
-                return true;
-            }
-            case RETURN -> {
-                transactionalService.clearState(chatId);
-
-                if (bookingService.returnBook(chatId, text, lang))
-                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang);
-                return true;
-            }
+//            case BORROW -> {
+//                transactionalService.clearState(chatId);
+//
+//                if (bookingService.borrowBook(chatId, text, lang))
+//                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_BORROW_WAITING_APPROVAL, lang);
+//                return true;
+//            }
+//            case RETURN -> {
+//                transactionalService.clearState(chatId);
+//
+//                if (bookingService.returnBook(chatId, text, lang))
+//                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang);
+//                return true;
+//            }
             case SEARCH -> {
                 transactionalService.clearState(chatId);
 

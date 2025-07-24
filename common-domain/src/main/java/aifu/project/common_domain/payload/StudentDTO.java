@@ -5,12 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class BotUserDTO {
+public class StudentDTO {
     String name;
     String surname;
-    String email;
     String faculty;
-    String course;
-    String group;
+    String degree;
+    String cardNumber;
     Long chatId;
 }

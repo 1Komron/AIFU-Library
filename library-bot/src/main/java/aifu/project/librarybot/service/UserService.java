@@ -1,11 +1,12 @@
 package aifu.project.librarybot.service;
 
+import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.User;
 import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.enums.TransactionStep;
-import aifu.project.librarybot.repository.UserRepository;
+import aifu.project.librarybot.repository.StudentRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
@@ -22,7 +23,7 @@ import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FO
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final UserLanguageService userLanguageService;
     private final BookingService bookingService;
     private final BookingRequestService bookingRequestService;
@@ -30,7 +31,7 @@ public class UserService {
     private final TransactionalService transactionalService;
 
     public boolean exists(Long chatId) {
-        return userRepository.existsUserByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
+        return studentRepository.existsByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
     }
 
     @SneakyThrows
@@ -51,9 +52,9 @@ public class UserService {
 
 
     public void login(Long chatId, String text, String lang) {
-        User user = userRepository.findByIsDeletedFalseAndPassportCode(text);
-        if (user != null) {
-            saveUserChatId(user, chatId);
+        Student student = studentRepository.findByIsDeletedFalseAndPassportCode(text);
+        if (student != null) {
+            saveUserChatId(student, chatId);
             executeUtil.executeMessage(chatId.toString(), MessageKeys.LOGIN_SUCCESS_MESSAGE, lang);
         } else {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.LOGIN_ERROR_NOT_FOUND, lang);
@@ -70,15 +71,15 @@ public class UserService {
     }
 
     public String showProfile(Long chatId, String lang) {
-        User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
+        Student student = studentRepository.findByChatIdAndIsDeletedFalse(chatId)
                 .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + chatId));
 
         String template = MessageUtil.get(MessageKeys.PROFILE, lang);
-        return String.format(template, user.getId(), user.getName(), user.getSurname(), user.getFaculty(), user.getDegree(), user.getChatId());
+        return String.format(template, student.getId(), student.getName(), student.getSurname(), student.getFaculty(), student.getDegree(), student.getChatId());
     }
 
     public ResponseEntity<ResponseMessage> deleteUser(Long userId) {
-        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+        Student student = studentRepository.findByIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));
 
         if (bookingService.hasBookingForUser(userId))
@@ -87,17 +88,17 @@ public class UserService {
         if (bookingRequestService.hasRequestForUser(userId))
             throw new UserDeletionException("The user cannot be deleted because they have outstanding book checkout or return requests.");
 
-        user.setDeleted(true);
-        user.setActive(false);
-        userRepository.save(user);
+        student.setDeleted(true);
+        student.setActive(false);
+        studentRepository.save(student);
 
         return ResponseEntity.ok(new ResponseMessage(true, "User successfully deleted", null));
     }
 
-    private void saveUserChatId(User user, Long chatId) {
-        user.setChatId(chatId);
-        user.setActive(true);
-        userRepository.save(user);
+    private void saveUserChatId(Student student, Long chatId) {
+        student.setChatId(chatId);
+        student.setActive(true);
+        studentRepository.save(student);
     }
 
 

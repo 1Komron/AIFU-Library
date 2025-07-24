@@ -13,7 +13,7 @@ public class History {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Student user;
 
     @ManyToOne
     private BookCopy book;

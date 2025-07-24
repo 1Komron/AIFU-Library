@@ -9,16 +9,14 @@ import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 import aifu.project.common_domain.entity.enums.Status;
-import aifu.project.common_domain.exceptions.BookCopyNotFoundException;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
-import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.payload.PartList;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookCopyRepository;
 import aifu.project.librarybot.repository.BookingRepository;
 import aifu.project.librarybot.repository.NotificationRepository;
-import aifu.project.librarybot.repository.UserRepository;
+import aifu.project.librarybot.repository.StudentRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
@@ -39,7 +37,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static aifu.project.common_domain.mapper.NotificationMapper.notificationToDTO;
 
@@ -48,93 +45,16 @@ import static aifu.project.common_domain.mapper.NotificationMapper.notificationT
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final BookCopyRepository bookCopyRepository;
     private final BookingRequestService bookingRequestService;
     private final ExecuteUtil executeUtil;
     private final RabbitTemplate rabbitTemplate;
 
-    @Transactional
-    @SneakyThrows
-    public boolean borrowBook(Long chatId, String inventoryNumber, String lang) {
-        BookCopy bookCopy;
-        try {
-            bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
-                    .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_INVENTORY_NUMBER + inventoryNumber));
-        } catch (BookCopyNotFoundException e) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
-            return false;
-        }
-
-        if (bookCopy.isTaken()) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_ALREADY_TAKEN, lang);
-            return false;
-        }
-
-        bookCopy.setTaken(true);
-        bookCopyRepository.save(bookCopy);
-
-        User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
-                .orElseThrow(() -> new UserNotFoundException("User not found by chatId: " + chatId));
-
-        BookingRequest bookingRequest = bookingRequestService.create(user, bookCopy, BookingRequestStatus.BORROW);
-
-        Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.BORROW, RequestType.BOOKING);
-        notificationRepository.save(notification);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_BORROW,
-                notificationToDTO(notification));
-
-        return true;
-    }
-
-    @Transactional
-    @SneakyThrows
-    public boolean returnBook(Long chatId, String inventoryNumber, String lang) {
-        BookCopy bookCopy;
-        try {
-            bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
-                    .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_INVENTORY_NUMBER + inventoryNumber));
-        } catch (BookCopyNotFoundException e) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
-            return false;
-        }
-
-        List<Booking> allBookings = bookingRepository.findAllWithBooksByUser_ChatId(chatId);
-
-        if (allBookings.isEmpty()) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_RETURN_NOT_FOUND, lang);
-            return false;
-        }
-
-        AtomicBoolean isTaken = new AtomicBoolean(false);
-        allBookings.forEach(booking -> {
-            if (booking.getBook().getId().equals(bookCopy.getId()) &&
-                    (booking.getStatus() == Status.APPROVED || booking.getStatus() == Status.OVERDUE)) {
-                isTaken.set(true);
-
-                BookingRequest bookingRequest = bookingRequestService.create(booking.getUser(), bookCopy, BookingRequestStatus.RETURN);
-
-                User user = userRepository.findByChatIdAndIsDeletedFalse(chatId)
-                        .orElseThrow(() -> new UserNotFoundException("User not found by chatId: " + chatId));
-
-                Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.RETURN, RequestType.BOOKING);
-                notificationRepository.save(notification);
-                rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_RETURN,
-                        notificationToDTO(notification));
-            }
-        });
-
-        if (!isTaken.get()) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_RETURN_NOT_FOUND, lang);
-            return false;
-        }
-
-        return true;
-    }
 
     @Transactional
     public void createExtendReturnDeadline(Long chatId, String lang, String inv) {
-        Booking booking = bookingRepository.findBookingByUser_ChatIdAndBook_InventoryNumber(chatId, inv);
+        Booking booking = bookingRepository.findBookingByStudent_ChatIdAndBook_InventoryNumber(chatId, inv);
         if (booking == null) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
             return;
@@ -149,11 +69,11 @@ public class BookingService {
             return;
         }
 
-        BookingRequest bookingRequest = bookingRequestService.create(booking.getUser(), booking.getBook(), BookingRequestStatus.EXTEND);
+        BookingRequest bookingRequest = bookingRequestService.create(booking.getStudent(), booking.getBook(), BookingRequestStatus.EXTEND);
         executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
 
-        User user = booking.getUser();
-        Notification notification = new Notification(user, bookingRequest.getId(), NotificationType.EXTEND, RequestType.BOOKING);
+        Student student = booking.getStudent();
+        Notification notification = new Notification(student, bookingRequest.getId(), NotificationType.EXTEND, RequestType.BOOKING);
         notificationRepository.save(notification);
         rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND,
                 notificationToDTO(notification));
@@ -229,17 +149,17 @@ public class BookingService {
         return new PartList(messageText.toString(), ++pageNumber, totalPages);
     }
 
-    public void createBooking(BookingRequest bookingRequest) {
-        Booking booking = new Booking();
-        booking.setUser(bookingRequest.getUser());
-        booking.setBook(bookingRequest.getBookCopy());
-        booking.setStatus(Status.APPROVED);
-
-        bookingRepository.save(booking);
-    }
+//    public void createBooking(BookingRequest bookingRequest) {
+//        Booking booking = new Booking();
+//        booking.setStudent(bookingRequest.getStudent());
+//        booking.setBook(bookingRequest.getBookCopy());
+//        booking.setStatus(Status.APPROVED);
+//
+//        bookingRepository.save(booking);
+//    }
 
     public Booking getBooking(Long chatId, Integer bookId) {
-        return bookingRepository.findByBookIdAndUserChatId(bookId, chatId);
+        return bookingRepository.findByBookIdAndStudentChatId(bookId, chatId);
     }
 
     public List<Booking> getOverdueBookings() {
@@ -265,11 +185,6 @@ public class BookingService {
 
         return MessageUtil.get(MessageKeys.BOOKING_STATUS_OVERDUE, lang);
     }
-
-    public void delete(Booking booking) {
-        bookingRepository.delete(booking);
-    }
-
 
     public void expiredBooking(Long chatId, String lang) {
         List<Booking> expiredBookings = bookingRepository.findAllExpiredBookings(chatId, LocalDate.now());
@@ -333,7 +248,7 @@ public class BookingService {
 
     private List<BookingResponse> getBookingResponseList(List<Booking> bookingList) {
         return bookingList.stream()
-                .map(b -> new BookingResponse(b.getId(), b.getUser().getName(), b.getUser().getSurname()))
+                .map(b -> new BookingResponse(b.getId(), b.getStudent().getName(), b.getStudent().getSurname()))
                 .toList();
     }
 
@@ -345,7 +260,7 @@ public class BookingService {
     }
 
     public boolean hasBookingForUser(Long userId) {
-        return bookingRepository.existsBookingByUser_Id(userId);
+        return bookingRepository.existsBookingByStudent_Id(userId);
     }
 
     public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {

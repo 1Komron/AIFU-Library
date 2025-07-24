@@ -1,46 +1,46 @@
 package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.payload.ResponseMessage;
-import aifu.project.libraryweb.service.UserService;
+import aifu.project.libraryweb.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
-public class UserController {
-    private final UserService userService;
+@RequestMapping("/api/student")
+public class StudentController {
+    private final StudentService studentService;
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> getUsers(@RequestParam(defaultValue = "1") int pageNumber,
+    public ResponseEntity<ResponseMessage> getStudents(@RequestParam(defaultValue = "1") int pageNumber,
                                                     @RequestParam(defaultValue = "10") int size) {
-        return userService.getUserList(pageNumber, size);
+        return studentService.getStudentList(pageNumber, size);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseMessage> getUsers(@RequestParam(defaultValue = "1") int pageNumber,
+    public ResponseEntity<ResponseMessage> getStudents(@RequestParam(defaultValue = "1") int pageNumber,
                                                     @RequestParam(defaultValue = "10") int size,
                                                     @RequestParam(required = false) Long id,
                                                     @RequestParam(required = false) String phone,
                                                     @RequestParam(defaultValue = "id") String sortBy,
                                                     @RequestParam(defaultValue = "asc") String sortDir) {
-        return userService.getSearchUserList(pageNumber, size, id, phone, sortBy, sortDir);
+        return studentService.getSearchStudentList(pageNumber, size, id, phone, sortBy, sortDir);
     }
 
     @GetMapping("/inactive")
-    public ResponseEntity<ResponseMessage> getUsersByStatus(@RequestParam(defaultValue = "1") int pageNumber,
+    public ResponseEntity<ResponseMessage> getStudentsByStatus(@RequestParam(defaultValue = "1") int pageNumber,
                                                             @RequestParam(defaultValue = "10") int size) {
-        return userService.getUsersByStatus(pageNumber, size);
+        return studentService.getStudentsByStatus(pageNumber, size);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseMessage> getUser(@PathVariable String id) {
-        return userService.getUser(id);
+    public ResponseEntity<ResponseMessage> getStudent(@PathVariable String id) {
+        return studentService.getStudent(id);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseMessage> deleteUser(@PathVariable Long id) {
-        return userService.deleteUser(id);
+    public ResponseEntity<ResponseMessage> deleteStudent(@PathVariable Long id) {
+        return studentService.deleteStudent(id);
     }
 }

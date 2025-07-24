@@ -32,7 +32,7 @@ public class OverdueNotificationScheduler {
 
     public void sendOverdueExpiringNotifications() {
         bookingService.getOverdueBookings().forEach(booking -> {
-            String chatId = booking.getUser().getChatId().toString();
+            String chatId = booking.getStudent().getChatId().toString();
             String lang = userLanguageService.getLanguage(chatId);
             expiring.put(chatId, lang);
         });
@@ -51,7 +51,7 @@ public class OverdueNotificationScheduler {
     @Transactional
     public void sendOverdueExpiredNotifications() {
         bookingService.getExpiredBookings().forEach(booking -> {
-            String chatId = booking.getUser().getChatId().toString();
+            String chatId = booking.getStudent().getChatId().toString();
             String lang = userLanguageService.getLanguage(chatId);
             expired.put(chatId, lang);
         });

@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface BookingRequestRepository extends JpaRepository<BookingRequest, Long> {
-    BookingRequest findBookingRequestByUserChatIdAndBookCopyIdAndStatus(Long chatId, Integer bookCopyId, BookingRequestStatus status);
+    BookingRequest findBookingRequestByStudentChatIdAndBookCopyIdAndStatus(Long chatId, Integer bookCopyId, BookingRequestStatus status);
 
     Optional<BookingRequest> findBookingRequestById(Long id);
 
-    boolean existsBookingRequestByUser_Id(Long userId);
+    boolean existsBookingRequestByStudent_Id(Long userId);
 
-    boolean existsBookingRequestByUser_ChatId(Long userChatId);
+    boolean existsBookingRequestByStudent_ChatId(Long userChatId);
 
     boolean existsByBookCopy(BookCopy bookCopy);
 }

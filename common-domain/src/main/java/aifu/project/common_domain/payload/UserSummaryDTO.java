@@ -4,10 +4,8 @@ public record UserSummaryDTO(
         Long id,
         String name,
         String surname,
-        String phone,
+        String degree,
         String faculty,
-        String course,
-        String group,
         Long chatId,
         boolean isActive
 ) {

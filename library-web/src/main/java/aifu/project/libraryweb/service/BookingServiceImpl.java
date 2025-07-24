@@ -1,66 +1,115 @@
 package aifu.project.libraryweb.service;
 
+import aifu.project.common_domain.dto.BookingShortDTO;
+import aifu.project.common_domain.dto.BookingSummaryDTO;
+import aifu.project.common_domain.dto.BorrowBookDTO;
+import aifu.project.common_domain.dto.ReturnBookDTO;
+import aifu.project.common_domain.entity.BookCopy;
+import aifu.project.common_domain.entity.Booking;
+import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.enums.Status;
+import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.libraryweb.repository.BookingRepository;
+import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
-    private final RestTemplate restTemplate;
-
-    @Value("${booking.baseUri}")
-    private String bookingBaseUri;
-    @Value("${internal.token}")
-    private String internalToken;
-
-    private static final String TOKEN_HEADER = "Internal-Token";
+    private final BookingRepository bookingRepository;
+    private final UserService userService;
+    private final BookCopyService bookCopyService;
+    private final HistoryService historyService;
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(TOKEN_HEADER, this.internalToken);
+        Pageable pageable = PageRequest.of(--pageNum, pageSize);
+        Page<BookingShortDTO> page = bookingRepository.findAllBookingShortDTO(pageable);
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        Map<String, Object> data = Map.of(
+                "data", page.getContent(),
+                "currentPage", page.getNumber() + 1,
+                "totalPages", page.getTotalPages(),
+                "totalElements", page.getTotalElements()
+        );
 
-        return restTemplate.exchange(
-                this.bookingBaseUri + "?pageNum=" + pageNum + "&pageSize=" + pageSize,
-                HttpMethod.GET,
-                entity,
-                ResponseMessage.class);
+        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBooking(Long id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(TOKEN_HEADER, this.internalToken);
+        BookingSummaryDTO data = bookingRepository.findSummary(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found. By id: " + id));
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        return restTemplate.exchange(
-                this.bookingBaseUri + "/" + id,
-                HttpMethod.GET,
-                entity,
-                ResponseMessage.class);
+        return ResponseEntity.ok(new ResponseMessage(true, "Booking by id: " + id, data));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> filterByStatus(String status, int pageNum, int pageSize) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(TOKEN_HEADER, this.internalToken);
+        Pageable pageable = PageRequest.of(--pageNum, pageSize);
+        Status statusEnum = Status.getStatus(status);
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        Page<BookingShortDTO> page = bookingRepository.findShortByStatus(statusEnum, pageable);
 
-        return restTemplate.exchange(
-                this.bookingBaseUri + "/filter?status=" + status + "&pageNum=" + pageNum + "&pageSize=" + pageSize,
-                HttpMethod.GET,
-                entity,
-                ResponseMessage.class);
+        Map<String, Object> data = Map.of(
+                "data", page.getContent(),
+                "currentPage", page.getNumber() + 1,
+                "totalPages", page.getTotalPages(),
+                "totalElements", page.getTotalElements()
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request) {
+        String cardNumber = request.cardNumber();
+        String epc = request.epc();
+
+        User user = userService.findByCardNumber(cardNumber);
+
+        BookCopy bookCopy = bookCopyService.findByEpc(epc);
+
+        createBooking(user, bookCopy);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseMessage(true, "Booking created successfully", null));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> returnBook(ReturnBookDTO request) {
+        String cardNumber = request.cardNumber();
+        String epc = request.epc();
+
+        User user = userService.findByCardNumber(cardNumber);
+
+        BookCopy bookCopy = bookCopyService.findByEpc(epc);
+
+        Booking booking = bookingRepository.findByUserAndBook(user, bookCopy)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found for user: " + user.getId() + " and book copy: " + bookCopy.getId()));
+
+        bookCopyService.updateStatus(bookCopy);
+
+        historyService.add(booking);
+
+        bookingRepository.delete(booking);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Booking returned successfully", null));
+    }
+
+    public void createBooking(User user, BookCopy bookCopy) {
+        Booking booking = new Booking();
+        booking.setUser(user);
+        booking.setBook(bookCopy);
+        bookingRepository.save(booking);
     }
 }

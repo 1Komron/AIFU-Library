@@ -4,7 +4,7 @@ public record UserShortDTO(
         Long id,
         String name,
         String surname,
-        String phone,
+        String cardNumber,
         boolean status
 ) {
 }

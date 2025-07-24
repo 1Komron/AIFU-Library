@@ -52,20 +52,22 @@ public class UserService {
     }
 
     public ResponseEntity<ResponseMessage> getSearchUserList(int pageNumber,
-                                                       int size,
-                                                       Long id,
-                                                       String phone,
-                                                       String sortBy,
-                                                       String sortDir) {
+                                                             int size,
+                                                             Long id,
+                                                             String phone,
+                                                             String sortBy,
+                                                             String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(Sort.Direction.ASC, sortBy) : Sort.by(Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(--pageNumber, size, sort);
 
         Page<User> userPage;
         if (id != null) {
             userPage = userRepository.findByIdAndRoleAndIsDeletedFalse(id, Role.USER, pageable);
-        } else if (phone != null) {
-            userPage = userRepository.findByPhoneAndRoleAndIsDeletedFalse(phone, Role.USER, pageable);
-        } else {
+        }
+//        else if (phone != null) {
+//            userPage = userRepository.findByPhoneAndRoleAndIsDeletedFalse(phone, Role.USER, pageable);
+//        }
+        else {
             userPage = userRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
         }
 
@@ -94,10 +96,8 @@ public class UserService {
                 user.getId(),
                 user.getName(),
                 user.getSurname(),
-                user.getPhone(),
+                user.getDegree(),
                 user.getFaculty(),
-                user.getCourse(),
-                user.getGroup(),
                 user.getChatId(),
                 user.isActive()
         );
@@ -109,7 +109,7 @@ public class UserService {
     private List<UserShortDTO> getUserShortDTO(List<User> users) {
         return users.stream()
                 .map(user -> new UserShortDTO(user.getId(), user.getName(),
-                        user.getSurname(), user.getPhone(), user.isActive()))
+                        user.getSurname(), user.getCardNumber(), user.isActive()))
                 .toList();
     }
 
@@ -123,5 +123,10 @@ public class UserService {
                 HttpMethod.DELETE,
                 entity,
                 ResponseMessage.class);
+    }
+
+    public User findByCardNumber(String cardNumber) {
+        return userRepository.findUserByCardNumberAndIsActiveTrueAndIsDeletedFalse(cardNumber)
+                .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
     }
 }

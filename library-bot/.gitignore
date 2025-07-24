@@ -1,5 +1,6 @@
 HELP.md
 target/
+library-bot/library-bot
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

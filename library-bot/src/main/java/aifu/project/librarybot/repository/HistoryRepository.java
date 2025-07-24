@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
     @Query(
@@ -31,10 +29,4 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
             @Param("chatId") Long chatId,
             Pageable pageable
     );
-
-    long countByGivenAtBetween(LocalDate givenAtAfter, LocalDate givenAtBefore);
-
-    boolean existsHistoriesByUser_Id(Long id);
-
-    boolean existsHistoriesByUser_ChatId(Long userChatId);
 }

@@ -26,21 +26,6 @@ public class StatisticsController {
     }
 
 
-    @GetMapping("/users/count")
-    public ResponseEntity<ResponseMessage> getUserCount() {
-        return statisticsService.countUsers();
-    }
-
-    @GetMapping("/books/count")
-    public ResponseEntity<ResponseMessage> getBookCount() {
-        return statisticsService.countBooks();
-    }
-
-    @GetMapping("/book/copies/count")
-    public ResponseEntity<ResponseMessage> getBookCopiesCount() {
-        return statisticsService.countBookCopies();
-    }
-
     @GetMapping("/bookings/today")
     public ResponseEntity<ResponseMessage> getTodayBookings(@RequestParam(defaultValue = "1") int pageNumber,
                                                             @RequestParam(defaultValue = "5") int pageSize) {
@@ -58,10 +43,19 @@ public class StatisticsController {
         return statisticsService.getBookingPerMonth(month);
     }
 
+    @GetMapping("/students/count")
+    public ResponseEntity<ResponseMessage> getUserCount() {
+        return statisticsService.countUsers();
+    }
 
+    @GetMapping("/books/count")
+    public ResponseEntity<ResponseMessage> getBookCount() {
+        return statisticsService.countBooks();
+    }
 
-//    @GetMapping("/top-books")
-//    public ResponseEntity<ResponseMessage> getTopBooks() {
-//        return bookingService.getTopBooks(); // реализуете сортировку по популярности
-//    }
+    @GetMapping("/book/copies/count")
+    public ResponseEntity<ResponseMessage> getBookCopiesCount() {
+        return statisticsService.countBookCopies();
+    }
+
 }

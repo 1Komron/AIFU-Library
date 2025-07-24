@@ -13,9 +13,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findByChatIdAndIsDeletedFalse(Long chatId);
 
-    Optional<Student> findByIdAndIsDeletedFalse(Long userId);
-
-    Optional<Student> findByChatId(Long chatId);
-
     Student findByIsDeletedFalseAndPassportCode(String passportCode);
 }

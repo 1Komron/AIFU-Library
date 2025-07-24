@@ -29,14 +29,6 @@ public class BookingRequestService {
         }
     }
 
-    public void delete(BookingRequest bookingRequest) {
-        bookingRequestRepository.delete(bookingRequest);
-    }
-
-    public BookingRequest getBookingRequest(Long chatId, Integer bookCopyId, BookingRequestStatus status) {
-        return bookingRequestRepository.findBookingRequestByStudentChatIdAndBookCopyIdAndStatus(chatId, bookCopyId, status);
-    }
-
     public boolean hasRequestForUser(Long userId) {
         return bookingRequestRepository.existsBookingRequestByStudent_Id(userId);
     }

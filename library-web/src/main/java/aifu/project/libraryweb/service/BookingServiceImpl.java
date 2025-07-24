@@ -1,9 +1,6 @@
 package aifu.project.libraryweb.service;
 
-import aifu.project.common_domain.dto.BookingShortDTO;
-import aifu.project.common_domain.dto.BookingSummaryDTO;
-import aifu.project.common_domain.dto.BorrowBookDTO;
-import aifu.project.common_domain.dto.ReturnBookDTO;
+import aifu.project.common_domain.dto.*;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.User;
@@ -20,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -111,5 +110,35 @@ public class BookingServiceImpl implements BookingService {
         booking.setUser(user);
         booking.setBook(bookCopy);
         bookingRepository.save(booking);
+    }
+
+    @Override
+    public long countAllBookings() {
+        return bookingRepository.count();
+    }
+
+    @Override
+    public BookingDiagramDTO getBookingDiagram() {
+        return bookingRepository.getDiagramData();
+    }
+
+    @Override
+    public List<BookingResponse> getListBookingsToday(int pageNumber, int pageSize, Status status) {
+        Pageable pageableRequest = PageRequest.of(pageNumber, pageSize);
+        Page<Booking> pageable = bookingRepository.findAllBookingByGivenAtAndStatus(
+                LocalDate.now(), status, pageableRequest);
+
+        return getBookingResponseList(pageable.getContent());
+    }
+
+    @Override
+    public boolean hasBookingForUser(Long userId) {
+        return bookingRepository.existsBookingByStudent_Id(userId);
+    }
+
+    private List<BookingResponse> getBookingResponseList(List<Booking> bookingList) {
+        return bookingList.stream()
+                .map(b -> new BookingResponse(b.getId(), b.getStudent().getName(), b.getStudent().getSurname()))
+                .toList();
     }
 }

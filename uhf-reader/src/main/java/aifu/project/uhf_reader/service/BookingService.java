@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class BookingService {
     private final BookingRepository bookingRepository;
 
-    public boolean isEpcBooked(String epc) {
-        return bookingRepository.existsBookingByBook_Epc(epc);
+    public int isEpcBooked(String epc) {
+        return bookingRepository.getBookEpcStatus(epc);
     }
 }

@@ -25,6 +25,7 @@ public class StatisticsController {
         return statisticsService.getBookingDiagram();
     }
 
+
     @GetMapping("/users/count")
     public ResponseEntity<ResponseMessage> getUserCount() {
         return statisticsService.countUsers();

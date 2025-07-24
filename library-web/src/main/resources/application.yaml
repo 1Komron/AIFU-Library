@@ -26,3 +26,13 @@ cloudinary:
   cloud_name: dfirqlklp
   api_key: 575239947937242
   api_secret: Cc5VKNT6F6RALyThRISMmFN45hA
+
+
+importer:
+  column-aliases:
+    passportCode: passportcard, passport, pasport, паспорт, passport code
+    surname: surname, last name, familiya, фамилия
+    name: name, first name, ism, имя
+    degree: degree, darajasi, степень
+    faculty: faculty, fakultet, факультет
+    cardNumber: card rifd, rfid, cardnumber, card number, karta raqami

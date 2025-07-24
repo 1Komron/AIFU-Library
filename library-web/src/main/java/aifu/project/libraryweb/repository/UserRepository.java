@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -21,4 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByIdAndRoleAndIsDeletedFalse(Long id, Role role, Pageable pageable);
 
     Page<User> findByPhoneAndRoleAndIsDeletedFalse(String phone, Role role, Pageable pageable);
+
+    @Query ("select u.passportCode from User u")
+    Set<String> findAllPassportCodes();
+
 }

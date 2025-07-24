@@ -4,7 +4,7 @@ import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 
 public record BookingRequestDTO(
-        BotUserDTO user,
+        StudentDTO user,
         Integer bookId,
         String author,
         String title,

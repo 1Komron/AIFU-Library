@@ -8,12 +8,9 @@ import aifu.project.common_domain.exceptions.NotificationNotFoundException;
 import aifu.project.common_domain.exceptions.RequestNotFoundException;
 import aifu.project.common_domain.mapper.UserMapper;
 import aifu.project.common_domain.payload.BookingRequestDTO;
-import aifu.project.common_domain.payload.BotUserDTO;
-import aifu.project.common_domain.payload.RegisterRequestDTO;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.librarybot.repository.BookingRequestRepository;
 import aifu.project.librarybot.repository.NotificationRepository;
-import aifu.project.librarybot.repository.RegisterRequestRepository;
 import aifu.project.librarybot.utils.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,7 +30,6 @@ import java.util.Map;
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final BookingRequestRepository bookingRequestRepository;
-    private final RegisterRequestRepository registerRequestRepository;
 
     private static final String NOTIFICATION_TIME = "notificationTime";
 
@@ -91,32 +87,33 @@ public class NotificationService {
     }
 
     private Object getRequestBody(RequestType type, Long requestId, NotificationType notificationType) {
-        if (type == RequestType.BOOKING) {
-            BookingRequest bookingRequest = bookingRequestRepository.findById(requestId)
-                    .orElseThrow(() -> new RequestNotFoundException("Booking request not found by requestId: " + requestId));
+//        if (type == RequestType.BOOKING) {
+        BookingRequest bookingRequest = bookingRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RequestNotFoundException("Booking request not found by requestId: " + requestId));
 
-            return createBookingRequestDTO(bookingRequest, notificationType);
-        } else {
-            RegisterRequest registerRequest = registerRequestRepository.findById(requestId)
-                    .orElseThrow(() -> new RequestNotFoundException("Register request not found by requestId: " + requestId));
-
-            return createRegisterRequestDTO(registerRequest, notificationType);
-        }
+        return createBookingRequestDTO(bookingRequest, notificationType);
+//        }
+//        else {
+//            RegisterRequest registerRequest = registerRequestRepository.findById(requestId)
+//                    .orElseThrow(() -> new RequestNotFoundException("Register request not found by requestId: " + requestId));
+//
+//            return createRegisterRequestDTO(registerRequest, notificationType);
+//        }
     }
 
-    private RegisterRequestDTO createRegisterRequestDTO(RegisterRequest registerRequest, NotificationType notificationType) {
-        User user = registerRequest.getUser();
-        BotUserDTO botDTO = UserMapper.toBotDTO(user);
-
-        return new RegisterRequestDTO(botDTO, RequestType.REGISTER, notificationType);
-    }
+//    private RegisterRequestDTO createRegisterRequestDTO(RegisterRequest registerRequest, NotificationType notificationType) {
+//        User user = registerRequest.getUser();
+//        StudentDTO botDTO = UserMapper.toBotDTO(user);
+//
+//        return new RegisterRequestDTO(botDTO, RequestType.REGISTER, notificationType);
+//    }
 
     private BookingRequestDTO createBookingRequestDTO(BookingRequest bookingRequest, NotificationType notificationType) {
         BookCopy bookCopy = bookingRequest.getBookCopy();
         BaseBook book = bookCopy.getBook();
 
         return new BookingRequestDTO(
-                UserMapper.toBotDTO(bookingRequest.getUser()),
+                UserMapper.toBotDTO(bookingRequest.getStudent()),
                 bookCopy.getId(),
                 book.getAuthor(),
                 book.getTitle(),

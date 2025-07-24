@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 public class StatisticsService {
     private final RestTemplate restTemplate;
     private final BaseBookServiceImpl bookService;
-    private final UserService userService;
+    private final StudentService studentService;
     private final BookCopyService bookCopyService;
 
     @Value("${statistics.baseUri}")
@@ -37,7 +37,7 @@ public class StatisticsService {
     }
 
     public ResponseEntity<ResponseMessage> countUsers() {
-        long count = userService.countUsers();
+        long count = studentService.countStudents();
         return ResponseEntity.ok(new ResponseMessage(true, "Users count", count));
     }
 

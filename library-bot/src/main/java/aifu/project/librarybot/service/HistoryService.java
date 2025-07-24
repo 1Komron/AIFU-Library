@@ -27,7 +27,7 @@ public class HistoryService {
 
     public void add(Booking booking) {
         History history = new History();
-        history.setUser(booking.getUser());
+        history.setUser(booking.getStudent());
         history.setBook(booking.getBook());
         history.setGivenAt(booking.getGivenAt());
         history.setDueDate(booking.getDueDate());

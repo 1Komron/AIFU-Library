@@ -27,10 +27,10 @@ public class Notification {
     private LocalDateTime notificationTime;
     private boolean isRead = false;
 
-    public Notification(User user, Long requestId, NotificationType type, RequestType requestType) {
+    public Notification(Student student, Long requestId, NotificationType type, RequestType requestType) {
         this.requestId = requestId;
-        this.userName = user.getName();
-        this.userSurname = user.getSurname();
+        this.userName = student.getName();
+        this.userSurname = student.getSurname();
         this.notificationType = type;
         this.requestType = requestType;
         this.notificationTime = LocalDateTime.now();

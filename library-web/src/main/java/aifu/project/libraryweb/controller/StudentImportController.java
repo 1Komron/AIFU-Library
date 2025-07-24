@@ -2,7 +2,7 @@ package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.config.ImportStats;
-import aifu.project.libraryweb.service.ExcelImportService;
+import aifu.project.libraryweb.service.StudentExcelImportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/users/import")
 @RequiredArgsConstructor
-public class UserImportController {
+public class StudentImportController {
 
-    private final ExcelImportService excelImportService;
+    private final StudentExcelImportService studnetexcelImportService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseMessage> uploadUsers(@RequestParam("file") MultipartFile file) {
@@ -31,7 +31,7 @@ public class UserImportController {
 
         try {
             // 1. Servisdan sof statistika obyektini olamiz
-            ImportStats stats = excelImportService.importUsersFromExcel(file.getInputStream());
+            ImportStats stats = studnetexcelImportService.importStudentsFromExcel(file.getInputStream());
 
             // 2. Muvaffaqiyatli javobni ResponseMessage formatida "o'raymiz"
             ResponseMessage response = new ResponseMessage(true, "Import jarayoni yakunlandi.", stats);

@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AIFU_Library.iml" filepath="$PROJECT_DIR$/AIFU_Library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-domain/common-domain.iml" filepath="$PROJECT_DIR$/common-domain/common-domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library-web/library-web.iml" filepath="$PROJECT_DIR$/library-web/library-web.iml" />
     </modules>
   </component>
 </project>

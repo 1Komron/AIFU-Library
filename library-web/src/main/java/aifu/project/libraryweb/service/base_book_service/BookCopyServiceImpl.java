@@ -191,18 +191,6 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public BookCopy findByEpc(String epc) {
-        return bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
-                .orElseThrow(() -> new BookCopyNotFoundException("BookCopy not found by EPC: " + epc));
-    }
-
-    @Override
-    public void updateStatus(BookCopy bookCopy) {
-        bookCopy.setTaken(false);
-        bookCopyRepository.save(bookCopy);
-    }
-
-    @Override
     public long count() {
         return bookCopyRepository.count();
     }

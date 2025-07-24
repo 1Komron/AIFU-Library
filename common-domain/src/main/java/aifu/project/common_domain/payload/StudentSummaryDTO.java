@@ -4,8 +4,10 @@ public record StudentSummaryDTO(
         Long id,
         String name,
         String surname,
-        String degree,
+        String phone,
         String faculty,
+        String course,
+        String group,
         Long chatId,
         boolean isActive
 ) {

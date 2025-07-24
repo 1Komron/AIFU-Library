@@ -27,7 +27,6 @@ public class Booking {
 
     @PrePersist
     public void initializeDates() {
-        this.status = Status.APPROVED;
         this.givenAt = LocalDate.now();
         this.dueDate = this.givenAt.plusDays(5);
     }

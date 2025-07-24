@@ -25,7 +25,7 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
     boolean existsByInventoryNumberAndIsTakenTrue(String inventoryNumber);
 
     List<BookCopy> findAllByBook(BaseBook book);
-
+    
     Page<BookCopy> findByIsDeletedFalse(Pageable pageable);
 
     Optional<BookCopy> findByIdAndIsDeletedFalse(Integer id);
@@ -40,16 +40,15 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
 
 
     @Query("""
-                SELECT new aifu.project.common_domain.dto.BookCopyStats(
-                    COUNT(bc.id),
-                    SUM(CASE WHEN bc.isTaken = true THEN 1 ELSE 0 END),
-                    bc.book.id
-                )
-                FROM BookCopy bc
-                WHERE bc.isDeleted = false AND bc.book.id IN :bookIds
-                GROUP BY bc.book.id
-            """)
+        SELECT new aifu.project.common_domain.dto.BookCopyStats(
+            COUNT(bc.id),
+            SUM(CASE WHEN bc.isTaken = true THEN 1 ELSE 0 END),
+            bc.book.id
+        )
+        FROM BookCopy bc
+        WHERE bc.isDeleted = false AND bc.book.id IN :bookIds
+        GROUP BY bc.book.id
+    """)
     List<BookCopyStats> getStatsForBooks(@Param("bookIds") List<Integer> bookIds);
 
-    Optional<BookCopy> findByEpcAndIsDeletedFalse(String epc);
 }

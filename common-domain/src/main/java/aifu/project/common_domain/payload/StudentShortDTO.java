@@ -4,7 +4,7 @@ public record StudentShortDTO(
         Long id,
         String name,
         String surname,
-        String cardNumber,
+        String phone,
         boolean status
 ) {
 }

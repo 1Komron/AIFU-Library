@@ -25,4 +25,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 //    Page<Student> findByPhoneAndRoleAndIsDeletedFalse(String phone, Role role, Pageable pageable);
 
     Optional<Student> findByCardNumberAndIsActiveTrueAndIsDeletedFalse(String cardNumber);
+
+    Optional<Student> findByIdAndIsDeletedFalse(Long userId);
 }

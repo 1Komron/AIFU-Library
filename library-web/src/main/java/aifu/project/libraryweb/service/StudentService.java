@@ -1,8 +1,8 @@
 package aifu.project.libraryweb.service;
 
 import aifu.project.common_domain.entity.Student;
-import aifu.project.common_domain.entity.User;
 import aifu.project.common_domain.entity.enums.Role;
+import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.common_domain.payload.StudentShortDTO;
@@ -11,30 +11,24 @@ import aifu.project.libraryweb.repository.StudentRepository;
 import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+
+import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FOUND_BY_CHAT_ID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class StudentService {
     private final StudentRepository studentRepository;
-    private final RestTemplate restTemplate;
-
-    @Value("${user.baseUri}")
-    private String useBaseUri;
-
-    @Value("${internal.token}")
-    private String token;
+    private final BookingService bookingService;
 
     public long countStudents() {
         return studentRepository.getStudentsCount();
@@ -114,16 +108,19 @@ public class StudentService {
                 .toList();
     }
 
-    public ResponseEntity<ResponseMessage> deleteStudent(Long id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Internal-Token", token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+    public ResponseEntity<ResponseMessage> deleteStudent(Long userId) {
+        Student student = studentRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));
 
-        return restTemplate.exchange(
-                useBaseUri + "/" + id,
-                HttpMethod.DELETE,
-                entity,
-                ResponseMessage.class);
+        if (bookingService.hasBookingForUser(userId))
+            throw new UserDeletionException("The user cannot be deleted because he has active book reservations.");
+
+        student.setDeleted(true);
+        student.setActive(false);
+        student.setChatId(null);
+        studentRepository.save(student);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "User successfully deleted", null));
     }
 
     public Student findByCardNumber(String cardNumber) {

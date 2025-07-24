@@ -1,8 +1,6 @@
 package aifu.project.librarybot.enums;
 
-public enum TransactionStep {
-    BORROW,
-    RETURN,
+public enum InputStep {
     SEARCH,
     LOGIN
 }

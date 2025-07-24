@@ -3,7 +3,7 @@ package aifu.project.librarybot.service;
 import aifu.project.common_domain.payload.BookPartList;
 import aifu.project.common_domain.payload.PartList;
 import aifu.project.librarybot.enums.Command;
-import aifu.project.librarybot.enums.TransactionStep;
+import aifu.project.librarybot.enums.InputStep;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
@@ -30,7 +30,7 @@ public class ProcessService {
     private final ButtonService buttonService;
     private final UserService userService;
     private final UserLanguageService userLanguageService;
-    private final TransactionalService transactionalService;
+    private final InputService inputService;
     private final HistoryService historyService;
     private final BookingService bookingService;
     private final SearchService searchService;
@@ -48,8 +48,6 @@ public class ProcessService {
 
     private static final Map<String, Map<String, Command>> COMMAND_MAP = Map.of(
             "uz", Map.of(
-                    "Kitob olish 📥", Command.BORROW,
-                    "Kitob topshirish 📤", Command.RETURN,
                     "Mening kitoblarim 📚", Command.MY_BOOKS,
                     "Tarix 🗞", Command.HISTORY,
                     "Mening profilim 👤", Command.PROFILE,
@@ -57,8 +55,6 @@ public class ProcessService {
                     "Qidirish \uD83D\uDD0D", Command.SEARCH
             ),
             "ru", Map.of(
-                    "Взять книгу 📥", Command.BORROW,
-                    "Вернуть книгу 📤", Command.RETURN,
                     "Мои книги 📚", Command.MY_BOOKS,
                     "История 🗞", Command.HISTORY,
                     "Мой профиль 👤", Command.PROFILE,
@@ -66,8 +62,6 @@ public class ProcessService {
                     "Поиск \uD83D\uDD0D", Command.SEARCH
             ),
             "en", Map.of(
-                    "Borrow Book 📥", Command.BORROW,
-                    "Return Book 📤", Command.RETURN,
                     "My Books 📚", Command.MY_BOOKS,
                     "History 🗞", Command.HISTORY,
                     "My Profile 👤", Command.PROFILE,
@@ -75,8 +69,6 @@ public class ProcessService {
                     "Search \uD83D\uDD0D", Command.SEARCH
             ),
             "zh", Map.of(
-                    "借书 📥", Command.BORROW,
-                    "还书 📤", Command.RETURN,
                     "我的书 📚", Command.MY_BOOKS,
                     "历史记录 🗞", Command.HISTORY,
                     "我的资料 👤", Command.PROFILE,
@@ -107,45 +99,31 @@ public class ProcessService {
         }
 
         if (COMMAND_MAP.get(lang).containsKey(text)) {
-            transactionalService.clearState(chatId);
+            inputService.clearState(chatId);
             return false;
         }
 
-        TransactionStep state = transactionalService.getState(chatId);
+        InputStep state = inputService.getState(chatId);
 
         if (state == null)
             return false;
 
         switch (state) {
-//            case BORROW -> {
-//                transactionalService.clearState(chatId);
-//
-//                if (bookingService.borrowBook(chatId, text, lang))
-//                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_BORROW_WAITING_APPROVAL, lang);
-//                return true;
-//            }
-//            case RETURN -> {
-//                transactionalService.clearState(chatId);
-//
-//                if (bookingService.returnBook(chatId, text, lang))
-//                    executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOKING_WAIT_RETURN_APPROVAL, lang);
-//                return true;
-//            }
             case SEARCH -> {
-                transactionalService.clearState(chatId);
+                inputService.clearState(chatId);
 
                 handlePagedList(() -> searchService.search(chatId, SEARCH + "|" + normalizeUserInput(text), lang, 1),
                         chatId, lang, SEARCH + "|" + text);
                 return true;
             }
             case LOGIN -> {
-                transactionalService.clearState(chatId);
+                inputService.clearState(chatId);
 
                 userService.login(chatId, text, lang);
                 return true;
             }
             default -> {
-                transactionalService.clearState(chatId);
+                inputService.clearState(chatId);
                 return false;
             }
         }
@@ -168,14 +146,6 @@ public class ProcessService {
         }
 
         switch (cmd) {
-            case BORROW, RETURN -> {
-                TransactionStep step = (cmd == Command.BORROW)
-                        ? TransactionStep.BORROW
-                        : TransactionStep.RETURN;
-                transactionalService.putState(chatId, step);
-                executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_SEND_INVENTORY, lang);
-            }
-
             case MY_BOOKS ->
                     handlePagedList(() -> bookingService.getBookList(chatId, lang, 1), chatId, lang, BOOKING_LIST);
 
@@ -194,6 +164,11 @@ public class ProcessService {
                 SendMessage sendMessage = MessageUtil.createMessage(chatId.toString(), message);
                 sendMessage.setReplyMarkup(KeyboardUtil.getSearchInlineButtons(lang));
                 executeUtil.execute(sendMessage);
+            }
+
+            default -> {
+                String invalid = MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT, lang);
+                buttonService.getMainButtons(chatId, invalid);
             }
 
         }
@@ -257,7 +232,7 @@ public class ProcessService {
         data = data.substring("search_".length());
 
         if (data.equals(SEARCH)) {
-            transactionalService.putState(chatId, TransactionStep.SEARCH);
+            inputService.putState(chatId, InputStep.SEARCH);
             executeUtil.executeMessage(chatId.toString(), MessageKeys.SEARCH_SEARCH_MESSAGE, lang);
         } else if (data.equals("list")) {
             SendMessage sendMessage = new SendMessage(chatId.toString(), MessageUtil.get(MessageKeys.SEARCH_CHOOSE, lang));

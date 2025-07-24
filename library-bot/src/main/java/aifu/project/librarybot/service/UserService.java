@@ -1,11 +1,8 @@
 package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.entity.Student;
-import aifu.project.common_domain.entity.User;
-import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
-import aifu.project.common_domain.payload.ResponseMessage;
-import aifu.project.librarybot.enums.TransactionStep;
+import aifu.project.librarybot.enums.InputStep;
 import aifu.project.librarybot.repository.StudentRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
@@ -13,7 +10,6 @@ import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
@@ -25,10 +21,8 @@ import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FO
 public class UserService {
     private final StudentRepository studentRepository;
     private final UserLanguageService userLanguageService;
-    private final BookingService bookingService;
-    private final BookingRequestService bookingRequestService;
     private final ExecuteUtil executeUtil;
-    private final TransactionalService transactionalService;
+    private final InputService inputService;
 
     public boolean exists(Long chatId) {
         return studentRepository.existsByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
@@ -46,7 +40,7 @@ public class UserService {
     }
 
     public void sendLoginMessage(Long chatId, String lang) {
-        transactionalService.putState(chatId, TransactionStep.LOGIN);
+        inputService.putState(chatId, InputStep.LOGIN);
         executeUtil.executeMessage(chatId.toString(), MessageKeys.PASSPORT_REQUEST_MESSAGE, lang);
     }
 
@@ -78,28 +72,9 @@ public class UserService {
         return String.format(template, student.getId(), student.getName(), student.getSurname(), student.getFaculty(), student.getDegree(), student.getChatId());
     }
 
-    public ResponseEntity<ResponseMessage> deleteUser(Long userId) {
-        Student student = studentRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));
-
-        if (bookingService.hasBookingForUser(userId))
-            throw new UserDeletionException("The user cannot be deleted because he has active book reservations.");
-
-        if (bookingRequestService.hasRequestForUser(userId))
-            throw new UserDeletionException("The user cannot be deleted because they have outstanding book checkout or return requests.");
-
-        student.setDeleted(true);
-        student.setActive(false);
-        studentRepository.save(student);
-
-        return ResponseEntity.ok(new ResponseMessage(true, "User successfully deleted", null));
-    }
-
     private void saveUserChatId(Student student, Long chatId) {
         student.setChatId(chatId);
         student.setActive(true);
         studentRepository.save(student);
     }
-
-
 }

@@ -39,15 +39,21 @@ public class ReaderService {
                 long now = System.currentTimeMillis();
 
                 if (!epcCache.containsKey(epc)) {
-                    log.info("📦 Новая метка: {} RSSI: {}", epc, tag.getRssi());
+                    log.info("📦 New tag: {} RSSI: {}", epc, tag.getRssi());
                     epcCache.put(epc, now);
 
-                    if (!bookingService.isEpcBooked(epc)) {
-                        log.info("Ogirlgan kitob");
-                        executor.submit(this::triggerAlarm);
-                    } else {
-                        log.info("booking qilingan kitob");
-                        executor.submit(this::triggerSuccess);
+                    switch (bookingService.isEpcBooked(epc)) {
+                        case -1 -> log.info("RFID EPC '{}' not found in BookCopy table. Ignoring scan.", epc);
+
+                        case 0 -> {
+                            executor.submit(this::triggerAlarm);
+                            log.info("RFID EPC '{}' found, but no active booking exists for this book.", epc);
+                        }
+
+                        case 1 -> {
+                            executor.submit(this::triggerSuccess);
+                            log.info("RFID EPC '{}' is currently booked. Access allowed.", epc);
+                        }
                     }
                 }
             }

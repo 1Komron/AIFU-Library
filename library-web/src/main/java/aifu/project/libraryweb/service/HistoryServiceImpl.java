@@ -23,4 +23,12 @@ public class HistoryServiceImpl implements  HistoryService {
         history.setReturnedAt(LocalDate.now());
         historyRepository.save(history);
     }
+
+    @Override
+    public long getQuantityPerMonth(int month) {
+        LocalDate now = LocalDate.now();
+        LocalDate from = LocalDate.of(now.getYear(), month, 1);
+        LocalDate to = from.plusMonths(1);
+        return historyRepository.countByGivenAtBetween(from, to.minusDays(1));
+    }
 }

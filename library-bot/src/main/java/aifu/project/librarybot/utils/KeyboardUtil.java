@@ -21,11 +21,6 @@ public class KeyboardUtil {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_BORROW, lang)));
-        row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_RETURN, lang)));
-        rows.add(row);
-
-        row = new KeyboardRow();
         row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_MY_BOOKS, lang)));
         row.add(new KeyboardButton(MessageUtil.get(MessageKeys.BUTTON_HISTORY, lang)));
         rows.add(row);

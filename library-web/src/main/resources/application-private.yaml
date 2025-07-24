@@ -11,9 +11,6 @@ aifu:
 statistics:
   baseUri: ${aifu.external.base-url}/api/statistics
 
-booking:
-  baseUri: ${aifu.external.base-url}/api/admin/booking
-
 action:
   borrow: ${aifu.external.base-url}/action/book/borrow
   return: ${aifu.external.base-url}/action/book/return

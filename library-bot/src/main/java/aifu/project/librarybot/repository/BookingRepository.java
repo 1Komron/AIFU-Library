@@ -1,10 +1,8 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.common_domain.dto.BookingDiagramDTO;
 import aifu.project.common_domain.dto.BookingShortDTO;
-import aifu.project.common_domain.dto.BookingSummaryDTO;
+
 import aifu.project.common_domain.entity.Booking;
-import aifu.project.common_domain.entity.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -37,8 +34,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllWithBooksByUserChatId(@Param("chatId") Long chatId, Pageable pageable);
 
     Booking findByBookIdAndStudentChatId(Integer bookId, Long chatId);
-
-    List<Booking> findAllWithBooksByStudent_ChatId(Long chatId);
 
     @Query("""
             SELECT b
@@ -100,19 +95,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.student.chatId = :chatId AND b.dueDate = :tomorrow")
     List<Booking> findAllExpiringBookings(@Param("chatId") Long chatId, @Param("tomorrow") LocalDate tomorrow);
 
-    @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingDiagramDTO(
-                COUNT(b),
-                SUM(CASE WHEN b.status = 'OVERDUE' THEN 1 ELSE 0 END)
-            )
-            FROM Booking b
-            """)
-    BookingDiagramDTO getDiagramData();
-
-    Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
-
-    long countByGivenAtBetween(LocalDate givenAtAfter, LocalDate givenAtBefore);
-
     boolean existsBookingByStudent_Id(Long userId);
 
     @Query("""
@@ -129,41 +111,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             JOIN copy.book base
             """)
     Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable);
-
-    @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingSummaryDTO(
-                b.id,
-                base.title,
-                base.author,
-                copy.inventoryNumber,
-                b.dueDate,
-                b.givenAt,
-                b.status,
-                u.id,
-                u.name,
-                u.surname
-            )
-            FROM Booking b
-            JOIN b.book copy
-            JOIN copy.book base
-            JOIN b.student u
-            WHERE b.id = :id
-            """)
-    Optional<BookingSummaryDTO> findSummary(@Param("id") Long id);
-
-    @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingShortDTO(
-                b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
-            )
-            FROM Booking b
-            JOIN b.book copy
-            JOIN copy.book base
-            WHERE b.status = :status
-            """)
-    Page<BookingShortDTO> findShortByStatus(@Param("status") Status status, Pageable pageable);
 }

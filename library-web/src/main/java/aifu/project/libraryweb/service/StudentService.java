@@ -9,6 +9,7 @@ import aifu.project.common_domain.payload.StudentShortDTO;
 import aifu.project.common_domain.payload.StudentSummaryDTO;
 import aifu.project.libraryweb.repository.StudentRepository;
 import aifu.project.libraryweb.utils.Util;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -126,5 +127,10 @@ public class StudentService {
     public Student findByCardNumber(String cardNumber) {
         return studentRepository.findByCardNumberAndIsActiveTrueAndIsDeletedFalse(cardNumber)
                 .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
+    }
+
+    @PostConstruct
+    public void init() {
+        this.bookingService.setStudentService(this);
     }
 }

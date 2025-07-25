@@ -30,4 +30,6 @@ public interface BookingService {
     List<BookingResponse> getListBookingsToday(int i, int pageSize, Status status);
 
     boolean hasBookingForUser(Long userId);
+
+    void setStudentService(StudentService studentService);
 }

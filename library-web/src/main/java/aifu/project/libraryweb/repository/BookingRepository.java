@@ -6,6 +6,7 @@ import aifu.project.common_domain.dto.BookingSummaryDTO;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.Student;
+import aifu.project.common_domain.entity.User;
 import aifu.project.common_domain.entity.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,4 +72,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
 
     boolean existsBookingByStudent_Id(Long userId);
+
 }

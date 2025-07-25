@@ -32,4 +32,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query ("select s.passportCode from Student s")
     Set<String> findAllPassportCodes();
 
+    Optional<Student> findByIdAndIsDeletedFalse(Long userId);
 }

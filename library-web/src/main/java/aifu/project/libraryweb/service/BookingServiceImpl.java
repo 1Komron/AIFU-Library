@@ -3,7 +3,7 @@ package aifu.project.libraryweb.service;
 import aifu.project.common_domain.dto.*;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
-import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.payload.ResponseMessage;
@@ -25,9 +25,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
-    private final UserService userService;
     private final BookCopyService bookCopyService;
     private final HistoryService historyService;
+    private StudentService studentService;
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
@@ -74,11 +74,11 @@ public class BookingServiceImpl implements BookingService {
         String cardNumber = request.cardNumber();
         String epc = request.epc();
 
-        User user = userService.findByCardNumber(cardNumber);
+        Student student = studentService.findByCardNumber(cardNumber);
 
         BookCopy bookCopy = bookCopyService.findByEpc(epc);
 
-        createBooking(user, bookCopy);
+        createBooking(student, bookCopy);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseMessage(true, "Booking created successfully", null));
@@ -89,12 +89,12 @@ public class BookingServiceImpl implements BookingService {
         String cardNumber = request.cardNumber();
         String epc = request.epc();
 
-        User user = userService.findByCardNumber(cardNumber);
+        Student student = studentService.findByCardNumber(cardNumber);
 
         BookCopy bookCopy = bookCopyService.findByEpc(epc);
 
-        Booking booking = bookingRepository.findByUserAndBook(user, bookCopy)
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found for user: " + user.getId() + " and book copy: " + bookCopy.getId()));
+        Booking booking = bookingRepository.findByStudentAndBook(student, bookCopy)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found for user: " + student.getId() + " and book copy: " + bookCopy.getId()));
 
         bookCopyService.updateStatus(bookCopy);
 
@@ -105,9 +105,9 @@ public class BookingServiceImpl implements BookingService {
         return ResponseEntity.ok(new ResponseMessage(true, "Booking returned successfully", null));
     }
 
-    public void createBooking(User user, BookCopy bookCopy) {
+    public void createBooking(Student student, BookCopy bookCopy) {
         Booking booking = new Booking();
-        booking.setUser(user);
+        booking.setStudent(student);
         booking.setBook(bookCopy);
         bookingRepository.save(booking);
     }
@@ -140,5 +140,10 @@ public class BookingServiceImpl implements BookingService {
         return bookingList.stream()
                 .map(b -> new BookingResponse(b.getId(), b.getStudent().getName(), b.getStudent().getSurname()))
                 .toList();
+    }
+
+    @Override
+    public void setStudentService(StudentService studentService) {
+        this.studentService = studentService;
     }
 }

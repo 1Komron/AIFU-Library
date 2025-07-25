@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
@@ -26,5 +27,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findByCardNumberAndIsActiveTrueAndIsDeletedFalse(String cardNumber);
 
-    Optional<Student> findByIdAndIsDeletedFalse(Long userId);
+  /*  @Query ("select u.passportCode from Student u")
+    Set<String> findAllPassportCodes();*/
+    @Query ("select s.passportCode from Student s")
+    Set<String> findAllPassportCodes();
+
 }

@@ -1,24 +1,22 @@
 package aifu.project.libraryweb.service;
 
-import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Role;
-
 import aifu.project.libraryweb.config.ImportStats;
 import aifu.project.libraryweb.config.ImporterColumnProperties;
-import aifu.project.libraryweb.repository.UserRepository;
+import aifu.project.libraryweb.repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.*;
 @RequiredArgsConstructor
 @Service
-public class ExcelImportService {
-
-    private final UserRepository userRepository;
+public class StudentExcelImportService {
+    private final StudentRepository studentRepository;
     private final ImporterColumnProperties importerColumnProperties;
 
     /**
@@ -43,7 +41,7 @@ public class ExcelImportService {
      * Ya'ni, yoki barcha yangi foydalanuvchilar saqlanadi, yoki bittasida xato bo'lsa, hech biri saqlanmaydi.
      */
     @Transactional
-    public ImportStats importUsersFromExcel(InputStream inputStream) {
+    public ImportStats importStudentsFromExcel(InputStream inputStream) {
         // try-with-resources bloki workbook'ni ish oxirida avtomatik yopilishini ta'minlaydi.
         try (Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0);
@@ -59,15 +57,15 @@ public class ExcelImportService {
             Map<Field, Integer> fieldColumnMap = createFieldColumnMap(headerRow);
 
             // 2-QADAM: Yuqoridagi xarita yordamida Exceldagi barcha ma'lumotlarni o'qib, User obyektlari ro'yxatiga aylantirish.
-            List<User> usersFromExcel = readUsersDynamically(sheet, fieldColumnMap);
+            List<Student> studentsFromExcel = readUsersDynamically(sheet, fieldColumnMap);
 
-            if (usersFromExcel.isEmpty()) {
+            if (studentsFromExcel.isEmpty()) {
                 // Agar o'qishga arziydigan ma'lumot topilmasa, bo'sh hisobot qaytaramiz.
                 return new ImportStats(0, List.of("Excel faylda import qilinadigan yangi ma'lumot topilmadi."));
             }
 
             // 3-QADAM: O'qilgan ma'lumotlarni baza bilan solishtirish va faqat yangilarini saqlash.
-            return filterAndSaveUsers(usersFromExcel);
+            return filterAndSaveUsers(studentsFromExcel);
 
         } catch (Exception e) {
             // Jarayondagi har qanday xatolikni ushlab, Controller'ga yetkazamiz.
@@ -78,15 +76,15 @@ public class ExcelImportService {
     /**
      * Exceldan olingan ro'yxatni bazadagi mavjud ma'lumotlar bilan solishtiradi va yakuniy hisobotni shakllantiradi.
      */
-    private ImportStats filterAndSaveUsers(List<User> usersFromExcel) {
-        List<User> newUsersToSave = new ArrayList<>();
+    private ImportStats filterAndSaveUsers(List<Student> usersFromExcel) {
+        List<Student> newStudentToSave = new ArrayList<>();
         List<String> errors = new ArrayList<>();
         Set<String> processedPassportCodesInExcel = new HashSet<>();
         // Bitta so'rov bilan bazadagi BARCHA mavjud pasport kodlarini olamiz. Bu eng samarali usul.
-        Set<String> existingDbPassportCodes = userRepository.findAllPassportCodes();
+        Set<String> existingDbPassportCodes = studentRepository.findAllPassportCodes();
 
-        for (User user : usersFromExcel) {
-            String passportCode = user.getPassportCode();
+        for (Student student : usersFromExcel) {
+            String passportCode = student.getPassportCode();
 
             if (existingDbPassportCodes.contains(passportCode)) {
                 errors.add("Talaba (Pasport: " + passportCode + ") ma'lumotlar bazasida allaqachon mavjud.");
@@ -96,17 +94,17 @@ public class ExcelImportService {
                 errors.add("Talaba (Pasport: " + passportCode + ") Excel faylida takroran kelgan. E'tiborga olinmadi.");
                 continue;
             }
-            newUsersToSave.add(user);
+            newStudentToSave.add(student);
             processedPassportCodesInExcel.add(passportCode);
         }
 
-        if (!newUsersToSave.isEmpty()) {
+        if (!newStudentToSave.isEmpty()) {
             // Bitta katta so'rov bilan barchasini bazaga yozamiz.
-            userRepository.saveAll(newUsersToSave);
+            studentRepository.saveAll(newStudentToSave);
         }
 
         // Natija va xatoliklar haqida hisobotni (ImportStats) qaytaramiz.
-        return new ImportStats(newUsersToSave.size(), errors);
+        return new ImportStats(newStudentToSave.size(), errors);
     }
 
     /**
@@ -164,8 +162,8 @@ public class ExcelImportService {
      * Exceldagi ma'lumot qatorlarini o'qiydi. U endi qotirilgan indekslarga emas,
      * balki dinamik yaratilgan "ustunlar xaritasi"ga tayanib ishlaydi.
      */
-    private List<User> readUsersDynamically(Sheet sheet, Map<Field, Integer> fieldColumnMap) {
-        List<User> users = new ArrayList<>();
+    private List<Student> readUsersDynamically(Sheet sheet, Map<Field, Integer> fieldColumnMap) {
+        List<Student> students = new ArrayList<>();
         int headerRowNum = 0;
 
         for (int i = headerRowNum + 1; i <= sheet.getLastRowNum(); i++) {
@@ -177,24 +175,24 @@ public class ExcelImportService {
             // Agar pasport kodi bo'sh bo'lsa, bu ma'lumotlar tugaganini bildiradi, siklni to'xtatamiz.
             if (passportCode == null || passportCode.isBlank()) break;
 
-            User user = new User();
+            Student student = new Student();
             // Har bir maydonni to'g'ridan-to'g'ri, xaritadan indeksini olib o'rnatamiz.
-            user.setPassportCode(passportCode);
-            user.setSurname(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.SURNAME))));
-            user.setName(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.NAME))));
+            student.setPassportCode(passportCode);
+            student.setSurname(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.SURNAME))));
+            student.setName(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.NAME))));
 
             // Ixtiyoriy (majburiy bo'lmagan) maydonlarni maxsus metod orqali o'qiymiz.
-            user.setDegree(getOptionalCellValue(row, fieldColumnMap, Field.DEGREE));
-            user.setFaculty(getOptionalCellValue(row, fieldColumnMap, Field.FACULTY));
-            user.setCardNumber(getOptionalCellValue(row, fieldColumnMap, Field.CARD_NUMBER));
+            student.setDegree(getOptionalCellValue(row, fieldColumnMap, Field.DEGREE));
+            student.setFaculty(getOptionalCellValue(row, fieldColumnMap, Field.FACULTY));
+            student.setCardNumber(getOptionalCellValue(row, fieldColumnMap, Field.CARD_NUMBER));
 
             // Har bir yangi foydalanuvchi uchun standart qiymatlarni beramiz.
-            user.setRole(Role.USER);
-            user.setActive(true);
-            user.setDeleted(false);
-            users.add(user);
+            student.setRole(Role.STUDENT);
+            student.setActive(true);
+            student.setDeleted(false);
+            students.add(student);
         }
-        return users;
+        return students;
     }
 
     /**

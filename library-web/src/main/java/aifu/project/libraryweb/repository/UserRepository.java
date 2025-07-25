@@ -24,7 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findByPhoneAndRoleAndIsDeletedFalse(String phone, Role role, Pageable pageable);
 
-    @Query ("select u.passportCode from User u")
-    Set<String> findAllPassportCodes();
 
 }

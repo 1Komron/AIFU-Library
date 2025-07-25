@@ -51,4 +51,5 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
     """)
     List<BookCopyStats> getStatsForBooks(@Param("bookIds") List<Integer> bookIds);
 
+    Optional<BookCopy> findByEpcAndIsDeletedFalse(String epc);
 }

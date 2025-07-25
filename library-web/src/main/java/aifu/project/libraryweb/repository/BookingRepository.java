@@ -69,4 +69,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     BookingDiagramDTO getDiagramData();
 
     Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
+
+    boolean existsBookingByStudent_Id(Long userId);
 }

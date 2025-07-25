@@ -9,6 +9,7 @@ import aifu.project.common_domain.payload.StudentShortDTO;
 import aifu.project.common_domain.payload.StudentSummaryDTO;
 import aifu.project.libraryweb.repository.StudentRepository;
 import aifu.project.libraryweb.utils.Util;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -84,17 +85,18 @@ public class StudentService {
     }
 
     public ResponseEntity<ResponseMessage> getStudent(String id) {
-        Student user = studentRepository.findById(Long.parseLong(id))
+        Student student = studentRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UserNotFoundException("User not found by id:" + id));
 
         StudentSummaryDTO dto = new StudentSummaryDTO(
-                user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getDegree(),
-                user.getFaculty(),
-                user.getChatId(),
-                user.isActive()
+                student.getId(),
+                student.getName(),
+                student.getSurname(),
+                student.getDegree(),
+                student.getFaculty(),
+                student.getCardNumber(),
+                student.getChatId(),
+                student.isActive()
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "Detailed user information", dto));
@@ -126,5 +128,10 @@ public class StudentService {
     public Student findByCardNumber(String cardNumber) {
         return studentRepository.findByCardNumberAndIsActiveTrueAndIsDeletedFalse(cardNumber)
                 .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
+    }
+
+    @PostConstruct
+    public void init() {
+        this.bookingService.setStudentService(this);
     }
 }

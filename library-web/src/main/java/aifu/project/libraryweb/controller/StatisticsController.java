@@ -38,9 +38,15 @@ public class StatisticsController {
         return statisticsService.getBookingTodayOverdue(pageNumber, pageSize);
     }
 
+    @GetMapping("/bookings/perDay")
+    public ResponseEntity<ResponseMessage> getPerDayBookings(@RequestParam int month,
+                                                             @RequestParam int year) {
+        return statisticsService.getBookingPerDay(month, year);
+    }
+
     @GetMapping("/bookings/perMonth")
-    public ResponseEntity<ResponseMessage> getPerMonthBookings(@RequestParam int month) {
-        return statisticsService.getBookingPerMonth(month);
+    public ResponseEntity<ResponseMessage> getPerMonthBookings(@RequestParam int year) {
+        return statisticsService.getBookingPerMonth(year);
     }
 
     @GetMapping("/students/count")
@@ -56,6 +62,21 @@ public class StatisticsController {
     @GetMapping("/book/copies/count")
     public ResponseEntity<ResponseMessage> getBookCopiesCount() {
         return statisticsService.countBookCopies();
+    }
+
+    @GetMapping("/books/top")
+    public ResponseEntity<ResponseMessage> getTopBooks(@RequestParam(defaultValue = "5") int limit) {
+        return statisticsService.getTopPopularBooks(limit);
+    }
+
+    @GetMapping("/students/top")
+    public ResponseEntity<ResponseMessage> getTopStudents(@RequestParam(defaultValue = "5") int limit) {
+        return statisticsService.getTopStudents(limit);
+    }
+
+    @GetMapping("/average/usage")
+    public ResponseEntity<ResponseMessage> getAverageUsage() {
+        return statisticsService.getAverageUsageDays();
     }
 
 }

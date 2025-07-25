@@ -1,4 +1,4 @@
-/*package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service;
 
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Role;
@@ -128,4 +128,3 @@ public class StudentService {
                 .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
     }
 }
-*/

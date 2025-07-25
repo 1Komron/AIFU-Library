@@ -1,4 +1,4 @@
-/*package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service;
 
 import aifu.project.common_domain.dto.BookingDiagramDTO;
 import aifu.project.common_domain.dto.BookingResponse;
@@ -60,4 +60,3 @@ public class StatisticsService {
         return null;
     }
 }
-*/

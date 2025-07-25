@@ -1,4 +1,4 @@
-/*package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service;
 
 import aifu.project.common_domain.dto.*;
 import aifu.project.common_domain.entity.BookCopy;
@@ -142,4 +142,3 @@ public class BookingServiceImpl implements BookingService {
                 .toList();
     }
 }
-*/

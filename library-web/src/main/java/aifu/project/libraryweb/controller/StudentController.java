@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+/*package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.StudentService;
@@ -43,4 +43,4 @@ public class StudentController {
     public ResponseEntity<ResponseMessage> deleteStudent(@PathVariable Long id) {
         return studentService.deleteStudent(id);
     }
-}
+}*/

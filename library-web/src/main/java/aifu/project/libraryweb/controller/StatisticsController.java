@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+/*package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.StatisticsService;
@@ -58,4 +58,4 @@ public class StatisticsController {
         return statisticsService.countBookCopies();
     }
 
-}
+}*/

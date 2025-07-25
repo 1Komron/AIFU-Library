@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+/*package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.payload.ResponseMessage;
 import aifu.project.libraryweb.service.BookingService;
@@ -30,3 +30,4 @@ public class BookingController {
         return bookingService.filterByStatus(status, pageNum, pageSize);
     }
 }
+*/

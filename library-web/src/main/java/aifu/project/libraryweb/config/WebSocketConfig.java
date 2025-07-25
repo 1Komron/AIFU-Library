@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    @Override
+   @Override
     public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-notification")
                 .setAllowedOriginPatterns("*")
@@ -19,11 +19,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(@NonNull MessageBrokerRegistry registry) {
-        registry.enableStompBrokerRelay("/topic/notifications")
+       /* registry.enableStompBrokerRelay("/topic/notifications")
                 .setRelayHost("localhost")
                 .setRelayPort(61613)
                 .setClientLogin("guest")
-                .setClientPasscode("guest");
+                .setClientPasscode("guest");*/
         registry.setApplicationDestinationPrefixes("/app");
     }
 }

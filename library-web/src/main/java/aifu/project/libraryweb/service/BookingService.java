@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+/*package aifu.project.libraryweb.service;
 
 
 import aifu.project.common_domain.dto.BookingDiagramDTO;
@@ -31,3 +31,4 @@ public interface BookingService {
 
     boolean hasBookingForUser(Long userId);
 }
+*/

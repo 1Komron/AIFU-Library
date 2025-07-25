@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "importer.column-alias")
+@ConfigurationProperties(prefix = "importer.column-aliases")
 @Getter
 @Setter
 

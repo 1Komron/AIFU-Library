@@ -27,8 +27,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findByCardNumberAndIsActiveTrueAndIsDeletedFalse(String cardNumber);
 
-  /*  @Query ("select u.passportCode from Student u")
-    Set<String> findAllPassportCodes();*/
+
     @Query ("select s.passportCode from Student s")
     Set<String> findAllPassportCodes();
 

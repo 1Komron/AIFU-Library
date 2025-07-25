@@ -13,7 +13,7 @@ import java.util.Set;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("select count(*) from User u where u.role = 'USER' and u.isDeleted = false")
+  /*  @Query("select count(*) from User u where u.role = 'USER' and u.isDeleted = false")
     long getUsersCount();
 
     Page<User> findByRoleAndIsDeletedFalse(Role role, Pageable pageable);
@@ -24,5 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findByPhoneAndRoleAndIsDeletedFalse(String phone, Role role, Pageable pageable);
 
-
+*/
 }

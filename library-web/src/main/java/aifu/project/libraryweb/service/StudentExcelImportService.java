@@ -188,7 +188,7 @@ public class StudentExcelImportService {
 
             // Har bir yangi foydalanuvchi uchun standart qiymatlarni beramiz.
             student.setRole(Role.STUDENT);
-            student.setActive(true);
+            student.setActive(false);
             student.setDeleted(false);
             students.add(student);
         }

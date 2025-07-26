@@ -1,6 +1,5 @@
 package aifu.project.libraryweb.config;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,4 +17,6 @@ public class ImporterColumnProperties {
     private String degree = "degree";
     private String faculty = "faculty";
     private String cardNumber = "card rifd";
+
+    
 }

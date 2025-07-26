@@ -71,4 +71,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
 
     boolean existsBookingByStudent_Id(Long userId);
+
+//    Page<Booking> findByStudent_IdAndIsDeletedFalse(Long id, Pageable pageable);
 }

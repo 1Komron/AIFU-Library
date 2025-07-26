@@ -69,7 +69,13 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + chatId));
 
         String template = MessageUtil.get(MessageKeys.PROFILE, lang);
-        return String.format(template, student.getId(), student.getName(), student.getSurname(), student.getFaculty(), student.getDegree(), student.getChatId());
+        return String.format(template,
+                student.getId(),
+                student.getName(),
+                student.getSurname(),
+                student.getFaculty(),
+                student.getDegree(),
+                student.getCardNumber());
     }
 
     private void saveUserChatId(Student student, Long chatId) {

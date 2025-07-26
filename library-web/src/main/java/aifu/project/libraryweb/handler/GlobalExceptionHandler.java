@@ -97,4 +97,12 @@ public class GlobalExceptionHandler {
 
     }*/
 
+    @ExceptionHandler(LoginBadCredentialsException.class)
+    public ResponseEntity<ResponseMessage> handleLoginBadCredentialsException(LoginBadCredentialsException e) {
+        log.error("Login bad credentials exception. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
 }

@@ -32,4 +32,6 @@ public interface BookingService {
     boolean hasBookingForUser(Long userId);
 
     void setStudentService(StudentService studentService);
+
+    ResponseEntity<ResponseMessage> getBookingByStudentId(Long id, int pageNum, int pageSize);
 }

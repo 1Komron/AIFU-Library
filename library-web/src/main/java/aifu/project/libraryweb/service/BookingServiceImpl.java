@@ -29,6 +29,10 @@ public class BookingServiceImpl implements BookingService {
     private final BookCopyService bookCopyService;
     private final HistoryService historyService;
 
+    private static final String CURRENT_PAGE = "currentPage";
+    private static final String TOTAL_PAGES = "totalPages";
+    private static final String TOTAL_ELEMENTS = "totalElements";
+
     @Override
     public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(--pageNum, pageSize);
@@ -36,9 +40,9 @@ public class BookingServiceImpl implements BookingService {
 
         Map<String, Object> data = Map.of(
                 "data", page.getContent(),
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
+                CURRENT_PAGE, page.getNumber() + 1,
+                TOTAL_PAGES, page.getTotalPages(),
+                TOTAL_ELEMENTS, page.getTotalElements()
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "data", data));
@@ -61,9 +65,9 @@ public class BookingServiceImpl implements BookingService {
 
         Map<String, Object> data = Map.of(
                 "data", page.getContent(),
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
+                CURRENT_PAGE, page.getNumber() + 1,
+                TOTAL_PAGES, page.getTotalPages(),
+                TOTAL_ELEMENTS, page.getTotalElements()
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "data", data));
@@ -129,6 +133,22 @@ public class BookingServiceImpl implements BookingService {
                 LocalDate.now(), status, pageableRequest);
 
         return getBookingResponseList(pageable.getContent());
+    }
+
+    //Search ni qoshib qoyish kerak
+    @Override
+    public ResponseEntity<ResponseMessage> getBookingByStudentId(Long id, int pageNum, int pageSize) {
+//        Pageable pageable = PageRequest.of(--pageNum, pageSize);
+//        Page<Booking> page = bookingRepository.findByStudent_IdAndIsDeletedFalse(id, pageable);
+//
+//        Map<String, Object> data = Map.of(
+//                "data", getBookingResponseList(page.getContent()),
+//                CURRENT_PAGE, page.getNumber() + 1,
+//                TOTAL_PAGES, page.getTotalPages(),
+//                TOTAL_ELEMENTS, page.getTotalElements()
+//        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Bookings for student with id: " + id, null));
     }
 
     @Override

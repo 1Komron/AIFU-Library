@@ -56,6 +56,8 @@ public class OverdueNotificationScheduler {
             expired.put(chatId, lang);
         });
         expired.forEach((chatId, lang) -> {
+            if (chatId == null){
+                            }
             SendMessage message = MessageUtil.createMessage(chatId, MessageUtil.get(MessageKeys.BOOKING_DUE_EXPIRED, lang));
             message.setReplyMarkup(KeyboardUtil.getExtendKeyboard(lang,"expired"));
             try {

@@ -34,4 +34,9 @@ public class AuthController {
     public ResponseEntity<ResponseMessage> signUp(@RequestBody SignUpDTO signUpDTO) {
         return authService.signUp(signUpDTO);
     }
+
+    @PostMapping("/me")
+    public ResponseEntity<ResponseMessage> getCurrentUser() {
+        return authService.getMe();
+    }
 }

@@ -19,14 +19,28 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 110MB
-
----
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: alisherrustamov32@gmail.com
+    password: ytwlwnyeiiwwkcvo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 cloudinary:
   cloud_name: dfirqlklp
   api_key: 575239947937242
   api_secret: Cc5VKNT6F6RALyThRISMmFN45hA
 
+superadmin:
+  name: "Admin"
+  surname: "Admin"
+  email: "alisherrustamov32@gmail.com"
+  initial-password: "Ale202019"
 
 importer:
   column-aliases:
@@ -36,23 +50,3 @@ importer:
     degree: degree, darajasi, степень
     faculty: faculty, fakultet, факультет
     cardNumber: card rifd, rfid, cardnumber, card number, karta raqami
-
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: alisherrustamov32@gmail.com
-      password: ytwlwnyeiiwwkcvo
-
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-
-
-              superadmin:
-                name: "Admin"
-                surname: "Admin"
-                email: "alisherrustamov32@gmail.com"
-                initial-password: "Ale202019"

@@ -9,4 +9,9 @@ import java.util.Optional;
 public interface LibrarianRepository extends JpaRepository<Librarian, Long> {
 
     Optional<Librarian> findByEmailAndIsDeletedFalse(String username);
+
+    Optional<Librarian> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
 }

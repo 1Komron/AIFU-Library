@@ -1,6 +1,6 @@
 package aifu.project.libraryweb.service;
 
-import aifu.project.common_domain.dto.BaseBookCategoryDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.CreateCategoryRequest;
 import aifu.project.common_domain.dto.UpdateCategoryRequest;
 import aifu.project.common_domain.entity.BaseBook;

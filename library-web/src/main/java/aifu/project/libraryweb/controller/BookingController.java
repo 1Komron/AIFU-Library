@@ -32,6 +32,13 @@ public class BookingController {
         return bookingService.filterByStatus(status, pageNum, pageSize);
     }
 
+    @GetMapping("/student/{id}")
+    public ResponseEntity<ResponseMessage> getBookingByStudentId(@PathVariable Long id,
+                                                                 @RequestParam(defaultValue = "1") int pageNum,
+                                                                 @RequestParam(defaultValue = "10") int pageSize) {
+        return bookingService.getBookingByStudentId(id, pageNum, pageSize);
+    }
+
     @PostMapping("/borrow")
     public ResponseEntity<ResponseMessage> borrowBook(@RequestBody BorrowBookDTO request) {
         return bookingService.borrowBook(request);
@@ -40,4 +47,5 @@ public class BookingController {
     @PostMapping("/return")
     public ResponseEntity<ResponseMessage> returnBook(@RequestBody ReturnBookDTO request) {
         return bookingService.returnBook(request);
-    }}
+    }
+}

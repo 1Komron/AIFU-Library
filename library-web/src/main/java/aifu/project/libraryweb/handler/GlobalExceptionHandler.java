@@ -1,9 +1,6 @@
 package aifu.project.libraryweb.handler;
 
-import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
-import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
-import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
-import aifu.project.common_domain.exceptions.CategoryDeletionException;
+import aifu.project.common_domain.exceptions.*;
 import aifu.project.common_domain.payload.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -71,6 +68,14 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity.badRequest().body(errors);
 
+    }
+
+    @ExceptionHandler(LoginBadCredentialsException.class)
+    public ResponseEntity<ResponseMessage> handleLoginBadCredentialsException(LoginBadCredentialsException e) {
+        log.error("Login bad credentials exception. Message: {}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
 }

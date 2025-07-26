@@ -39,7 +39,7 @@ public class StudentService {
 
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
 
-        Page<Student> studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
+        Page<Student> studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.STUDENT, pageable);
 
         Map<String, Object> map = Util.getPageInfo(studentPage);
         map.put("data", getStudentShortDTO(studentPage.getContent()));
@@ -58,13 +58,13 @@ public class StudentService {
 
         Page<Student> studentPage;
         if (id != null) {
-            studentPage = studentRepository.findByIdAndRoleAndIsDeletedFalse(id, Role.USER, pageable);
+            studentPage = studentRepository.findByIdAndRoleAndIsDeletedFalse(id, Role.STUDENT, pageable);
         }
 //        else if (phone != null) {
-//            studentPage = userRepository.findByPhoneAndRoleAndIsDeletedFalse(phone, Role.USER, pageable);
+//            studentPage = userRepository.findByPhoneAndRoleAndIsDeletedFalse(phone, Role.STUDENT, pageable);
 //        }
         else {
-            studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.USER, pageable);
+            studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.STUDENT, pageable);
         }
 
         Map<String, Object> map = Util.getPageInfo(studentPage);
@@ -76,7 +76,7 @@ public class StudentService {
     public ResponseEntity<ResponseMessage> getStudentsByStatus(int pageNumber, int size) {
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
 
-        Page<Student> studentPage = studentRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.USER, false, pageable);
+        Page<Student> studentPage = studentRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.STUDENT, false, pageable);
 
         Map<String, Object> map = Util.getPageInfo(studentPage);
         map.put("data", getStudentShortDTO(studentPage.getContent()));

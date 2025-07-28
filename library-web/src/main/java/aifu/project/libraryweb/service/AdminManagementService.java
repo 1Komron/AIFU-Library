@@ -39,6 +39,8 @@ public class AdminManagementService {
                 .email(savedAdmin.getEmail())
                 .role(savedAdmin.getRole().name())
                 .build();
+
+
     }
 
 }

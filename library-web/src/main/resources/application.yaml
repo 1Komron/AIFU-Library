@@ -40,7 +40,8 @@ superadmin:
   name: "Admin"
   surname: "Admin"
   email: "alisherrustamov32@gmail.com"
-  initial-password: "Ale202019"
+  initial-password: "admin123"
+
 
 importer:
   column-aliases:

@@ -41,12 +41,12 @@ public class SuperAdminInitializer implements CommandLineRunner {
         superAdmin.setSurname(surname);
         superAdmin.setEmail(email);
         superAdmin.setPassword(passwordEncoder.encode(initialPassword));
-        superAdmin.setRole(Role.LIBRARIAN);
+        superAdmin.setRole(Role.SUPER_ADMIN);
         superAdmin.setDeleted(false);
 
         librarianRepository.save(superAdmin);
 
-        System.out.println(">>> SUPERADMIN (LIBRARIAN) CREATED SUCCESSFULLY! <<<");
+        System.out.println(">>> SUPERADMIN (SUPER_ADMIN) CREATED SUCCESSFULLY! <<<");
 
       }
 

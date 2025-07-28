@@ -2,9 +2,11 @@ package aifu.project.common_domain.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class AdminCreateRequest {
 
     @NotBlank(message = "Name cannot be empty")

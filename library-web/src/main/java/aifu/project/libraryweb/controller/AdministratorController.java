@@ -30,7 +30,7 @@ public class AdministratorController {
 
     /**
      * Yangi Admin yaratish uchun endpoint.
-     * Bu operatsiyani faqat LIBRARIAN rolidagi foydalanuvchi bajara oladi.
+     * Bu operatsiyani faqat SUPER_ADMIN rolidagi foydalanuvchi bajara oladi.
      */
     @PostMapping
     @PreAuthorize("hasRole('LIBRARIAN')")

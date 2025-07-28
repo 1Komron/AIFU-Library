@@ -1,5 +1,7 @@
 package aifu.project.libraryweb.service;
 
+import aifu.project.common_domain.dto.AdminCreateRequest;
+import aifu.project.common_domain.dto.AdminResponse;
 import aifu.project.common_domain.dto.auth_dto.LoginDTO;
 import aifu.project.common_domain.dto.auth_dto.SignUpDTO;
 import aifu.project.common_domain.entity.Librarian;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final LibrarianRepository librarianRepository;
     private final JwtService jwtService;
+    private final AdminManagementService adminManagementService;
     private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<ResponseMessage> login(LoginDTO loginDTO) {
@@ -31,11 +34,7 @@ public class AuthService {
         Librarian librarian = librarianRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new LoginBadCredentialsException("Invalid email or password"));
 
-//        if (!passwordEncoder.matches(password, librarian.getPassword())) {
-//            throw new LoginBadCredentialsException("Invalid email or password");
-//        }
-
-        if (!librarian.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, librarian.getPassword())) {
             throw new LoginBadCredentialsException("Invalid email or password");
         }
 
@@ -44,7 +43,14 @@ public class AuthService {
     }
 
     public ResponseEntity<ResponseMessage> signUp(SignUpDTO signUpDTO) {
-        return ResponseEntity.ok(new ResponseMessage(true, "Sign up successful", signUpDTO));
+        AdminCreateRequest adminCreateRequest = new AdminCreateRequest(
+                signUpDTO.name(),
+                signUpDTO.surname(),
+                signUpDTO.email(),
+                signUpDTO.password()
+        );
+        AdminResponse admin = adminManagementService.createAdmin(adminCreateRequest);
+        return ResponseEntity.ok(new ResponseMessage(true, "Sign up successful", admin));
     }
 
     public ResponseEntity<ResponseMessage> getMe() {
@@ -55,6 +61,14 @@ public class AuthService {
             throw new LoginBadCredentialsException("No user is logged in");
         }
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Data", librarian));
+        AdminResponse response = AdminResponse.builder()
+                .id(librarian.getId())
+                .name(librarian.getName())
+                .surname(librarian.getSurname())
+                .email(librarian.getEmail())
+                .role(librarian.getRole().name())
+                .build();
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Data", response));
     }
 }

@@ -45,7 +45,7 @@ public class BookingService {
 
 
     @Transactional
-    public void createExtendReturnDeadline(Long chatId, String lang, String inv) {
+    public void extendDeadline(Long chatId, String lang, String inv) {
         Booking booking = bookingRepository.findBookingByStudent_ChatIdAndBook_InventoryNumber(chatId, inv);
         if (booking == null) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
@@ -53,11 +53,6 @@ public class BookingService {
         }
         if (booking.getDueDate().isAfter(LocalDate.now().plusDays(1))) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_DENIED_TO_EARLY, lang);
-            return;
-        }
-
-        if (bookingRequestService.existsRequest(booking.getBook())) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
             return;
         }
 
@@ -152,11 +147,7 @@ public class BookingService {
 
     public List<Booking> getExpiredBookings() {
         LocalDate now = LocalDate.now();
-        List<Booking> byDueDateBefore = bookingRepository.findExpiredBookings(now);
-        byDueDateBefore.forEach(booking -> booking.setStatus(Status.OVERDUE));
-
-        bookingRepository.saveAll(byDueDateBefore);
-        return byDueDateBefore;
+        return bookingRepository.findExpiredBookings(now);
     }
 
     private String getBookingStatusMessage(Status status, String lang) {
@@ -223,5 +214,12 @@ public class BookingService {
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "data", data));
+    }
+
+    public void changeStatusToOverdue() {
+        List<Booking> expiredBookings = getExpiredBookings();
+        expiredBookings.forEach(booking -> booking.setStatus(Status.OVERDUE));
+
+        bookingRepository.saveAll(expiredBookings);
     }
 }

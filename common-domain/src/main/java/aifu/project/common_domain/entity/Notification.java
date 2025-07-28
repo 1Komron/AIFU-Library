@@ -16,7 +16,6 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long requestId;
     private String userName;
     private String userSurname;
     private String phone;
@@ -27,8 +26,7 @@ public class Notification {
     private LocalDateTime notificationTime;
     private boolean isRead = false;
 
-    public Notification(Student student, Long requestId, NotificationType type, RequestType requestType) {
-        this.requestId = requestId;
+    public Notification(Student student, NotificationType type, RequestType requestType) {
         this.userName = student.getName();
         this.userSurname = student.getSurname();
         this.notificationType = type;

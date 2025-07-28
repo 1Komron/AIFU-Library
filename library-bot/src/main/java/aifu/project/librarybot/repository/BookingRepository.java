@@ -53,24 +53,25 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.student.chatId = :chatId AND b.dueDate <= :date")
     List<Booking> findAllExpiredBookings(@Param("chatId") Long chatId, @Param("date") LocalDate date);
-
     @Query(
             value = """
-                    SELECT b
-                    FROM Booking b
-                    JOIN FETCH b.book bc
-                    JOIN FETCH bc.book bb
-                    WHERE b.student.chatId = :chatId
-                    AND b.dueDate <= :date
-                    """,
+                SELECT b
+                FROM Booking b
+                JOIN FETCH b.book bc
+                JOIN FETCH bc.book bb
+                WHERE b.student.chatId = :chatId
+                AND b.dueDate <= :date
+                """,
             countQuery = """
-                    SELECT COUNT(b)
-                    FROM Booking b
-                    WHERE b.student.chatId = :chatId
-                    AND b.dueDate = :tomorrow
-                    """
+                SELECT COUNT(b)
+                FROM Booking b
+                WHERE b.student.chatId = :chatId
+                AND b.dueDate <= :date
+                """
     )
-    Page<Booking> findAllExpiredOverdue(@Param("chatId") Long chatId, @Param("date") LocalDate date, Pageable pageable);
+    Page<Booking> findAllExpiredOverdue(@Param("chatId") Long chatId,
+                                        @Param("date") LocalDate date,
+                                        Pageable pageable);
 
     Booking findBookingByStudent_ChatIdAndBook_InventoryNumber(Long userChatId, String bookInventoryNumber);
 

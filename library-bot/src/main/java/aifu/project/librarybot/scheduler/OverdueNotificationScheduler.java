@@ -1,5 +1,7 @@
 package aifu.project.librarybot.scheduler;
 
+import aifu.project.common_domain.entity.Booking;
+import aifu.project.common_domain.entity.Student;
 import aifu.project.librarybot.service.BookingService;
 import aifu.project.librarybot.service.UserLanguageService;
 import aifu.project.librarybot.utils.ExecuteUtil;
@@ -14,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 @Component
 @Log4j2
@@ -24,21 +26,27 @@ public class OverdueNotificationScheduler {
     private final ExecuteUtil executeUtil;
     private final UserLanguageService userLanguageService;
 
-    private final ConcurrentHashMap<String, String> expiring = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, String> expired = new ConcurrentHashMap<>();
-
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 8 * * *", zone = "Asia/Tashkent")
     @Transactional
-
     public void sendOverdueExpiringNotifications() {
-        bookingService.getOverdueBookings().forEach(booking -> {
-            String chatId = booking.getStudent().getChatId().toString();
+        List<Booking> overdueBookings = bookingService.getOverdueBookings();
+
+        Set<String> chatIds = new HashSet<>();
+
+        for (Booking booking : overdueBookings) {
+            Student student = booking.getStudent();
+
+            if (student == null || student.getChatId() == null) continue;
+
+            String chatId = student.getChatId().toString();
+            chatIds.add(chatId);
+        }
+
+        chatIds.forEach(chatId -> {
             String lang = userLanguageService.getLanguage(chatId);
-            expiring.put(chatId, lang);
-        });
-        expiring.forEach((chatId, lang) -> {
+
             SendMessage message = MessageUtil.createMessage(chatId, MessageUtil.get(MessageKeys.BOOKING_DUE_EXPIRING, lang));
-            message.setReplyMarkup(KeyboardUtil.getExtendKeyboard(lang,"expiring"));
+            message.setReplyMarkup(KeyboardUtil.getExtendKeyboard(lang, "expiring"));
             try {
                 executeUtil.execute(message);
             } catch (TelegramApiException e) {
@@ -47,25 +55,44 @@ public class OverdueNotificationScheduler {
         });
     }
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 8 * * *", zone = "Asia/Tashkent")
     @Transactional
     public void sendOverdueExpiredNotifications() {
-        bookingService.getExpiredBookings().forEach(booking -> {
-            String chatId = booking.getStudent().getChatId().toString();
+        List<Booking> expiredBookings = bookingService.getExpiredBookings();
+
+        Set<String> chatIds = new HashSet<>();
+
+        for (Booking booking : expiredBookings) {
+            Student student = booking.getStudent();
+
+            if (student == null || student.getChatId() == null) continue;
+
+            String chatId = student.getChatId().toString();
+            chatIds.add(chatId);
+        }
+
+        chatIds.forEach(chatId -> {
             String lang = userLanguageService.getLanguage(chatId);
-            expired.put(chatId, lang);
-        });
-        expired.forEach((chatId, lang) -> {
-            if (chatId == null){
-                            }
-            SendMessage message = MessageUtil.createMessage(chatId, MessageUtil.get(MessageKeys.BOOKING_DUE_EXPIRED, lang));
-            message.setReplyMarkup(KeyboardUtil.getExtendKeyboard(lang,"expired"));
+
+            SendMessage message = MessageUtil.createMessage(
+                    chatId,
+                    MessageUtil.get(MessageKeys.BOOKING_DUE_EXPIRED, lang)
+            );
+            message.setReplyMarkup(KeyboardUtil.getExtendKeyboard(lang, "expired"));
+
             try {
                 executeUtil.execute(message);
             } catch (TelegramApiException e) {
-                log.error(e.getMessage(), e);
+                log.error("Failed to send overdue notification. chatId={}, lang={}", chatId, lang, e);
             }
         });
     }
+
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Tashkent")
+    @Transactional
+    public void changBookingStatus(){
+        bookingService.changeStatusToOverdue();
+    }
+
 
 }

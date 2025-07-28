@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Runner implements CommandLineRunner {
     private  final OverdueNotificationScheduler scheduler;
+
     @Override
     public void run(String... args) throws Exception {
         scheduler.sendOverdueExpiredNotifications();
         scheduler.sendOverdueExpiringNotifications();
+        scheduler.changBookingStatus();
     }
 }

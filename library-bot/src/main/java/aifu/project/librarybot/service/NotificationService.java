@@ -81,17 +81,18 @@ public class NotificationService {
 
         notification.setRead(true);
         notificationRepository.save(notification);
-        Object data = getRequestBody(notification.getRequestType(), notification.getRequestId(), notification.getNotificationType());
+        Object data = getRequestBody(notification.getRequestType(), notification.getNotificationType());
 
         return ResponseEntity.ok(new ResponseMessage(true, "Notification detail", data));
     }
 
-    private Object getRequestBody(RequestType type, Long requestId, NotificationType notificationType) {
+    private Object getRequestBody(RequestType type, NotificationType notificationType) {
+        return null;
 //        if (type == RequestType.BOOKING) {
-        BookingRequest bookingRequest = bookingRequestRepository.findById(requestId)
-                .orElseThrow(() -> new RequestNotFoundException("Booking request not found by requestId: " + requestId));
+//        BookingRequest bookingRequest = bookingRequestRepository.findById(requestId)
+//                .orElseThrow(() -> new RequestNotFoundException("Booking request not found by requestId: " + requestId));
 
-        return createBookingRequestDTO(bookingRequest, notificationType);
+//        return createBookingRequestDTO(bookingRequest, notificationType);
 //        }
 //        else {
 //            RegisterRequest registerRequest = registerRequestRepository.findById(requestId)

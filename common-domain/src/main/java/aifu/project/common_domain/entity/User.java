@@ -20,4 +20,5 @@ public abstract class User {
     private Role role;
 
     private boolean isDeleted;
+
 }

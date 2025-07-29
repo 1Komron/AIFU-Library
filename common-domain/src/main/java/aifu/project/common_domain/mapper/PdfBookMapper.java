@@ -97,6 +97,7 @@ public class PdfBookMapper {
                 .description(entity.getDescription())
                 .categoryPreview(toCategoryPreviewDTO(entity.getCategory()))
                 .build();
+
     }
 
 

@@ -27,7 +27,7 @@ public class HistoryService {
 
     public void add(Booking booking) {
         History history = new History();
-        history.setUser(booking.getUser());
+        history.setUser(booking.getStudent());
         history.setBook(booking.getBook());
         history.setGivenAt(booking.getGivenAt());
         history.setDueDate(booking.getDueDate());
@@ -73,25 +73,6 @@ public class HistoryService {
         );
 
         return new PartList(messageText.toString(), ++pageNumber, historyPage.getTotalPages());
-    }
-
-    public long getQuantityPerMonth(int month) {
-        LocalDate now = LocalDate.now();
-        LocalDate from = LocalDate.of(now.getYear(), month, 1);
-        LocalDate to = from.plusMonths(1);
-        return historyRepository.countByGivenAtBetween(from, to.minusDays(1));
-    }
-
-    public List<History> getHistoryList() {
-        return historyRepository.findAll();
-    }
-
-    public boolean hasHistoryForUser(Long id) {
-        return historyRepository.existsHistoriesByUser_Id(id);
-    }
-
-    public boolean hasHistoryForUserChatId(Long id) {
-        return historyRepository.existsHistoriesByUser_ChatId(id);
     }
 
 }

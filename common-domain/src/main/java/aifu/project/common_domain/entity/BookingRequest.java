@@ -16,7 +16,7 @@ public class BookingRequest {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Student student;
 
     @OneToOne
     private BookCopy bookCopy;

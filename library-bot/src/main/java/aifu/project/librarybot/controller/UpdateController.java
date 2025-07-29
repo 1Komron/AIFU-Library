@@ -23,16 +23,16 @@ public class UpdateController {
         Message message = update.getMessage();
 
         if (message != null) {
-            if (!message.hasText() && !message.hasContact()) {
+            if (!message.hasText()) {
                 Long chatId = message.getChatId();
                 buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.MESSAGE_INVALID_FORMAT,
                         langService.getLanguage(chatId.toString())));
-            } else if (message.hasContact())
-                processService.processRegisterPhone(message);
-            else
+            } else {
                 processService.processTextMessage(message);
-        } else if (update.getCallbackQuery() != null && update.hasCallbackQuery())
+            }
+        } else if (update.getCallbackQuery() != null && update.hasCallbackQuery()) {
             processService.processCallBack(update.getCallbackQuery());
+        }
 
     }
 }

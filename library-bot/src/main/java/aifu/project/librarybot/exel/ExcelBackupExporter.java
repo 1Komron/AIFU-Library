@@ -73,7 +73,7 @@ public class ExcelBackupExporter {
             cell2.setCellStyle(normalStyle);
 
             Cell cell3 = row.createCell(col++);
-            cell3.setCellValue(history.getUser().getPhone());
+            cell3.setCellValue(0);
             cell3.setCellStyle(normalStyle);
 
             Cell cell4 = row.createCell(col++);

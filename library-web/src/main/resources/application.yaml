@@ -4,9 +4,9 @@ spring:
   application:
     name: library-web
   datasource:
-    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
+    url: jdbc:postgresql://localhost:5432/aifu_library
     username: postgres
-    password: root1234
+    password: root123
   jpa:
     show-sql: true
     hibernate:
@@ -19,10 +19,35 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 110MB
-
----
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: alisherrustamov32@gmail.com
+    password: ytwlwnyeiiwwkcvo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 cloudinary:
   cloud_name: dfirqlklp
   api_key: 575239947937242
   api_secret: Cc5VKNT6F6RALyThRISMmFN45hA
+
+superadmin:
+  name: "Admin"
+  surname: "Admin"
+  email: "alisherrustamov32@gmail.com"
+  initial-password: "admin123"
+
+
+importer:
+  column-aliases:
+    passportCode: passportcode, passport, pasport, паспорт, passport code, image
+    surname: surname, last name, familiya, фамилия
+    name: name, first name, ism, имя
+    degree: degree, darajasi, степень
+    faculty: faculty, fakultet, факультет
+    cardNumber: card rifd, rfid, cardnumber, card number, karta raqami

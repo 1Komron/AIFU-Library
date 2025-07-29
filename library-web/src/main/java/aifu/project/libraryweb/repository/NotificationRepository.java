@@ -17,8 +17,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     Page<Notification> findNotificationByIsRead(boolean read, Pageable pageable);
 
-    @Query("select n.id from Notification n where n.requestId = :requestId and n.requestType = :requestType")
-    Long findNotificationIdByRequestIdAndRequestType(Long requestId, RequestType requestType);
 
     Optional<Notification> findNotificationById(Long id);
 }

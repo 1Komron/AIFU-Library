@@ -7,8 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="library-web" />
         <module name="library-bot" />
+        <module name="library-web" />
+        <module name="uhf-reader" />
         <module name="common-domain" />
       </profile>
     </annotationProcessing>
@@ -26,6 +27,7 @@
       <module name="common-domain" options="-parameters" />
       <module name="library-bot" options="-parameters" />
       <module name="library-web" options="-parameters" />
+      <module name="uhf-reader" options="-parameters" />
       <module name="untitled" options="-parameters" />
     </option>
   </component>

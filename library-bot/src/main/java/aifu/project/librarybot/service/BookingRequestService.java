@@ -2,7 +2,7 @@ package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.BookingRequest;
-import aifu.project.common_domain.entity.User;
+import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.librarybot.repository.BookingRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 public class BookingRequestService {
     private final BookingRequestRepository bookingRequestRepository;
 
-    public BookingRequest create(User user, BookCopy bookCopy, BookingRequestStatus status) {
+    public BookingRequest create(Student student, BookCopy bookCopy, BookingRequestStatus status) {
         BookingRequest bookingRequest = new BookingRequest();
-        bookingRequest.setUser(user);
+        bookingRequest.setStudent(student);
         bookingRequest.setBookCopy(bookCopy);
         bookingRequest.setStatus(status);
 
@@ -29,16 +29,8 @@ public class BookingRequestService {
         }
     }
 
-    public void delete(BookingRequest bookingRequest) {
-        bookingRequestRepository.delete(bookingRequest);
-    }
-
-    public BookingRequest getBookingRequest(Long chatId, Integer bookCopyId, BookingRequestStatus status) {
-        return bookingRequestRepository.findBookingRequestByUserChatIdAndBookCopyIdAndStatus(chatId, bookCopyId, status);
-    }
-
     public boolean hasRequestForUser(Long userId) {
-        return bookingRequestRepository.existsBookingRequestByUser_Id(userId);
+        return bookingRequestRepository.existsBookingRequestByStudent_Id(userId);
     }
 
     public boolean existsRequest(BookCopy book) {

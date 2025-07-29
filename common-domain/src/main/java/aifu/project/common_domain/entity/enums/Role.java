@@ -1,5 +1,5 @@
 package aifu.project.common_domain.entity.enums;
 
 public enum Role {
-    ADMIN, LIBRARIAN ,USER
+    ADMIN, SUPER_ADMIN, STUDENT, USER
 }

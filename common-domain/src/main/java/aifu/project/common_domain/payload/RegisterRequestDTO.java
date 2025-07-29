@@ -4,7 +4,7 @@ import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.RequestType;
 
 public record RegisterRequestDTO(
-        BotUserDTO user,
+        StudentDTO user,
         RequestType requestType,
         NotificationType notificationType) {
 }

@@ -1,13 +1,12 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.common_domain.dto.BookingShortDTO;
+import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
+import aifu.project.common_domain.dto.notification_dto.NotificationExtendShortDTO;
 import aifu.project.common_domain.entity.*;
-import aifu.project.common_domain.entity.enums.BookingRequestStatus;
 import aifu.project.common_domain.entity.enums.NotificationType;
-import aifu.project.common_domain.entity.enums.RequestType;
 import aifu.project.common_domain.entity.enums.Status;
-import aifu.project.common_domain.payload.PartList;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.PartList;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookingRepository;
 import aifu.project.librarybot.repository.NotificationRepository;
@@ -17,6 +16,7 @@ import aifu.project.librarybot.utils.MessageKeys;
 import aifu.project.librarybot.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,14 +32,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import static aifu.project.common_domain.mapper.NotificationMapper.notificationToDTO;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final NotificationRepository notificationRepository;
-    private final BookingRequestService bookingRequestService;
     private final ExecuteUtil executeUtil;
     private final RabbitTemplate rabbitTemplate;
 
@@ -51,19 +49,47 @@ public class BookingService {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
             return;
         }
+        //test qilish kerak
         if (booking.getDueDate().isAfter(LocalDate.now().plusDays(1))) {
             executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_DENIED_TO_EARLY, lang);
             return;
         }
 
-        BookingRequest bookingRequest = bookingRequestService.create(booking.getStudent(), booking.getBook(), BookingRequestStatus.EXTEND);
-        executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_WAITING_APPROVAL, lang);
+        //  extendDeadline(booking);
 
         Student student = booking.getStudent();
-        Notification notification = new Notification(student, bookingRequest.getId(), NotificationType.EXTEND, RequestType.BOOKING);
+        Notification notification = new Notification(student, booking.getBook(), NotificationType.EXTEND);
+
+        log.info("Extending deadline for booking: {} by student: {}", booking.getId(), student.getId());
+
         notificationRepository.save(notification);
         rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND,
-                notificationToDTO(notification));
+                NotificationExtendShortDTO.toDTO(notification));
+    }
+
+    @SneakyThrows
+    private void extracted(Long chatId, String lang, List<Booking> list) {
+        List<String> inventoryNumbers = list.stream()
+                .map(Booking::getBook)
+                .map(BookCopy::getInventoryNumber)
+                .toList();
+
+        SendMessage message = MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.SELECT_INV, lang));
+        InlineKeyboardMarkup inlineKeyboardMarkup = KeyboardUtil.getExtendBookingsInventoryNumber(inventoryNumbers);
+        message.setReplyMarkup(inlineKeyboardMarkup);
+        executeUtil.execute(message);
+    }
+
+    public void extendDeadline(Booking booking) {
+        LocalDate dueDate = booking.getDueDate();
+        LocalDate now = LocalDate.now();
+
+        LocalDate newDueDate = dueDate.isAfter(now) ? dueDate.plusDays(3) : now.plusDays(3);
+
+        booking.setDueDate(newDueDate);
+        booking.setStatus(Status.APPROVED);
+
+        bookingRepository.save(booking);
     }
 
     public PartList getBookList(Long chatId, String lang, int pageNumber) {
@@ -136,10 +162,6 @@ public class BookingService {
         return new PartList(messageText.toString(), ++pageNumber, totalPages);
     }
 
-    public Booking getBooking(Long chatId, Integer bookId) {
-        return bookingRepository.findByBookIdAndStudentChatId(bookId, chatId);
-    }
-
     public List<Booking> getOverdueBookings() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         return bookingRepository.findByDueDate(tomorrow);
@@ -174,32 +196,6 @@ public class BookingService {
         if (expiringBookings.isEmpty()) return;
 
         extracted(chatId, lang, expiringBookings);
-    }
-
-    @SneakyThrows
-    private void extracted(Long chatId, String lang, List<Booking> list) {
-        List<String> inventoryNumbers = list.stream()
-                .map(Booking::getBook)
-                .map(BookCopy::getInventoryNumber)
-                .toList();
-
-        SendMessage message = MessageUtil.createMessage(chatId.toString(), MessageUtil.get(MessageKeys.SELECT_INV, lang));
-        InlineKeyboardMarkup inlineKeyboardMarkup = KeyboardUtil.getExtendBookingsInventoryNumber(inventoryNumbers);
-        message.setReplyMarkup(inlineKeyboardMarkup);
-        executeUtil.execute(message);
-    }
-
-    public void extendReturnDeadline(Long chatId, Integer bookId) {
-        Booking booking = getBooking(chatId, bookId);
-        LocalDate dueDate = booking.getDueDate();
-        LocalDate now = LocalDate.now();
-
-        LocalDate newDueDate = dueDate.isAfter(now) ? dueDate.plusDays(3) : now.plusDays(3);
-
-        booking.setDueDate(newDueDate);
-        booking.setStatus(Status.APPROVED);
-
-        bookingRepository.save(booking);
     }
 
     public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {

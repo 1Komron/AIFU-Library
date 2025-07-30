@@ -3,7 +3,7 @@ package aifu.project.libraryweb.controller;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.mapper.CategoryMapper;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

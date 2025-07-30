@@ -1,8 +1,9 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.common_domain.dto.BorrowBookDTO;
-import aifu.project.common_domain.dto.ReturnBookDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.booking_dto.BorrowBookDTO;
+import aifu.project.common_domain.dto.booking_dto.ExtendBookingDTO;
+import aifu.project.common_domain.dto.booking_dto.ReturnBookDTO;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,11 @@ public class BookingController {
     @PostMapping("/borrow")
     public ResponseEntity<ResponseMessage> borrowBook(@RequestBody BorrowBookDTO request) {
         return bookingService.borrowBook(request);
+    }
+
+    @PostMapping("/extend")
+    public ResponseEntity<ResponseMessage> extendBooking(@RequestBody ExtendBookingDTO request) {
+        return bookingService.extendBooking(request);
     }
 
     @PostMapping("/return")

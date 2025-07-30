@@ -3,7 +3,7 @@ package aifu.project.librarybot.service;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
-import aifu.project.common_domain.payload.BookPartList;
+import aifu.project.common_domain.dto.BookPartList;
 import aifu.project.librarybot.repository.BaseBookRepository;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import lombok.RequiredArgsConstructor;

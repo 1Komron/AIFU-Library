@@ -1,6 +1,6 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.common_domain.dto.BookingShortDTO;
+import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
 
 import aifu.project.common_domain.entity.Booking;
 import org.springframework.data.domain.Page;

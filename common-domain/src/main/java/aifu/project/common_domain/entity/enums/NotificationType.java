@@ -1,7 +1,7 @@
 package aifu.project.common_domain.entity.enums;
 
 public enum NotificationType {
-    EXTEND;
+    WARNING, EXTEND;
 
     public static NotificationType getNotification(String type) {
         for (NotificationType value : NotificationType.values()) {

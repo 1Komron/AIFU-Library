@@ -1,7 +1,6 @@
 package aifu.project.common_domain.entity;
 
 import aifu.project.common_domain.entity.enums.NotificationType;
-import aifu.project.common_domain.entity.enums.RequestType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,21 +15,22 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userName;
-    private String userSurname;
-    private String phone;
+    @ManyToOne
+    private Student student;
+
+    @ManyToOne
+    private BookCopy bookCopy;
+
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
-    @Enumerated(EnumType.STRING)
-    private RequestType requestType;
+
     private LocalDateTime notificationTime;
     private boolean isRead = false;
 
-    public Notification(Student student, NotificationType type, RequestType requestType) {
-        this.userName = student.getName();
-        this.userSurname = student.getSurname();
+    public Notification(Student student, BookCopy bookCopy, NotificationType type) {
+        this.student = student;
+        this.bookCopy = bookCopy;
         this.notificationType = type;
-        this.requestType = requestType;
         this.notificationTime = LocalDateTime.now();
     }
 }

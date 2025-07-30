@@ -1,7 +1,7 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.common_domain.payload.BookPartList;
-import aifu.project.common_domain.payload.PartList;
+import aifu.project.common_domain.dto.BookPartList;
+import aifu.project.common_domain.dto.PartList;
 import aifu.project.librarybot.enums.Command;
 import aifu.project.librarybot.enums.InputStep;
 import aifu.project.librarybot.utils.ExecuteUtil;

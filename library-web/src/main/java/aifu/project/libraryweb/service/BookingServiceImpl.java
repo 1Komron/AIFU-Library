@@ -1,12 +1,13 @@
 package aifu.project.libraryweb.service;
 
-import aifu.project.common_domain.dto.*;
+import aifu.project.common_domain.dto.booking_dto.*;
+import aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BookingRepository;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import lombok.RequiredArgsConstructor;
@@ -133,6 +134,31 @@ public class BookingServiceImpl implements BookingService {
                 LocalDate.now(), status, pageableRequest);
 
         return getBookingResponseList(pageable.getContent());
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> extendBooking(ExtendBookingDTO request) {
+        Long id = request.bookingId();
+        Integer extendDays = request.extendDays();
+
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + id));
+
+        extendDueDate(booking, extendDays);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Booking extended successfully", null));
+    }
+
+    private void extendDueDate(Booking booking, Integer extendDays) {
+        LocalDate dueDate = booking.getDueDate();
+        LocalDate now = LocalDate.now();
+
+        LocalDate newDueDate = dueDate.isAfter(now) ? dueDate.plusDays(extendDays) : now.plusDays(extendDays);
+
+        booking.setStatus(Status.APPROVED);
+        booking.setDueDate(newDueDate);
+
+        bookingRepository.save(booking);
     }
 
     //Search ni qoshib qoyish kerak

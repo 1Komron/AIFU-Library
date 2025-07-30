@@ -1,10 +1,10 @@
 package aifu.project.libraryweb.service;
 
-import aifu.project.common_domain.dto.*;
+import aifu.project.common_domain.dto.booking_dto.BookingResponse;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.statistic_dto.*;
 import aifu.project.common_domain.entity.enums.Status;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.base_book_service.BaseBookServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import jakarta.persistence.EntityManager;

@@ -1,6 +1,6 @@
 package aifu.project.librarybot.lucene;
 
-import aifu.project.common_domain.dto.SearchDTO;
+import aifu.project.common_domain.dto.search_dto.SearchDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;

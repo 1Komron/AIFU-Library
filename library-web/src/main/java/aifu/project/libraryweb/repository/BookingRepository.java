@@ -1,8 +1,8 @@
 package aifu.project.libraryweb.repository;
 
-import aifu.project.common_domain.dto.BookingDiagramDTO;
-import aifu.project.common_domain.dto.BookingShortDTO;
-import aifu.project.common_domain.dto.BookingSummaryDTO;
+import aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO;
+import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
+import aifu.project.common_domain.dto.booking_dto.BookingSummaryDTO;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.Student;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingShortDTO(
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
                 base.title,
                 base.author,
@@ -35,7 +35,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable);
 
     @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingSummaryDTO(
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingSummaryDTO(
                 b.id,
                 base.title,
                 base.author,
@@ -60,7 +60,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findByStudentAndBook(Student student, BookCopy bookCopy);
 
     @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingDiagramDTO(
+            SELECT new aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO(
                 COUNT(b),
                 SUM(CASE WHEN b.status = 'OVERDUE' THEN 1 ELSE 0 END)
             )

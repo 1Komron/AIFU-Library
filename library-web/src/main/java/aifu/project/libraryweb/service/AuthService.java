@@ -6,7 +6,7 @@ import aifu.project.common_domain.dto.auth_dto.LoginDTO;
 import aifu.project.common_domain.dto.auth_dto.SignUpDTO;
 import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.exceptions.LoginBadCredentialsException;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.LibrarianRepository;
 import lombok.RequiredArgsConstructor;

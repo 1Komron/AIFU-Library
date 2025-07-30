@@ -1,6 +1,6 @@
 //package aifu.project.libraryweb.mq;
 //
-//import aifu.project.common_domain.payload.NotificationDTO;
+//import aifu.project.common_domain.dto.notification_dto.NotificationDTO;
 //import aifu.project.libraryweb.sender.NotificationSender;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.amqp.rabbit.annotation.RabbitListener;

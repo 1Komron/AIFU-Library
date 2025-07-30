@@ -18,9 +18,3 @@ action:
   return: ${aifu.external.base-url}/action/book/return
   extend: ${aifu.external.base-url}/action/book/extend
   registration: ${aifu.external.base-url}/action/registration
-
-notification:
-  unread: ${aifu.external.base-url}/notification/unread
-  getAll: ${aifu.external.base-url}/notification
-  get: ${aifu.external.base-url}/notification
-  type: ${aifu.external.base-url}/notification/type

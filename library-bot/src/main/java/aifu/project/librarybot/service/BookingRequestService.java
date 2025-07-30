@@ -28,12 +28,4 @@ public class BookingRequestService {
             throw new RuntimeException("Unable to create a request: a copy of the book is already taken");
         }
     }
-
-    public boolean hasRequestForUser(Long userId) {
-        return bookingRequestRepository.existsBookingRequestByStudent_Id(userId);
-    }
-
-    public boolean existsRequest(BookCopy book) {
-        return bookingRequestRepository.existsByBookCopy(book);
-    }
 }

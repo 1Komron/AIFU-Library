@@ -3,7 +3,7 @@
 //import aifu.project.common_domain.entity.BookCopy;
 //import aifu.project.common_domain.entity.Booking;
 //import aifu.project.common_domain.entity.BookingRequest;
-//import aifu.project.common_domain.payload.ResponseMessage;
+//import aifu.project.common_domain.dto.ResponseMessage;
 //import aifu.project.librarybot.repository.BookCopyRepository;
 //import aifu.project.librarybot.utils.ExecuteUtil;
 //import aifu.project.librarybot.utils.MessageKeys;

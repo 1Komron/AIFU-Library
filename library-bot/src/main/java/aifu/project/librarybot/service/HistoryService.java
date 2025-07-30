@@ -4,7 +4,7 @@ import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.History;
-import aifu.project.common_domain.payload.PartList;
+import aifu.project.common_domain.dto.PartList;
 import aifu.project.librarybot.repository.HistoryRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.MessageKeys;

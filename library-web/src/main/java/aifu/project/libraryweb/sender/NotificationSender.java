@@ -1,6 +1,6 @@
 package aifu.project.libraryweb.sender;
 
-import aifu.project.common_domain.payload.NotificationDTO;
+import aifu.project.common_domain.dto.notification_dto.NotificationShortDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ public class NotificationSender {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void send(NotificationDTO notification) {
+    public void send(NotificationShortDTO notification) {
         messagingTemplate.convertAndSend("/topic/notifications", notification);
     }
 

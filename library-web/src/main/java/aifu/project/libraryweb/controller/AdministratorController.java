@@ -3,7 +3,7 @@ package aifu.project.libraryweb.controller;
 import aifu.project.common_domain.dto.AdminCreateRequest;
 import aifu.project.common_domain.dto.AdminResponse;
 import aifu.project.common_domain.dto.PasswordChangeRequest;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.AdminManagementService;
 import aifu.project.libraryweb.service.PasswordManagementService;
 import jakarta.validation.Valid;

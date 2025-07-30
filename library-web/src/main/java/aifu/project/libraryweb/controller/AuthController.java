@@ -3,7 +3,7 @@ package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.auth_dto.LoginDTO;
 import aifu.project.common_domain.dto.auth_dto.SignUpDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.AuthService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

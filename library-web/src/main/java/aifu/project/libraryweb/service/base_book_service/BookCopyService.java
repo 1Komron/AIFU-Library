@@ -3,7 +3,7 @@ package aifu.project.libraryweb.service.base_book_service;
 import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
 import aifu.project.common_domain.entity.BookCopy;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

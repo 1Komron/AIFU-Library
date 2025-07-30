@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.service.base_book_service;
 
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 

@@ -27,8 +27,17 @@ public class BaseBookCategoryService {
     private final BaseBookRepository baseBookRepository;
 
     public ResponseEntity<ResponseMessage> create(CreateCategoryRequest request) {
+        String name = request.name();
+
+        boolean exists = categoryRepository.existsByName(name);
+        if (exists) {
+            log.warn("BaseBookCategory with name '{}' already exists", name);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ResponseMessage(false, "Category with this name already exists", null));
+        }
+
         BaseBookCategory category = new BaseBookCategory();
-        category.setName(request.name());
+        category.setName(name);
         category = categoryRepository.save(category);
         BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
 

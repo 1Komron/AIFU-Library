@@ -1,6 +1,6 @@
 package aifu.project.libraryweb.controller;
 
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

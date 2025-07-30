@@ -3,7 +3,7 @@ package aifu.project.librarybot.handler;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

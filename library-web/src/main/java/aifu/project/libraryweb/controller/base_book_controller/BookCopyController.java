@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.controller.base_book_controller;
 
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

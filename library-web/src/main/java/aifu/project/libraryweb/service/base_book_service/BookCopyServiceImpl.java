@@ -9,7 +9,7 @@ import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
 import aifu.project.common_domain.exceptions.BookCopyNotFoundException;
 import aifu.project.common_domain.mapper.BookCopyMapper;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.repository.BookCopyRepository;
 import lombok.RequiredArgsConstructor;

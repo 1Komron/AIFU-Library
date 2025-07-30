@@ -1,90 +1,101 @@
 package aifu.project.libraryweb.service.bot_service;
 
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.notification_dto.*;
+import aifu.project.common_domain.entity.Notification;
+import aifu.project.common_domain.exceptions.NotificationNotFoundException;
+import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.common_domain.dto.student_dto.StudentDTO;
+import aifu.project.libraryweb.repository.NotificationRepository;
+import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private final RestTemplate restTemplate;
+    private final NotificationRepository notificationRepository;
 
-    private static final String INTERNAL_TOKEN = "Internal-Token";
-    private static final String PAGE_NUMBER_PARAM = "?pageNumber=";
-    private static final String PAGE_SIZE_PARAM = "&pageSize=";
+    private static final String NOTIFICATION_TIME = "notificationTime";
 
-    @Value("${notification.unread}")
-    private String unread;
+    public ResponseEntity<ResponseMessage> deleteNotification(Long notificationId) {
+        Notification notification = notificationRepository.findNotificationById(notificationId)
+                .orElseThrow(() -> new NotificationNotFoundException("Notification not found by id: " + notificationId));
 
-    @Value("${notification.getAll}")
-    private String getAll;
+        notificationRepository.delete(notification);
 
-    @Value("${notification.get}")
-    private String get;
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification deleted successfully", null));
+    }
 
-    @Value("${notification.type}")
-    private String type;
+    public ResponseEntity<ResponseMessage> getUnreadNotifications(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
+        Page<Notification> page = notificationRepository.findNotificationByIsRead(false, pageable);
 
-    @Value("${internal.token}")
-    private String internalToken;
+        if (page.getTotalElements() == 0)
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(new ResponseMessage(false, "No unread notifications", null));
 
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", getShortDTO(page.getContent()));
 
-    public ResponseEntity<ResponseMessage> getUnreadNotifications(Integer pageNumber, Integer pageSize) {
-        String url = this.unread + PAGE_NUMBER_PARAM + pageNumber + PAGE_SIZE_PARAM + pageSize;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(INTERNAL_TOKEN, this.internalToken);
-
-        return restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                ResponseMessage.class
-        );
+        return ResponseEntity.ok(new ResponseMessage(true, "All unread notifications", map));
     }
 
     public ResponseEntity<ResponseMessage> getAllNotifications(Integer pageNumber, Integer pageSize) {
-        String url = this.getAll + PAGE_NUMBER_PARAM + pageNumber + PAGE_SIZE_PARAM + pageSize;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(INTERNAL_TOKEN, this.internalToken);
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
+        Page<Notification> page = notificationRepository.findAll(pageable);
 
-        return restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                ResponseMessage.class
-        );
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", getShortDTO(page.getContent()));
+
+        return ResponseEntity.ok(new ResponseMessage(true, "All notifications", map));
     }
 
     public ResponseEntity<ResponseMessage> getDetails(String notificationId) {
-        String url = this.get + "/" + notificationId;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(INTERNAL_TOKEN, this.internalToken);
+        Notification notification;
+        try {
+            notification = notificationRepository.findNotificationById(Long.parseLong(notificationId))
+                    .orElseThrow(() -> new NotificationNotFoundException("Not found by id: " + notificationId));
+        } catch (ClassCastException e) {
+            throw new NotificationNotFoundException("Not found by id: " + notificationId);
+        }
 
-        return restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                ResponseMessage.class
-        );
+        notification.setRead(true);
+        notificationRepository.save(notification);
+
+        return ResponseEntity.ok(new ResponseMessage(
+                true,
+                "Notification detail",
+                getNotificationDetails(notification)));
     }
 
-    public ResponseEntity<ResponseMessage> getNotificationByType(int pageNumber, int pageSize, String type) {
-        String url = this.type + "?type=" + type + "&pageNumber=" + pageNumber + PAGE_SIZE_PARAM + pageSize;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(INTERNAL_TOKEN, this.internalToken);
+    private List<NotificationShortDTO> getShortDTO(List<Notification> notifications) {
+        return notifications.stream()
+                .map(notification ->
+                        (NotificationShortDTO) switch (notification.getNotificationType()) {
+                            case EXTEND -> NotificationExtendShortDTO.toDTO(notification);
+                            case WARNING -> NotificationWarningShortDTO.toDTO(notification);
+                        })
 
-        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
-        return restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                requestEntity,
-                ResponseMessage.class
-        );
+                .toList();
+    }
+
+    private Object getNotificationDetails(Notification notification) {
+        return switch (notification.getNotificationType()) {
+            case EXTEND -> new NotificationExtendDetailDTO(
+                    notification.getId(),
+                    StudentDTO.toDTO(notification.getStudent()),
+                    BookDTO.toDTO(notification.getBookCopy()));
+
+            case WARNING -> new NotificationWarningDetailDTO(BookDTO.toDTO(notification.getBookCopy()));
+        };
     }
 }

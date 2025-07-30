@@ -13,7 +13,7 @@ import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
 import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
 import aifu.project.common_domain.mapper.BaseBookMapper;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.lucene.LuceneIndexService;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;

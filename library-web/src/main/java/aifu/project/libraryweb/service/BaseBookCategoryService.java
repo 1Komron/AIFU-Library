@@ -7,7 +7,7 @@ import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.CategoryDeletionException;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import lombok.RequiredArgsConstructor;

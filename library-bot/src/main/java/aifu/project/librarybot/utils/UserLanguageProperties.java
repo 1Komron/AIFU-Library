@@ -1,6 +1,7 @@
 package aifu.project.librarybot.utils;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,18 +11,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+@Slf4j
 public class UserLanguageProperties {
-    private UserLanguageProperties() {}
+    private UserLanguageProperties() {
+    }
 
     private static final Properties properties = new Properties();
     private static final Path filePath = Paths.get("library-bot/src/main/resources/user-language.properties");
 
-    static  {
+    static {
         if (Files.exists(filePath)) {
             try (InputStream in = Files.newInputStream(filePath)) {
                 properties.load(in);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Failed to load user-language.properties file", e);
             }
         }
     }
@@ -31,7 +34,7 @@ public class UserLanguageProperties {
     }
 
     @SneakyThrows
-    public static void setLanguage(String userId, String language)  {
+    public static void setLanguage(String userId, String language) {
         properties.setProperty(userId, language);
         try (OutputStream out = Files.newOutputStream(filePath)) {
             properties.store(out, "User Language Settings");

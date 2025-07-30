@@ -1,7 +1,7 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.common_domain.payload.BookPartList;
-import aifu.project.common_domain.payload.PartList;
+import aifu.project.common_domain.dto.BookPartList;
+import aifu.project.common_domain.dto.PartList;
 import aifu.project.librarybot.enums.Command;
 import aifu.project.librarybot.enums.InputStep;
 import aifu.project.librarybot.utils.ExecuteUtil;
@@ -180,7 +180,7 @@ public class ProcessService {
 
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
-
+        System.out.println(data);
         String lang = userLanguageService.getLanguage(chatId.toString());
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
@@ -262,7 +262,7 @@ public class ProcessService {
     private void processExtend(Long chatId, String lang, String data) {
         if (data.startsWith("extend_")) {
             String inv = data.substring("extend_".length());
-            bookingService.createExtendReturnDeadline(chatId, lang, inv);
+            bookingService.extendDeadline(chatId, lang, inv);
         }
     }
 

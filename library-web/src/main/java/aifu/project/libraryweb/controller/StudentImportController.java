@@ -1,6 +1,6 @@
 /*package aifu.project.libraryweb.controller;
 
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.config.ImportStats;
 import aifu.project.libraryweb.service.StudentExcelImportService;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class StudentImportController {
 }*/
 package aifu.project.libraryweb.controller; // Sizning paket nomingiz
 
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.config.ImportStats;
 import aifu.project.libraryweb.service.StudentExcelImportService;
 import io.swagger.v3.oas.annotations.Operation;

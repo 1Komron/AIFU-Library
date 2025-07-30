@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.FileUploadResponseDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

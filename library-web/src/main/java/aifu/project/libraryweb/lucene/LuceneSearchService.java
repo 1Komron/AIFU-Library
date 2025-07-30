@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.lucene;
 
-import aifu.project.common_domain.dto.SearchDTO;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.search_dto.SearchDTO;
+import aifu.project.common_domain.dto.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

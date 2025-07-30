@@ -39,7 +39,7 @@ cloudinary:
 superadmin:
   name: "Admin"
   surname: "Admin"
-  email: "alisherrustamov32@gmail.com"
+  email: "admin@gmail.com"
   initial-password: "admin123"
 
 

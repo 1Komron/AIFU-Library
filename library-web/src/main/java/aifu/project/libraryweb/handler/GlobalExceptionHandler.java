@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.handler; // Using your existing package
 
 import aifu.project.common_domain.exceptions.*; // Assuming this is where your other exceptions are
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -32,4 +32,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Set<String> findAllPassportCodes();
 
     Optional<Student> findByIdAndIsDeletedFalse(Long userId);
+
+    Page<Student> findByCardNumberAndRoleAndIsDeletedFalse(String cardNumber, Role role, Pageable pageable);
 }

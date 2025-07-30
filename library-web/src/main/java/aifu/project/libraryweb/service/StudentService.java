@@ -4,9 +4,9 @@ import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Role;
 import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
-import aifu.project.common_domain.payload.ResponseMessage;
-import aifu.project.common_domain.payload.StudentShortDTO;
-import aifu.project.common_domain.payload.StudentSummaryDTO;
+import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.common_domain.dto.student_dto.StudentShortDTO;
+import aifu.project.common_domain.dto.student_dto.StudentSummaryDTO;
 import aifu.project.libraryweb.repository.StudentRepository;
 import aifu.project.libraryweb.utils.Util;
 import jakarta.annotation.PostConstruct;
@@ -50,7 +50,7 @@ public class StudentService {
     public ResponseEntity<ResponseMessage> getSearchStudentList(int pageNumber,
                                                                 int size,
                                                                 Long id,
-                                                                String phone,
+                                                                String cardNumber,
                                                                 String sortBy,
                                                                 String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(Sort.Direction.ASC, sortBy) : Sort.by(Sort.Direction.DESC, sortBy);
@@ -59,11 +59,9 @@ public class StudentService {
         Page<Student> studentPage;
         if (id != null) {
             studentPage = studentRepository.findByIdAndRoleAndIsDeletedFalse(id, Role.STUDENT, pageable);
-        }
-//        else if (phone != null) {
-//            studentPage = userRepository.findByPhoneAndRoleAndIsDeletedFalse(phone, Role.STUDENT, pageable);
-//        }
-        else {
+        } else if (cardNumber != null) {
+            studentPage = studentRepository.findByCardNumberAndRoleAndIsDeletedFalse(cardNumber, Role.STUDENT, pageable);
+        } else {
             studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.STUDENT, pageable);
         }
 

@@ -2,7 +2,7 @@ package aifu.project.libraryweb.controller.base_book_controller;
 
 import aifu.project.common_domain.dto.CreateCategoryRequest;
 import aifu.project.common_domain.dto.UpdateCategoryRequest;
-import aifu.project.common_domain.payload.ResponseMessage;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.BaseBookCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

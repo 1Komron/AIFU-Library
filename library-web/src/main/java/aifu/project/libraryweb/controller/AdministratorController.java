@@ -1,4 +1,5 @@
-/*package aifu.project.libraryweb.controller;
+
+package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.AdminCreateRequest;
 import aifu.project.common_domain.dto.AdminResponse;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+
 /**
  * Bu yagona Controller tizimdagi Administratorlar (Librarian va Admin) bilan bog'liq
  * barcha API operatsiyalarini o'zida jamlaydi: yangi admin yaratish va parolni o'zgartirish.
- *//*
+ */
 
 @RestController
 @RequestMapping("/api/admins") // Barcha operatsiyalar uchun umumiy manzil
@@ -29,11 +31,10 @@ public class AdministratorController {
     private final AdminManagementService adminManagementService;
     private final PasswordManagementService passwordManagementService;
 
-    */
-/**
-     * Yangi Admin yaratish uchun endpoint.
-     * Bu operatsiyani faqat SUPER_ADMIN rolidagi foydalanuvchi bajara oladi.
-     *//*
+
+     //Yangi Admin yaratish uchun endpoint.
+     //Bu operatsiyani faqat SUPER_ADMIN rolidagi foydalanuvchi bajara oladi.
+
 
     @PostMapping
     @PreAuthorize("hasRole('LIBRARIAN')")
@@ -44,10 +45,9 @@ public class AdministratorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    */
-/**
-     * Tizimga kirgan administrator (Librarian yoki Admin) o'z parolini o'zgartirish jarayonini boshlashi uchun endpoint.
-     *//*
+
+     // Tizimga kirgan administrator (Librarian yoki Admin) o'z parolini o'zgartirish jarayonini boshlashi uchun endpoint.
+
 
     @PostMapping("/account/password/change-request")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'ADMIN')")
@@ -62,13 +62,11 @@ public class AdministratorController {
         );
     }
 
-    */
-/**
-     * Parolni o'zgartirishni tasdiqlash uchun endpoint.
-     *//*
 
-    */
-/*@PostMapping("/account/password/confirm-change")
+     // Parolni o'zgartirishni tasdiqlash uchun endpoint.
+
+
+@PostMapping("/account/password/confirm-change")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'ADMIN')")
     public ResponseEntity<ResponseMessage> confirmPasswordChange(
             @RequestParam("code") String code,
@@ -79,4 +77,5 @@ public class AdministratorController {
                 new ResponseMessage(true, "Parolingiz muvaffaqiyatli o'zgartirildi.", null)
         );
     }
-}*/
+}
+

@@ -17,6 +17,5 @@ public interface LibrarianRepository extends JpaRepository<Librarian, Long> {
 
     boolean existsByRole (Role role);
 
-    Optional<Librarian> findByActivationCodeAndIsActiveFalse(String activationCode);
 }
 

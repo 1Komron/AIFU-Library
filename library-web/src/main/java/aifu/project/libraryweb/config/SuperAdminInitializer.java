@@ -43,7 +43,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
       superAdmin.setRole(Role.SUPER_ADMIN);
       superAdmin.setDeleted(false);
       librarianRepository.save(superAdmin);
-      log.info("SuperAdmin email bilan muvaffaqiyatli yaratildi", email);
+      log.info("SuperAdmin email bilan muvaffaqiyatli yaratildi {} " , email);
     } else {
       log.info("Tizimda allaqachon SuperAdmin bor, yangi superAdmin yaratilmadi !!");
 

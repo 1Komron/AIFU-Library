@@ -25,6 +25,5 @@ public class Student extends User {
     @Column(unique = true)
     private Long chatId;
 
-    private boolean isActive;
 }
 

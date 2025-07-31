@@ -19,6 +19,8 @@ public abstract class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private boolean isDeleted;
+    private boolean isDeleted = false;
+
+    private boolean isActive = false;
 
 }

@@ -1,6 +1,5 @@
 package aifu.project.libraryweb.repository;
 
-import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.entity.BaseBook;
 
 import aifu.project.common_domain.entity.BaseBookCategory;
@@ -29,5 +28,38 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
     List<BaseBook> findByCategory_IdAndIsDeletedFalse(Integer categoryId);
 
     Page<BaseBook> findAllByCategoryAndIsDeletedFalse(BaseBookCategory category, Pageable pageable);
+
+    @Query("""
+            SELECT b FROM BaseBook b
+            WHERE b.isDeleted = false AND (
+                LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(b.series) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(b.isbn) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(b.udc) LIKE LOWER(CONCAT('%', :query, '%'))
+            )
+            """)
+    Page<BaseBook> searchBooks(@Param("query") String query, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and b.id = :id")
+    Page<BaseBook> searchById(Long id, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.title) like lower(concat('%', :query, '%'))")
+    Page<BaseBook> searchByTitle(String query, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.author) like lower(concat('%', :query, '%'))")
+    Page<BaseBook> searchByAuthor(String query, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.series) like lower(concat('%', :query, '%'))")
+    Page<BaseBook> searchByIsbn(String isbn, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.udc) like lower(concat('%', :query, '%'))")
+    Page<BaseBook> searchByUdc(String query, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.series) like lower(concat('%', :query, '%'))")
+    Page<BaseBook> searchSeries(String query, Pageable pageable);
+
+    @Query("select b from  BaseBook b where b.isDeleted = false and b.category.id = :id")
+    Page<BaseBook> searchByCategory_Id(int id, Pageable pageable);
 }
 

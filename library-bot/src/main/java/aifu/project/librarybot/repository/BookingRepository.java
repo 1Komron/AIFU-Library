@@ -33,8 +33,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     )
     Page<Booking> findAllWithBooksByUserChatId(@Param("chatId") Long chatId, Pageable pageable);
 
-    Booking findByBookIdAndStudentChatId(Integer bookId, Long chatId);
-
     @Query("""
             SELECT b
             FROM Booking b
@@ -96,10 +94,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.student.chatId = :chatId AND b.dueDate = :tomorrow")
     List<Booking> findAllExpiringBookings(@Param("chatId") Long chatId, @Param("tomorrow") LocalDate tomorrow);
 
-    boolean existsBookingByStudent_Id(Long userId);
-
     @Query("""
-            SELECT new aifu.project.common_domain.dto.BookingShortDTO(
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
                 base.title,
                 base.author,

@@ -83,4 +83,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ResponseMessage(false, "An unexpected internal server error occurred.", null));
     }
+
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleNotificationNotFoundException(NotificationNotFoundException e) {
+        log.error("Notification not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(LoginBadCredentialsException.class)
+    public ResponseEntity<ResponseMessage> handleLoginBadCredentialsException(LoginBadCredentialsException e) {
+        log.error("Login bad credentials exception. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 }

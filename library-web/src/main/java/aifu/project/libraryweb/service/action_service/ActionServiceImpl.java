@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.action_service;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.action_dto.ExtendAcceptActionDTO;
@@ -23,10 +23,11 @@ import static aifu.project.common_domain.exceptions.NotificationNotFoundExceptio
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ActionService {
+public class ActionServiceImpl implements ActionService {
     private final NotificationRepository notificationRepository;
     private final BookingRepository bookingRepository;
 
+    @Override
     public ResponseEntity<ResponseMessage> extendReject(ExtendRejectActionDTO extendRejectActionDTO) {
         Long notificationId = extendRejectActionDTO.notificationId();
 
@@ -40,6 +41,7 @@ public class ActionService {
         return ResponseEntity.ok(new ResponseMessage(true, "Booking extend rejected successfully", null));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> extendAccept(ExtendAcceptActionDTO extendAcceptActionDTO) {
         Long notificationId = extendAcceptActionDTO.notificationId();
         Integer extendDays = extendAcceptActionDTO.extendDays();
@@ -59,6 +61,7 @@ public class ActionService {
         return ResponseEntity.ok(new ResponseMessage(true, "Booking extended successfully", null));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> warning(WarningActionDTO warningActionDTO) {
         Long notificationId = warningActionDTO.notificationId();
         Notification notification = notificationRepository.findNotificationById(notificationId)

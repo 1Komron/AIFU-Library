@@ -1,4 +1,4 @@
-package aifu.project.librarybot.config;
+package aifu.project.uhf_reader.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -12,15 +12,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String KEY_EXTEND = "key.extend";
+    public static final String KEY_WARNING = "key.warning";
 
-    public static final String QUEUE_EXTEND = "queue.extend";
+    public static final String QUEUE_WARNING = "queue.warning";
 
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
 
-    @Bean(name = "queueExtend")
-    public Queue queueExtend() {
-        return new Queue(QUEUE_EXTEND, true);
+
+    @Bean(name = "queueWarning")
+    public Queue queue() {
+        return new Queue(QUEUE_WARNING, true);
     }
 
     @Bean
@@ -29,8 +30,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding2(@Qualifier("queueExtend") Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(KEY_EXTEND);
+    public Binding binding2(@Qualifier("queueWarning") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(KEY_WARNING);
     }
 
     @Bean

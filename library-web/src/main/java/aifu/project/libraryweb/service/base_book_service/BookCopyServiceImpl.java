@@ -38,6 +38,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(dto.getBaseBookId())
                 .orElseThrow(() -> new BaseBookNotFoundException(dto.getBaseBookId()));
 
+        //epc qoshilishi kerak
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
         entity = bookCopyRepository.save(entity);
 
@@ -86,8 +87,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+    public ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
         Page<BookCopy> page = bookCopyRepository.findByIsDeletedFalse(pageable);
 
         List<BookCopyResponseDTO> list = page.getContent().stream()
@@ -105,7 +107,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getOne(Integer id) {
+    public ResponseEntity<ResponseMessage> get(Integer id) {
         BookCopy entity = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
@@ -115,12 +117,19 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAllByBaseBook(Integer baseBookId, int pageNumber, int pageSize) {
-        if (!baseBookRepository.existsByIdAndIsDeletedFalse(baseBookId))
-            throw new BaseBookNotFoundException(baseBookId);
+    public ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        Page<BookCopy> page = bookCopyRepository.findByBookIdAndIsDeletedFalse(baseBookId, pageable);
+        Page<BookCopy> page = switch (field) {
+            case "book" -> bookCopyRepository.findByBookIdAndIsDeletedFalse(Integer.parseInt(query), pageable);
+
+            case "inventoryNumber" -> bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query, pageable);
+
+            case "epc" -> bookCopyRepository.findByEpcAndIsDeletedFalse(query, pageable);
+
+            default -> throw new IllegalArgumentException("BookCopy search. Invalid field: " + field);
+        };
 
         List<BookCopyResponseDTO> list = page.getContent().stream()
                 .map(BookCopyMapper::toResponseDTO)
@@ -134,7 +143,6 @@ public class BookCopyServiceImpl implements BookCopyService {
         );
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy list", map));
-
     }
 
     @Override
@@ -151,27 +159,6 @@ public class BookCopyServiceImpl implements BookCopyService {
         log.info("BookCopy deleted by id: {}.", id);
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy deleted", id));
-    }
-
-    @Override
-    public ResponseEntity<ResponseMessage> deleteByBaseBook(Integer bookId) {
-        if (!baseBookRepository.existsByIdAndIsDeletedFalse(bookId))
-            throw new BaseBookNotFoundException(bookId);
-
-        List<BookCopy> list = bookCopyRepository.findByBook_IdAndIsDeletedFalse(bookId);
-
-        list.forEach(copy -> {
-            if (copy.isDeleted())
-                throw new BookCopyIsTakenException("BookCopy has been deleted. Id: " + copy.getId());
-
-            copy.setDeleted(true);
-        });
-
-        bookCopyRepository.saveAll(list);
-
-        log.info("BookCopies deleted: {}, BaseBook id {}.", list, bookId);
-
-        return ResponseEntity.ok(new ResponseMessage(true, "All copies have been removed.", null));
     }
 
 

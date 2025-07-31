@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.base_book_service;
 
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.CreateCategoryRequest;
@@ -22,13 +22,23 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BaseBookCategoryService {
+public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     private final BaseBookCategoryRepository categoryRepository;
     private final BaseBookRepository baseBookRepository;
 
+    @Override
     public ResponseEntity<ResponseMessage> create(CreateCategoryRequest request) {
+        String name = request.name();
+
+        boolean exists = categoryRepository.existsByName(name);
+        if (exists) {
+            log.warn("BaseBookCategory with name '{}' already exists", name);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ResponseMessage(false, "Category with this name already exists", null));
+        }
+
         BaseBookCategory category = new BaseBookCategory();
-        category.setName(request.name());
+        category.setName(name);
         category = categoryRepository.save(category);
         BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
 
@@ -38,6 +48,7 @@ public class BaseBookCategoryService {
                 .body(new ResponseMessage(true, "Category created", dto));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> update(Integer id, UpdateCategoryRequest request) {
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
@@ -51,6 +62,7 @@ public class BaseBookCategoryService {
         return ResponseEntity.ok(new ResponseMessage(true, "Category updated", dto));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> delete(Integer id) {
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
@@ -71,11 +83,13 @@ public class BaseBookCategoryService {
         return ResponseEntity.ok(new ResponseMessage(true, "Category deleted", id));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> getList() {
         List<BaseBookCategoryDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(Sort.Direction.ASC, "id"));
         return ResponseEntity.ok(new ResponseMessage(true, "All categories", list));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));

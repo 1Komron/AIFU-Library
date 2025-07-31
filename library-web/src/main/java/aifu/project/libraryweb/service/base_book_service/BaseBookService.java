@@ -12,15 +12,13 @@ public interface BaseBookService {
 
     ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize);
 
-    ResponseEntity<ResponseMessage> getOne(Integer id);
+    ResponseEntity<ResponseMessage> get(Integer id);
 
     ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates);
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 
-    ResponseEntity<ResponseMessage> deleteByCategory(Integer id);
-
     long countBooks();
 
-    ResponseEntity<ResponseMessage> getByCategory(@NotNull Integer categoryId, int pageNumber, int pageSize);
+    ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection);
 }

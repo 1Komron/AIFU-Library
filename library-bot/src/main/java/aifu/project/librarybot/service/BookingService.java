@@ -62,7 +62,7 @@ public class BookingService {
 
         log.info("Extending deadline for booking: {} by student: {}", booking.getId(), student.getId());
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
         rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND,
                 NotificationExtendShortDTO.toDTO(notification));
     }

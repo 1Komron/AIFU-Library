@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+/*package aifu.project.libraryweb.service;
 
 import aifu.project.common_domain.dto.PasswordChangeRequest;
 import aifu.project.common_domain.entity.Librarian;
@@ -32,7 +32,7 @@ public class PasswordManagementService {
      *
      * @param userEmail The email of the currently logged-in user.
      * @param request   Contains the old and new password.
-     */
+     *//*
     public void initiatePasswordChange(String userEmail, PasswordChangeRequest request) {
        Librarian admin = librarianRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
@@ -58,7 +58,7 @@ public class PasswordManagementService {
      *
      * @param userEmail        The email of the currently logged-in user.
      * @param confirmationCode The 6-digit code sent to the user's email.
-     */
+     *//*
     @Transactional
     public void confirmPasswordChange(String userEmail, String confirmationCode) {
         String correctCode = confirmationCodeCache.get(userEmail);
@@ -80,4 +80,4 @@ public class PasswordManagementService {
         confirmationCodeCache.remove(userEmail);
         newPasswordCache.remove(userEmail);
     }
-}
+}*/

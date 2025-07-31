@@ -10,7 +10,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -39,8 +39,8 @@ cloudinary:
 superadmin:
   name: "Admin"
   surname: "Admin"
-  email: "admin@gmail.com"
-  initial-password: "admin123"
+  email: "${SUPERADMIN_EMAIL:alisherrustamov2119@gmail.com}"
+  initial-password: "${SUPERADMIN_PASSWORD:admin123}"
 
 
 importer:

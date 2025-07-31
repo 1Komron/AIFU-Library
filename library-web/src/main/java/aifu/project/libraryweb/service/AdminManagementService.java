@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 
@@ -17,6 +20,7 @@ public class AdminManagementService {
 
     private final LibrarianRepository librarianRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public AdminResponse createAdmin(AdminCreateRequest request) {
 
@@ -24,15 +28,25 @@ public class AdminManagementService {
             throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
         }
 
-        Librarian admin = new Librarian();
-        admin.setName(request.getName());
-        admin.setSurname(request.getSurname());
-        admin.setEmail(request.getEmail());
-        admin.setPassword(passwordEncoder.encode(request.getPassword()));
-        admin.setRole(Role.ADMIN);
-        admin.setDeleted(false);
+        Librarian newAdmin = new Librarian();
+        newAdmin.setName(request.getName());
+        newAdmin.setSurname(request.getSurname());
+        newAdmin.setEmail(request.getEmail());
+        newAdmin.setPassword(passwordEncoder.encode(request.getPassword()));
+        newAdmin.setRole(Role.ADMIN);
+        newAdmin.setDeleted(false);
+      //  newAdmin.setActive(false);
 
-        Librarian savedAdmin = librarianRepository.save(admin);
+        // Noyob, taxmin qilish qiyin bo'lgan faollashtirish kodi yaratamiz
+        String code = UUID.randomUUID().toString();
+     //   newAdmin.setActivationCode(code);
+
+        //Codning amal qilish muddati 90 soniya
+       // newAdmin.setActivationCodeExpiresAt(LocalDateTime.now().plusSeconds(90));
+        Librarian savedAdmin = librarianRepository.save(newAdmin);
+
+        //yangi Adminga faollashtirish kodi yuboriladi
+        //emailService.sendActivationEmail(savedAdmin.getEmail(), code);
         return AdminResponse.builder()
                 .id(savedAdmin.getId())
                 .name(savedAdmin.getName())

@@ -2,10 +2,18 @@ package aifu.project.common_domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Librarian extends User {
 
     @Column(unique = true,nullable = false)

@@ -6,7 +6,7 @@ import aifu.project.common_domain.dto.statistic_dto.*;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.booking_serivce.BookingService;
-import aifu.project.libraryweb.service.StudentService;
+import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BaseBookServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import jakarta.persistence.EntityManager;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatisticsServiceImpl implements StatisticsService {
     private final BaseBookServiceImpl bookService;
-    private final StudentService studentService;
+    private final StudentServiceImpl studentService;
     private final BookCopyService bookCopyService;
     private final BookingService bookingService;
 

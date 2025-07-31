@@ -1,7 +1,6 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.student_service;
 
 import aifu.project.common_domain.entity.Student;
-import aifu.project.common_domain.entity.enums.Role;
 import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.dto.ResponseMessage;
@@ -28,7 +27,7 @@ import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FO
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StudentService {
+public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final BookingService bookingService;
 
@@ -36,11 +35,17 @@ public class StudentService {
         return studentRepository.getStudentsCount();
     }
 
-    public ResponseEntity<ResponseMessage> getStudentList(int pageNumber, int size) {
+    @Override
+    public ResponseEntity<ResponseMessage> getStudentList(String filter, int pageNumber, int size, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(direction, "id"));
 
-        Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
 
-        Page<Student> studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.STUDENT, pageable);
+        Page<Student> studentPage = switch (filter.toLowerCase()) {
+            case "active" -> studentRepository.findByIsActiveAndIsDeletedFalse(true, pageable);
+            case "inactive" -> studentRepository.findByIsActiveAndIsDeletedFalse(false, pageable);
+            default -> studentRepository.findByIsDeletedFalse(pageable);
+        };
 
         Map<String, Object> map = Util.getPageInfo(studentPage);
         map.put("data", getStudentShortDTO(studentPage.getContent()));
@@ -48,23 +53,21 @@ public class StudentService {
         return ResponseEntity.ok(new ResponseMessage(true, "Student list", map));
     }
 
-    public ResponseEntity<ResponseMessage> getSearchStudentList(int pageNumber,
+    @Override
+    public ResponseEntity<ResponseMessage> getSearchStudentList(String filter,
+                                                                String query,
+                                                                int pageNumber,
                                                                 int size,
-                                                                Long id,
-                                                                String cardNumber,
-                                                                String sortBy,
-                                                                String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(Sort.Direction.ASC, sortBy) : Sort.by(Sort.Direction.DESC, sortBy);
-        Pageable pageable = PageRequest.of(--pageNumber, size, sort);
+                                                                String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(direction, "id"));
 
-        Page<Student> studentPage;
-        if (id != null) {
-            studentPage = studentRepository.findByIdAndRoleAndIsDeletedFalse(id, Role.STUDENT, pageable);
-        } else if (cardNumber != null) {
-            studentPage = studentRepository.findByCardNumberAndRoleAndIsDeletedFalse(cardNumber, Role.STUDENT, pageable);
-        } else {
-            studentPage = studentRepository.findByRoleAndIsDeletedFalse(Role.STUDENT, pageable);
-        }
+        Page<Student> studentPage = switch (filter) {
+            case "id" -> studentRepository.findByIdAndIsDeletedFalse(Long.parseLong(query), pageable);
+            case "cardNumber" -> studentRepository.findByCardNumberAndIsDeletedFalse(query, pageable);
+            case "name" -> studentRepository.findByNameContainingIgnoreCaseAndIsDeletedFalse(query, pageable);
+            default -> throw new IllegalArgumentException("Invalid filter: " + filter);
+        };
 
         Map<String, Object> map = Util.getPageInfo(studentPage);
         map.put("data", getStudentShortDTO(studentPage.getContent()));
@@ -72,17 +75,7 @@ public class StudentService {
         return ResponseEntity.ok(new ResponseMessage(true, "Student list", map));
     }
 
-    public ResponseEntity<ResponseMessage> getStudentsByStatus(int pageNumber, int size) {
-        Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
-
-        Page<Student> studentPage = studentRepository.findByRoleAndIsActiveAndIsDeletedFalse(Role.STUDENT, false, pageable);
-
-        Map<String, Object> map = Util.getPageInfo(studentPage);
-        map.put("data", getStudentShortDTO(studentPage.getContent()));
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Student list", map));
-    }
-
+    @Override
     public ResponseEntity<ResponseMessage> getStudent(String id) {
         Student student = studentRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UserNotFoundException("User not found by id:" + id));
@@ -109,6 +102,7 @@ public class StudentService {
                 .toList();
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> deleteStudent(Long userId) {
         Student student = studentRepository.findByIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));

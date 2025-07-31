@@ -9,7 +9,7 @@ import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BookingRepository;
-import aifu.project.libraryweb.service.StudentService;
+import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import aifu.project.libraryweb.service.history_service.HistoryService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
-    private StudentService studentService;
+    private StudentServiceImpl studentService;
     private final BookCopyService bookCopyService;
     private final HistoryService historyService;
 
@@ -191,7 +191,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void setStudentService(StudentService studentService) {
+    public void setStudentService(StudentServiceImpl studentService) {
         this.studentService = studentService;
     }
 }

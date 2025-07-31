@@ -99,7 +99,7 @@ public class BookCopyController {
                     Eslatma: 'book' field faqat son bo'lishi kerak, ya'ni BaseBook IDsi.
                     """)
 
-    public ResponseEntity<ResponseMessage> getAllByBaseBook(@RequestParam String query,
+    public ResponseEntity<ResponseMessage> search(@RequestParam String query,
                                                             @RequestParam String field,
                                                             @RequestParam(defaultValue = "1") int pageNumber,
                                                             @RequestParam(defaultValue = "10") int pageSize,

@@ -27,7 +27,7 @@ public class NotificationController {
     }
 
     @GetMapping
-    @Operation(summary = "Notification ro'yatini olish",
+    @Operation(summary = "Notification ro'yxatini olish",
             description = """
                     Parametrlar:
                     - pageNumber: Sahifa raqami (default: 1)

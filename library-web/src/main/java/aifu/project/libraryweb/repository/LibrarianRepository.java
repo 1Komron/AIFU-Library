@@ -15,7 +15,7 @@ public interface LibrarianRepository extends JpaRepository<Librarian, Long> {
 
     boolean existsByEmail(String email);
 
-    boolean existsByRole (Role role);
+    boolean existsByRole(Role role);
 
 }
 

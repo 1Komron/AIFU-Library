@@ -6,13 +6,13 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
-#    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
-#    password: root1234
     username: postgres
+  #    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
+  #    password: root1234
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -41,7 +41,7 @@ cloudinary:
 superadmin:
   name: "Admin"
   surname: "Admin"
-  email: "${SUPERADMIN_EMAIL:alisherrustamov2119@gmail.com}"
+  email: "${SUPERADMIN_EMAIL:admin@gmail.com}"
   initial-password: "${SUPERADMIN_PASSWORD:admin123}"
 
 

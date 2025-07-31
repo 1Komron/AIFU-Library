@@ -1,10 +1,12 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.statistics_service;
 
 import aifu.project.common_domain.dto.booking_dto.BookingResponse;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.statistic_dto.*;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.libraryweb.service.BookingService;
+import aifu.project.libraryweb.service.StudentService;
 import aifu.project.libraryweb.service.base_book_service.BaseBookServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import jakarta.persistence.EntityManager;
@@ -19,7 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StatisticsService {
+public class StatisticsServiceImpl implements StatisticsService {
     private final BaseBookServiceImpl bookService;
     private final StudentService studentService;
     private final BookCopyService bookCopyService;
@@ -28,42 +30,50 @@ public class StatisticsService {
     @PersistenceContext
     private EntityManager em;
 
+    @Override
     public ResponseEntity<ResponseMessage> countAllBookings() {
         long count = bookingService.countAllBookings();
         return ResponseEntity.ok(new ResponseMessage(true, "Booking count", count));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> getBookingDiagram() {
         BookingDiagramDTO diagram = bookingService.getBookingDiagram();
         return ResponseEntity.ok(new ResponseMessage(true, "Booking diagram", diagram));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> getBookingToday(int pageNumber, int pageSize) {
         List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.APPROVED);
         return ResponseEntity.ok(new ResponseMessage(true, "Today's booking list", list));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> getBookingTodayOverdue(int pageNumber, int pageSize) {
         List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.OVERDUE);
         return ResponseEntity.ok(new ResponseMessage(true, "Today's booking list", list));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> countUsers() {
         long count = studentService.countStudents();
         return ResponseEntity.ok(new ResponseMessage(true, "Users count", count));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> countBooks() {
         long count = bookService.countBooks();
         return ResponseEntity.ok(new ResponseMessage(true, "Books count", count));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> countBookCopies() {
         long count = bookCopyService.count();
         return ResponseEntity.ok(new ResponseMessage(true, "Book copies count", count));
     }
 
     // Kunlik statistikalar
+    @Override
     public ResponseEntity<ResponseMessage> getBookingPerDay(int month, int year) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Invalid month");
@@ -137,6 +147,7 @@ public class StatisticsService {
 
 
     // Oylik statistikalar
+    @Override
     public ResponseEntity<ResponseMessage> getBookingPerMonth(int year) {
         @SuppressWarnings("unchecked")
         List<Object[]> rows = em.createNativeQuery("""
@@ -201,8 +212,9 @@ public class StatisticsService {
 
 
     // Eng ko'p o'qilgan kitoblar
-    public ResponseEntity<ResponseMessage> getTopPopularBooks(int limit) {
-
+    @Override
+    public ResponseEntity<ResponseMessage> getTopPopularBooks() {
+        int limit = 5;
         @SuppressWarnings("unchecked")
         List<Object[]> rows = em.createNativeQuery("""
                             SELECT
@@ -247,7 +259,9 @@ public class StatisticsService {
     }
 
     // Eng ko'p kitob o'qigan talabalar
-    public ResponseEntity<ResponseMessage> getTopStudents(int limit) {
+    @Override
+    public ResponseEntity<ResponseMessage> getTopStudents() {
+        int limit = 5;
         @SuppressWarnings("unchecked")
         List<Object[]> rows = em.createNativeQuery("""
                             SELECT
@@ -285,6 +299,7 @@ public class StatisticsService {
     }
 
     //Kitoblarning o'rtacha foydalanish kunlari
+    @Override
     public ResponseEntity<ResponseMessage> getAverageUsageDays() {
         Object result = em.createNativeQuery("""
                     SELECT ROUND(AVG(h.returned_at - h.given_at))

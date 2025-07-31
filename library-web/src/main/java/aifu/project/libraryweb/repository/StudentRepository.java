@@ -34,4 +34,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findByNameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
 
     Page<Student> findBySurnameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
+
+    Page<Student> findByIsActiveAndIsDeletedFalse(boolean b, Pageable pageable);
 }

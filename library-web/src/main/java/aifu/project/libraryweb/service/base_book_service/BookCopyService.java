@@ -12,19 +12,17 @@ import java.util.Map;
 public interface BookCopyService {
     ResponseEntity<ResponseMessage> create(BookCopyCreateDTO dto);
 
-    ResponseEntity<ResponseMessage> update(Integer id, Map<String,Object> updates);
+    ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates);
 
-    ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize);
+    ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize, String sortDirection);
 
-    ResponseEntity<ResponseMessage> getOne(Integer id);
+    ResponseEntity<ResponseMessage> get(Integer id);
 
-    ResponseEntity<ResponseMessage> getAllByBaseBook(Integer baseBookId, int pageNumber, int pageSize);
+    ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection);
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 
-    ResponseEntity<ResponseMessage> deleteByBaseBook(Integer baseBookId);
-
-    Map<String,Long> getTotalAndTakenCount(Integer baseBookId);
+    Map<String, Long> getTotalAndTakenCount(Integer baseBookId);
 
     long count();
 

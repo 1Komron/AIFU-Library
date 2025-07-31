@@ -3,7 +3,7 @@ package aifu.project.libraryweb.controller.base_book_controller;
 import aifu.project.common_domain.dto.CreateCategoryRequest;
 import aifu.project.common_domain.dto.UpdateCategoryRequest;
 import aifu.project.common_domain.dto.ResponseMessage;
-import aifu.project.libraryweb.service.BaseBookCategoryService;
+import aifu.project.libraryweb.service.base_book_service.BaseBookCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

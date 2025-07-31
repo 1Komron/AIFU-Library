@@ -11,7 +11,6 @@ import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
-import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
 import aifu.project.common_domain.mapper.BaseBookMapper;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.lucene.LuceneIndexService;
@@ -77,7 +76,7 @@ public class BaseBookServiceImpl implements BaseBookService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getOne(Integer id) {
+    public ResponseEntity<ResponseMessage> get(Integer id) {
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
 
@@ -172,47 +171,30 @@ public class BaseBookServiceImpl implements BaseBookService {
         return ResponseEntity.ok(new ResponseMessage(true, "Base book deleted successfully", id));
     }
 
-    public ResponseEntity<ResponseMessage> deleteByCategory(Integer categoryId) {
-        if (!categoryRepository.existsByIdAndIsDeletedFalse(categoryId)) {
-            throw new BaseBookCategoryNotFoundException(categoryId);
-        }
-
-        List<BaseBook> books = baseBookRepository.findByCategory_IdAndIsDeletedFalse(categoryId);
-
-        boolean canDeleteAll = books.stream()
-                .allMatch(book -> book.getCopies().stream()
-                        .allMatch(copy -> copy.isDeleted() && !copy.isTaken())
-                );
-
-        if (!canDeleteAll) {
-            throw new BookCopyIsTakenException("Some copies of the books are still active or in the hands of users.");
-        }
-
-        for (BaseBook book : books) {
-            book.setDeleted(true);
-        }
-        baseBookRepository.saveAll(books);
-
-        log.info("All Base book deleted by Category id: {}. BaseBook list: {}", categoryId, books);
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Books in category successfully deleted", null));
-    }
-
     @Override
-    public ResponseEntity<ResponseMessage> getByCategory(Integer categoryId, int pageNumber, int pageSize) {
-        BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(categoryId)
-                .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
+    public ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+        field = field.toLowerCase();
 
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+        Sort.Direction direction = sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
-        Page<BaseBook> page = baseBookRepository.findAllByCategoryAndIsDeletedFalse(category, pageable);
+        Page<BaseBook> page = switch (field) {
+            case "id" -> baseBookRepository.searchById(Long.parseLong(query), pageable);
+            case "category" -> baseBookRepository.searchByCategory_Id(Integer.parseInt(query), pageable);
+            case "title" -> baseBookRepository.searchByTitle(query, pageable);
+            case "author" -> baseBookRepository.searchByAuthor(query, pageable);
+            case "isbn" -> baseBookRepository.searchByIsbn(query, pageable);
+            case "udc" -> baseBookRepository.searchByUdc(query, pageable);
+            case "series" -> baseBookRepository.searchSeries(query, pageable);
+            default -> throw new IllegalArgumentException("Invalid field: " + field);
+        };
 
         List<BaseBookShortDTO> list = createBaseBookShortDTO(page.getContent());
 
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", list);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book list. By categoryId: " + categoryId, map));
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book search by field: " + field, map));
     }
 
     @Override

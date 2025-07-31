@@ -37,6 +37,10 @@ public class AuthServiceImpl implements AuthService {
         Librarian librarian = librarianRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new LoginBadCredentialsException("Invalid email or password"));
 
+        if (!librarian.isActive()) {
+            throw new LoginBadCredentialsException("Account is not active");
+        }
+
         if (!passwordEncoder.matches(password, librarian.getPassword())) {
             throw new LoginBadCredentialsException("Invalid email or password");
         }

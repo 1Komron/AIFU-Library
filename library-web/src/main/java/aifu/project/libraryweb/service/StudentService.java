@@ -8,6 +8,7 @@ import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.student_dto.StudentShortDTO;
 import aifu.project.common_domain.dto.student_dto.StudentSummaryDTO;
 import aifu.project.libraryweb.repository.StudentRepository;
+import aifu.project.libraryweb.service.booking_serivce.BookingService;
 import aifu.project.libraryweb.utils.Util;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

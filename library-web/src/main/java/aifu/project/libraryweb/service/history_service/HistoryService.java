@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.history_service;
 
 
 import aifu.project.common_domain.entity.Booking;

@@ -4,7 +4,7 @@ import aifu.project.common_domain.dto.booking_dto.BorrowBookDTO;
 import aifu.project.common_domain.dto.booking_dto.ExtendBookingDTO;
 import aifu.project.common_domain.dto.booking_dto.ReturnBookDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
-import aifu.project.libraryweb.service.BookingService;
+import aifu.project.libraryweb.service.booking_serivce.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

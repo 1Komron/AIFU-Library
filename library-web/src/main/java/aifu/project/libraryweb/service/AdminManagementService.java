@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+
 public class AdminManagementService {
 
     private final LibrarianRepository librarianRepository;
@@ -39,6 +40,7 @@ public class AdminManagementService {
                 .email(savedAdmin.getEmail())
                 .role(savedAdmin.getRole().name())
                 .build();
+
 
 
     }

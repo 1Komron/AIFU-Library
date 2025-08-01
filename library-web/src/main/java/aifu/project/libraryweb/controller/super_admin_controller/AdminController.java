@@ -25,11 +25,6 @@ public class AdminController {
 
 
 
-    @GetMapping
-    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "asc") String sortDirection){
-        return null;
-    }
-
 
     @PostMapping("/activate")
     @PreAuthorize("hasRole('LIBRARIAN')")

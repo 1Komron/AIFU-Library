@@ -1,5 +1,6 @@
 package aifu.project.libraryweb.config;
 
+import aifu.project.common_domain.entity.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +30,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
+                                .requestMatchers("/api/admin/auth/login").permitAll()
+                                .requestMatchers("/api/client/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasAnyRole(Role.ADMIN.name(), Role.SUPER_ADMIN.name())
+                                .requestMatchers("/api/super-admin/**").hasAnyRole(Role.SUPER_ADMIN.name())
 
                                 .anyRequest().authenticated());
 

@@ -1,9 +1,7 @@
 package aifu.project.libraryweb.service.auth_serivce;
 
-import aifu.project.common_domain.dto.AdminCreateRequest;
 import aifu.project.common_domain.dto.AdminResponse;
 import aifu.project.common_domain.dto.auth_dto.LoginDTO;
-import aifu.project.common_domain.dto.auth_dto.SignUpDTO;
 import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.exceptions.LoginBadCredentialsException;
 import aifu.project.common_domain.dto.ResponseMessage;
@@ -47,18 +45,6 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtService.generateToken(email);
         return ResponseEntity.ok(new ResponseMessage(true, "Login successful", token));
-    }
-
-    @Override
-    public ResponseEntity<ResponseMessage> signUp(SignUpDTO signUpDTO) {
-        AdminCreateRequest adminCreateRequest = new AdminCreateRequest(
-                signUpDTO.name(),
-                signUpDTO.surname(),
-                signUpDTO.email(),
-                signUpDTO.password()
-        );
-        AdminResponse admin = adminManagementService.createAdmin(adminCreateRequest);
-        return ResponseEntity.ok(new ResponseMessage(true, "Sign up successful", admin));
     }
 
     @Override

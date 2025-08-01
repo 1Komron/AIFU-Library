@@ -2,7 +2,6 @@ package aifu.project.libraryweb.controller.admin_controller;
 
 
 import aifu.project.common_domain.dto.auth_dto.LoginDTO;
-import aifu.project.common_domain.dto.auth_dto.SignUpDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.auth_serivce.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,15 +31,6 @@ public class AuthController {
         return authService.login(loginDTO);
     }
 
-    @PostMapping("/sing-up")
-    @Operation(summary = "Adminlar ro'yxatdan o'tishi")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ro'yxatdan o'tish muvaffaqiyatli"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - email allaqachon mavjud"),
-    })
-    public ResponseEntity<ResponseMessage> signUp(@RequestBody SignUpDTO signUpDTO) {
-        return authService.signUp(signUpDTO);
-    }
 
     @PostMapping("/me")
     @Operation(summary = "Sistemadagi admin haqida ma'lumot olish")

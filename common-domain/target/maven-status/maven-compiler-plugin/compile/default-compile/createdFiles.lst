@@ -18,6 +18,7 @@ aifu/project/common_domain/mapper/BookCopyMapper.class
 aifu/project/common_domain/entity/PdfBook$PdfBookBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO.class
 aifu/project/common_domain/entity/BaseBookCategory$BaseBookCategoryBuilder.class
+aifu/project/common_domain/dto/PasswordResetConfirmRequest.class
 aifu/project/common_domain/entity/enums/Role.class
 aifu/project/common_domain/dto/AdminCreateRequest.class
 aifu/project/common_domain/dto/statistic_dto/TopStudentDTO.class
@@ -101,6 +102,7 @@ aifu/project/common_domain/dto/live_dto/BaseBookResponseDTO.class
 aifu/project/common_domain/entity/BookCopy.class
 aifu/project/common_domain/exceptions/RequestNotFoundException.class
 aifu/project/common_domain/exceptions/BaseBookNotFoundException.class
+aifu/project/common_domain/dto/PasswordResetRequest.class
 aifu/project/common_domain/dto/UpdateCategoryRequest.class
 aifu/project/common_domain/dto/CreateCategoryRequest.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookSearchCriteriaDTO.class

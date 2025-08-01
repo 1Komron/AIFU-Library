@@ -17,6 +17,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/History.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/enums/NotificationType.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/PasswordResetConfirmRequest.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/Category.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/BookCopyStats.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/mapper/CategoryMapper.java
@@ -77,6 +78,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/action_dto/WarningActionDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/action_dto/ExtendRejectActionDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/student_dto/StudentSummaryDTO.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/PasswordResetRequest.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/search_dto/SearchPart.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/search_dto/SearchDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/BaseBookNotFoundException.java

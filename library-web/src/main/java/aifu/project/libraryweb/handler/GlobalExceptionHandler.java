@@ -97,4 +97,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(BookCopyNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleBookCopyNotFoundException(BookCopyNotFoundException e) {
+        log.error("Book copy not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 }

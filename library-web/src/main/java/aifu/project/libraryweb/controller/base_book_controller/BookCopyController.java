@@ -100,10 +100,10 @@ public class BookCopyController {
                     """)
 
     public ResponseEntity<ResponseMessage> search(@RequestParam String query,
-                                                            @RequestParam String field,
-                                                            @RequestParam(defaultValue = "1") int pageNumber,
-                                                            @RequestParam(defaultValue = "10") int pageSize,
-                                                            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+                                                  @RequestParam String field,
+                                                  @RequestParam(defaultValue = "1") int pageNumber,
+                                                  @RequestParam(defaultValue = "10") int pageSize,
+                                                  @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
         return bookCopyService.search(query, field, pageNumber, pageSize, sortDirection);
     }
 

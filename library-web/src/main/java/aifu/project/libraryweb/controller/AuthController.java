@@ -27,6 +27,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Login muvaffaqiyatli"),
             @ApiResponse(responseCode = "401", description = "email | password noto'g'ri"),
     })
+
     public ResponseEntity<ResponseMessage> login(@RequestBody LoginDTO loginDTO) {
         return authService.login(loginDTO);
     }

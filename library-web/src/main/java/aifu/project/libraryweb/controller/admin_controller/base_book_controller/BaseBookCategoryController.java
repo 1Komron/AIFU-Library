@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.base_book_controller;
+package aifu.project.libraryweb.controller.admin_controller.base_book_controller;
 
 import aifu.project.common_domain.dto.CreateCategoryRequest;
 import aifu.project.common_domain.dto.UpdateCategoryRequest;
@@ -50,8 +50,8 @@ public class BaseBookCategoryController {
 
     @GetMapping
     @Operation(summary = "Base book category ro'yxatini olish")
-    public ResponseEntity<ResponseMessage> getBaseBookCategoryList() {
-        return baseBookCategoryService.getList();
+    public ResponseEntity<ResponseMessage> getBaseBookCategoryList(@RequestParam(required = false,defaultValue = "asc") String sortDirection) {
+        return baseBookCategoryService.getList(sortDirection);
     }
 
     @GetMapping("/{id}")

@@ -7,12 +7,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
     username: postgres
-#    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
-#    password: root1234
+  #    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
+  #    password: root1234
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -62,5 +62,5 @@ springdoc:
     doc-expansion: list
     urls:
       - name: AIFU Library
-        url:  v3/api-docs
+        url: v3/api-docs
 #        url: https://aifu-library.duckdns.org/v3/api-docs

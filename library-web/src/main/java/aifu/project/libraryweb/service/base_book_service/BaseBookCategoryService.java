@@ -12,7 +12,7 @@ public interface BaseBookCategoryService {
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 
-    ResponseEntity<ResponseMessage> getList();
+    ResponseEntity<ResponseMessage> getList(String sortDirection);
 
     ResponseEntity<ResponseMessage> get(Integer id);
 }

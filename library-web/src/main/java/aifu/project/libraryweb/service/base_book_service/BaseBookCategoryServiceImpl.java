@@ -84,8 +84,9 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getList() {
-        List<BaseBookCategoryDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(Sort.Direction.ASC, "id"));
+    public ResponseEntity<ResponseMessage> getList(String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        List<BaseBookCategoryDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(direction, "id"));
         return ResponseEntity.ok(new ResponseMessage(true, "All categories", list));
     }
 

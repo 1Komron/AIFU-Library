@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller.admin_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.notification_service.NotificationService;

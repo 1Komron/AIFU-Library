@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller.admin_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.statistics_service.StatisticsService;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/statistics")
+@RequestMapping("/api/admin/statistics")
 @RequiredArgsConstructor
 public class StatisticsController {
     private final StatisticsService statisticsService;

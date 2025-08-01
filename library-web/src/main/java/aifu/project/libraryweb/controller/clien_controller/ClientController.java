@@ -16,7 +16,6 @@ public class ClientController {
 
     @GetMapping("/categories")
     public ResponseEntity<ResponseMessage> getCategories() {
-//        return categoryService.getAll();
-        return null;
+        return categoryService.getAll("asc");
     }
 }

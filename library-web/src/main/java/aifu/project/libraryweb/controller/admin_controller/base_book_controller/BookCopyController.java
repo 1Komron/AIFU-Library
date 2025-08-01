@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.base_book_controller;
+package aifu.project.libraryweb.controller.admin_controller.base_book_controller;
 
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
 import aifu.project.common_domain.dto.ResponseMessage;

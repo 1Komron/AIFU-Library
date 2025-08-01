@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller.admin_controller;
 
 import aifu.project.common_domain.dto.booking_dto.BorrowBookDTO;
 import aifu.project.common_domain.dto.booking_dto.ExtendBookingDTO;

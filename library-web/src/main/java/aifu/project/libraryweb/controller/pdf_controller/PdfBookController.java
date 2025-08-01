@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller.pdf_controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.dto.ResponseMessage;

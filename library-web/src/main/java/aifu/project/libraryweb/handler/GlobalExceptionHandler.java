@@ -104,4 +104,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleCategoryNotFoundException(CategoryNotFoundException e) {
+        log.error("Category not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 }

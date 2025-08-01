@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.pdf_controller;
+package aifu.project.libraryweb.controller.admin_controller.pdf_controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.FileUploadResponseDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/upload")
+@RequestMapping("/api/admin/upload")
 @RequiredArgsConstructor
 public class FileUploadController {
 

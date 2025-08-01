@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller.admin_controller;
 
 import aifu.project.common_domain.dto.PasswordResetConfirmRequest;
 import aifu.project.common_domain.dto.PasswordResetRequest;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/password-reset")
+@RequestMapping("/api/admin/password-reset")
 @RequiredArgsConstructor
 @Slf4j
 public class PasswordResetController {

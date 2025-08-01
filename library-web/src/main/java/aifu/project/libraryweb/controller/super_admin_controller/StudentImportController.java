@@ -48,7 +48,7 @@ public class StudentImportController {
         }
     }
 }*/
-package aifu.project.libraryweb.controller; // Sizning paket nomingiz
+package aifu.project.libraryweb.controller.super_admin_controller; // Sizning paket nomingiz
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.config.ImportStats;
@@ -65,7 +65,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/students/import") // Manzilni 'students' ga o'zgartirganimiz ma'qul
+@RequestMapping("/api/super-admin/students/import") // Manzilni 'students' ga o'zgartirganimiz ma'qul
 @RequiredArgsConstructor
 public class StudentImportController {
 

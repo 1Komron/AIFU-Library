@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.pdf_controller;
+package aifu.project.libraryweb.controller.admin_controller.pdf_controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 

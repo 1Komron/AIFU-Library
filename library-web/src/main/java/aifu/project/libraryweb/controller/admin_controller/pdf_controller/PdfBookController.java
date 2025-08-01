@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.pdf_controller;
+package aifu.project.libraryweb.controller.admin_controller.pdf_controller;
 
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.dto.ResponseMessage;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/pdfbooks")
+@RequestMapping("/api/admin/pdfbooks")
 @RequiredArgsConstructor
 public class PdfBookController {
 

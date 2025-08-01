@@ -47,6 +47,7 @@ public class AdminManagementService {
      */
     private final EmailService emailService;
 
+
     /**
      * Faollashtirish  codalarni vaqtinchalik saqlash uchun keshlash mexanezimi
      * Kalit (key) bu foydalanuvchi emaili

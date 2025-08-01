@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller;
+package aifu.project.libraryweb.controller.super_admin_controller;
 
 import aifu.project.common_domain.dto.AccountActivationRequest;
 import aifu.project.common_domain.dto.AdminCreateRequest;
@@ -14,28 +14,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
-
 @RestController
-@RequestMapping("/api/admins")
+@RequestMapping("/api/super-admin/admins")
 @RequiredArgsConstructor
 @Slf4j // Bu klassda ham log yozish foydali
-public class AdministratorController {
+public class AdminController {
 
 
     private final AdminManagementService adminManagementService;
 
 
-    @PostMapping
-    @PreAuthorize("hasRole('LIBRARIAN')")
-    public ResponseEntity<ResponseMessage> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
-        log.info("HTTP Request: POST /api/admins, body: {}", request.getEmail());
-        AdminResponse responseDto = adminManagementService.createAdmin(request);
-        ResponseMessage response = new ResponseMessage(
-                true,
-                "Admin (nofaol) muvaffaqiyatli yaratildi. Faollashtirish kodi yuborildi.",
-                responseDto
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+    @GetMapping
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "asc") String sortDirection){
+        return null;
     }
 
 

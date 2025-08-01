@@ -4,6 +4,7 @@ package aifu.project.libraryweb.service;
 import aifu.project.common_domain.dto.AccountActivationRequest;
 import aifu.project.common_domain.dto.AdminCreateRequest;
 import aifu.project.common_domain.dto.AdminResponse;
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.entity.enums.Role;
 import aifu.project.common_domain.exceptions.EmailAlreadyExistsException;
@@ -11,6 +12,9 @@ import aifu.project.libraryweb.repository.LibrarianRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.protocol.HTTP;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +24,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 /**
-    * Bu service SuperAdmin  (Librarian)  tomonidan oddiy adminlardi boshqarish uchun
-    * muljallangan barcha beznis operatsiyalarni o'z ichiga oladi.
-    * U yangi admin yaratish va ulardi accountlarini boshqarish uchun ma'suldir.
-    * @author Alisher
-    */
+ * Bu service SuperAdmin  (Librarian)  tomonidan oddiy adminlardi boshqarish uchun
+ * muljallangan barcha beznis operatsiyalarni o'z ichiga oladi.
+ * U yangi admin yaratish va ulardi accountlarini boshqarish uchun ma'suldir.
+ *
+ * @author Alisher
+ */
 
 @Slf4j
 @Service
@@ -57,7 +62,7 @@ public class AdminManagementService {
 
     private static final long CODE_EXPIRY_TIME_MS = 5 * 60 * 1000;
 
-    public AdminResponse createAdmin(AdminCreateRequest request) {
+    public ResponseEntity<ResponseMessage> createAdmin(AdminCreateRequest request) {
         log.info("yangi admin yaratish jarayoni boshlandi: email={}", request.getEmail());
 
         if (librarianRepository.existsByEmail(request.getEmail())) {
@@ -94,13 +99,21 @@ public class AdminManagementService {
         log.info("Faollashtirish kodi muvaffaqiyatli yuborildi: email={}", request.getEmail());
 
         // 5-NATIJANI QAYTARISH: Controller'ga xavfsiz DTO'ni qaytaramiz.
-        return AdminResponse.builder()
+        AdminResponse response = AdminResponse.builder()
                 .id(savedAdmin.getId())
                 .name(savedAdmin.getName())
                 .surname(savedAdmin.getSurname())
                 .email(savedAdmin.getEmail())
                 .role(savedAdmin.getRole().name())
                 .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        new ResponseMessage
+                                (true,
+                                        "Yangi admin muvaffaqiyatli yaratildi va faollashtirish kodi yuborildi!",
+                                        response)
+                );
 
     }
 
@@ -120,13 +133,13 @@ public class AdminManagementService {
         Map.Entry<String, Long> entry = activationCodeCache.get(email);
 
         //Kodni vaqtini tekshirish
-            if(entry == null || !entry.getKey().equals(code) || System.currentTimeMillis() - entry.getValue() >CODE_EXPIRY_TIME_MS){
-                // Agar kod noto'g'ri yoki muddati o'tgan bo'lsa, uni keshdan o'chiramiz
-                // va xatolik "otamiz". Bu foydalanuvchiga qayta urinib ko'rishga majbur qiladi.
-                activationCodeCache.remove(email);
-                log.warn("Faollashtirishda xatolik: cod notug'ri yoki muddati o'tgan. email={}",email);
-                throw new IllegalArgumentException("Faollashtirish kodi notug'ri yoki muddati o'tgan!");
-            }
+        if (entry == null || !entry.getKey().equals(code) || System.currentTimeMillis() - entry.getValue() > CODE_EXPIRY_TIME_MS) {
+            // Agar kod noto'g'ri yoki muddati o'tgan bo'lsa, uni keshdan o'chiramiz
+            // va xatolik "otamiz". Bu foydalanuvchiga qayta urinib ko'rishga majbur qiladi.
+            activationCodeCache.remove(email);
+            log.warn("Faollashtirishda xatolik: cod notug'ri yoki muddati o'tgan. email={}", email);
+            throw new IllegalArgumentException("Faollashtirish kodi notug'ri yoki muddati o'tgan!");
+        }
 
         // BAZADAN FOYDALANUVCHINI TOPISH
         // Bizga aynan nofaol bo'lgan foydalanuvchi kerak.

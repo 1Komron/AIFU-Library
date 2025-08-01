@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.repository;
 
 import aifu.project.common_domain.entity.Student;
-import aifu.project.common_domain.entity.enums.Role;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,24 +14,26 @@ import java.util.Set;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    @Query("select count(*) from Student s where s.role = 'USER' and s.isDeleted = false")
+    @Query("select count(*) from Student s where s.isDeleted = false")
     long getStudentsCount();
 
-    Page<Student> findByRoleAndIsDeletedFalse(Role role, Pageable pageable);
+    Page<Student> findByIsDeletedFalse(Pageable pageable);
 
-    Page<Student> findByRoleAndIsActiveAndIsDeletedFalse(Role role, boolean active, Pageable pageable);
-
-    Page<Student> findByIdAndRoleAndIsDeletedFalse(Long id, Role role, Pageable pageable);
-
-//    Page<Student> findByPhoneAndRoleAndIsDeletedFalse(String phone, Role role, Pageable pageable);
+    Page<Student> findByIdAndIsDeletedFalse(Long id, Pageable pageable);
 
     Optional<Student> findByCardNumberAndIsActiveTrueAndIsDeletedFalse(String cardNumber);
 
 
-    @Query ("select s.passportCode from Student s")
+    @Query("select s.passportCode from Student s")
     Set<String> findAllPassportCodes();
 
     Optional<Student> findByIdAndIsDeletedFalse(Long userId);
 
-    Page<Student> findByCardNumberAndRoleAndIsDeletedFalse(String cardNumber, Role role, Pageable pageable);
+    Page<Student> findByCardNumberAndIsDeletedFalse(String cardNumber, Pageable pageable);
+
+    Page<Student> findByNameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
+
+    Page<Student> findBySurnameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
+
+    Page<Student> findByIsActiveAndIsDeletedFalse(boolean b, Pageable pageable);
 }

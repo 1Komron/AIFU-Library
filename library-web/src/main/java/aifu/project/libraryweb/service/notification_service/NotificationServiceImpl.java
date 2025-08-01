@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service.bot_service;
+package aifu.project.libraryweb.service.notification_service;
 
 import aifu.project.common_domain.dto.notification_dto.*;
 import aifu.project.common_domain.entity.Notification;
@@ -20,11 +20,12 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
 
     private static final String NOTIFICATION_TIME = "notificationTime";
 
+    @Override
     public ResponseEntity<ResponseMessage> deleteNotification(Long notificationId) {
         Notification notification = notificationRepository.findNotificationById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException("Notification not found by id: " + notificationId));
@@ -34,24 +35,17 @@ public class NotificationService {
         return ResponseEntity.ok(new ResponseMessage(true, "Notification deleted successfully", null));
     }
 
-    public ResponseEntity<ResponseMessage> getUnreadNotifications(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
-        Page<Notification> page = notificationRepository.findNotificationByIsRead(false, pageable);
 
-        if (page.getTotalElements() == 0)
-            return ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .body(new ResponseMessage(false, "No unread notifications", null));
+    @Override
+    public ResponseEntity<ResponseMessage> getAllNotifications(int pageNumber, int pageSize, String filter, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, NOTIFICATION_TIME));
 
-        Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", getShortDTO(page.getContent()));
-
-        return ResponseEntity.ok(new ResponseMessage(true, "All unread notifications", map));
-    }
-
-    public ResponseEntity<ResponseMessage> getAllNotifications(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.DESC, NOTIFICATION_TIME));
-        Page<Notification> page = notificationRepository.findAll(pageable);
+        Page<Notification> page = switch (filter.toLowerCase()) {
+            case "unread" -> notificationRepository.findNotificationByIsRead(false, pageable);
+            case "read" -> notificationRepository.findNotificationByIsRead(true, pageable);
+            default -> notificationRepository.findAll(pageable);
+        };
 
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", getShortDTO(page.getContent()));
@@ -59,14 +53,10 @@ public class NotificationService {
         return ResponseEntity.ok(new ResponseMessage(true, "All notifications", map));
     }
 
+    @Override
     public ResponseEntity<ResponseMessage> getDetails(String notificationId) {
-        Notification notification;
-        try {
-            notification = notificationRepository.findNotificationById(Long.parseLong(notificationId))
-                    .orElseThrow(() -> new NotificationNotFoundException("Not found by id: " + notificationId));
-        } catch (ClassCastException e) {
-            throw new NotificationNotFoundException("Not found by id: " + notificationId);
-        }
+        Notification notification = notificationRepository.findNotificationById(Long.parseLong(notificationId))
+                .orElseThrow(() -> new NotificationNotFoundException("Not found by id: " + notificationId));
 
         notification.setRead(true);
         notificationRepository.save(notification);

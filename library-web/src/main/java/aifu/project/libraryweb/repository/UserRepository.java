@@ -16,9 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
   /*  @Query("select count(*) from User u where u.role = 'USER' and u.isDeleted = false")
     long getUsersCount();
 
-    Page<User> findByRoleAndIsDeletedFalse(Role role, Pageable pageable);
+    Page<User> findByIsDeletedFalse(Role role, Pageable pageable);
 
-    Page<User> findByRoleAndIsActiveAndIsDeletedFalse(Role role, boolean active, Pageable pageable);
+    Page<User> findByIsActiveAndIsDeletedFalse(Role role, boolean active, Pageable pageable);
 
     Page<User> findByIdAndRoleAndIsDeletedFalse(Long id, Role role, Pageable pageable);
 

@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.booking_serivce;
 
 
 import aifu.project.common_domain.dto.booking_dto.ExtendBookingDTO;
@@ -8,6 +8,7 @@ import aifu.project.common_domain.dto.booking_dto.BorrowBookDTO;
 import aifu.project.common_domain.dto.booking_dto.ReturnBookDTO;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public interface BookingService {
 
     boolean hasBookingForUser(Long userId);
 
-    void setStudentService(StudentService studentService);
+    void setStudentService(StudentServiceImpl studentService);
 
     ResponseEntity<ResponseMessage> getBookingByStudentId(Long id, int pageNum, int pageSize);
 

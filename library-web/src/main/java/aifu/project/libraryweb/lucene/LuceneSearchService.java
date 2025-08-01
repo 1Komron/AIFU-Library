@@ -31,7 +31,8 @@ public class LuceneSearchService {
         return FSDirectory.open(Path.of("lucene-index/" + type));
     }
 
-    public ResponseEntity<ResponseMessage> searchBooks(String queryStr, String type) throws Exception {
+    public ResponseEntity<ResponseMessage> searchBooks(String queryStr) throws Exception {
+        String type = "electronic";
         String layout = KeyboardLayoutCorrector.correctLayout(queryStr);
         String layoutReverse = KeyboardLayoutCorrector.correctLayoutReverse(queryStr);
 

@@ -2,6 +2,8 @@ package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.lucene.LuceneSearchService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,9 @@ public class LuceneController {
     private final LuceneSearchService searchService;
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> search(@NotNull @RequestParam String query,
-                                                  @NotNull @RequestParam String type) throws Exception {
-        return searchService.searchBooks(query, type);
+    @Operation(summary = "Kitoblarni qidirish")
+    @ApiResponse(responseCode = "200", description = "Qidirish muvaffaqiyatli bajarildi")
+    public ResponseEntity<ResponseMessage> search(@NotNull @RequestParam String query) throws Exception {
+        return searchService.searchBooks(query);
     }
 }

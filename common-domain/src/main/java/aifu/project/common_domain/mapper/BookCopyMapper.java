@@ -23,6 +23,7 @@ public class BookCopyMapper {
         dto.setShelfLocation(entity.getShelfLocation());
         dto.setNotes(entity.getNotes());
         dto.setBaseBookId(entity.getBook().getId());
+        dto.setIsTaken(entity.isTaken());
         return dto;
     }
 

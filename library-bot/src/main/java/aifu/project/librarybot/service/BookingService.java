@@ -173,9 +173,6 @@ public class BookingService {
     }
 
     private String getBookingStatusMessage(Status status, String lang) {
-        if (status == Status.WAITING_APPROVAL)
-            return MessageUtil.get(MessageKeys.BOOKING_STATUS_WAITING_APPROVAL, lang);
-
         if (status == Status.APPROVED)
             return MessageUtil.get(MessageKeys.BOOKING_STATUS_APPROVED, lang);
 

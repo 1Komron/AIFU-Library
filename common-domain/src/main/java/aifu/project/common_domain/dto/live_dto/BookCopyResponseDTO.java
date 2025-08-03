@@ -17,4 +17,6 @@ public class BookCopyResponseDTO {
     private String notes;
 
     private Integer baseBookId;
+
+    private Boolean isTaken;
 }

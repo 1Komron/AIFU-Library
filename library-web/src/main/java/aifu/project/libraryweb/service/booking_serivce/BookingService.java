@@ -15,11 +15,11 @@ import java.util.List;
 
 public interface BookingService {
 
-    ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize);
+    ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize, String sortDirection);
 
     ResponseEntity<ResponseMessage> getBooking(Long id);
 
-    ResponseEntity<ResponseMessage> filterByStatus(String status, int pageNum, int pageSize);
+    ResponseEntity<ResponseMessage> search(String field, String query, String filter, int pageNum, int pageSize, String sortDirection);
 
     ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request);
 
@@ -34,8 +34,6 @@ public interface BookingService {
     boolean hasBookingForUser(Long userId);
 
     void setStudentService(StudentServiceImpl studentService);
-
-    ResponseEntity<ResponseMessage> getBookingByStudentId(Long id, int pageNum, int pageSize);
 
     ResponseEntity<ResponseMessage> extendBooking(ExtendBookingDTO request);
 }

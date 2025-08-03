@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.service.base_book_service;
 
 
-import aifu.project.common_domain.dto.BaseBookShortDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookShortDTO;
 import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
@@ -50,7 +50,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         BaseBook entity = baseBookRepository.save(BaseBookMapper.toEntity(dto, category));
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
 
-        log.info("Base book created: {}", entity);
+        log.info("Base book yaratildi: {}", entity);
 
         try {
             luceneIndexService.indexBaseBooks(entity);
@@ -59,7 +59,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseMessage(true, "Base book create successfully", responseDTO));
+                .body(new ResponseMessage(true, "Base book muvaffaqiyatli yaratildi", responseDTO));
     }
 
     @Override
@@ -72,7 +72,9 @@ public class BaseBookServiceImpl implements BaseBookService {
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", list);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book list", map));
+        log.info("Base book ro'yxati olindi: ro'yxat={},  pageNumber={}, pageSize={}", list, pageNumber + 1, pageSize);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book ro'yxati", map));
     }
 
     @Override
@@ -83,13 +85,15 @@ public class BaseBookServiceImpl implements BaseBookService {
         BaseBookResponseDTO dto = BaseBookMapper.toResponseDTO(entity);
         Map<String, Long> mapCount = bookCopyService.getTotalAndTakenCount(entity.getId());
 
+        log.info("ID {} bo'yicha base book ma'lumotlari olindi: {}", id, dto);
+
         Map<String, Object> map = Map.of(
                 "book", dto,
                 "totalCount", mapCount.get("total"),
                 "takenCount", mapCount.get("taken")
         );
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book by id: " + id, map));
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book by ID: " + id, map));
     }
 
     @Override
@@ -102,10 +106,10 @@ public class BaseBookServiceImpl implements BaseBookService {
             Object value = entry.getValue();
 
             if (key == null)
-                throw new IllegalArgumentException("Key is null");
+                throw new IllegalArgumentException("Key null");
 
             if (value == null)
-                throw new IllegalArgumentException("Value is null");
+                throw new IllegalArgumentException("Value null");
 
             switch (key) {
                 case "title" -> entity.setTitle((String) value);
@@ -125,13 +129,13 @@ public class BaseBookServiceImpl implements BaseBookService {
                             .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
                     entity.setCategory(category);
                 }
-                default -> throw new IllegalArgumentException("Invalid field: " + key);
+                default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + key);
             }
         }
 
         baseBookRepository.save(entity);
 
-        log.info("Base book updated: {}.\nUpdated fields: {}", entity, updates.keySet());
+        log.info("Base book tahrirlandi: {}.\nTahrirlanga field lar: {}", entity, updates.keySet());
 
         try {
             luceneIndexService.indexBaseBooks(entity);
@@ -140,7 +144,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         }
 
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
-        return ResponseEntity.ok(new ResponseMessage(true, "Successfully updated", responseDTO));
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
 
@@ -153,14 +157,16 @@ public class BaseBookServiceImpl implements BaseBookService {
                 .stream()
                 .allMatch(BookCopy::isDeleted);
 
-        if (!canDelete)
+        if (!canDelete) {
+            log.warn("Base bookni o'chirishga urinish: {}, lekin book copy lar mavjud", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(true, "Cannot be deleted. Copies of the book are available", id));
+                    .body(new ResponseMessage(true, "Base bookni o'chirib bo'lmayidi. BookCopy lar mavjud", id));
+        }
 
         entity.setDeleted(true);
         baseBookRepository.save(entity);
 
-        log.info("Base book deleted by id: {}", id);
+        log.info("Base book o'chirildi ID: {}", id);
 
         try {
             luceneIndexService.deleteBaseBookIndex(id);
@@ -168,7 +174,7 @@ public class BaseBookServiceImpl implements BaseBookService {
             log.error(e.getMessage());
         }
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book deleted successfully", id));
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book muvaffaqiyatli o'chirildi", id));
     }
 
     @Override
@@ -186,7 +192,7 @@ public class BaseBookServiceImpl implements BaseBookService {
             case "isbn" -> baseBookRepository.searchByIsbn(query, pageable);
             case "udc" -> baseBookRepository.searchByUdc(query, pageable);
             case "series" -> baseBookRepository.searchSeries(query, pageable);
-            default -> throw new IllegalArgumentException("Invalid field: " + field);
+            default -> throw new IllegalArgumentException("Mavjud bo'lamagan field: " + field);
         };
 
         List<BaseBookShortDTO> list = createBaseBookShortDTO(page.getContent());
@@ -194,7 +200,10 @@ public class BaseBookServiceImpl implements BaseBookService {
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", list);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book search by field: " + field, map));
+        log.info("Base book qidirish amalga oshirildi: query={}, field={}, pageNumber={}, pageSize={}", query, field, pageNumber + 1, pageSize);
+        log.info("Base book qidirish natijalari: {}", list);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Base book ni '%s' fieldi orqali qidirish".formatted(field), map));
     }
 
     @Override

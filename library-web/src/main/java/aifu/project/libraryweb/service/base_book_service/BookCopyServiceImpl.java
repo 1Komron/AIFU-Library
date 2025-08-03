@@ -42,11 +42,11 @@ public class BookCopyServiceImpl implements BookCopyService {
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
         entity = bookCopyRepository.save(entity);
 
-        log.info("BookCopy created: {}", entity);
+        log.info("BookCopy yaratildi: {}", entity);
 
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(entity);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseMessage(true, "BookCopy created successfully", responseDTO));
+                .body(new ResponseMessage(true, "BookCopy muvaffaqiyatli yaratildi", responseDTO));
     }
 
     @Override
@@ -57,10 +57,10 @@ public class BookCopyServiceImpl implements BookCopyService {
         updates.forEach((key, value) -> {
 
             if (value == null)
-                throw new IllegalArgumentException("BookCopy update. Value is null");
+                throw new IllegalArgumentException("BookCopy tahrirlash. Value null");
 
             if (key == null) {
-                throw new IllegalArgumentException("BookCopy update. Key is null");
+                throw new IllegalArgumentException("BookCopy tahrirlash. Key null");
             }
 
             switch (key) {
@@ -74,16 +74,17 @@ public class BookCopyServiceImpl implements BookCopyService {
 
                     bookCopy.setBook(baseBook);
                 }
-                default -> throw new IllegalArgumentException("BookCopy update. Invalid field. Key is: " + key);
+                default ->
+                        throw new IllegalArgumentException("BookCopy tahrirlash. Mavjud bo'lmagan field. Field: " + key);
             }
         });
 
-        log.info("BookCopy updated: {}.\nUpdated fields: {}", bookCopy, updates.keySet());
+        log.info("BookCopy tahrirladni: {}.\nTahrirlangan field lar: {}", bookCopy, updates.keySet());
 
         bookCopyRepository.save(bookCopy);
 
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(bookCopy);
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy updated successfully", responseDTO));
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
     @Override
@@ -96,6 +97,9 @@ public class BookCopyServiceImpl implements BookCopyService {
                 .map(BookCopyMapper::toResponseDTO)
                 .toList();
 
+        log.info("BookCopy ro'yxati olindi. Sahifa: {}, Hajmi: {}, Tartiblash: {}",
+                page.getNumber() + 1, page.getSize(), sortDirection);
+
         Map<String, Object> map = Map.of(
                 "list", list,
                 "currentPage", page.getNumber() + 1,
@@ -103,13 +107,15 @@ public class BookCopyServiceImpl implements BookCopyService {
                 "totalElements", page.getTotalElements()
         );
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy list", map));
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy ro'yxati", map));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
         BookCopy entity = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
+
+        log.info("{} ID bo'yicha BookCopy ma'lumotlari olindi: {}", id, entity);
 
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(entity);
 
@@ -128,12 +134,15 @@ public class BookCopyServiceImpl implements BookCopyService {
 
             case "epc" -> bookCopyRepository.findByEpcAndIsDeletedFalse(query, pageable);
 
-            default -> throw new IllegalArgumentException("BookCopy search. Invalid field: " + field);
+            default -> throw new IllegalArgumentException("BookCopy qidirish. Mavjud bo'lmagan field: " + field);
         };
 
         List<BookCopyResponseDTO> list = page.getContent().stream()
                 .map(BookCopyMapper::toResponseDTO)
                 .toList();
+
+        log.info("BookCopy ro'yxati olindi (Search). Sahifa: {}, Hajmi: {}, Tartiblash: {}",
+                page.getNumber() + 1, page.getSize(), sortDirection);
 
         Map<String, Object> map = Map.of(
                 "list", list,
@@ -142,7 +151,7 @@ public class BookCopyServiceImpl implements BookCopyService {
                 "totalElements", page.getTotalElements()
         );
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy list", map));
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy ro'yxati", map));
     }
 
     @Override
@@ -151,14 +160,14 @@ public class BookCopyServiceImpl implements BookCopyService {
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
         if (bookCopy.isTaken())
-            throw new BookCopyIsTakenException("BookCopy has been taken. Id: " + bookCopy.getId());
+            throw new BookCopyIsTakenException("BookCopy Student da. Id: " + bookCopy.getId());
 
         bookCopy.setDeleted(true);
         bookCopyRepository.save(bookCopy);
 
-        log.info("BookCopy deleted by id: {}.", id);
+        log.info("ID: {} bo'lgan BookCopy o'chirildi.", id);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy deleted", id));
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy o'chirildi", id));
     }
 
 
@@ -180,13 +189,15 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public BookCopy findByEpc(String epc) {
         return bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
-                .orElseThrow(() -> new BookCopyNotFoundException("BookCopy not found by EPC: " + epc));
+                .orElseThrow(() -> new BookCopyNotFoundException("{} -> EPC ega BookCopy topilmadi: " + epc));
     }
 
     @Override
-    public void updateStatus(BookCopy bookCopy) {
-        bookCopy.setTaken(false);
+    public void updateStatus(BookCopy bookCopy, boolean isTaken) {
+        bookCopy.setTaken(isTaken);
         bookCopyRepository.save(bookCopy);
+
+        log.info("BookCopy status yangilandi. ID: {}, Taken: {}", bookCopy.getId(), isTaken);
     }
 
     @Override

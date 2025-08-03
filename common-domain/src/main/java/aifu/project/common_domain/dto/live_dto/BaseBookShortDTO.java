@@ -1,6 +1,4 @@
-package aifu.project.common_domain.dto;
-
-import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
+package aifu.project.common_domain.dto.live_dto;
 
 public record BaseBookShortDTO(
         Integer id,

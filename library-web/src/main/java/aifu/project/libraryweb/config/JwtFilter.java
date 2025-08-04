@@ -1,7 +1,7 @@
 package aifu.project.libraryweb.config;
 
 import aifu.project.libraryweb.service.CustomUserDetailsService;
-import aifu.project.libraryweb.service.JwtService;
+import aifu.project.libraryweb.service.auth_serivce.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

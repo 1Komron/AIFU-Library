@@ -9,15 +9,21 @@ import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.entity.enums.Role;
 import aifu.project.common_domain.exceptions.EmailAlreadyExistsException;
 import aifu.project.libraryweb.repository.LibrarianRepository;
+import aifu.project.libraryweb.utils.Util;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.protocol.HTTP;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,6 +42,9 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 
 public class AdminManagementService {
+
+
+
 
     /**
      * Ma'lumotlar bazasidagi "librarians" jadvali bilan ishlash uchun.
@@ -162,4 +171,46 @@ public class AdminManagementService {
     }
 
 
+    public ResponseEntity<ResponseMessage> getAll(Integer page, Integer size, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--page, size, Sort.by(direction, "id"));
+        Page<Librarian> librarianPage = librarianRepository.findAll(pageable);
+
+        List<Librarian> content = librarianPage.getContent();
+        log.info("Adminlar ro'yxati. Ro'yxat: {}, Hajmi: {}", content, librarianPage.getTotalElements());
+
+        Map<String, Object> data = Util.getPageInfo(librarianPage);
+        data.put("data", content);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Adminlar ro'yxati", data));
+    }
+
+    public ResponseEntity<ResponseMessage> deleteAdmin(Long adminId) {
+
+        //o'chirish kerak bulgan foydalanuvchini topamiza
+        //Bizga aniq Role Admin  bulgan foydalanuvchi kerak
+
+        Librarian adminToDelete = librarianRepository
+                .findByIdAndRoleAndIsDeletedFalse(adminId, Role.ADMIN)
+                .orElseThrow(() -> {
+                    // Agar bu ID bilan Admin topilmasa yoki u SuperAdmin bo'lsa, xatolik beramiz.
+                    log.warn("O'chirish uchun Admin topilmadi yoki bu ID SuperAdminga tegishli: id={}", adminId);
+                    return new RuntimeException("Berilgan ID bilan Admin topilmadi."); // Yoki maxsus "AdminNotFoundException"
+                });
+
+        // 2-QADAM: "Yumshoq o'chirish" amalini bajaramz!
+        adminToDelete.setActive(true);
+
+        // O'zgarishni ma'lumotlar bazasiga saqlaymiz.
+        librarianRepository.save(adminToDelete);
+
+        log.info("Admin muvaffsaqiyatli o'chirildi: id={}, email={}", adminToDelete.getId(),adminToDelete.getEmail());
+
+        // 3-QADAM: Muvaffaqiyatli javobni Controller'ga qaytaramiz.
+
+        return ResponseEntity.ok(
+                new ResponseMessage(true,"Admin muvaffiqaytli o'chirildi!",adminId)
+        );
+
+    }
 }

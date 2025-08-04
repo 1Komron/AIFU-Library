@@ -8,7 +8,6 @@ import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.LibrarianRepository;
 import aifu.project.libraryweb.service.AdminManagementService;
-import aifu.project.libraryweb.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

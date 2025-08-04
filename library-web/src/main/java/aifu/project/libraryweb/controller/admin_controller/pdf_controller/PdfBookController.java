@@ -133,7 +133,7 @@ public class PdfBookController {
 
 
 
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/category/{id}")
     public ResponseEntity<ResponseMessage> getBooksByCategory(@PathVariable Integer categoryId) {
         try {
             List<PdfBookPreviewDTO> books = pdfBookService.getBooksByCategoryId(categoryId);

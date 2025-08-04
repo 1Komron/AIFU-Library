@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.auth_serivce;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

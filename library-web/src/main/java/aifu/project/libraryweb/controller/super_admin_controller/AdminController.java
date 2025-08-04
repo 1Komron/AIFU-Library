@@ -36,18 +36,35 @@ public class AdminController {
         return adminManagementService.createAdmin(request);
     }
 
+
     @GetMapping
-    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return null;
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "asc") String sortDirection,
+                                                  @RequestParam(defaultValue = "1") Integer pageNumber,
+                                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        return adminManagementService.getAll(pageNumber, pageSize, sortDirection);
     }
 
 
     @PostMapping("/activate")
-    @PreAuthorize("hasRole('LIBRARIAN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ResponseMessage> activateAccount(@Valid @RequestBody AccountActivationRequest request) {
         log.info("HTTP Request: POST /api/admins/activate, email: {}", request.getEmail());
         adminManagementService.activateAccount(request);
         return ResponseEntity.ok(new ResponseMessage(true, "Akkaunt muvaffaqiyatli faollashtirildi!", null));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Adminni o'chirish (yumshoq)")
+    @PreAuthorize("hasRole('SUPER_ADMIN')") // Bu yerda sizning rolingiz LIBRARIAN bo'lishi mumkin
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Admin muvaffaqiyatli o'chirildi"),
+            @ApiResponse(responseCode = "404", description = "Berilgan ID bilan Admin topilmadi"),
+    })
+    public ResponseEntity<ResponseMessage> deleteAdmin(@PathVariable Long id) {
+        log.info("Http Request: DELETE /api/super-admin/admins/{}",id);
+        // Asosiy ishni to'g'ridan-to'g'ri Service'ga topshiramiz.
+        // Xatoliklar GlobalExceptionHandler tomonidan ushlab olinadi.
+        return adminManagementService.deleteAdmin(id);
     }
 
 

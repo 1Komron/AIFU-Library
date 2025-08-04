@@ -222,10 +222,7 @@ public class BaseBookServiceImpl implements BaseBookService {
                             book.getId(),
                             book.getTitle(),
                             book.getAuthor(),
-                            new BaseBookCategoryDTO(
-                                    book.getCategory().getId(),
-                                    book.getCategory().getName()
-                            ),
+                            BaseBookCategoryDTO.toDTO(book.getCategory()),
                             book.getIsbn(),
                             stats.total(),
                             stats.taken()

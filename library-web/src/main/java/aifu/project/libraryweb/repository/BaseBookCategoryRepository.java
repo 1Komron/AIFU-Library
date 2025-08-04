@@ -25,4 +25,6 @@ public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCatego
 
     @Query("SELECT COUNT(c) > 0 FROM BaseBookCategory c WHERE LOWER(c.name) = LOWER(:name)")
     boolean existsByName(String name);
+
+    BaseBookCategory findByName(String name);
 }

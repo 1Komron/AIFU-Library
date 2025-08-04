@@ -40,7 +40,7 @@ public class BaseBookMapper {
         dto.setPageCount(entity.getPageCount());
         dto.setLanguage(entity.getLanguage());
         dto.setUdc(entity.getUdc());
-        dto.setCategory(new BaseBookCategoryDTO(entity.getCategory().getId(), entity.getCategory().getName()));
+        dto.setCategory(BaseBookCategoryDTO.toDTO(entity.getCategory()));
         return dto;
     }
 

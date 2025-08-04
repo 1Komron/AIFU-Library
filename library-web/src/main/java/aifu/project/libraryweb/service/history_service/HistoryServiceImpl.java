@@ -5,7 +5,9 @@ import aifu.project.common_domain.dto.histroy_dto.HistoryShortDTO;
 import aifu.project.common_domain.dto.histroy_dto.HistorySummaryDTO;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.History;
+import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.exceptions.HistoryNotFoundException;
+import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.HistoryRepository;
 import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,12 +32,17 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public void add(Booking booking) {
+        SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Librarian librarian = securityLibrarian.toBase();
+
         History history = new History();
         history.setUser(booking.getStudent());
         history.setBook(booking.getBook());
         history.setGivenAt(booking.getGivenAt());
         history.setDueDate(booking.getDueDate());
         history.setReturnedAt(LocalDate.now());
+        history.setIssuedBy(booking.getIssuedBy());
+        history.setReturnedBy(librarian);
         History save = historyRepository.save(history);
 
         log.info("Tarix qo'shildi: {}", save);

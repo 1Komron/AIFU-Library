@@ -10,6 +10,7 @@ aifu/project/common_domain/dto/notification_dto/NotificationExtendShortDTO.class
 aifu/project/common_domain/exceptions/EmailAlreadyExistsException.class
 aifu/project/common_domain/entity/Librarian.class
 aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO$CreateCategoryDTOBuilder.class
+aifu/project/common_domain/exceptions/HistoryNotFoundException.class
 aifu/project/common_domain/mapper/BaseBookCategoryMapper.class
 aifu/project/common_domain/dto/pdf_book_dto/CategorySearchCriteriaDTO$CategorySearchCriteriaDTOBuilder.class
 aifu/project/common_domain/dto/action_dto/WarningActionDTO.class
@@ -27,7 +28,6 @@ aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO$CategoryPreviewDT
 aifu/project/common_domain/exceptions/BookingNotFoundException.class
 aifu/project/common_domain/dto/statistic_dto/TopBookDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationShortDTO.class
-aifu/project/common_domain/dto/auth_dto/SignUpDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO$CategoryResponseDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.class
 aifu/project/common_domain/dto/booking_dto/BookingShortDTO.class
@@ -38,7 +38,7 @@ aifu/project/common_domain/entity/User.class
 aifu/project/common_domain/dto/statistic_dto/BookingsPerDayDTO.class
 aifu/project/common_domain/exceptions/BookCopyIsTakenException.class
 aifu/project/common_domain/exceptions/UserNotFoundException.class
-aifu/project/common_domain/entity/BookingRequest.class
+aifu/project/common_domain/exceptions/CategoryNotFoundException.class
 aifu/project/common_domain/dto/student_dto/StudentSummaryDTO.class
 aifu/project/common_domain/dto/live_dto/BookCopyCreateDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookUpdateDTO.class
@@ -48,8 +48,10 @@ aifu/project/common_domain/dto/pdf_book_dto/UpdateCategoryDTO.class
 aifu/project/common_domain/dto/PasswordChangeRequest.class
 aifu/project/common_domain/dto/BookPartList.class
 aifu/project/common_domain/entity/Category$CategoryBuilder.class
+aifu/project/common_domain/dto/histroy_dto/HistoryShortDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryCreateDTO$BaseBookCategoryCreateDTOBuilder.class
 aifu/project/common_domain/exceptions/BookCopyNotFoundException.class
+aifu/project/common_domain/dto/live_dto/BaseBookShortDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookSearchCriteriaDTO$PdfBookSearchCriteriaDTOBuilder.class
 aifu/project/common_domain/entity/BaseBookCategory.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO.class
@@ -63,17 +65,16 @@ aifu/project/common_domain/dto/search_dto/SearchPart.class
 aifu/project/common_domain/dto/AdminResponse.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryResponseDTO$BaseBookCategoryResponseDTOBuilder.class
 aifu/project/common_domain/dto/student_dto/StudentDTO.class
-aifu/project/common_domain/dto/BaseBookShortDTO.class
 aifu/project/common_domain/dto/booking_dto/ReturnBookDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookCreateDTO$PdfBookCreateDTOBuilder.class
 aifu/project/common_domain/exceptions/UserDeletionException.class
 aifu/project/common_domain/dto/ResponseMessage.class
 aifu/project/common_domain/dto/pdf_book_dto/CategorySearchCriteriaDTO.class
+aifu/project/common_domain/dto/histroy_dto/HistorySummaryDTO.class
 aifu/project/common_domain/dto/booking_dto/ExtendBookingDTO.class
 aifu/project/common_domain/exceptions/CategoryDeletionException.class
 aifu/project/common_domain/entity/BookCopy$BookCopyBuilder.class
-aifu/project/common_domain/entity/enums/BookingRequestStatus.class
 aifu/project/common_domain/entity/PdfBook.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookUpdateDTO.class
 aifu/project/common_domain/entity/enums/NotificationType.class
@@ -90,6 +91,7 @@ aifu/project/common_domain/dto/BookCopyStats.class
 aifu/project/common_domain/entity/Student.class
 aifu/project/common_domain/dto/action_dto/ExtendAcceptActionDTO.class
 aifu/project/common_domain/dto/action_dto/ExtendRejectActionDTO.class
+aifu/project/common_domain/dto/live_dto/BaseBookCategoryShortDTO.class
 aifu/project/common_domain/dto/booking_dto/BookingResponse.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookPreviewDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO.class
@@ -103,9 +105,12 @@ aifu/project/common_domain/entity/BookCopy.class
 aifu/project/common_domain/exceptions/RequestNotFoundException.class
 aifu/project/common_domain/exceptions/BaseBookNotFoundException.class
 aifu/project/common_domain/dto/PasswordResetRequest.class
+aifu/project/common_domain/dto/AccountActivationRequest.class
 aifu/project/common_domain/dto/UpdateCategoryRequest.class
 aifu/project/common_domain/dto/CreateCategoryRequest.class
+aifu/project/common_domain/dto/histroy_dto/HistoryBookDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookSearchCriteriaDTO.class
+aifu/project/common_domain/dto/pdf_book_dto/CategoryShortDTO.class
 aifu/project/common_domain/exceptions/LoginBadCredentialsException.class
 aifu/project/common_domain/dto/PartList.class
 aifu/project/common_domain/entity/Notification.class

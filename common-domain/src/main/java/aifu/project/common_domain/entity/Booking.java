@@ -25,10 +25,17 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Librarian issuedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Librarian extendedBy;
+
+    private LocalDate extendedAt;
+
     @PrePersist
     public void initializeDates() {
         this.givenAt = LocalDate.now();
-        this.dueDate = this.givenAt.plusDays(5);
     }
 
 }

@@ -4,11 +4,13 @@ import aifu.project.common_domain.dto.booking_dto.*;
 import aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
+import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.BookingRepository;
 import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,7 +138,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public void createBooking(Student student, BookCopy bookCopy) {
+        SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Librarian librarian = securityLibrarian.toBase();
         Booking booking = new Booking();
+        booking.setIssuedBy(librarian);
         booking.setStudent(student);
         booking.setBook(bookCopy);
         Booking save = bookingRepository.save(booking);
@@ -179,6 +185,9 @@ public class BookingServiceImpl implements BookingService {
         if (extendDays == null || extendDays < 1) {
             throw new IllegalArgumentException("Noto'g'ri uzaytirish kunlari kiritildi: " + extendDays);
         }
+        SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Librarian librarian = securityLibrarian.toBase();
+
         LocalDate dueDate = booking.getDueDate();
         LocalDate now = LocalDate.now();
 
@@ -186,6 +195,9 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(Status.APPROVED);
         booking.setDueDate(newDueDate);
+
+        booking.setExtendedBy(librarian);
+        booking.setExtendedAt(LocalDate.now());
 
         bookingRepository.save(booking);
     }

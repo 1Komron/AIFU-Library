@@ -18,6 +18,12 @@ public class History {
     @ManyToOne(fetch = FetchType.LAZY)
     private BookCopy book;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Librarian issuedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Librarian returnedBy;
+
     private LocalDate givenAt;
     private LocalDate dueDate;
     private LocalDate returnedAt;

@@ -3,6 +3,7 @@ package aifu.project.libraryweb.service.base_book_service;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.CreateCategoryRequest;
 import aifu.project.common_domain.dto.UpdateCategoryRequest;
+import aifu.project.common_domain.dto.live_dto.BaseBookCategoryShortDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.exceptions.BaseBookCategoryNotFoundException;
@@ -86,7 +87,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     @Override
     public ResponseEntity<ResponseMessage> getList(String sortDirection) {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        List<BaseBookCategoryDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(direction, "id"));
+        List<BaseBookCategoryShortDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(direction, "id"));
 
         log.info("BaseBookCategory ro'yxati olindi. Ro'yxat: {}.  Elementlar soni: {}", list, list.size());
 

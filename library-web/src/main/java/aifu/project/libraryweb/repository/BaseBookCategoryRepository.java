@@ -1,6 +1,6 @@
 package aifu.project.libraryweb.repository;
 
-import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookCategoryShortDTO;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,11 +12,16 @@ import java.util.Optional;
 
 @Repository
 public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCategory, Integer> {
-    List<BaseBookCategoryDTO> findAllByIsDeletedFalse(Sort sort);
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.live_dto.BaseBookCategoryShortDTO(c.id, c.name, COUNT(b))
+                        FROM BaseBookCategory c
+                            LEFT JOIN BaseBook b ON b.category = c AND b.isDeleted = false
+                            WHERE c.isDeleted = false
+                            GROUP BY c.id, c.name
+            """)
+    List<BaseBookCategoryShortDTO> findAllByIsDeletedFalse(Sort sort);
 
     Optional<BaseBookCategory> findByIdAndIsDeletedFalse(Integer id);
-
-    boolean existsByIdAndIsDeletedFalse(Integer categoryId);
 
     @Query("SELECT COUNT(c) > 0 FROM BaseBookCategory c WHERE LOWER(c.name) = LOWER(:name)")
     boolean existsByName(String name);

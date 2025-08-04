@@ -62,10 +62,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<ResponseMessage> getAll(String sortDirection) {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        List<CategoryResponseDTO> categories = categoryRepository.findAll(Sort.by(direction, "id"))
-                .stream()
-                .map(CategoryMapper::toDto)
-                .toList();
+
+        List<CategoryShortDTO> categories = categoryRepository.findAllCategories(Sort.by(direction, "id"));
 
         log.info("categories: {}", categories);
         log.info("categories size: {}", categories.size());

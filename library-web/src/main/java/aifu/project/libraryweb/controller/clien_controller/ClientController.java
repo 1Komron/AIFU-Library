@@ -72,6 +72,8 @@ public class ClientController {
         );
     }
 
+
+
     @GetMapping("/download/{id}")
     @Operation(
             summary = "PDF kitobni yuklab olish",

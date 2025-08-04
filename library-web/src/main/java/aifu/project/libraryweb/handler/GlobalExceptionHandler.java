@@ -111,4 +111,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(HistoryNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleHistoryNotFoundException(HistoryNotFoundException e) {
+        log.error("History not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 }

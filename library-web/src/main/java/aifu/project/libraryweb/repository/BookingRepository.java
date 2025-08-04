@@ -15,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -55,8 +56,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             """)
     Optional<BookingSummaryDTO> findSummary(@Param("id") Long id);
 
-    Page<BookingShortDTO> findShortByStatus(Status statusEnum, Pageable pageable);
-
     Optional<Booking> findByStudentAndBook(Student student, BookCopy bookCopy);
 
     @Query("""
@@ -71,6 +70,90 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
 
     boolean existsBookingByStudent_Id(Long userId);
+    
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                base.title,
+                base.author,
+                b.dueDate,
+                b.givenAt,
+                b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            WHERE b.student.id = :id
+            and b.status in :statuses
+            """)
+    Page<BookingShortDTO> findAllBookingShortDTOByStudentId(Long id, List<Status> statuses, Pageable pageable);
 
-//    Page<Booking> findByStudent_IdAndIsDeletedFalse(Long id, Pageable pageable);
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                base.title,
+                base.author,
+                b.dueDate,
+                b.givenAt,
+                b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            WHERE b.student.cardNumber = :query
+            AND b.status in :statuses
+            """)
+    Page<BookingShortDTO> findAllBookingShortDTOByStudentCardNumber(String query, List<Status> statuses, Pageable pageable);
+
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                base.title,
+                base.author,
+                b.dueDate,
+                b.givenAt,
+                b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            WHERE LOWER(b.student.name) LIKE LOWER(CONCAT('%', :query, '%'))
+            AND b.status in :statuses
+            """)
+    Page<BookingShortDTO> findAllBookingShortDTOByStudentName(String query, List<Status> statuses, Pageable pageable);
+
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                base.title,
+                base.author,
+                b.dueDate,
+                b.givenAt,
+                b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            WHERE copy.epc = :query
+            AND b.status in :statuses
+            """)
+    Page<BookingShortDTO> findAllBookingShortDTOByBookEpc(String query, List<Status> statuses, Pageable pageable);
+
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                base.title,
+                base.author,
+                b.dueDate,
+                b.givenAt,
+                b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            WHERE copy.inventoryNumber = :query
+            AND b.status in :statuses
+            """)
+    Page<BookingShortDTO> findAllBookingShortDTOByBookInventoryNumber(String query, List<Status> statuses, Pageable pageable);
+
 }

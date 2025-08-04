@@ -30,5 +30,5 @@ public interface BookCopyService {
 
     BookCopy findByEpc(String epc);
 
-    void updateStatus(BookCopy bookCopy);
+    void updateStatus(BookCopy bookCopy, boolean isTaken);
 }

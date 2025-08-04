@@ -15,7 +15,7 @@ public class History {
     @ManyToOne(fetch = FetchType.LAZY)
     private Student user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private BookCopy book;
 
     private LocalDate givenAt;

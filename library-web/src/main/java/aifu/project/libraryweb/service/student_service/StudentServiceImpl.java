@@ -80,16 +80,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UserNotFoundException("User not found by id:" + id));
 
-        StudentSummaryDTO dto = new StudentSummaryDTO(
-                student.getId(),
-                student.getName(),
-                student.getSurname(),
-                student.getDegree(),
-                student.getFaculty(),
-                student.getCardNumber(),
-                student.getChatId(),
-                student.isActive()
-        );
+        StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Detailed user information", dto));
     }
@@ -119,7 +110,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Student findByCardNumber(String cardNumber) {
-        return studentRepository.findByCardNumberAndIsActiveTrueAndIsDeletedFalse(cardNumber)
+        return studentRepository.findByCardNumberAndIsDeletedFalse(cardNumber)
                 .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
     }
 

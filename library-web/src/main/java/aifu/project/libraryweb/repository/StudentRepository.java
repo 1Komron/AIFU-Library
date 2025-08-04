@@ -21,7 +21,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Page<Student> findByIdAndIsDeletedFalse(Long id, Pageable pageable);
 
-    Optional<Student> findByCardNumberAndIsActiveTrueAndIsDeletedFalse(String cardNumber);
+    Optional<Student> findByCardNumberAndIsDeletedFalse(String cardNumber);
 
 
     @Query("select s.passportCode from Student s")
@@ -32,8 +32,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findByCardNumberAndIsDeletedFalse(String cardNumber, Pageable pageable);
 
     Page<Student> findByNameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
-
-    Page<Student> findBySurnameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
 
     Page<Student> findByIsActiveAndIsDeletedFalse(boolean b, Pageable pageable);
 }

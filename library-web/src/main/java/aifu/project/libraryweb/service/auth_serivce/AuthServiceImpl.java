@@ -7,7 +7,6 @@ import aifu.project.common_domain.exceptions.LoginBadCredentialsException;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.LibrarianRepository;
-import aifu.project.libraryweb.service.AdminManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final LibrarianRepository librarianRepository;
     private final JwtService jwtService;
-    private final AdminManagementService adminManagementService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -42,8 +42,18 @@ public class AuthServiceImpl implements AuthService {
             throw new LoginBadCredentialsException("Invalid email or password");
         }
 
+        AdminResponse response = AdminResponse.builder()
+                .id(librarian.getId())
+                .name(librarian.getName())
+                .surname(librarian.getSurname())
+                .email(librarian.getEmail())
+                .role(librarian.getRole().name())
+                .build();
+
         String token = jwtService.generateToken(email);
-        return ResponseEntity.ok(new ResponseMessage(true, "Login successful", token));
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Login successful",
+                Map.of("token", token, "user", response)));
     }
 
     @Override

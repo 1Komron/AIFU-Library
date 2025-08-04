@@ -6,24 +6,30 @@ import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Status;
+import aifu.project.common_domain.exceptions.BookCopyIsTakenException;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BookingRepository;
 import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import aifu.project.libraryweb.service.history_service.HistoryService;
+import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -32,23 +38,16 @@ public class BookingServiceImpl implements BookingService {
     private final BookCopyService bookCopyService;
     private final HistoryService historyService;
 
-    private static final String CURRENT_PAGE = "currentPage";
-    private static final String TOTAL_PAGES = "totalPages";
-    private static final String TOTAL_ELEMENTS = "totalElements";
-
     @Override
-    public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNum, pageSize);
+    public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, "id"));
         Page<BookingShortDTO> page = bookingRepository.findAllBookingShortDTO(pageable);
 
-        Map<String, Object> data = Map.of(
-                "data", page.getContent(),
-                CURRENT_PAGE, page.getNumber() + 1,
-                TOTAL_PAGES, page.getTotalPages(),
-                TOTAL_ELEMENTS, page.getTotalElements()
-        );
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", page.getContent());
 
-        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
+        return ResponseEntity.ok(new ResponseMessage(true, "data", map));
     }
 
     @Override
@@ -60,23 +59,35 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> filterByStatus(String status, int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNum, pageSize);
-        Status statusEnum = Status.getStatus(status);
+    public ResponseEntity<ResponseMessage> search(String field, String query, String filter, int pageNum, int pageSize, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, field));
 
-        Page<BookingShortDTO> page = bookingRepository.findShortByStatus(statusEnum, pageable);
+        List<Status> statuses = switch (filter.toUpperCase()) {
+            case "APPROVED" -> List.of(Status.APPROVED);
+            case "OVERDUE" -> List.of(Status.OVERDUE);
+            default -> List.of(Status.APPROVED, Status.OVERDUE);
+        };
 
-        Map<String, Object> data = Map.of(
-                "data", page.getContent(),
-                CURRENT_PAGE, page.getNumber() + 1,
-                TOTAL_PAGES, page.getTotalPages(),
-                TOTAL_ELEMENTS, page.getTotalElements()
-        );
+        Page<BookingShortDTO> page = switch (field) {
+            case "studentId" ->
+                    bookingRepository.findAllBookingShortDTOByStudentId(Long.parseLong(query), statuses, pageable);
+            case "cardNumber" -> bookingRepository.findAllBookingShortDTOByStudentCardNumber(query, statuses, pageable);
+            case "studentName" -> bookingRepository.findAllBookingShortDTOByStudentName(query, statuses, pageable);
+            case "bookEpc" -> bookingRepository.findAllBookingShortDTOByBookEpc(query, statuses, pageable);
+            case "inventoryNumber" ->
+                    bookingRepository.findAllBookingShortDTOByBookInventoryNumber(query, statuses, pageable);
+            default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + field);
+        };
 
-        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", page.getContent());
+
+        return ResponseEntity.ok(new ResponseMessage(true, "data", map));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request) {
         String cardNumber = request.cardNumber();
         String epc = request.epc();
@@ -85,13 +96,21 @@ public class BookingServiceImpl implements BookingService {
 
         BookCopy bookCopy = bookCopyService.findByEpc(epc);
 
+        if (bookCopy.isTaken()) {
+            log.error("Booking qilingan book copy: {}", bookCopy.getId());
+            throw new BookCopyIsTakenException("Book copy allaqachon booking qilingan: " + bookCopy.getId());
+        }
+
         createBooking(student, bookCopy);
 
+        bookCopyService.updateStatus(bookCopy, true);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseMessage(true, "Booking created successfully", null));
+                .body(new ResponseMessage(true, "Booking muvaffaqiyatli yaratildi", null));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> returnBook(ReturnBookDTO request) {
         String cardNumber = request.cardNumber();
         String epc = request.epc();
@@ -101,22 +120,27 @@ public class BookingServiceImpl implements BookingService {
         BookCopy bookCopy = bookCopyService.findByEpc(epc);
 
         Booking booking = bookingRepository.findByStudentAndBook(student, bookCopy)
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found for student: " + student.getId() + " and book copy: " + bookCopy.getId()));
+                .orElseThrow(() -> new BookingNotFoundException("Bunday booking mavjud emas. Student: %s va book copy: %s"
+                        .formatted(student.getId(), bookCopy.getId())));
 
-        bookCopyService.updateStatus(bookCopy);
+        bookCopyService.updateStatus(bookCopy, false);
 
         historyService.add(booking);
 
         bookingRepository.delete(booking);
+        log.info("Booking muvaffaqiyatli qaytarildi. Booking: {}", booking);
+        log.info("Booking ochirildi va tarixga qo'shildi");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Booking returned successfully", null));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitob muvaffaqiyatli qaytib olindi", null));
     }
 
     public void createBooking(Student student, BookCopy bookCopy) {
         Booking booking = new Booking();
         booking.setStudent(student);
         booking.setBook(bookCopy);
-        bookingRepository.save(booking);
+        Booking save = bookingRepository.save(booking);
+
+        log.info("Booking muvaffaqiyatli yaratildi. Booking: {}", save);
     }
 
     @Override
@@ -152,6 +176,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void extendDueDate(Booking booking, Integer extendDays) {
+        if (extendDays == null || extendDays < 1) {
+            throw new IllegalArgumentException("Noto'g'ri uzaytirish kunlari kiritildi: " + extendDays);
+        }
         LocalDate dueDate = booking.getDueDate();
         LocalDate now = LocalDate.now();
 
@@ -161,22 +188,6 @@ public class BookingServiceImpl implements BookingService {
         booking.setDueDate(newDueDate);
 
         bookingRepository.save(booking);
-    }
-
-    //Search ni qoshib qoyish kerak
-    @Override
-    public ResponseEntity<ResponseMessage> getBookingByStudentId(Long id, int pageNum, int pageSize) {
-//        Pageable pageable = PageRequest.of(--pageNum, pageSize);
-//        Page<Booking> page = bookingRepository.findByStudent_IdAndIsDeletedFalse(id, pageable);
-//
-//        Map<String, Object> data = Map.of(
-//                "data", getBookingResponseList(page.getContent()),
-//                CURRENT_PAGE, page.getNumber() + 1,
-//                TOTAL_PAGES, page.getTotalPages(),
-//                TOTAL_ELEMENTS, page.getTotalElements()
-//        );
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Bookings for student with id: " + id, null));
     }
 
     @Override

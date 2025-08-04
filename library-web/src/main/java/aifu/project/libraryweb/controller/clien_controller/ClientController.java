@@ -27,7 +27,7 @@ public class ClientController {
         return categoryService.getAll("asc");
     }
 
-    @GetMapping
+    @GetMapping("/search")
     @Operation(summary = "Kitoblarni qidirish")
     @ApiResponse(responseCode = "200", description = "Qidirish muvaffaqiyatli bajarildi")
     public ResponseEntity<ResponseMessage> search(@NotNull @RequestParam String query) throws Exception {

@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -71,4 +71,55 @@ public class ClientController {
                 new ResponseMessage(true, "PDF book successfully retrieved", book)
         );
     }
+
+    @GetMapping("/download/{id}")
+    @Operation(
+            summary = "PDF kitobni yuklab olish",
+            description = "Berilgan ID orqali PDF formatdagi kitobni fayl sifatida yuklab olish imkonini beradi"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF kitob muvaffaqiyatli yuklab olindi"),
+            @ApiResponse(responseCode = "404", description = "PDF kitob topilmadi yoki fayl mavjud emas"),
+            @ApiResponse(responseCode = "500", description = "Serverda kutilmagan xatolik yuz berdi")
+    })
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
+        try {
+            PdfBookResponseDTO book = pdfBookService.getOne(id);
+            byte[] pdfData = pdfBookService.downloadPdf(id);
+
+            if (pdfData == null || pdfData.length == 0) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(null);
+            }
+
+            // Fayl nomini tozalash
+            String author = book.getAuthor() != null ? book.getAuthor() : "Noma_lumMuallif";
+            String title = book.getTitle() != null ? book.getTitle() : "Noma_lumSarlavha";
+
+            String filename = (author + "_" + title)
+                    .replaceAll("[^a-zA-Z0-9.-]", "_")
+                    .replaceAll("_+", "_")
+                    + ".pdf";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition
+                    .attachment()
+                    .filename(filename)
+                    .build());
+
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .body(pdfData);
+
+        } catch (Exception ex) {
+            // Xatolikni logga yozish (shartli)
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
 }

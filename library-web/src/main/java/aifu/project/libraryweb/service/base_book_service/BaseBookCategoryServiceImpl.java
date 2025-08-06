@@ -31,17 +31,28 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     public ResponseEntity<ResponseMessage> create(CreateCategoryRequest request) {
         String name = request.name();
 
-        boolean exists = categoryRepository.existsByName(name);
-        if (exists) {
-            log.warn("{} -> nomli BaseBookCategory allaqachon mavjud", name);
+        BaseBookCategory category = categoryRepository.findByName(name);
+
+        if (category != null && !category.isDeleted()) {
+            log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (CREATE)", name);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ResponseMessage(false, "BaseBookCategory allaqachon mavjud", null));
         }
 
-        BaseBookCategory category = new BaseBookCategory();
+        if (category != null) {
+            category.setDeleted(false);
+            category = categoryRepository.save(category);
+            log.info("'{}' -> nomli BaseBookCategory o'chirilgan, qayta tiklandi", name);
+
+            BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ResponseMessage(true, "BaseBookCategory qayta tiklandi", dto));
+        }
+
+        category = new BaseBookCategory();
         category.setName(name);
         category = categoryRepository.save(category);
-        BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
+        BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
 
         log.info("BaseBookCategory yaratildi: {}", category);
 
@@ -54,9 +65,17 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
 
+        boolean exists = categoryRepository.existsByName(request.name());
+        if (exists) {
+            log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (UPDATE). Update qilinayotgan category: {}",
+                    request.name(), category);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ResponseMessage(false, "BaseBookCategory allaqachon mavjud", null));
+        }
+
         category.setName(request.name());
         category = categoryRepository.save(category);
-        BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
+        BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
 
         log.info("BaseBookCategory nomi tahrirlandi: {}", category);
 
@@ -74,7 +93,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
                 .allMatch(BaseBook::isDeleted);
 
         if (!allBooksDeleted)
-            throw new CategoryDeletionException("BaseBookCategory ni o'chirib bo'lmaydi. O'chirilmagan BaseBook mavjud. ID: " + id);
+            throw new CategoryDeletionException("BaseBookCategory ni o'chirib bo'lmaydi. O'chirilmagan BaseBook mavjud. BaseBookCategory ID: " + id);
 
         category.setDeleted(true);
         categoryRepository.save(category);
@@ -101,7 +120,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
 
         log.info("BaseBookCategory topildi: {}", category);
 
-        BaseBookCategoryDTO dto = new BaseBookCategoryDTO(category.getId(), category.getName());
+        BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
         return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory", dto));
     }
 }

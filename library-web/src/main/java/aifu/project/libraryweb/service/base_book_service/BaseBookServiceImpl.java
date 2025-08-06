@@ -72,7 +72,8 @@ public class BaseBookServiceImpl implements BaseBookService {
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", list);
 
-        log.info("Base book ro'yxati olindi: ro'yxat={},  pageNumber={}, pageSize={}", list, pageNumber + 1, pageSize);
+        log.info("Base book ro'yxati olindi: ro'yxat (ID)={},  pageNumber={}, pageSize={}",
+                list.stream().map(BaseBookShortDTO::id).toList(), pageNumber + 1, pageSize);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book ro'yxati", map));
     }
@@ -201,7 +202,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         map.put("data", list);
 
         log.info("Base book qidirish amalga oshirildi: query={}, field={}, pageNumber={}, pageSize={}", query, field, pageNumber + 1, pageSize);
-        log.info("Base book qidirish natijalari: {}", list);
+        log.info("Base book qidirish natijalari (ID): {}", list.stream().map(BaseBookShortDTO::id).toList());
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book ni '%s' fieldi orqali qidirish".formatted(field), map));
     }
@@ -222,10 +223,7 @@ public class BaseBookServiceImpl implements BaseBookService {
                             book.getId(),
                             book.getTitle(),
                             book.getAuthor(),
-                            new BaseBookCategoryDTO(
-                                    book.getCategory().getId(),
-                                    book.getCategory().getName()
-                            ),
+                            BaseBookCategoryDTO.toDTO(book.getCategory()),
                             book.getIsbn(),
                             stats.total(),
                             stats.taken()

@@ -15,8 +15,8 @@ import java.util.Base64;
 public class PassportHasher {
 
     /**
-     *  SLF4J + parameterized logging + exception stacktrace uslubidan foydalangansiz.
-     *  Bu yondashuv korporativ darajadagi ishlab chiqishlarda aynan shunday tavsiya etiladi.
+     * SLF4J + parameterized logging + exception stacktrace uslubidan foydalangansiz.
+     * Bu yondashuv korporativ darajadagi ishlab chiqishlarda aynan shunday tavsiya etiladi.
      */
     private static final Logger log = LoggerFactory.getLogger(PassportHasher.class);
 
@@ -26,9 +26,9 @@ public class PassportHasher {
         this.salt = salt;
     }
 
-    public String hash (String passportCode){
-      if(passportCode == null || passportCode.isBlank()){
-    return null;
+    public String hash(String passportCode) {
+        if (passportCode == null || passportCode.isBlank()) {
+            return null;
 
         }
         try {

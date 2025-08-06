@@ -12,3 +12,8 @@ aifu:
     host: ${BOT_HOST:http://localhost}
     port: ${BOT_PORT:8081}
     base-url: ${aifu.external.host}:${aifu.external.port}
+
+
+
+
+

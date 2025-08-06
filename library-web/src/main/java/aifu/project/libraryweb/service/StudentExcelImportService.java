@@ -18,6 +18,9 @@ import java.util.*;
 public class StudentExcelImportService {
     private final StudentRepository studentRepository;
     private final ImporterColumnProperties importerColumnProperties;
+    private final PassportHasher passportHasher;
+
+
 
     /**
      * Bizning ichki, o'zgarmas "tilimiz".
@@ -76,35 +79,82 @@ public class StudentExcelImportService {
     /**
      * Exceldan olingan ro'yxatni bazadagi mavjud ma'lumotlar bilan solishtiradi va yakuniy hisobotni shakllantiradi.
      */
-    private ImportStats filterAndSaveUsers(List<Student> usersFromExcel) {
+    private ImportStats filterAndSaveUsers(List<Student> studentsFromExcel) {
         List<Student> newStudentToSave = new ArrayList<>();
         List<String> errors = new ArrayList<>();
+
+        // Bu Set endi bazadagi XESHLANGAN pasport kodlarini saqlaydi.
+        Set<String> existingDbHashedPassportCodes = studentRepository.findAllPassportCodes();
+
+        // Bu Set fayl ichidagi dublikatlarni aniqlash uchun OCHIQ MATNDAGI pasport kodlarini saqlaydi.
         Set<String> processedPassportCodesInExcel = new HashSet<>();
-        // Bitta so'rov bilan bazadagi BARCHA mavjud pasport kodlarini olamiz. Bu eng samarali usul.
-        Set<String> existingDbPassportCodes = studentRepository.findAllPassportCodes();
 
-        for (Student student : usersFromExcel) {
-            String passportCode = student.getPassportCode();
+        for (Student student : studentsFromExcel) {
+            // Exceldan olingan ochiq matndagi pasport kodi
+            String plainPassportCode = student.getPassportCode();
 
-            if (existingDbPassportCodes.contains(passportCode)) {
-                errors.add("Talaba (Pasport: " + passportCode + ") ma'lumotlar bazasida allaqachon mavjud.");
+            // 1-Tekshiruv: Bu pasport kodi shu faylning o'zida avvalroq uchradimi?
+            if (processedPassportCodesInExcel.contains(plainPassportCode)) {
+                errors.add("Talaba (Pasport: " + plainPassportCode + ") Excel faylida takroran kelgan.");
                 continue;
             }
-            if (processedPassportCodesInExcel.contains(passportCode)) {
-                errors.add("Talaba (Pasport: " + passportCode + ") Excel faylida takroran kelgan. E'tiborga olinmadi.");
+
+            // 2-Tekshiruv: Pasport kodini xeshlab, bazadagi mavjud xeshlar bilan solishtiramiz.
+            String hashedPassportCode = passportHasher.hash(plainPassportCode);
+            if (existingDbHashedPassportCodes.contains(hashedPassportCode)) {
+                errors.add("Talaba (Pasport: " + plainPassportCode + ") ma'lumotlar bazasida allaqachon mavjud.");
                 continue;
             }
+
+            // MUHIM QADAM: Student obyektidagi ochiq matndagi pasport kodini endi uning
+            // xeshlangan versiyasi bilan almashtiramiz. Bazaga faqat xesh yoziladi.
+            student.setPassportCode(hashedPassportCode);
+
             newStudentToSave.add(student);
-            processedPassportCodesInExcel.add(passportCode);
+            processedPassportCodesInExcel.add(plainPassportCode);
         }
 
         if (!newStudentToSave.isEmpty()) {
-            // Bitta katta so'rov bilan barchasini bazaga yozamiz.
             studentRepository.saveAll(newStudentToSave);
         }
 
-        // Natija va xatoliklar haqida hisobotni (ImportStats) qaytaramiz.
         return new ImportStats(newStudentToSave.size(), errors);
+    }
+
+
+    /**
+     * Exceldagi ma'lumot qatorlarini o'qiydi. Bu metod ochiq matndagi ma'lumotlarni
+     * o'qib, Student obyektlarini yaratadi. Xeshlash keyingi bosqichda bo'ladi.
+     */
+    private List<Student> readUsersDynamically(Sheet sheet, Map<Field, Integer> fieldColumnMap) {
+        List<Student> students = new ArrayList<>();
+        int headerRowNum = 0;
+
+        for (int i = headerRowNum + 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) break;
+
+            String passportCode = getCellValueAsString(row.getCell(fieldColumnMap.get(Field.PASSPORT_CODE)));
+            if (passportCode == null || passportCode.isBlank()) break;
+
+            Student student = new Student();
+
+            // Bu bosqichda biz pasport kodini ochiq matn ko'rinishida saqlab turamiz.
+            // U keyinchalik `filterAndSaveUsers` metodida xeshlanadi.
+            student.setPassportCode(passportCode);
+            student.setSurname(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.SURNAME))));
+            student.setName(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.NAME))));
+
+            student.setDegree(getOptionalCellValue(row, fieldColumnMap, Field.DEGREE));
+            student.setFaculty(getOptionalCellValue(row, fieldColumnMap, Field.FACULTY));
+            student.setCardNumber(getOptionalCellValue(row, fieldColumnMap, Field.CARD_NUMBER));
+
+            student.setRole(Role.STUDENT);
+            student.setActive(false);
+            student.setDeleted(false);
+            students.add(student);
+        }
+        return students;
     }
 
     /**
@@ -158,42 +208,6 @@ public class StudentExcelImportService {
         }
     }
 
-    /**
-     * Exceldagi ma'lumot qatorlarini o'qiydi. U endi qotirilgan indekslarga emas,
-     * balki dinamik yaratilgan "ustunlar xaritasi"ga tayanib ishlaydi.
-     */
-    private List<Student> readUsersDynamically(Sheet sheet, Map<Field, Integer> fieldColumnMap) {
-        List<Student> students = new ArrayList<>();
-        int headerRowNum = 0;
-
-        for (int i = headerRowNum + 1; i <= sheet.getLastRowNum(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null) break;
-
-            // Pasport kodini o'qiymiz. Uning indeksi endi xaritadan olinadi. Bu biz uchun asosiy signal.
-            String passportCode = getCellValueAsString(row.getCell(fieldColumnMap.get(Field.PASSPORT_CODE)));
-            // Agar pasport kodi bo'sh bo'lsa, bu ma'lumotlar tugaganini bildiradi, siklni to'xtatamiz.
-            if (passportCode == null || passportCode.isBlank()) break;
-
-            Student student = new Student();
-            // Har bir maydonni to'g'ridan-to'g'ri, xaritadan indeksini olib o'rnatamiz.
-            student.setPassportCode(passportCode);
-            student.setSurname(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.SURNAME))));
-            student.setName(getCellValueAsString(row.getCell(fieldColumnMap.get(Field.NAME))));
-
-            // Ixtiyoriy (majburiy bo'lmagan) maydonlarni maxsus metod orqali o'qiymiz.
-            student.setDegree(getOptionalCellValue(row, fieldColumnMap, Field.DEGREE));
-            student.setFaculty(getOptionalCellValue(row, fieldColumnMap, Field.FACULTY));
-            student.setCardNumber(getOptionalCellValue(row, fieldColumnMap, Field.CARD_NUMBER));
-
-            // Har bir yangi foydalanuvchi uchun standart qiymatlarni beramiz.
-            student.setRole(Role.STUDENT);
-            student.setActive(false);
-            student.setDeleted(false);
-            students.add(student);
-        }
-        return students;
-    }
 
     /**
      * Ixtiyoriy maydonlarni xavfsiz o'qish uchun yordamchi metod.

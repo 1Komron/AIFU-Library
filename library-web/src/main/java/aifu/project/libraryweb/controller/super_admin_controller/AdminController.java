@@ -6,6 +6,8 @@ import aifu.project.common_domain.dto.AdminResponse;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.AdminManagementService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/super-admin/admins")
 @RequiredArgsConstructor
-@Slf4j // Bu klassda ham log yozish foydali
+@Slf4j
 public class AdminController {
 
     private final AdminManagementService adminManagementService;
@@ -38,11 +40,23 @@ public class AdminController {
 
 
     @GetMapping
+    @Operation(summary = "Barcha adminlarni olish", description = "Sahifalangan va sort qilingan barcha admin foydalanuvchilar ro'yxatini qaytaradi")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Muvaffaqiyatli",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "400", description = "Notog'ri so'rov parametrlari (pageNumber, pageSize)"),
+            @ApiResponse(responseCode = "401", description = "Autentifikatsiya talab qilinadi"),
+            @ApiResponse(responseCode = "403", description = "Ruxsat yo'q (faqat SUPER_ADMIN kirishi mumkin)"),
+            @ApiResponse(responseCode = "500", description = "Serverdagi ichki xatolik")
+    })
     public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "asc") String sortDirection,
                                                   @RequestParam(defaultValue = "1") Integer pageNumber,
                                                   @RequestParam(defaultValue = "10") Integer pageSize) {
         return adminManagementService.getAll(pageNumber, pageSize, sortDirection);
+
     }
+
 
 
     @PostMapping("/activate")

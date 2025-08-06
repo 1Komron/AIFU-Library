@@ -27,6 +27,8 @@ public class AdminController {
 
     private final AdminManagementService adminManagementService;
 
+
+
     @PostMapping
     @Operation(summary = "Admin yaratish")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
@@ -37,6 +39,7 @@ public class AdminController {
     public ResponseEntity<ResponseMessage> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
         return adminManagementService.createAdmin(request);
     }
+
 
 
     @GetMapping
@@ -59,20 +62,80 @@ public class AdminController {
 
 
 
+
     @PostMapping("/activate")
+    @Operation(
+            summary = "Admin akkauntini faollashtirish",
+            description = "Yangi yaratilgan va nofaol (`isActive=false`) bo'lgan Admin akkauntini," +
+                    " uning emailiga yuborilgan tasdiqlash kodi orqali faollashtiradi. Bu amalni faqat SUPER_ADMIN bajara oladi."
+             )
+
     @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Akkaunt muvaffaqiyatli faollashtirildi",
+                    content =@Content (mediaType = "application/json", schema = @Schema (implementation = ResponseMessage.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Noto'g'ri so'rov. Mumkin bo'lgan sabablar: Tasdiqlash kodi noto'g'ri, kodning muddati o'tgan, yoki akkaunt allaqachon faollashtirilgan.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessage.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autentifikatsiya talab qilinadi (tizimga kirmagan)."
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Ruxsat yo'q (bu amalni bajarish uchun SUPER_ADMIN roli talab qilinadi)."
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Serverdagi ichki xatolik."
+            )
+    })
     public ResponseEntity<ResponseMessage> activateAccount(@Valid @RequestBody AccountActivationRequest request) {
         log.info("HTTP Request: POST /api/admins/activate, email: {}", request.getEmail());
         adminManagementService.activateAccount(request);
         return ResponseEntity.ok(new ResponseMessage(true, "Akkaunt muvaffaqiyatli faollashtirildi!", null));
     }
 
+
+
+
+
+
     @DeleteMapping("/{id}")
-    @Operation(summary = "Adminni o'chirish (yumshoq)")
-    @PreAuthorize("hasRole('SUPER_ADMIN')") // Bu yerda sizning rolingiz LIBRARIAN bo'lishi mumkin
+    @Operation(
+            summary = "Adminni o'chirish (yumshoq)",
+            description = "Berilgan ID bo'yicha Admin foydalanuvchisini nofaol holatga o'tkazadi (`isDeleted=true`). " +
+                    "Yozuv ma'lumotlar bazasidan jismonan o'chirilmaydi. Bu amalni faqat SUPER_ADMIN bajara oladi."
+    )
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Admin muvaffaqiyatli o'chirildi"),
-            @ApiResponse(responseCode = "404", description = "Berilgan ID bilan Admin topilmadi"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Admin muvaffaqiyatli o'chirildi",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessage.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Noto'g'ri so'rov. Mumkin bo'lgan sabablar: Berilgan ID bilan Admin topilmadi yoki u SUPER_ADMIN.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseMessage.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autentifikatsiya talab qilinadi (tizimga kirmagan)."
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Ruxsat yo'q (bu amalni bajarish uchun SUPER_ADMIN roli talab qilinadi)."
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Serverdagi ichki xatolik."
+            )
     })
     public ResponseEntity<ResponseMessage> deleteAdmin(@PathVariable Long id) {
         log.info("Http Request: DELETE /api/super-admin/admins/{}",id);

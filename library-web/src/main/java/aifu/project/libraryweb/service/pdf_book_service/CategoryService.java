@@ -10,11 +10,14 @@ import java.util.List;
 
 public interface CategoryService {
 
-    CategoryResponseDTO create(CreateCategoryDTO createCategoryDTO);
+   // CategoryResponseDTO create(CreateCategoryDTO createCategoryDTO);
+    ResponseEntity<ResponseMessage> create(CreateCategoryDTO dto);
 
-    CategoryResponseDTO update(Integer id, UpdateCategoryDTO updateCategoryDTO);
+    //CategoryResponseDTO update(Integer id, UpdateCategoryDTO updateCategoryDTO);
+    ResponseEntity<ResponseMessage> update(Integer id, UpdateCategoryDTO dto);
 
-    void delete(Integer id);
+   // void delete(Integer id);
+    ResponseEntity<ResponseMessage> delete(Integer id);
 
     ResponseEntity<ResponseMessage> get(Integer id);
 

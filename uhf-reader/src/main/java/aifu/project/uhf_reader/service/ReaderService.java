@@ -51,11 +51,14 @@ public class ReaderService {
                 long now = System.currentTimeMillis();
 
                 if (!epcCache.containsKey(epc)) {
-                    log.info("📦 New tag: {} RSSI: {}", epc, tag.getRssi());
+                    log.info("Tag: {} RSSI: {}", epc, tag.getRssi());
                     epcCache.put(epc, now);
 
                     switch (bookingService.isEpcBooked(epc)) {
-                        case -1 -> log.info("RFID EPC '{}' not found in BookCopy table. Ignoring scan.", epc);
+                        case -1 -> {
+                            executor.submit(this::triggerSuccess);
+                            log.info("Tag:  '{}' not found in BookCopy table. Ignoring scan.", epc);
+                        }
 
                         case 0 -> {
                             executor.submit(this::triggerAlarm);

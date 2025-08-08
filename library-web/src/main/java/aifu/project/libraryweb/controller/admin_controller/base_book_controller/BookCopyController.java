@@ -84,6 +84,13 @@ public class BookCopyController {
         return bookCopyService.getAll(pageNumber, pageSize, sortDirection);
     }
 
+    @GetMapping("/check-inventory-number")
+    @Operation(summary = "Inventory number majudligini tekshirish tekshirish")
+    @ApiResponse(responseCode = "200", description = "Inventory number mavjudligi tekshirildi")
+    public ResponseEntity<ResponseMessage> checkInventoryNumber(@RequestParam String inventoryNumber) {
+        return bookCopyService.checkInventoryNumber(inventoryNumber);
+    }
+
     @GetMapping("/search")
     @Operation(summary = "Base book bo'yicha book copylarni qidirish",
             description = """

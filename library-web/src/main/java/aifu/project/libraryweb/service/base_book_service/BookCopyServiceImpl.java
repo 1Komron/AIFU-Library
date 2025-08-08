@@ -38,7 +38,11 @@ public class BookCopyServiceImpl implements BookCopyService {
         BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(dto.getBaseBookId())
                 .orElseThrow(() -> new BaseBookNotFoundException(dto.getBaseBookId()));
 
-        //epc qoshilishi kerak
+        String inventoryNumber = dto.getInventoryNumber();
+        if (bookCopyRepository.existsByInventoryNumber(inventoryNumber)) {
+            throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+        }
+
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
         entity = bookCopyRepository.save(entity);
 
@@ -64,7 +68,14 @@ public class BookCopyServiceImpl implements BookCopyService {
             }
 
             switch (key) {
-                case "inventoryNumber" -> bookCopy.setInventoryNumber((String) value);
+                case "inventoryNumber" -> {
+                    String inventoryNumber = (String) value;
+                    if (bookCopyRepository.existsByInventoryNumber(inventoryNumber)) {
+                        throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+                    }
+
+                    bookCopy.setInventoryNumber(inventoryNumber);
+                }
                 case "shelfLocation" -> bookCopy.setShelfLocation((String) value);
                 case "notes" -> bookCopy.setNotes((String) value);
                 case "book" -> {
@@ -120,6 +131,19 @@ public class BookCopyServiceImpl implements BookCopyService {
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(entity);
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", responseDTO));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber) {
+        boolean exists = bookCopyRepository.existsByInventoryNumber(inventoryNumber);
+
+        log.info("Inventory number tekshirildi: {}, Status: {}", inventoryNumber, exists ? "Mavjud" : "Mavjud emas");
+
+        return ResponseEntity.ok(
+                new ResponseMessage(
+                        true,
+                        exists ? "Inventory number mavjud" : "Inventory number mavjud emas",
+                        exists));
     }
 
     @Override

@@ -13,6 +13,7 @@ public class BookCopyMapper {
                 .shelfLocation(dto.getShelfLocation())
                 .notes(dto.getNotes())
                 .book(baseBook)
+                .epc(dto.getEpc())
                 .build();
     }
 

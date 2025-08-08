@@ -118,4 +118,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<ResponseMessage> handleNumberFormatException(NumberFormatException e) {
+        log.error("Number format exception. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseMessage(false, "Noto'g'ri format kitildi. Kutilgan format son: " + e.getMessage(), null));
+    }
 }

@@ -45,7 +45,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                 select s from Student s
                 where
                   (
-                    (:second is null and (lower(s.surname) like :first or lower(s.name) like :first))
+                    (lower(s.surname) like :first or lower(s.name) like :first)
                     or
                     (:second is not null and
                       (

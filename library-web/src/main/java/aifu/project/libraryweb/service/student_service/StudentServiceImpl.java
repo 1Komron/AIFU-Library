@@ -38,16 +38,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAll(String filter,
+    public ResponseEntity<ResponseMessage> getAll(String field,
                                                   String query,
                                                   String status,
                                                   int pageNumber,
                                                   int size,
                                                   String sortDirection) {
-        filter = filter == null ? DEFAULT : filter;
+        field = field == null ? DEFAULT : field;
 
-        if (!filter.equals(DEFAULT) && query == null) {
-            throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(filter));
+        if (!field.equals(DEFAULT) && query == null) {
+            throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(field));
         }
 
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -59,7 +59,7 @@ public class StudentServiceImpl implements StudentService {
             default -> List.of(true, false);
         };
 
-        Page<Student> studentPage = switch (filter) {
+        Page<Student> studentPage = switch (field) {
             case "id" -> studentRepository.findByIdAndIsDeletedFalse(Long.parseLong(query), pageable, statusList);
             case "cardNumber" -> studentRepository.findByCardNumberAndIsDeletedFalse(query, pageable, statusList);
             case "fullName" -> {
@@ -71,13 +71,13 @@ public class StudentServiceImpl implements StudentService {
                 yield studentRepository.findBySurnameAndName(first, second, pageable, statusList);
             }
             case DEFAULT -> studentRepository.findByIsDeletedFalse(pageable, statusList);
-            default -> throw new IllegalArgumentException("Invalid filter: " + filter);
+            default -> throw new IllegalArgumentException("Invalid field: " + field);
         };
 
         List<Student> content = studentPage.getContent();
 
-        log.info("Studentlar ro'yxati: filter={}, query={}, pageNumber={}, size={}, sortDirection={}",
-                filter, query, pageNumber + 1, size, sortDirection);
+        log.info("Studentlar ro'yxati: field={}, query={}, pageNumber={}, size={}, sortDirection={}",
+                field, query, pageNumber + 1, size, sortDirection);
 
         log.info("Studentlar ro'yxati: {}", content.stream().map(Student::getId).toList());
 

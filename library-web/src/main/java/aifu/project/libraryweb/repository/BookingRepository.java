@@ -32,8 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
-            WHERE copy.inventoryNumber = :query
-            AND b.status in :statuses
+            where b.status in :statuses
             """)
     Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable, List<Status> statuses);
 
@@ -108,21 +107,34 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<BookingShortDTO> findAllBookingShortDTOByStudentCardNumber(String query, List<Status> statuses, Pageable pageable);
 
     @Query("""
-            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
-                b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
-            )
-            FROM Booking b
-            JOIN b.book copy
-            JOIN copy.book base
-            WHERE LOWER(b.student.name) LIKE LOWER(CONCAT('%', :query, '%'))
-            AND b.status in :statuses
+                SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                    b.id,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
+                )
+                FROM Booking b
+                JOIN b.book copy
+                JOIN copy.book base
+                JOIN b.student s
+                WHERE
+                  (
+                    (
+                        LOWER(s.surname) LIKE (:first)
+                        OR LOWER(s.name) LIKE (:first)
+                    )
+                    OR
+                    (:second IS NOT NULL AND (
+                        (LOWER(s.surname) LIKE (:first) AND LOWER(s.name) LIKE (:second))
+                        OR
+                        (LOWER(s.surname) LIKE (:second) AND LOWER(s.name) LIKE (:first))
+                    ))
+                  )
+                  AND b.status in :statuses
             """)
-    Page<BookingShortDTO> findAllBookingShortDTOByStudentName(String query, List<Status> statuses, Pageable pageable);
+    Page<BookingShortDTO> findAllBookingShortDTOByStudentFullName(String first, String second, List<Status> statuses, Pageable pageable);
 
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(

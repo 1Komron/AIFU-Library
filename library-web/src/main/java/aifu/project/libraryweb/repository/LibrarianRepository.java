@@ -2,14 +2,13 @@ package aifu.project.libraryweb.repository;
 
 import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.entity.enums.Role;
-import org.apache.poi.sl.draw.geom.GuideIf;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.List;
+
 import java.util.Optional;
 
-
+@EnableJpaRepositories
 public interface LibrarianRepository extends JpaRepository<Librarian, Long> {
 
     Optional<Librarian> findByEmailAndIsDeletedFalse(String username);

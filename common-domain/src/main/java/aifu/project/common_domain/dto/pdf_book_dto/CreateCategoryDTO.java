@@ -1,12 +1,10 @@
 package aifu.project.common_domain.dto.pdf_book_dto;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Builder
 public class CreateCategoryDTO {

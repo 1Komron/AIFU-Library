@@ -35,12 +35,11 @@ public class PdfBookController {
     }
 
 
-
     @PostMapping("/category/{categoryId}")
     public ResponseEntity<ResponseMessage> create
 
             (@PathVariable Integer categoryId,
-             @Valid @RequestBody PdfBookCreateDTO dto){
+             @Valid @RequestBody PdfBookCreateDTO dto) {
         PdfBookResponseDTO response = pdfBookService.create(categoryId, dto);
         ResponseMessage body = new ResponseMessage(
                 true,
@@ -89,6 +88,7 @@ public class PdfBookController {
             return ResponseEntity.status(404).body(new ResponseMessage(false, "PDF book not found", null));
         }
     }
+
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
         try {
@@ -129,8 +129,6 @@ public class PdfBookController {
                     .body(null);
         }
     }
-
-
 
 
     @GetMapping("/category/{id}")

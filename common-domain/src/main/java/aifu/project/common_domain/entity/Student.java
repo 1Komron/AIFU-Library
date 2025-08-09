@@ -13,7 +13,9 @@ import lombok.Data;
         @Index(name = "idx_passport_code", columnList = "passportCode")
 })
 public class Student extends User {
+
     private String degree;
+
     private String faculty;
 
     @Column(unique = true, nullable = false)

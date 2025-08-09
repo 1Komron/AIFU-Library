@@ -3,10 +3,7 @@ package aifu.project.libraryweb.service.pdf_book_service;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.exceptions.CategoryNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.domain.Sort;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
@@ -18,12 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+
 
     private final CategoryRepository categoryRepository;
 

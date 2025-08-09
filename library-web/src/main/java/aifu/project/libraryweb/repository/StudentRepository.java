@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -23,10 +24,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findByCardNumberAndIsDeletedFalse(String cardNumber);
 
-
-    @Query("select s.passportCode from Student s")
-    Set<String> findAllPassportCodes();
-
     Optional<Student> findByIdAndIsDeletedFalse(Long userId);
 
     Page<Student> findByCardNumberAndIsDeletedFalse(String cardNumber, Pageable pageable);
@@ -34,4 +31,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findByNameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
 
     Page<Student> findByIsActiveAndIsDeletedFalse(boolean b, Pageable pageable);
+
+
+    @Query("SELECT s.passportCode FROM Student s WHERE s.passportCode IN :hashedPassportCodes")
+    Set<String> findExistingHashedPassportCodes(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
+
 }

@@ -32,8 +32,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
+            WHERE copy.inventoryNumber = :query
+            AND b.status in :statuses
             """)
-    Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable);
+    Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable, List<Status> statuses);
 
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingSummaryDTO(
@@ -70,7 +72,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
 
     boolean existsBookingByStudent_Id(Long userId);
-    
+
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,

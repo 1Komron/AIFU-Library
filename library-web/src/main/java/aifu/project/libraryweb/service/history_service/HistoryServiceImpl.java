@@ -49,22 +49,6 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
-        Page<History> page = historyRepository.findAll(pageable);
-
-        List<History> content = page.getContent();
-        log.info("History ro'yxati: Ro'yxat: {}, Sahifa raqami: {}, Sahifa hajmi: {}",
-                content.stream().map(History::getId).toList(), pageNumber + 1, pageSize);
-
-        Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", content.stream().map(HistoryShortDTO::toDTO).toList());
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Tarix ro'yxati muvaffaqiyatli qaytarildi", map));
-    }
-
-    @Override
     public ResponseEntity<ResponseMessage> getById(Long id) {
         History history = historyRepository.findById(id)
                 .orElseThrow(() -> new HistoryNotFoundException("History topilmadi: " + id));
@@ -75,7 +59,8 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> search(String field, String query, int pageNumber, int pageSize, String sortDirection) {
+    public ResponseEntity<ResponseMessage> getAll(String field, String query, int pageNumber, int pageSize, String sortDirection) {
+        field = field == null ? "default" : field;
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
@@ -83,11 +68,17 @@ public class HistoryServiceImpl implements HistoryService {
             case "userID" -> historyRepository.findByUserId(Long.parseLong(query), pageable);
             case "cardNumber" -> historyRepository.findByUserCardNumber(query, pageable);
             case "inventoryNumber" -> historyRepository.findByBookInventoryNumber(query, pageable);
+            case "default" -> historyRepository.findAll(pageable);
             default -> throw new IllegalArgumentException("Noto'g'ri qidiruv maydoni: " + field);
         };
 
+        List<History> content = page.getContent();
+
+        log.info("History ro'yxati: Ro'yxat: {}, Sahifa raqami: {}, Sahifa hajmi: {}",
+                content.stream().map(History::getId).toList(), pageNumber + 1, pageSize);
+
         Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", page.getContent().stream().map(HistoryShortDTO::toDTO).toList());
+        map.put("data", content.stream().map(HistoryShortDTO::toDTO).toList());
 
         return ResponseEntity.ok(new ResponseMessage(true, "Qidiruv natijalari muvaffaqiyatli qaytarildi", map));
     }

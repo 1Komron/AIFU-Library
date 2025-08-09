@@ -18,15 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class BookingController {
     private final BookingService bookingService;
 
-    @GetMapping
-    @Operation(summary = "Bookinglar ro'yxatini olish")
-    @ApiResponse(responseCode = "200", description = "Bookinglar ro'yxati muvaffaqiyatli qaytarildi")
-    public ResponseEntity<ResponseMessage> getBookings(@RequestParam(defaultValue = "1") int pageNum,
-                                                       @RequestParam(defaultValue = "10") int pageSize,
-                                                       @RequestParam(defaultValue = "asc") String sortDirection) {
-        return bookingService.getBookingList(pageNum, pageSize, sortDirection);
-    }
-
     @GetMapping("/{id}")
     @Operation(summary = "Booking ma'lmotlarini ID bo'yicha olish")
     @ApiResponses(value = {
@@ -37,15 +28,19 @@ public class BookingController {
         return bookingService.getBooking(id);
     }
 
-    @GetMapping("/search")
-    @Operation(summary = "Bookinglarni qidirish")
-    public ResponseEntity<ResponseMessage> getBookingByStatus(@RequestParam(required = false) String field,
-                                                              @RequestParam(required = false) String query,
-                                                              @RequestParam(defaultValue = "all") String filter,
-                                                              @RequestParam(defaultValue = "1") int pageNum,
-                                                              @RequestParam(defaultValue = "10") int pageSize,
-                                                              @RequestParam(defaultValue = "asc") String sortDirection) {
-        return bookingService.search(field, query, filter, pageNum, pageSize, sortDirection);
+    @GetMapping
+    @Operation(summary = "Bookinglar ro'yxatini olish")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bookinglar ro'yxati muvaffaqiyatli qaytarildi"),
+            @ApiResponse(responseCode = "400", description = "Qidiruv so'rovi noto'g'ri")
+    })
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String field,
+                                                  @RequestParam(required = false) String query,
+                                                  @RequestParam(defaultValue = "all") String filter,
+                                                  @RequestParam(defaultValue = "1") int pageNum,
+                                                  @RequestParam(defaultValue = "10") int pageSize,
+                                                  @RequestParam(defaultValue = "asc") String sortDirection) {
+        return bookingService.getAll(field, query, filter, pageNum, pageSize, sortDirection);
     }
 
     @PostMapping("/borrow")

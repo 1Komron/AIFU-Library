@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,68 +16,99 @@ public class FileStorageService {
 
     private final CloudinaryService cloudinaryService;
 
-    private static final Set<String> ALLOWED_IMAGE_TYPES = new HashSet<>(Arrays.asList(
-            "image/jpeg", "image/pjpeg", "image/jfif", "image/pjp",
-            "image/png", "image/gif", "image/bmp", "image/tiff",
-            "image/webp", "image/heic", "image/heif",
-            "image/svg+xml", "image/x-icon"
-    ));
+    // ===== Constants =====
+    private static final long MAX_IMAGE_SIZE_MB = 50;
+    private static final long MAX_PDF_SIZE_MB = 100;
+    private static final long MAX_EBOOK_SIZE_MB = 200;
 
-    private static final Set<String> ALLOWED_IMAGE_EXTENSIONS = new HashSet<>(Arrays.asList(
+    private static final Set<String> ALLOWED_IMAGE_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Set.of(
             ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp",
             ".png", ".gif", ".bmp", ".tif", ".tiff",
             ".webp", ".heic", ".heif",
             ".svg", ".ico"
-    ));
+    )));
+
+    private static final Set<String> ALLOWED_IMAGE_TYPES = Collections.unmodifiableSet(new HashSet<>(Set.of(
+            "image/jpeg", "image/pjpeg", "image/jfif", "image/pjp",
+            "image/png", "image/gif", "image/bmp", "image/tiff",
+            "image/webp", "image/heic", "image/heif",
+            "image/svg+xml", "image/x-icon"
+    )));
+
+    private static final Set<String> ALLOWED_EBOOK_FORMATS = Collections.unmodifiableSet(new HashSet<>(Set.of(
+            "pdf", "epub", "mobi", "azw3", "fb2", "djvu", "txt", "docx", "doc",
+            "rtf", "odt", "html", "htm"
+    )));
 
     public String save(MultipartFile file, String subDir) throws IOException {
         if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("Fayl bo'sh yoki null");
+            throw new IllegalArgumentException("Fayl bo'sh yoki null bo‘lishi mumkin emas");
         }
 
-        String contentType = file.getContentType();
         String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename != null && originalFilename.contains(".")
+        String extension = (originalFilename != null && originalFilename.contains("."))
                 ? originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase()
                 : "";
 
-        if (subDir.equals("pdf")) {
-            if (!"application/pdf".equals(contentType)) {
-                throw new IllegalArgumentException("Faqat PDF fayllar ruxsat etiladi");
-            }
-            if (file.getSize() > 100 * 1024 * 1024) {
-                throw new IllegalArgumentException("PDF fayl hajmi 100MB dan katta bo‘lmasligi kerak!");
-            }
+        String contentType = file.getContentType();
+
+        switch (subDir.toLowerCase()) {
+            case "pdf" -> validatePdfOrWord(file, contentType, extension, originalFilename);
+            case "image" -> validateImage(file, contentType, extension, originalFilename);
+            case "ebook" -> validateEbook(file, extension, originalFilename);
+            default -> throw new IllegalArgumentException("Noto‘g‘ri katalog turi: " + subDir);
         }
 
-        if (subDir.equals("image")) {
-            if (file.getSize() > 50 * 1024 * 1024) {
-                throw new IllegalArgumentException("Rasm fayl hajmi 50MB dan katta bo‘lmasligi kerak!");
-            }
-
-            boolean isValidType = contentType != null && ALLOWED_IMAGE_TYPES.contains(contentType.toLowerCase());
-            if (!isValidType && contentType != null && contentType.equalsIgnoreCase("application/octet-stream")) {
-                isValidType = ALLOWED_IMAGE_EXTENSIONS.contains(extension);
-            }
-            if (!isValidType) {
-                throw new IllegalArgumentException("Faqat rasm fayllar ruxsat etiladi: JPEG, PNG, GIF, BMP, TIFF, WEBP, HEIC, SVG, ICO");
-            }
-
-            if (!ALLOWED_IMAGE_EXTENSIONS.contains(extension.toLowerCase())) {
-                throw new IllegalArgumentException("Faqat quyidagi rasm formatlari ruxsat etiladi: " +
-                        ".jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .gif, .bmp, .tif, .tiff, .webp, .heic, .heif, .svg, .ico");
-            }
-        }
-
-        // Faylni Cloudinary'ga yuklaymiz
         return cloudinaryService.uploadFile(file, subDir);
+    }
+
+    // PDF va Word formatlarini birga tekshirish
+    private void validatePdfOrWord(MultipartFile file, String contentType, String extension, String filename) {
+        checkSize(file, MAX_PDF_SIZE_MB, filename);
+
+        boolean isPdf = "application/pdf".equalsIgnoreCase(contentType) || extension.equals(".pdf");
+        boolean isDocx = "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equalsIgnoreCase(contentType) || extension.equals(".docx");
+        boolean isDoc = "application/msword".equalsIgnoreCase(contentType) || extension.equals(".doc");
+
+        if (!(isPdf || isDocx || isDoc)) {
+            throw new IllegalArgumentException(filename + " — faqat PDF yoki Word (doc/docx) fayllar ruxsat etiladi");
+        }
+    }
+
+    private void validateImage(MultipartFile file, String contentType, String extension, String filename) {
+        checkSize(file, MAX_IMAGE_SIZE_MB, filename);
+
+        boolean isValidType = contentType != null && ALLOWED_IMAGE_TYPES.contains(contentType.toLowerCase());
+        if (!isValidType && "application/octet-stream".equalsIgnoreCase(contentType)) {
+            isValidType = ALLOWED_IMAGE_EXTENSIONS.contains(extension);
+        }
+
+        if (!isValidType) {
+            throw new IllegalArgumentException(filename + " — ruxsat etilgan rasm turlari: " + ALLOWED_IMAGE_TYPES);
+        }
+
+        if (!ALLOWED_IMAGE_EXTENSIONS.contains(extension)) {
+            throw new IllegalArgumentException(filename + " — ruxsat etilgan rasm formatlari: " + ALLOWED_IMAGE_EXTENSIONS);
+        }
+    }
+
+    private void validateEbook(MultipartFile file, String extension, String filename) {
+        checkSize(file, MAX_EBOOK_SIZE_MB, filename);
+
+        if (!ALLOWED_EBOOK_FORMATS.contains(extension.replace(".", ""))) {
+            throw new IllegalArgumentException(filename + " — ruxsat etilgan elektron kitob formatlari: " + ALLOWED_EBOOK_FORMATS);
+        }
+    }
+
+    private void checkSize(MultipartFile file, long maxMb, String filename) {
+        if (file.getSize() > maxMb * 1024 * 1024) {
+            throw new IllegalArgumentException(filename + " hajmi " + maxMb + "MB dan oshmasligi kerak!");
+        }
     }
 
     public FileUploadResponseDTO saveWithSize(MultipartFile file, String subDir) throws IOException {
         String url = save(file, subDir);
-        double sizeMb = file.getSize() / 1024.0 / 1024.0;
-        double result = Math.round(sizeMb * 100.0) / 100.0;
-
-        return new FileUploadResponseDTO(url, result);
+        double sizeMb = Math.round((file.getSize() / 1024.0 / 1024.0) * 100.0) / 100.0;
+        return new FileUploadResponseDTO(url, sizeMb);
     }
 }

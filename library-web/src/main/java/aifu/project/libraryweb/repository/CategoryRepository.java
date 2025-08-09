@@ -2,6 +2,7 @@ package aifu.project.libraryweb.repository;
 
 import aifu.project.common_domain.dto.pdf_book_dto.CategoryShortDTO;
 import aifu.project.common_domain.entity.Category;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,4 +27,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             """)
     List<CategoryShortDTO> findAllCategories(Sort sort);
 
+    Category findByName(String name);
+
+    boolean existsByName(String name);
 }

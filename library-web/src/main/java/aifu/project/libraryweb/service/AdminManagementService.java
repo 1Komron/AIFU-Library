@@ -44,8 +44,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AdminManagementService {
 
 
-
-
     /**
      * Ma'lumotlar bazasidagi "librarians" jadvali bilan ishlash uchun.
      */
@@ -114,6 +112,7 @@ public class AdminManagementService {
                 .surname(savedAdmin.getSurname())
                 .email(savedAdmin.getEmail())
                 .role(savedAdmin.getRole().name())
+                .isActive(savedAdmin.isActive())
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -179,8 +178,19 @@ public class AdminManagementService {
         List<Librarian> content = librarianPage.getContent();
         log.info("Adminlar ro'yxati. Ro'yxat: {}, Hajmi: {}", content, librarianPage.getTotalElements());
 
+        List<AdminResponse> list = content.stream()
+                .map(admin -> AdminResponse.builder()
+                        .id(admin.getId())
+                        .name(admin.getName())
+                        .surname(admin.getSurname())
+                        .email(admin.getEmail())
+                        .role(admin.getRole().name())
+                        .isActive(admin.isActive())
+                        .build())
+                .toList();
+
         Map<String, Object> data = Util.getPageInfo(librarianPage);
-        data.put("data", content);
+        data.put("data", list );
 
         return ResponseEntity.ok(new ResponseMessage(true, "Adminlar ro'yxati", data));
     }
@@ -204,12 +214,12 @@ public class AdminManagementService {
         // O'zgarishni ma'lumotlar bazasiga saqlaymiz.
         librarianRepository.save(adminToDelete);
 
-        log.info("Admin muvaffsaqiyatli o'chirildi: id={}, email={}", adminToDelete.getId(),adminToDelete.getEmail());
+        log.info("Admin muvaffsaqiyatli o'chirildi: id={}, email={}", adminToDelete.getId(), adminToDelete.getEmail());
 
         // 3-QADAM: Muvaffaqiyatli javobni Controller'ga qaytaramiz.
 
         return ResponseEntity.ok(
-                new ResponseMessage(true,"Admin muvaffiqaytli o'chirildi!",adminId)
+                new ResponseMessage(true, "Admin muvaffiqaytli o'chirildi!", adminId)
         );
 
     }

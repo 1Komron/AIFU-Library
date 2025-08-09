@@ -48,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
                 .surname(librarian.getSurname())
                 .email(librarian.getEmail())
                 .role(librarian.getRole().name())
+                .isActive(librarian.isActive())
                 .build();
 
         String token = jwtService.generateToken(email);
@@ -71,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 .surname(librarian.getSurname())
                 .email(librarian.getEmail())
                 .role(librarian.getRole().name())
+                .isActive(librarian.isActive())
                 .build();
 
         return ResponseEntity.ok(new ResponseMessage(true, "Data", response));

@@ -119,10 +119,19 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
-    @ExceptionHandler(NumberFormatException.class)
-    public ResponseEntity<ResponseMessage> handleNumberFormatException(NumberFormatException e) {
-        log.error("Number format exception. Message: {}", e.getMessage());
+    @ExceptionHandler(CategoryDeletionException.class)
+    public ResponseEntity<ResponseMessage> handleCategoryDeletionException(CategoryDeletionException e) {
+        log.error("Category deletion error: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseMessage(false, "Noto'g'ri format kitildi. Kutilgan format son: " + e.getMessage(), null));
+                .body(new ResponseMessage(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleCategoryNotFoundException(CategoryNotFoundException e) {
+        log.error("Category not found: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+
 }

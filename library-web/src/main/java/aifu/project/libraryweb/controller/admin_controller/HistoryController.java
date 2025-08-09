@@ -15,15 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class HistoryController {
     private final HistoryService historyService;
 
-    @GetMapping
-    @Operation(summary = "Qaytarilgan kitoblar tarixi ro'yxatini olish")
-    @ApiResponse(responseCode = "200", description = "Tarix muvaffaqiyatli qaytarildi")
-    public ResponseEntity<ResponseMessage> getHistory(@RequestParam(defaultValue = "1") int pageNumber,
-                                                      @RequestParam(defaultValue = "10") int pageSize,
-                                                      @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return historyService.getAll(pageNumber, pageSize, sortDirection);
-    }
-
     @GetMapping("/{id}")
     @Operation(summary = "ID bo'yicha tarix ma'lumotini olish")
     @ApiResponses(value = {
@@ -34,8 +25,8 @@ public class HistoryController {
         return historyService.getById(id);
     }
 
-    @GetMapping("/search")
-    @Operation(summary = "Qidiruv so'rovi bo'yicha tarix ma'lumotlarini olish",
+    @GetMapping
+    @Operation(summary = "Tarix ma'lumotlarini olish",
             description = """
                     Parametrlar:
                     - field: Qidiruv maydoni ('userID' 'cardNumber', 'inventoryNumber')
@@ -47,14 +38,14 @@ public class HistoryController {
                     Eslatma: 'userID' faqat son bolishi kerak, yani student ID bo'lishi kerak.
                     """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Qidiruv natijalari muvaffaqiyatli qaytarildi"),
+            @ApiResponse(responseCode = "200", description = "Ro'yxat muvaffaqiyatli qaytarildi"),
             @ApiResponse(responseCode = "400", description = "Noto'g'ri field yoki so'rov yuborildi")
     })
-    public ResponseEntity<ResponseMessage> searchHistory(@RequestParam String field,
-                                                         @RequestParam String query,
-                                                         @RequestParam(defaultValue = "1") int pageNumber,
-                                                         @RequestParam(defaultValue = "10") int pageSize,
-                                                         @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return historyService.search(field, query, pageNumber, pageSize, sortDirection);
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String field,
+                                                  @RequestParam(required = false) String query,
+                                                  @RequestParam(defaultValue = "1") int pageNumber,
+                                                  @RequestParam(defaultValue = "10") int pageSize,
+                                                  @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+        return historyService.getAll(field, query, pageNumber, pageSize, sortDirection);
     }
 }

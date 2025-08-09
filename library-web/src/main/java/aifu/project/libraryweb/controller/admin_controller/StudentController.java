@@ -15,46 +15,30 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
     private final StudentService studentService;
 
-    @GetMapping
+    @GetMapping()
     @Operation(summary = "Studentlar ro'yxatini olish",
             description = """
                     Parametrlar:
-                    - `filter`: `active`, `inactive` yoki `all` qiymatlari qabul qilinadi.
-                    - pageNumber: Sahifa raqami (default: 1)
-                    - pageSize: Sahifa hajmi (default: 10)
-                    - sortDirection: Tartiblash yo'nalishi (default: asc) 'asc' yoki 'desc'
-                    """)
-    @ApiResponse(responseCode = "200", description = "Studentlar ro'yxati muvaffaqiyatli olindi")
-    public ResponseEntity<ResponseMessage> getStudents(@RequestParam(required = false, defaultValue = "all") String filter,
-                                                       @RequestParam(defaultValue = "1") int pageNumber,
-                                                       @RequestParam(defaultValue = "10") int size,
-                                                       @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return studentService.getStudentList(filter, pageNumber, size, sortDirection);
-    }
-
-    @GetMapping("/search")
-    @Operation(summary = "Studentlarni qidirish",
-            description = """
-                    Parametrlar:
-                    - filter: id, cardNumber, name
+                    - filter: id, cardNumber, fullName (Ism va Familiya)
                     - pageNumber: Sahifa raqami (default: 1)
                     - cardNumber: Student kartasi raqami
                     - sortBy: Tartiblash uchun field (default: id)
                     - sortDir: Tartiblash yo'nalishi (default: asc) 'asc' yoki 'desc'
                     
-                    Eslatma: id doimo son korinishida bolishi kerak.
+                    Eslatma: id doimo son korinishida bolishi kerak. Ism va Familiya faqat 2 ta so'zdan iborat bo'lishi kerak.
                     """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Studentlar qidiruvi muvaffaqiyatli amalga oshirildi"),
             @ApiResponse(responseCode = "400", description = "Noto'g'ri filter yoki query qiymat"),
     })
-    public ResponseEntity<ResponseMessage> search(@RequestParam String filter,
-                                                  @RequestParam String query,
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String filter,
+                                                  @RequestParam(required = false) String query,
+                                                  @RequestParam(defaultValue = "all") String status,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int size,
                                                   @RequestParam(defaultValue = "asc") String sortDirection) {
 
-        return studentService.getSearchStudentList(filter, query, pageNumber, size, sortDirection);
+        return studentService.getAll(filter, query, status, pageNumber, size, sortDirection);
     }
 
     @GetMapping("/{id}")

@@ -27,8 +27,6 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
 
     List<BaseBook> findByCategory_IdAndIsDeletedFalse(Integer categoryId);
 
-    Page<BaseBook> findAllByCategoryAndIsDeletedFalse(BaseBookCategory category, Pageable pageable);
-
     @Query("""
             SELECT b FROM BaseBook b
             WHERE b.isDeleted = false AND (
@@ -50,8 +48,8 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
     @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.author) like lower(concat('%', :query, '%'))")
     Page<BaseBook> searchByAuthor(String query, Pageable pageable);
 
-    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.series) like lower(concat('%', :query, '%'))")
-    Page<BaseBook> searchByIsbn(String isbn, Pageable pageable);
+    @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.isbn) like lower(concat('%', :query, '%'))")
+    Page<BaseBook> searchByIsbn(String query, Pageable pageable);
 
     @Query("select b from  BaseBook b where b.isDeleted = false and lower(b.udc) like lower(concat('%', :query, '%'))")
     Page<BaseBook> searchByUdc(String query, Pageable pageable);

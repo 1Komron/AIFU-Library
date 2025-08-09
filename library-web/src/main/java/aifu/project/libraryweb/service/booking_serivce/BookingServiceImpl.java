@@ -42,18 +42,6 @@ public class BookingServiceImpl implements BookingService {
     private final HistoryService historyService;
 
     @Override
-    public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, "id"));
-        Page<BookingShortDTO> page = bookingRepository.findAllBookingShortDTO(pageable);
-
-        Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", page.getContent());
-
-        return ResponseEntity.ok(new ResponseMessage(true, "data", map));
-    }
-
-    @Override
     public ResponseEntity<ResponseMessage> getBooking(Long id) {
         BookingSummaryDTO data = bookingRepository.findSummary(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found. By id: " + id));
@@ -62,7 +50,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> search(String field, String query, String filter, int pageNum, int pageSize, String sortDirection) {
+    public ResponseEntity<ResponseMessage> getAll(String field, String query, String filter, int pageNum, int pageSize, String sortDirection) {
+        field = field == null ? "default" : field;
+
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, field));
 
@@ -80,11 +70,17 @@ public class BookingServiceImpl implements BookingService {
             case "bookEpc" -> bookingRepository.findAllBookingShortDTOByBookEpc(query, statuses, pageable);
             case "inventoryNumber" ->
                     bookingRepository.findAllBookingShortDTOByBookInventoryNumber(query, statuses, pageable);
+            case "default" -> bookingRepository.findAllBookingShortDTO(pageable,statuses);
             default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + field);
         };
 
+        List<BookingShortDTO> content = page.getContent();
+        log.info("Bookinglar ro'yxati: field={}, query={}, filter={}, pageNum={}, pageSize={}, sortDirection={}",
+                field, query, filter, pageNum, pageSize, sortDirection);
+        log.info("Bookinglar ro'yxati: {}", content.stream().map(BookingShortDTO::id).toList());
+
         Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", page.getContent());
+        map.put("data", content);
 
         return ResponseEntity.ok(new ResponseMessage(true, "data", map));
     }

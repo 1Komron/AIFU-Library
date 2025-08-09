@@ -14,11 +14,9 @@ public interface BookCopyService {
 
     ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates);
 
-    ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize, String sortDirection);
-
     ResponseEntity<ResponseMessage> get(Integer id);
 
-    ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection);
+    ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection);
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 
@@ -31,4 +29,6 @@ public interface BookCopyService {
     BookCopy findByEpc(String epc);
 
     void updateStatus(BookCopy bookCopy, boolean isTaken);
+
+    ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber);
 }

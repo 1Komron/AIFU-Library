@@ -71,17 +71,7 @@ public class BaseBookController {
     }
 
     @GetMapping
-    @Operation(summary = "Base book ro'yaxtini olish")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Base book ro'yxati muvaffaqiyatli olindi")
-    })
-    public ResponseEntity<ResponseMessage> getAll(@RequestParam(defaultValue = "1") int pageNumber,
-                                                  @RequestParam(defaultValue = "10") int pageSize) {
-        return baseBookService.getAll(pageNumber, pageSize);
-    }
-
-    @GetMapping("/search")
-    @Operation(summary = "Base book qidirish",
+    @Operation(summary = "Base book ro'yaxtini olish",
             description = """
                     Qidirish query va field orqali amalga oshiriladi.
                     Field: 'id', 'category', 'title', 'author', 'isbn', 'udc', 'series'.
@@ -90,14 +80,14 @@ public class BaseBookController {
                     Eslatma: 'category' va 'id' fieldlari uchun query sifatida ID raqamini kiritish kerak !
                     """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Base book qidirish muvaffaqiyatli amalga oshirildi"),
+            @ApiResponse(responseCode = "200", description = "Base book ro'yaxtini olish muvaffaqiyatli amalga oshirildi"),
             @ApiResponse(responseCode = "400", description = "Notogri query yoki field kiritildi")
     })
-    public ResponseEntity<ResponseMessage> search(@RequestParam String query,
-                                                  @RequestParam String field,
+    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String query,
+                                                  @RequestParam(required = false) String field,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,
                                                   @RequestParam(defaultValue = "asc") String sortDirection) {
-        return baseBookService.search(query, field, pageNumber, pageSize, sortDirection);
+        return baseBookService.getAll(query, field, pageNumber, pageSize, sortDirection);
     }
 }

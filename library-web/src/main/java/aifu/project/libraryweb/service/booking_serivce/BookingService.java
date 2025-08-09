@@ -15,11 +15,9 @@ import java.util.List;
 
 public interface BookingService {
 
-    ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize, String sortDirection);
-
     ResponseEntity<ResponseMessage> getBooking(Long id);
 
-    ResponseEntity<ResponseMessage> search(String field, String query, String filter, int pageNum, int pageSize, String sortDirection);
+    ResponseEntity<ResponseMessage> getAll(String field, String query, String filter, int pageNum, int pageSize, String sortDirection);
 
     ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request);
 

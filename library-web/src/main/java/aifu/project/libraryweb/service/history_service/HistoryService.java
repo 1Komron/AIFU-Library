@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 public interface HistoryService {
     void add(Booking booking);
 
-    ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize, String sortDirection);
-
     ResponseEntity<ResponseMessage> getById(Long id);
 
-    ResponseEntity<ResponseMessage> search(String field, String query, int pageNumber, int pageSize, String sortDirection);
+    ResponseEntity<ResponseMessage> getAll(String field, String query, int pageNumber, int pageSize, String sortDirection);
 }

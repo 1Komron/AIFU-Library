@@ -68,6 +68,12 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(CategoryDeletionException.class)
+    public ResponseEntity<ResponseMessage> handleCategoryDeletionException(CategoryDeletionException e) {
+        log.error("Category deletion error. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 
     // --- UPDATED CATCH-ALL HANDLER TO USE ResponseMessage ---
     @ExceptionHandler(RuntimeException.class)
@@ -99,6 +105,12 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleCategoryNotFoundException(CategoryNotFoundException e) {
+        log.error("Category not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 
     @ExceptionHandler(HistoryNotFoundException.class)
     public ResponseEntity<ResponseMessage> handleHistoryNotFoundException(HistoryNotFoundException e) {

@@ -31,46 +31,58 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final BookingService bookingService;
 
+    private static final String DEFAULT = "default";
+
     public long countStudents() {
         return studentRepository.getStudentsCount();
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getStudentList(String filter, int pageNumber, int size, String sortDirection) {
+    public ResponseEntity<ResponseMessage> getAll(String filter,
+                                                  String query,
+                                                  String status,
+                                                  int pageNumber,
+                                                  int size,
+                                                  String sortDirection) {
+        filter = filter == null ? DEFAULT : filter;
+
+        if (!filter.equals(DEFAULT) && query == null) {
+            throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(filter));
+        }
+
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(direction, "id"));
 
-
-        Page<Student> studentPage = switch (filter.toLowerCase()) {
-            case "active" -> studentRepository.findByIsActiveAndIsDeletedFalse(true, pageable);
-            case "inactive" -> studentRepository.findByIsActiveAndIsDeletedFalse(false, pageable);
-            default -> studentRepository.findByIsDeletedFalse(pageable);
+        List<Boolean> statusList = switch (status) {
+            case "active" -> List.of(true);
+            case "inactive" -> List.of(false);
+            default -> List.of(true, false);
         };
 
-        Map<String, Object> map = Util.getPageInfo(studentPage);
-        map.put("data", getStudentShortDTO(studentPage.getContent()));
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Student list", map));
-    }
-
-    @Override
-    public ResponseEntity<ResponseMessage> getSearchStudentList(String filter,
-                                                                String query,
-                                                                int pageNumber,
-                                                                int size,
-                                                                String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(direction, "id"));
-
         Page<Student> studentPage = switch (filter) {
-            case "id" -> studentRepository.findByIdAndIsDeletedFalse(Long.parseLong(query), pageable);
-            case "cardNumber" -> studentRepository.findByCardNumberAndIsDeletedFalse(query, pageable);
-            case "name" -> studentRepository.findByNameContainingIgnoreCaseAndIsDeletedFalse(query, pageable);
+            case "id" -> studentRepository.findByIdAndIsDeletedFalse(Long.parseLong(query), pageable, statusList);
+            case "cardNumber" -> studentRepository.findByCardNumberAndIsDeletedFalse(query, pageable, statusList);
+            case "fullName" -> {
+                String[] parts = query.trim().split("\\s+");
+
+                String first = "%" + parts[0].toLowerCase() + "%";
+                String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
+
+                yield studentRepository.findBySurnameAndName(first, second, pageable, statusList);
+            }
+            case DEFAULT -> studentRepository.findByIsDeletedFalse(pageable, statusList);
             default -> throw new IllegalArgumentException("Invalid filter: " + filter);
         };
 
+        List<Student> content = studentPage.getContent();
+
+        log.info("Studentlar ro'yxati: filter={}, query={}, pageNumber={}, size={}, sortDirection={}",
+                filter, query, pageNumber + 1, size, sortDirection);
+
+        log.info("Studentlar ro'yxati: {}", content.stream().map(Student::getId).toList());
+
         Map<String, Object> map = Util.getPageInfo(studentPage);
-        map.put("data", getStudentShortDTO(studentPage.getContent()));
+        map.put("data", getStudentShortDTO(content));
 
         return ResponseEntity.ok(new ResponseMessage(true, "Student list", map));
     }

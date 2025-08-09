@@ -38,7 +38,11 @@ public class BookCopyServiceImpl implements BookCopyService {
         BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(dto.getBaseBookId())
                 .orElseThrow(() -> new BaseBookNotFoundException(dto.getBaseBookId()));
 
-        //epc qoshilishi kerak
+        String inventoryNumber = dto.getInventoryNumber();
+        if (bookCopyRepository.existsByInventoryNumber(inventoryNumber)) {
+            throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+        }
+
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
         entity = bookCopyRepository.save(entity);
 
@@ -64,7 +68,14 @@ public class BookCopyServiceImpl implements BookCopyService {
             }
 
             switch (key) {
-                case "inventoryNumber" -> bookCopy.setInventoryNumber((String) value);
+                case "inventoryNumber" -> {
+                    String inventoryNumber = (String) value;
+                    if (bookCopyRepository.existsByInventoryNumber(inventoryNumber)) {
+                        throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+                    }
+
+                    bookCopy.setInventoryNumber(inventoryNumber);
+                }
                 case "shelfLocation" -> bookCopy.setShelfLocation((String) value);
                 case "notes" -> bookCopy.setNotes((String) value);
                 case "book" -> {
@@ -88,29 +99,6 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
-        Page<BookCopy> page = bookCopyRepository.findByIsDeletedFalse(pageable);
-
-        List<BookCopyResponseDTO> list = page.getContent().stream()
-                .map(BookCopyMapper::toResponseDTO)
-                .toList();
-
-        log.info("BookCopy ro'yxati olindi. Sahifa: {}, Hajmi: {}, Tartiblash: {}",
-                page.getNumber() + 1, page.getSize(), sortDirection);
-
-        Map<String, Object> map = Map.of(
-                "list", list,
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
-        );
-
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy ro'yxati", map));
-    }
-
-    @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
         BookCopy entity = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
@@ -123,7 +111,21 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+    public ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber) {
+        boolean exists = bookCopyRepository.existsByInventoryNumber(inventoryNumber);
+
+        log.info("Inventory number tekshirildi: {}, Status: {}", inventoryNumber, exists ? "Mavjud" : "Mavjud emas");
+
+        return ResponseEntity.ok(
+                new ResponseMessage(
+                        true,
+                        exists ? "Inventory number mavjud" : "Inventory number mavjud emas",
+                        exists));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+        field = field == null ? "default" : field;
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
@@ -134,7 +136,9 @@ public class BookCopyServiceImpl implements BookCopyService {
 
             case "epc" -> bookCopyRepository.findByEpcAndIsDeletedFalse(query, pageable);
 
-            default -> throw new IllegalArgumentException("BookCopy qidirish. Mavjud bo'lmagan field: " + field);
+            case "default" -> bookCopyRepository.findByIsDeletedFalse(pageable);
+
+            default -> throw new IllegalArgumentException("Noto'g'ri qidiruv maydoni: " + field);
         };
 
         List<BookCopyResponseDTO> list = page.getContent().stream()

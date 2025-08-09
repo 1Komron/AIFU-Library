@@ -63,22 +63,6 @@ public class BaseBookServiceImpl implements BaseBookService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAll(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        Page<BaseBook> page = baseBookRepository.findByIsDeletedFalse(pageable);
-
-        List<BaseBookShortDTO> list = createBaseBookShortDTO(page.getContent());
-
-        Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", list);
-
-        log.info("Base book ro'yxati olindi: ro'yxat (ID)={},  pageNumber={}, pageSize={}",
-                list.stream().map(BaseBookShortDTO::id).toList(), pageNumber + 1, pageSize);
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book ro'yxati", map));
-    }
-
-    @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
@@ -179,8 +163,8 @@ public class BaseBookServiceImpl implements BaseBookService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> search(String query, String field, int pageNumber, int pageSize, String sortDirection) {
-        field = field.toLowerCase();
+    public ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+        field = field != null ? field.toLowerCase() : "default";
 
         Sort.Direction direction = sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
@@ -193,7 +177,8 @@ public class BaseBookServiceImpl implements BaseBookService {
             case "isbn" -> baseBookRepository.searchByIsbn(query, pageable);
             case "udc" -> baseBookRepository.searchByUdc(query, pageable);
             case "series" -> baseBookRepository.searchSeries(query, pageable);
-            default -> throw new IllegalArgumentException("Mavjud bo'lamagan field: " + field);
+            case "default" -> baseBookRepository.findByIsDeletedFalse(pageable);
+            default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + field);
         };
 
         List<BaseBookShortDTO> list = createBaseBookShortDTO(page.getContent());
@@ -201,8 +186,8 @@ public class BaseBookServiceImpl implements BaseBookService {
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", list);
 
-        log.info("Base book qidirish amalga oshirildi: query={}, field={}, pageNumber={}, pageSize={}", query, field, pageNumber + 1, pageSize);
-        log.info("Base book qidirish natijalari (ID): {}", list.stream().map(BaseBookShortDTO::id).toList());
+        log.info("Base book ro'yxatini olish amalga oshirildi: query={}, field={}, pageNumber={}, pageSize={}", query, field, pageNumber + 1, pageSize);
+        log.info("Base book ro'yxatini olish natijalari (ID): {}", list.stream().map(BaseBookShortDTO::id).toList());
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book ni '%s' fieldi orqali qidirish".formatted(field), map));
     }

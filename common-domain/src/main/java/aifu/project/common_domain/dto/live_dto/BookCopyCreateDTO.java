@@ -13,4 +13,6 @@ public class BookCopyCreateDTO {
 
     private Integer baseBookId;
 
+    private String epc;
+
 }

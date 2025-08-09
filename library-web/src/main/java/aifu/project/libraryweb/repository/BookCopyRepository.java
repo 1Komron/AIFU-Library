@@ -23,8 +23,6 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
 
     Page<BookCopy> findByBookIdAndIsDeletedFalse(Integer baseBookId, Pageable pageable);
 
-    List<BookCopy> findByBook_IdAndIsDeletedFalse(Integer bookId);
-
     long countByBook_IdAndIsDeletedFalse(Integer bookId);
 
     long countByBook_IdAndIsTakenTrueAndIsDeletedFalse(Integer bookId);
@@ -46,5 +44,13 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
 
     Page<BookCopy> findByEpcAndIsDeletedFalse(String epc, Pageable pageable);
 
+    @Query("""
+            select b
+            from BookCopy b
+            where b.isDeleted = false
+              and b.inventoryNumber ilike concat('%', :query, '%')
+            """)
     Page<BookCopy> findByInventoryNumberAndIsDeletedFalse(String query, Pageable pageable);
+
+    boolean existsByInventoryNumber(String inventoryNumber);
 }

@@ -66,28 +66,17 @@ public class BookCopyController {
         return bookCopyService.get(id);
     }
 
+    @GetMapping("/check-inventory-number")
+    @Operation(summary = "Inventory number majudligini tekshirish tekshirish")
+    @ApiResponse(responseCode = "200", description = "Inventory number mavjudligi tekshirildi")
+    public ResponseEntity<ResponseMessage> checkInventoryNumber(@RequestParam String inventoryNumber) {
+        return bookCopyService.checkInventoryNumber(inventoryNumber);
+    }
+
     @GetMapping
     @Operation(summary = "Barcha book copylarni olish",
             description = """
-                    Barcha book copylarni olish uchun.
-                    Parametrlar:
-                    - pageNumber: Sahifa raqami (default: 1)
-                    - pageSize: Sahifa hajmi (default: 10)
-                    - sortDirection: Tartiblash yo'nalishi (default: asc) 'asc' yoki 'desc'
-                    """)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Barcha book copylar muvaffaqiyatli olindi")
-    })
-    public ResponseEntity<ResponseMessage> getAll(@RequestParam(defaultValue = "1") int pageNumber,
-                                                  @RequestParam(defaultValue = "10") int pageSize,
-                                                  @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return bookCopyService.getAll(pageNumber, pageSize, sortDirection);
-    }
-
-    @GetMapping("/search")
-    @Operation(summary = "Base book bo'yicha book copylarni qidirish",
-            description = """
-                    Book copylarni qidirish.
+                    "Barcha book copylarni olish".
                     Parametrlar:
                     - query: Qidiruv so'zi
                     - field: Qidiriladigan field
@@ -99,12 +88,12 @@ public class BookCopyController {
                     Eslatma: 'book' field faqat son bo'lishi kerak, ya'ni BaseBook IDsi.
                     """)
 
-    public ResponseEntity<ResponseMessage> search(@RequestParam String query,
-                                                  @RequestParam String field,
+    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String query,
+                                                  @RequestParam(required = false) String field,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,
                                                   @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return bookCopyService.search(query, field, pageNumber, pageSize, sortDirection);
+        return bookCopyService.getAll(query, field, pageNumber, pageSize, sortDirection);
     }
 
 }

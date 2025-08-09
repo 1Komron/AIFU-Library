@@ -51,24 +51,24 @@ public class ReaderService {
                 long now = System.currentTimeMillis();
 
                 if (!epcCache.containsKey(epc)) {
-                    log.info("📦 New tag: {} RSSI: {}", epc, tag.getRssi());
+                    log.info("Tag: {} RSSI: {}", epc, tag.getRssi());
                     epcCache.put(epc, now);
 
                     switch (bookingService.isEpcBooked(epc)) {
-                        case -1 -> log.info("RFID EPC '{}' not found in BookCopy table. Ignoring scan.", epc);
+                        case -1 -> log.info("Tag:  '{}' not found in BookCopy table. Ignoring scan.", epc);
 
                         case 0 -> {
                             executor.submit(this::triggerAlarm);
                             executor.submit(() -> sendNotification(epc));
-                            log.info("RFID EPC '{}' found, but no active booking exists for this book.", epc);
+                            log.info("Tag: '{}' found, but no active booking exists for this book.", epc);
                         }
 
                         case 1 -> {
                             executor.submit(this::triggerSuccess);
-                            log.info("RFID EPC '{}' is currently booked. Access allowed.", epc);
+                            log.info("Tag: '{}' is currently booked. Access allowed.", epc);
                         }
 
-                        default -> log.error("Unexpected booking status for RFID EPC '{}'.", epc);
+                        default -> log.error("Unexpected booking status for Tag: '{}'.", epc);
                     }
                 }
             }

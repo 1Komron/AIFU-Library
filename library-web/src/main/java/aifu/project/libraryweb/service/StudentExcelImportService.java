@@ -9,10 +9,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class StudentExcelImportService {
@@ -45,33 +48,24 @@ public class StudentExcelImportService {
      */
     @Transactional
     public ImportStats importStudentsFromExcel(InputStream inputStream) {
-        // try-with-resources bloki workbook'ni ish oxirida avtomatik yopilishini ta'minlaydi.
         try (Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0);
             Row headerRow = sheet.getRow(0);
 
             if (headerRow == null) {
-                // Agar fayl bo'sh bo'lsa yoki sarlavha qatori bo'lmasa, tushunarli xatolik "otamiz".
                 throw new IllegalArgumentException("Excel fayl bo'sh yoki sarlavha qatori mavjud emas.");
             }
 
-            // 1-QADAM: Dinamik "ustunlar xaritasi"ni yaratish.
-            // Bu xarita bizga qaysi ma'lumot (masalan, SURNAME) qaysi ustunda (masalan, 1-indeks) ekanligini aytadi.
             Map<Field, Integer> fieldColumnMap = createFieldColumnMap(headerRow);
-
-            // 2-QADAM: Yuqoridagi xarita yordamida Exceldagi barcha ma'lumotlarni o'qib, User obyektlari ro'yxatiga aylantirish.
             List<Student> studentsFromExcel = readUsersDynamically(sheet, fieldColumnMap);
 
             if (studentsFromExcel.isEmpty()) {
-                // Agar o'qishga arziydigan ma'lumot topilmasa, bo'sh hisobot qaytaramiz.
                 return new ImportStats(0, List.of("Excel faylda import qilinadigan yangi ma'lumot topilmadi."));
             }
 
-            // 3-QADAM: O'qilgan ma'lumotlarni baza bilan solishtirish va faqat yangilarini saqlash.
             return filterAndSaveUsers(studentsFromExcel);
 
         } catch (Exception e) {
-            // Jarayondagi har qanday xatolikni ushlab, Controller'ga yetkazamiz.
             throw new RuntimeException("Import jarayonida kutilmagan xatolik: " + e.getMessage(), e);
         }
     }
@@ -83,39 +77,57 @@ public class StudentExcelImportService {
         List<Student> newStudentToSave = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
-        // Bu Set endi bazadagi XESHLANGAN pasport kodlarini saqlaydi.
-        Set<String> existingDbHashedPassportCodes = studentRepository.findAllPassportCodes();
+        // 1-QADAM: Exceldagi BARCHA ochiq matndagi pasport kodlarini yig'ib olamiz.
+        Set<String> plainPassportCodesFromExcel = studentsFromExcel.stream()
+                .map(Student::getPassportCode)
+                .collect(Collectors.toSet());
 
-        // Bu Set fayl ichidagi dublikatlarni aniqlash uchun OCHIQ MATNDAGI pasport kodlarini saqlaydi.
-        Set<String> processedPassportCodesInExcel = new HashSet<>();
+        // Agar Excelda umuman pasport kodi bo'lmasa, ishni tugatamiz.
+        if (plainPassportCodesFromExcel.isEmpty()) {
+            return new ImportStats(0, List.of("Excel faylda yaroqli pasport kodlari topilmadi."));
+        }
 
+        // 2-QADAM: Yig'ilgan pasport kodlarini barchasini xeshlaymiz.
+        Set<String> hashedCodesFromExcel = plainPassportCodesFromExcel.stream()
+                .map(passportHasher::hash)
+                .collect(Collectors.toSet());
+
+        // 3-QADAM: BAZAGA FAQAT SHU XESHLARNI YUBORIB, mavjudlarini so'raymiz.
+        // Bu bitta, samarali so'rov. "Cursor error"ning oldini oladi.
+        Set<String> existingDbHashedPassports = studentRepository.findExistingHashedPassportCodes(hashedCodesFromExcel);
+
+        // 4-QADAM: Endi xotirada, tezkor filtrlashni bajaramiz.
+        Set<String> processedPassportCodesInExcel = new HashSet<>(); // Fayl ichidagi dublikatlarni aniqlash uchun
         for (Student student : studentsFromExcel) {
-            // Exceldan olingan ochiq matndagi pasport kodi
             String plainPassportCode = student.getPassportCode();
+            String hashedPassportCode = passportHasher.hash(plainPassportCode);
 
-            // 1-Tekshiruv: Bu pasport kodi shu faylning o'zida avvalroq uchradimi?
-            if (processedPassportCodesInExcel.contains(plainPassportCode)) {
+            // Fayl ichidagi dublikatni tekshirish
+            if (!processedPassportCodesInExcel.add(plainPassportCode)) {
                 errors.add("Talaba (Pasport: " + plainPassportCode + ") Excel faylida takroran kelgan.");
                 continue;
             }
 
-            // 2-Tekshiruv: Pasport kodini xeshlab, bazadagi mavjud xeshlar bilan solishtiramiz.
-            String hashedPassportCode = passportHasher.hash(plainPassportCode);
-            if (existingDbHashedPassportCodes.contains(hashedPassportCode)) {
+            // Bazadagi dublikatni tekshirish (allaqachon olingan xeshlar ro'yxati bilan)
+            if (existingDbHashedPassports.contains(hashedPassportCode)) {
                 errors.add("Talaba (Pasport: " + plainPassportCode + ") ma'lumotlar bazasida allaqachon mavjud.");
                 continue;
             }
 
-            // MUHIM QADAM: Student obyektidagi ochiq matndagi pasport kodini endi uning
-            // xeshlangan versiyasi bilan almashtiramiz. Bazaga faqat xesh yoziladi.
+            // Student obyektidagi ochiq matnni uning xeshi bilan almashtiramiz.
             student.setPassportCode(hashedPassportCode);
-
             newStudentToSave.add(student);
-            processedPassportCodesInExcel.add(plainPassportCode);
         }
 
         if (!newStudentToSave.isEmpty()) {
-            studentRepository.saveAll(newStudentToSave);
+            try {
+                studentRepository.saveAll(newStudentToSave);
+            } catch (DataIntegrityViolationException e) {
+                // Kamdan-kam hollarda, parallel so'rovlar paytida yuz berishi mumkin bo'lgan
+                // UNIQUE constraint xatosini (masalan, cardNumber uchun) ushlab olamiz.
+                errors.add("Ma'lumotlarni saqlashda ziddiyat yuz berdi (ehtimol, karta raqami takrorlangan). Iltimos, qayta urunib ko'ring.");
+                return new ImportStats(0, errors);
+            }
         }
 
         return new ImportStats(newStudentToSave.size(), errors);

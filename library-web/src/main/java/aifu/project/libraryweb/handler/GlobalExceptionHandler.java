@@ -119,5 +119,12 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(StudentImportException.class)
+    public ResponseEntity<ResponseMessage> handleStudentImportException(StudentImportException e) {
+        log.warn("Student import failed. Message: {}", e.getMessage());
+        // Bu foydalanuvchi yuklagan fayl bilan bog'liq muammo bo'lishi mumkin
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
 
 }

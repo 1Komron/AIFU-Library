@@ -29,7 +29,20 @@ public class BookingController {
     }
 
     @GetMapping
-    @Operation(summary = "Bookinglar ro'yxatini olish")
+    @Operation(summary = "Bookinglar ro'yxatini olish",
+            description = """
+                    Bookinglar ro'yxatini olish uchun so'rov yuboriladi.
+                    Parametrlar:
+                    - field: Qidiruv maydoni ('studentId', 'cardNumber', 'fullName','bookEpc','invetoryNumber')
+                    - query: Qidiruv so'rovi
+                    - filter: Filtrlash turi ('all', 'APPROVED', 'OVERDUE' (default = all))
+                    - pageNum: Sahifa raqami (default: 1)
+                    - pageSize: Sahifadagi elementlar soni (default: 10)
+                    - sortDirection: Tartiblash yo'nalishi (default: 'asc', 'desc' ham bo'lishi mumkin)
+                    
+                    Eslatma: studentId faqat son bolishi kerak -> Studnet ID bo'yicha qidirish.
+                    'fullName' bo'yicha qidirganda 2 tadan kop so'z bo'lishi mumkin emas,
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Bookinglar ro'yxati muvaffaqiyatli qaytarildi"),
             @ApiResponse(responseCode = "400", description = "Qidiruv so'rovi noto'g'ri")

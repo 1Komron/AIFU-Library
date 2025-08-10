@@ -41,6 +41,8 @@ public class BookingServiceImpl implements BookingService {
     private final BookCopyService bookCopyService;
     private final HistoryService historyService;
 
+    private static final String DEFAULT = "default";
+
     @Override
     public ResponseEntity<ResponseMessage> getBooking(Long id) {
         BookingSummaryDTO data = bookingRepository.findSummary(id)
@@ -51,10 +53,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public ResponseEntity<ResponseMessage> getAll(String field, String query, String filter, int pageNum, int pageSize, String sortDirection) {
-        field = field == null ? "default" : field;
+        field = field == null ? DEFAULT : field;
+        if (!field.equals(DEFAULT) && query == null) {
+            throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(filter));
+        }
 
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, field));
+        Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, "id"));
 
         List<Status> statuses = switch (filter.toUpperCase()) {
             case "APPROVED" -> List.of(Status.APPROVED);
@@ -66,11 +71,18 @@ public class BookingServiceImpl implements BookingService {
             case "studentId" ->
                     bookingRepository.findAllBookingShortDTOByStudentId(Long.parseLong(query), statuses, pageable);
             case "cardNumber" -> bookingRepository.findAllBookingShortDTOByStudentCardNumber(query, statuses, pageable);
-            case "studentName" -> bookingRepository.findAllBookingShortDTOByStudentName(query, statuses, pageable);
+            case "fullName" -> {
+                String[] parts = query.trim().split("\\s+");
+
+                String first = "%" + parts[0].toLowerCase() + "%";
+                String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
+
+                yield bookingRepository.findAllBookingShortDTOByStudentFullName(first, second, statuses, pageable);
+            }
             case "bookEpc" -> bookingRepository.findAllBookingShortDTOByBookEpc(query, statuses, pageable);
             case "inventoryNumber" ->
                     bookingRepository.findAllBookingShortDTOByBookInventoryNumber(query, statuses, pageable);
-            case "default" -> bookingRepository.findAllBookingShortDTO(pageable,statuses);
+            case DEFAULT -> bookingRepository.findAllBookingShortDTO(pageable, statuses);
             default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + field);
         };
 
@@ -194,6 +206,8 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setExtendedBy(librarian);
         booking.setExtendedAt(LocalDate.now());
+
+        log.info("Booking uzaytirildi. Booking ID: {}, yangi muddati: {}", booking.getId(), newDueDate);
 
         bookingRepository.save(booking);
     }

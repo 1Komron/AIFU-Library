@@ -14,8 +14,6 @@ import java.util.Optional;
 @Repository
 public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
 
-    boolean existsByIsbn(String isbn);
-
     @EntityGraph(attributePaths = {"copies", "category"}, type = EntityGraph.EntityGraphType.LOAD)
     List<BaseBook> findByIdIn(List<Integer> ids);
 

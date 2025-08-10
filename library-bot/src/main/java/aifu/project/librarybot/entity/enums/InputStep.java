@@ -1,4 +1,4 @@
-package aifu.project.librarybot.enums;
+package aifu.project.librarybot.entity.enums;
 
 public enum InputStep {
     SEARCH,

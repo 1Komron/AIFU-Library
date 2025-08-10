@@ -2,8 +2,8 @@ package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.dto.BookPartList;
 import aifu.project.common_domain.dto.PartList;
-import aifu.project.librarybot.enums.Command;
-import aifu.project.librarybot.enums.InputStep;
+import aifu.project.librarybot.entity.enums.Command;
+import aifu.project.librarybot.entity.enums.InputStep;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
 import aifu.project.librarybot.utils.MessageKeys;
@@ -212,7 +212,7 @@ public class ProcessService {
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.WELCOME_MESSAGE,
                     userLanguageService.getLanguage(String.valueOf(chatId))));
 
-            if (!userService.exists(chatId))
+            if (userService.notExists(chatId))
                 userService.sendLoginButton(chatId);
 
             return true;

@@ -2,7 +2,7 @@ package aifu.project.librarybot.service;
 
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
-import aifu.project.librarybot.enums.InputStep;
+import aifu.project.librarybot.entity.enums.InputStep;
 import aifu.project.librarybot.repository.StudentRepository;
 import aifu.project.librarybot.utils.ExecuteUtil;
 import aifu.project.librarybot.utils.KeyboardUtil;
@@ -24,8 +24,8 @@ public class UserService {
     private final ExecuteUtil executeUtil;
     private final InputService inputService;
 
-    public boolean exists(Long chatId) {
-        return studentRepository.existsByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
+    public boolean notExists(Long chatId) {
+        return !studentRepository.existsByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
     }
 
     @SneakyThrows
@@ -57,7 +57,7 @@ public class UserService {
 
     @SneakyThrows
     public boolean checkUserStatus(Long chatId) {
-        if (!exists(chatId)) {
+        if (notExists(chatId)) {
             sendLoginButton(chatId);
             return true;
         }

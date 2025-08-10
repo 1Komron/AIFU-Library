@@ -1,6 +1,6 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.librarybot.enums.InputStep;
+import aifu.project.librarybot.entity.enums.InputStep;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;

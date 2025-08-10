@@ -5,15 +5,18 @@ import aifu.project.common_domain.dto.action_dto.ExtendAcceptActionDTO;
 import aifu.project.common_domain.dto.action_dto.ExtendRejectActionDTO;
 import aifu.project.common_domain.dto.action_dto.WarningActionDTO;
 import aifu.project.common_domain.entity.Booking;
+import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.entity.Notification;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.exceptions.NotificationNotFoundException;
+import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.BookingRepository;
 import aifu.project.libraryweb.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -77,6 +80,9 @@ public class ActionServiceImpl implements ActionService {
     }
 
     private void extendDeadline(Booking booking, Integer extendDays) {
+        SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Librarian librarian = securityLibrarian.toBase();
+
         LocalDate dueDate = booking.getDueDate();
         LocalDate now = LocalDate.now();
 
@@ -84,6 +90,9 @@ public class ActionServiceImpl implements ActionService {
 
         booking.setDueDate(newDueDate);
         booking.setStatus(Status.APPROVED);
+
+        booking.setExtendedBy(librarian);
+        booking.setExtendedAt(newDueDate);
 
         bookingRepository.save(booking);
 

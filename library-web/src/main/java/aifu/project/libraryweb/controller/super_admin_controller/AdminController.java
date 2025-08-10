@@ -33,7 +33,7 @@ public class AdminController {
     @Operation(summary = "Admin yaratish")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Admin muvaffaqiyatli yaratildi"),
+            @ApiResponse(responseCode = "200", description = "Admin muvaffaqiyatli yaratildi"),
             @ApiResponse(responseCode = "409", description = "Bu email bilan allaqachon royxatdan otilgan"),
     })
     public ResponseEntity<ResponseMessage> createAdmin(@Valid @RequestBody AdminCreateRequest request) {

@@ -68,4 +68,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT s.passportCode FROM Student s WHERE s.passportCode IN :hashedPassportCodes")
     Set<String> findExistingHashedPassportCodes(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
 
+    List<Student> findByPassportCodeInAndIsDeletedFalse(Set<String> strings);
+
 }
+

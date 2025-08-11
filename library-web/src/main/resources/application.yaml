@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: application-private.yaml
   application:
     name: library-web
   datasource:
@@ -64,6 +62,12 @@ springdoc:
       - name: AIFU Library
         url: v3/api-docs
 #        url: https://aifu-library.duckdns.org/v3/api-docs
+
+jwt:
+  token:
+    a82f3d9ec2c541f0bca8a5f2db0d0bcd67c54e3d6ae2ab8b164efb3b1a7cbe44
+  expiration-date:
+    2592000000 # 30 kun
 
 security:
   hashing:

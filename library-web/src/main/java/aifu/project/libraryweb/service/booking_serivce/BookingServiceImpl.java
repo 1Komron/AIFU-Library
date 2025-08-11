@@ -161,6 +161,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setGivenAt(now);
         booking.setDueDate(LocalDate.now().plusDays(days));
 
+        booking.setStatus(Status.APPROVED);
+
         Booking save = bookingRepository.save(booking);
 
         log.info("Booking muvaffaqiyatli yaratildi. Booking: {}", save);

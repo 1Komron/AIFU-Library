@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.repository;
 
 import aifu.project.common_domain.dto.BookCopyStats;
+import aifu.project.common_domain.dto.live_dto.BookCopyShortDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BookCopy;
 import org.springframework.data.domain.Page;
@@ -17,11 +18,37 @@ import java.util.Collection;
 
 public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
 
-    Page<BookCopy> findByIsDeletedFalse(Pageable pageable);
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.live_dto.BookCopyShortDTO(
+                bc.id,
+                b.author,
+                b.title,
+                bc.inventoryNumber,
+                bc.shelfLocation,
+                bc.isTaken
+            )
+            FROM BookCopy bc
+            JOIN bc.book b
+            WHERE bc.isDeleted = false
+            """)
+    Page<BookCopyShortDTO> findByIsDeletedFalse(Pageable pageable);
 
     Optional<BookCopy> findByIdAndIsDeletedFalse(Integer id);
 
-    Page<BookCopy> findByBookIdAndIsDeletedFalse(Integer baseBookId, Pageable pageable);
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.live_dto.BookCopyShortDTO(
+                bc.id,
+                b.author,
+                b.title,
+                bc.inventoryNumber,
+                bc.shelfLocation,
+                bc.isTaken
+            )
+            FROM BookCopy bc
+            JOIN bc.book b
+            WHERE b.id = :baseBookId AND bc.isDeleted = false
+            """)
+    Page<BookCopyShortDTO> findByBookIdAndIsDeletedFalse(Integer baseBookId, Pageable pageable);
 
     long countByBook_IdAndIsDeletedFalse(Integer bookId);
 
@@ -42,15 +69,37 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
 
     Optional<BookCopy> findByEpcAndIsDeletedFalse(String epc);
 
-    Page<BookCopy> findByEpcAndIsDeletedFalse(String epc, Pageable pageable);
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.live_dto.BookCopyShortDTO(
+                bc.id,
+                b.author,
+                b.title,
+                bc.inventoryNumber,
+                bc.shelfLocation,
+                bc.isTaken
+            )
+            from BookCopy bc
+            JOIN bc.book b
+            where bc.isDeleted = false
+            and bc.epc = :epc
+            """)
+    Page<BookCopyShortDTO> findByEpcAndIsDeletedFalse(String epc, Pageable pageable);
 
     @Query("""
-            select b
-            from BookCopy b
-            where b.isDeleted = false
-              and b.inventoryNumber ilike concat('%', :query, '%')
+            SELECT       new aifu.project.common_domain.dto.live_dto.BookCopyShortDTO(
+                bc.id,
+                b.author,
+                b.title,
+                bc.inventoryNumber,
+                bc.shelfLocation,
+                bc.isTaken
+            )
+            from BookCopy bc
+            JOIN bc.book b
+            where bc.isDeleted = false
+            and bc.inventoryNumber ilike concat('%', :query, '%')
             """)
-    Page<BookCopy> findByInventoryNumberAndIsDeletedFalse(String query, Pageable pageable);
+    Page<BookCopyShortDTO> findByInventoryNumberAndIsDeletedFalse(String query, Pageable pageable);
 
     Optional<BookCopy> findByInventoryNumberAndIsDeletedFalse(String inventoryNumber);
 

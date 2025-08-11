@@ -23,15 +23,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
             )
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
+            JOIN b.student s
             where b.status in :statuses
             """)
     Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable, List<Status> statuses);
@@ -47,7 +50,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                 b.status,
                 s.id,
                 s.name,
-                s.surname
+                s.surname,
+                s.degree,
+                s.faculty,
+                s.cardNumber
             )
             FROM Booking b
             JOIN b.book copy
@@ -75,15 +81,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
             )
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
+            JOIN b.student s
             WHERE b.student.id = :id
             and b.status in :statuses
             """)
@@ -91,16 +100,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
-                b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
+               b.id,
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
             )
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
+            JOIN b.student s
             WHERE b.student.cardNumber = :query
             AND b.status in :statuses
             """)
@@ -109,6 +121,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
                 SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                     b.id,
+                    s.name,
+                    s.surname,
                     base.title,
                     base.author,
                     b.dueDate,
@@ -139,15 +153,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
             )
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
+            JOIN b.student s
             WHERE copy.epc = :query
             AND b.status in :statuses
             """)
@@ -156,15 +173,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
             )
             FROM Booking b
             JOIN b.book copy
             JOIN copy.book base
+            JOIN b.student s
             WHERE copy.inventoryNumber = :query
             AND b.status in :statuses
             """)

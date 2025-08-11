@@ -72,7 +72,7 @@ public class BookCopyController {
             @ApiResponse(responseCode = "200", description = "Book copy muvaffaqiyatli olindi"),
             @ApiResponse(responseCode = "404", description = "Book copy topilmadi")
     })
-    public ResponseEntity<ResponseMessage> getById(@PathVariable String epc) {
+    public ResponseEntity<ResponseMessage> getByEpc(@PathVariable String epc) {
         return bookCopyService.getByEPC(epc);
     }
 

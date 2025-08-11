@@ -2,6 +2,8 @@ aifu/project/common_domain/dto/PageContext.class
 aifu/project/common_domain/dto/notification_dto/BookDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationWarningDetailDTO.class
 aifu/project/common_domain/entity/BaseBook.class
+aifu/project/common_domain/dto/live_dto/BookCopySummaryDTO.class
+aifu/project/common_domain/dto/action_dto/DeactivationStats.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryResponseDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO.class
 aifu/project/common_domain/dto/search_dto/SearchDTO.class
@@ -25,6 +27,7 @@ aifu/project/common_domain/dto/AdminCreateRequest.class
 aifu/project/common_domain/dto/statistic_dto/TopStudentDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO$BaseBookCreateDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO$CategoryPreviewDTOBuilder.class
+aifu/project/common_domain/dto/live_dto/BookCopyShortDTO.class
 aifu/project/common_domain/exceptions/BookingNotFoundException.class
 aifu/project/common_domain/dto/statistic_dto/TopBookDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationShortDTO.class

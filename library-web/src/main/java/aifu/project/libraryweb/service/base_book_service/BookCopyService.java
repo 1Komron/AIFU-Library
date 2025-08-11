@@ -28,7 +28,11 @@ public interface BookCopyService {
 
     BookCopy findByEpc(String epc);
 
+    BookCopy findByInventoryNumber(String inventoryNumber);
+
     void updateStatus(BookCopy bookCopy, boolean isTaken);
 
     ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber);
+
+    ResponseEntity<ResponseMessage> getByEPC(String epc);
 }

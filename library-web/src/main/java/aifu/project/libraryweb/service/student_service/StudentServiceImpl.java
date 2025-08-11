@@ -92,11 +92,24 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UserNotFoundException("User not found by id:" + id));
 
+        log.info("Stundent ID bo'yicha topildi. Student: {}", student);
+
         StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Detailed user information", dto));
     }
 
+    @Override
+    public ResponseEntity<ResponseMessage> getStudentByCardNumber(String id) {
+        Student student = studentRepository.findByCardNumberAndIsDeletedFalse(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + id));
+
+        log.info("Stundent CardNumbcer bo'yicha topildi. Student: {}", student);
+
+        StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Detailed user information", dto));
+    }
 
     private List<StudentShortDTO> getStudentShortDTO(List<Student> students) {
         return students.stream()

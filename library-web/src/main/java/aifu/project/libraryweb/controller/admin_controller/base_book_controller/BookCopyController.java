@@ -66,6 +66,17 @@ public class BookCopyController {
         return bookCopyService.get(id);
     }
 
+    @GetMapping("/epc/{epc}")
+    @Operation(summary = "Book copy EPC bo'yicha olish")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Book copy muvaffaqiyatli olindi"),
+            @ApiResponse(responseCode = "404", description = "Book copy topilmadi")
+    })
+    public ResponseEntity<ResponseMessage> getByEpc(@PathVariable String epc) {
+        return bookCopyService.getByEPC(epc);
+    }
+
+
     @GetMapping("/check-inventory-number")
     @Operation(summary = "Inventory number majudligini tekshirish tekshirish")
     @ApiResponse(responseCode = "200", description = "Inventory number mavjudligi tekshirildi")

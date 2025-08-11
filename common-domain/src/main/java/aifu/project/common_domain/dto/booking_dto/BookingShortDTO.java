@@ -6,6 +6,8 @@ import java.time.LocalDate;
 
 public record BookingShortDTO(
         Long id,
+        String name,
+        String surname,
         String title,
         String author,
         LocalDate dueDate,

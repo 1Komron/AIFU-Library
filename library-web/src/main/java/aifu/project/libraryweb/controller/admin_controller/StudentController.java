@@ -31,14 +31,14 @@ public class StudentController {
             @ApiResponse(responseCode = "200", description = "Studentlar qidiruvi muvaffaqiyatli amalga oshirildi"),
             @ApiResponse(responseCode = "400", description = "Noto'g'ri filter yoki query qiymat"),
     })
-    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String filter,
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String field,
                                                   @RequestParam(required = false) String query,
                                                   @RequestParam(defaultValue = "all") String status,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int size,
                                                   @RequestParam(defaultValue = "asc") String sortDirection) {
 
-        return studentService.getAll(filter, query, status, pageNumber, size, sortDirection);
+        return studentService.getAll(field, query, status, pageNumber, size, sortDirection);
     }
 
     @GetMapping("/{id}")
@@ -49,6 +49,16 @@ public class StudentController {
     })
     public ResponseEntity<ResponseMessage> getStudent(@PathVariable String id) {
         return studentService.getStudent(id);
+    }
+
+    @GetMapping("/card/{cardNumber}")
+    @Operation(summary = "Studentni ma'lumotlarini CardNumber orqali olish")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Student ma'lumotlari muvaffaqiyatli olindi"),
+            @ApiResponse(responseCode = "404", description = "Student topilmadi"),
+    })
+    public ResponseEntity<ResponseMessage> getStudentByCardNumber(@PathVariable String cardNumber) {
+        return studentService.getStudentByCardNumber(cardNumber);
     }
 
     @DeleteMapping("/{id}")

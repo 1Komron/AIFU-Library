@@ -3,6 +3,8 @@ package aifu.project.libraryweb.service.base_book_service;
 import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
 import aifu.project.common_domain.dto.live_dto.BookCopyResponseDTO;
+import aifu.project.common_domain.dto.live_dto.BookCopyShortDTO;
+import aifu.project.common_domain.dto.live_dto.BookCopySummaryDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
@@ -100,14 +102,28 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
-        BookCopy entity = bookCopyRepository.findByIdAndIsDeletedFalse(id)
+        BookCopy bookCopy = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
-        log.info("{} ID bo'yicha BookCopy ma'lumotlari olindi: {}", id, entity);
+        BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
 
-        BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(entity);
+        log.info("EPC bo'yicha BookCopy ma'lumotlari olindi: {}", response);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", responseDTO));
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> getByEPC(String epc) {
+//        BookCopy bookCopy = bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
+//                .orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + epc));
+        BookCopy bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(epc)
+                .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + epc));
+
+        BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
+
+        log.info("EPC bo'yicha BookCopy ma'lumotlari olindi: {}", response);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
     }
 
     @Override
@@ -129,7 +145,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
-        Page<BookCopy> page = switch (field) {
+        Page<BookCopyShortDTO> page = switch (field) {
             case "book" -> bookCopyRepository.findByBookIdAndIsDeletedFalse(Integer.parseInt(query), pageable);
 
             case "inventoryNumber" -> bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query, pageable);
@@ -141,15 +157,14 @@ public class BookCopyServiceImpl implements BookCopyService {
             default -> throw new IllegalArgumentException("Noto'g'ri qidiruv maydoni: " + field);
         };
 
-        List<BookCopyResponseDTO> list = page.getContent().stream()
-                .map(BookCopyMapper::toResponseDTO)
-                .toList();
+        List<BookCopyShortDTO> content = page.getContent();
 
         log.info("BookCopy ro'yxati olindi (Search). Sahifa: {}, Hajmi: {}, Tartiblash: {}",
                 page.getNumber() + 1, page.getSize(), sortDirection);
+        log.info("BookCopy ro'yxati: {}", content.stream().map(BookCopyShortDTO::id).toList());
 
         Map<String, Object> map = Map.of(
-                "list", list,
+                "list", content,
                 "currentPage", page.getNumber() + 1,
                 "totalPages", page.getTotalPages(),
                 "totalElements", page.getTotalElements()
@@ -194,6 +209,12 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopy findByEpc(String epc) {
         return bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
                 .orElseThrow(() -> new BookCopyNotFoundException("{} -> EPC ega BookCopy topilmadi: " + epc));
+    }
+
+    @Override
+    public BookCopy findByInventoryNumber(String inventoryNumber) {
+        return bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
+                .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + inventoryNumber));
     }
 
     @Override

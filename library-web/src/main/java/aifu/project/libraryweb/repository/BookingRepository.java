@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -191,4 +192,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<BookingShortDTO> findAllBookingShortDTOByBookInventoryNumber(String query, List<Status> statuses, Pageable pageable);
 
     Optional<Booking> findByBook(BookCopy bookCopy);
+
+    @Query("SELECT b.student.id FROM Booking b WHERE b.student.id IN :studentIds AND b.status <> 'RETURNED'") // Status'ni o'zingizning enum'ga moslang
+    Set<Long> findStudentIdsWithActiveBookings(@Param("studentIds") Set<Long> studentIds);
+
 }

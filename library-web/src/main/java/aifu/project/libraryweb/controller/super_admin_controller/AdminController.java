@@ -33,7 +33,7 @@ public class AdminController {
     @Operation(summary = "Admin yaratish")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Admin muvaffaqiyatli yaratildi"),
+            @ApiResponse(responseCode = "200", description = "Admin muvaffaqiyatli yaratildi"),
             @ApiResponse(responseCode = "409", description = "Bu email bilan allaqachon royxatdan otilgan"),
     })
     public ResponseEntity<ResponseMessage> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
@@ -139,8 +139,6 @@ public class AdminController {
     })
     public ResponseEntity<ResponseMessage> deleteAdmin(@PathVariable Long id) {
         log.info("Http Request: DELETE /api/super-admin/admins/{}",id);
-        // Asosiy ishni to'g'ridan-to'g'ri Service'ga topshiramiz.
-        // Xatoliklar GlobalExceptionHandler tomonidan ushlab olinadi.
         return adminManagementService.deleteAdmin(id);
     }
 

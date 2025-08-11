@@ -196,28 +196,19 @@ public class AdminManagementService {
     }
 
     public ResponseEntity<ResponseMessage> deleteAdmin(Long adminId) {
-
-        //o'chirish kerak bulgan foydalanuvchini topamiza
-        //Bizga aniq Role Admin  bulgan foydalanuvchi kerak
-
         Librarian adminToDelete = librarianRepository
                 .findByIdAndRoleAndIsDeletedFalse(adminId, Role.ADMIN)
                 .orElseThrow(() -> {
-                    // Agar bu ID bilan Admin topilmasa yoki u SuperAdmin bo'lsa, xatolik beramiz.
                     log.warn("O'chirish uchun Admin topilmadi yoki bu ID SuperAdminga tegishli: id={}", adminId);
-                    return new RuntimeException("Berilgan ID bilan Admin topilmadi."); // Yoki maxsus "AdminNotFoundException"
+                    return new RuntimeException("Berilgan ID bilan Admin topilmadi.");
                 });
 
-        // 2-QADAM: "Yumshoq o'chirish" amalini bajaramz!
-        adminToDelete.setActive(true);
+        adminToDelete.setActive(false);
+        adminToDelete.setDeleted(true);
 
-        // O'zgarishni ma'lumotlar bazasiga saqlaymiz.
         librarianRepository.save(adminToDelete);
 
         log.info("Admin muvaffsaqiyatli o'chirildi: id={}, email={}", adminToDelete.getId(), adminToDelete.getEmail());
-
-        // 3-QADAM: Muvaffaqiyatli javobni Controller'ga qaytaramiz.
-
         return ResponseEntity.ok(
                 new ResponseMessage(true, "Admin muvaffiqaytli o'chirildi!", adminId)
         );

@@ -139,8 +139,6 @@ public class AdminController {
     })
     public ResponseEntity<ResponseMessage> deleteAdmin(@PathVariable Long id) {
         log.info("Http Request: DELETE /api/super-admin/admins/{}",id);
-        // Asosiy ishni to'g'ridan-to'g'ri Service'ga topshiramiz.
-        // Xatoliklar GlobalExceptionHandler tomonidan ushlab olinadi.
         return adminManagementService.deleteAdmin(id);
     }
 

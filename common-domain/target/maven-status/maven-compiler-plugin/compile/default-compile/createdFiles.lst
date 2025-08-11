@@ -2,6 +2,7 @@ aifu/project/common_domain/dto/PageContext.class
 aifu/project/common_domain/dto/notification_dto/BookDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationWarningDetailDTO.class
 aifu/project/common_domain/entity/BaseBook.class
+aifu/project/common_domain/dto/action_dto/DeactivationStats.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryResponseDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO.class
 aifu/project/common_domain/dto/search_dto/SearchDTO.class

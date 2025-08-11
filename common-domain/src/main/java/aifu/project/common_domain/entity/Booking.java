@@ -33,9 +33,4 @@ public class Booking {
 
     private LocalDate extendedAt;
 
-    @PrePersist
-    public void initializeDates() {
-        this.givenAt = LocalDate.now();
-    }
-
 }

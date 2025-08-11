@@ -52,5 +52,7 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             """)
     Page<BookCopy> findByInventoryNumberAndIsDeletedFalse(String query, Pageable pageable);
 
+    Optional<BookCopy> findByInventoryNumberAndIsDeletedFalse(String inventoryNumber);
+
     boolean existsByInventoryNumber(String inventoryNumber);
 }

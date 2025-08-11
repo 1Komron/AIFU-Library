@@ -102,17 +102,19 @@ public class BookingServiceImpl implements BookingService {
     public ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request) {
         String cardNumber = request.cardNumber();
         String epc = request.epc();
+        Integer days = request.days();
 
         Student student = studentService.findByCardNumber(cardNumber);
 
-        BookCopy bookCopy = bookCopyService.findByEpc(epc);
+//        BookCopy bookCopy = bookCopyService.findByEpc(epc);
+        BookCopy bookCopy = bookCopyService.findByInventoryNumber(epc);
 
         if (bookCopy.isTaken()) {
             log.error("Booking qilingan book copy: {}", bookCopy.getId());
             throw new BookCopyIsTakenException("Book copy allaqachon booking qilingan: " + bookCopy.getId());
         }
 
-        createBooking(student, bookCopy);
+        createBooking(student, bookCopy, days);
 
         bookCopyService.updateStatus(bookCopy, true);
 
@@ -128,7 +130,8 @@ public class BookingServiceImpl implements BookingService {
 
         Student student = studentService.findByCardNumber(cardNumber);
 
-        BookCopy bookCopy = bookCopyService.findByEpc(epc);
+//        BookCopy bookCopy = bookCopyService.findByEpc(epc);
+        BookCopy bookCopy = bookCopyService.findByInventoryNumber(epc);
 
         Booking booking = bookingRepository.findByStudentAndBook(student, bookCopy)
                 .orElseThrow(() -> new BookingNotFoundException("Bunday booking mavjud emas. Student: %s va book copy: %s"
@@ -145,13 +148,19 @@ public class BookingServiceImpl implements BookingService {
         return ResponseEntity.ok(new ResponseMessage(true, "Kitob muvaffaqiyatli qaytib olindi", null));
     }
 
-    public void createBooking(Student student, BookCopy bookCopy) {
+    public void createBooking(Student student, BookCopy bookCopy, Integer days) {
         SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Librarian librarian = securityLibrarian.toBase();
         Booking booking = new Booking();
         booking.setIssuedBy(librarian);
         booking.setStudent(student);
+
         booking.setBook(bookCopy);
+
+        LocalDate now = LocalDate.now();
+        booking.setGivenAt(now);
+        booking.setDueDate(LocalDate.now().plusDays(days));
+
         Booking save = bookingRepository.save(booking);
 
         log.info("Booking muvaffaqiyatli yaratildi. Booking: {}", save);

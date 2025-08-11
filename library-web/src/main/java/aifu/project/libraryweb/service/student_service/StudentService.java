@@ -10,4 +10,5 @@ public interface StudentService {
 
     ResponseEntity<ResponseMessage> deleteStudent(Long userId);
 
+    ResponseEntity<ResponseMessage> getStudentByCardNumber(String id);
 }

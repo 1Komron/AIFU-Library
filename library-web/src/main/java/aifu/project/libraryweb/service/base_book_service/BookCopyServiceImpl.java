@@ -111,6 +111,19 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    public ResponseEntity<ResponseMessage> getByEPC(String epc) {
+//        BookCopy bookCopy = bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
+//                .orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + epc));
+        BookCopy bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(epc)
+                .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + epc));
+
+        log.info("EPC bo'yicha BookCopy ma'lumotlari olindi: {}", bookCopy);
+
+        BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(bookCopy);
+        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", responseDTO));
+    }
+
+    @Override
     public ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber) {
         boolean exists = bookCopyRepository.existsByInventoryNumber(inventoryNumber);
 
@@ -194,6 +207,12 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopy findByEpc(String epc) {
         return bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
                 .orElseThrow(() -> new BookCopyNotFoundException("{} -> EPC ega BookCopy topilmadi: " + epc));
+    }
+
+    @Override
+    public BookCopy findByInventoryNumber(String inventoryNumber) {
+        return bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
+                .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + inventoryNumber));
     }
 
     @Override

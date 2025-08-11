@@ -57,6 +57,7 @@ aifu/project/common_domain/exceptions/BookCopyNotFoundException.class
 aifu/project/common_domain/dto/live_dto/BaseBookShortDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookSearchCriteriaDTO$PdfBookSearchCriteriaDTOBuilder.class
 aifu/project/common_domain/entity/BaseBookCategory.class
+aifu/project/common_domain/exceptions/StudentImportException.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationExtendDetailDTO.class
 aifu/project/common_domain/entity/enums/Status.class
@@ -105,6 +106,7 @@ aifu/project/common_domain/mapper/CategoryMapper.class
 aifu/project/common_domain/dto/AdminResponse$AdminResponseBuilder.class
 aifu/project/common_domain/dto/live_dto/BaseBookResponseDTO.class
 aifu/project/common_domain/entity/BookCopy.class
+aifu/project/common_domain/exceptions/StudentNotFoundException.class
 aifu/project/common_domain/exceptions/RequestNotFoundException.class
 aifu/project/common_domain/exceptions/BaseBookNotFoundException.class
 aifu/project/common_domain/dto/PasswordResetRequest.class

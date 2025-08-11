@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: library-web
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/aifu_library
+    password: root1234
+    username: postgres
+    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 110MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: alisherrustamov32@gmail.com
+    password: ytwlwnyeiiwwkcvo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+cloudinary:
+  cloud_name: dfirqlklp
+  api_key: 575239947937242
+  api_secret: Cc5VKNT6F6RALyThRISMmFN45hA
+
+superadmin:
+  name: "Admin"
+  surname: "Admin"
+  email: "${SUPERADMIN_EMAIL:alisherrustamov2119@gmail.com}"
+  initial-password: "${SUPERADMIN_PASSWORD:admin123}"
+
+
+importer:
+  column-aliases:
+    passportCode: passportcode, passport, pasport, паспорт, passport code, image
+    surname: surname, last name, familiya, фамилия
+    name: name, first name, ism, имя
+    degree: degree, darajasi, степень
+    faculty: faculty, fakultet, факультет
+    cardNumber: card rifd, rfid, cardnumber, card number, karta raqami
+server:
+  port: 8080
+  address: 0.0.0.0
+springdoc:
+  swagger-ui:
+    display-request-duration: true
+    doc-expansion: list
+    urls:
+      - name: AIFU Library
+        url: v3/api-docs
+#        url: https://aifu-library.duckdns.org/v3/api-docs
+
+jwt:
+  token:
+    a82f3d9ec2c541f0bca8a5f2db0d0bcd67c54e3d6ae2ab8b164efb3b1a7cbe44
+  expiration-date:
+    2592000000 # 30 kun
+
+security:
+  hashing:
+    # Pasport kodlarini xeshlash uchun ishlatiladigan maxfiy "tuz".
+    # BU QIYMATNI HECH KIMGA KO'RSATMANG VA MURAKKAB QILIB O'ZGARTIRING.
+    passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"

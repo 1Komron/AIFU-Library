@@ -28,6 +28,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/BookCopyIsTakenException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/student_dto/StudentDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/BaseBookCategory.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/StudentNotFoundException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/booking_dto/ReturnBookDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/statistic_dto/TopBookDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/enums/Role.java
@@ -36,6 +37,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/notification_dto/NotificationWarningDetailDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/PageContext.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/booking_dto/BookingResponse.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/Study.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/HistoryNotFoundException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BookCopyShortDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.java
@@ -73,6 +75,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookCategoryDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookCategoryCreateDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/statistic_dto/BookingsPerDayDTO.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/StudentImportException.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/pdf_book_dto/UpdateCategoryDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/entity/Booking.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BookCopyCreateDTO.java

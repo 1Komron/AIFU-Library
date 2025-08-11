@@ -23,8 +23,6 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
 
     Optional<BaseBook> findByIdAndIsDeletedFalse(Integer id);
 
-    boolean existsByIdAndIsDeletedFalse(Integer baseBookId);
-
     List<BaseBook> findByCategory_IdAndIsDeletedFalse(Integer categoryId);
 
     @Query("""

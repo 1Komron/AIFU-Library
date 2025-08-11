@@ -65,17 +65,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findByIdAndIsDeletedFalse(Long userId);
 
-    Page<Student> findByCardNumberAndIsDeletedFalse(String cardNumber, Pageable pageable);
-
-    Page<Student> findByNameContainingIgnoreCaseAndIsDeletedFalse(String query, Pageable pageable);
-
-    Page<Student> findByIsActiveAndIsDeletedFalse(boolean b, Pageable pageable);
-
-
     @Query("SELECT s.passportCode FROM Student s WHERE s.passportCode IN :hashedPassportCodes")
     Set<String> findExistingHashedPassportCodes(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
-
-    List<Student> findByPassportCodeInAndIsDeletedFalse(Set<String> passportCodes);
-
 
 }

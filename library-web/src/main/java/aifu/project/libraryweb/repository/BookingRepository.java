@@ -190,4 +190,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             """)
     Page<BookingShortDTO> findAllBookingShortDTOByBookInventoryNumber(String query, List<Status> statuses, Pageable pageable);
 
+    Optional<Booking> findByBook(BookCopy bookCopy);
 }

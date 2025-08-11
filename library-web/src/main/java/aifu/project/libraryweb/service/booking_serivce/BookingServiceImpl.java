@@ -125,17 +125,14 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public ResponseEntity<ResponseMessage> returnBook(ReturnBookDTO request) {
-        String cardNumber = request.cardNumber();
         String epc = request.epc();
-
-        Student student = studentService.findByCardNumber(cardNumber);
 
 //        BookCopy bookCopy = bookCopyService.findByEpc(epc);
         BookCopy bookCopy = bookCopyService.findByInventoryNumber(epc);
 
-        Booking booking = bookingRepository.findByStudentAndBook(student, bookCopy)
-                .orElseThrow(() -> new BookingNotFoundException("Bunday booking mavjud emas. Student: %s va book copy: %s"
-                        .formatted(student.getId(), bookCopy.getId())));
+        Booking booking = bookingRepository.findByBook(bookCopy)
+                .orElseThrow(() -> new BookingNotFoundException("Bunday booking mavjud emas. Book copy: %s"
+                        .formatted(bookCopy)));
 
         bookCopyService.updateStatus(bookCopy, false);
 

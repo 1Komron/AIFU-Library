@@ -13,6 +13,5 @@ import java.util.Optional;
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
     Page<Notification> findNotificationByIsRead(boolean read, Pageable pageable);
 
-
     Optional<Notification> findNotificationById(Long id);
 }

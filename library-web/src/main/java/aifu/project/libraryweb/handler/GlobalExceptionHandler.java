@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.handler; // Using your existing package
+package aifu.project.libraryweb.handler;
 
 import aifu.project.common_domain.exceptions.*; // Assuming this is where your other exceptions are
 import aifu.project.common_domain.dto.ResponseMessage;
@@ -7,39 +7,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice; // Use RestControllerAdvice
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
 @Slf4j
-@RestControllerAdvice // Use RestControllerAdvice for global REST controller handling
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // --- NEW HANDLER FOR OUR ADMIN MODULE ---
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ResponseMessage> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
         log.error("Attempted to create a user with an existing email. Message: {}", e.getMessage());
-        // 409 Conflict is the most appropriate status for a resource that already exists.
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
-    // --- UPDATED HANDLER TO USE ResponseMessage ---
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseMessage> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        // Collect all validation error messages into a single string.
         String errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> String.format("'%s': %s", error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.joining(", "));
 
         log.warn("Validation failed: {}", errors);
 
-        // Return the errors in the consistent ResponseMessage format.
         return ResponseEntity.badRequest()
                 .body(new ResponseMessage(false, "Validation failed: " + errors, null));
     }
 
-    // --- Your Existing Handlers (Unchanged) ---
     @ExceptionHandler(BaseBookCategoryNotFoundException.class)
     public ResponseEntity<ResponseMessage> handleBaseBookCategoryNotFoundException(BaseBookCategoryNotFoundException e) {
         log.error("Base book category not found. Message: {}", e.getMessage());
@@ -75,10 +69,8 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
-    // --- UPDATED CATCH-ALL HANDLER TO USE ResponseMessage ---
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ResponseMessage> handleRuntimeException(RuntimeException ex) {
-        // This is a catch-all for unexpected errors. We should not expose the raw message to the user.
         log.error("An unexpected runtime exception occurred: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ResponseMessage(false, "An unexpected internal server error occurred.", null));

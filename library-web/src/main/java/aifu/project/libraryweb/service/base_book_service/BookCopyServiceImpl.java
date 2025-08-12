@@ -41,7 +41,7 @@ public class BookCopyServiceImpl implements BookCopyService {
                 .orElseThrow(() -> new BaseBookNotFoundException(dto.getBaseBookId()));
 
         String inventoryNumber = dto.getInventoryNumber();
-        if (bookCopyRepository.existsByInventoryNumber(inventoryNumber)) {
+        if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
             throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
         }
 
@@ -72,7 +72,7 @@ public class BookCopyServiceImpl implements BookCopyService {
             switch (key) {
                 case "inventoryNumber" -> {
                     String inventoryNumber = (String) value;
-                    if (bookCopyRepository.existsByInventoryNumber(inventoryNumber)) {
+                    if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
                         throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
                     }
 
@@ -128,7 +128,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber) {
-        boolean exists = bookCopyRepository.existsByInventoryNumber(inventoryNumber);
+        boolean exists = bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber);
 
         log.info("Inventory number tekshirildi: {}, Status: {}", inventoryNumber, exists ? "Mavjud" : "Mavjud emas");
 

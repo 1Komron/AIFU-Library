@@ -22,7 +22,7 @@ public class BookCopy {
     @Column(nullable = false)
     private String inventoryNumber;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String epc;
 
     private String shelfLocation;

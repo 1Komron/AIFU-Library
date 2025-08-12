@@ -1,0 +1,19 @@
+internal:
+  token:
+    94e637a1ff9a4c8e87de5198d78a5bc2c3067d76b9d2417ea54721370b7fd52e
+jwt:
+  token:
+    a82f3d9ec2c541f0bca8a5f2db0d0bcd67c54e3d6ae2ab8b164efb3b1a7cbe44
+  expiration-date:
+    2592000000 # 30 kun
+
+aifu:
+  external:
+    host: ${BOT_HOST:http://localhost}
+    port: ${BOT_PORT:8081}
+    base-url: ${aifu.external.host}:${aifu.external.port}
+
+
+
+
+

@@ -2,10 +2,10 @@ spring:
   application:
     name: library-web
   datasource:
-#    url: jdbc:postgresql://localhost:5432/aifu_library
-    password: root1234
+    url: jdbc:postgresql://localhost:5432/aifu_library
+    password: root123
     username: postgres
-    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
+#    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
   jpa:
     show-sql: true
     hibernate:
@@ -30,6 +30,9 @@ spring:
           auth: true
           starttls:
             enable: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 
 cloudinary:
   cloud_name: dfirqlklp

@@ -9,6 +9,8 @@ public record HistorySummaryDTO(
         Long id,
         StudentSummaryDTO student,
         HistoryBookDTO book,
+        HistoryAdminDTO issuedBy,
+        HistoryAdminDTO returnedBy,
         LocalDate givenAt,
         LocalDate dueDate,
         LocalDate returnedAt
@@ -18,6 +20,8 @@ public record HistorySummaryDTO(
                 history.getId(),
                 StudentSummaryDTO.toDTO(history.getUser()),
                 HistoryBookDTO.toDTO(history.getBook()),
+                HistoryAdminDTO.toDTO(history.getIssuedBy()),
+                HistoryAdminDTO.toDTO(history.getReturnedBy()),
                 history.getGivenAt(),
                 history.getDueDate(),
                 history.getReturnedAt()

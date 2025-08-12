@@ -56,7 +56,8 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
 
-        boolean exists = categoryRepository.existsByName(request.name());
+        boolean exists = categoryRepository.existsByNameAndIsDeletedFalse(request.name());
+
         if (exists) {
             log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (UPDATE). Update qilinayotgan category: {}",
                     request.name(), category);

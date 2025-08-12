@@ -5,7 +5,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
     username: postgres
-   # url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
+#    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
   jpa:
     show-sql: true
     hibernate:

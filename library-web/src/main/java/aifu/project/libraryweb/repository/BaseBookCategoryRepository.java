@@ -27,4 +27,7 @@ public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCatego
     boolean existsByName(String name);
 
     BaseBookCategory findByName(String name);
+
+    boolean existsByNameAndIsDeletedFalse(String name);
+
 }

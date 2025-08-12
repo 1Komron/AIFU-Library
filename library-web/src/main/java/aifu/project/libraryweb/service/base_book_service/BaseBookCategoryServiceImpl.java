@@ -31,25 +31,16 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     public ResponseEntity<ResponseMessage> create(CreateCategoryRequest request) {
         String name = request.name();
 
-        BaseBookCategory category = categoryRepository.findByName(name);
+        boolean exists = categoryRepository.existsByNameAndIsDeletedFalse(name);
 
-        if (category != null && !category.isDeleted()) {
+        if (exists) {
             log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (CREATE)", name);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ResponseMessage(false, "BaseBookCategory allaqachon mavjud", null));
         }
 
-        if (category != null) {
-            category.setDeleted(false);
-            category = categoryRepository.save(category);
-            log.info("'{}' -> nomli BaseBookCategory o'chirilgan, qayta tiklandi", name);
+        BaseBookCategory category = new BaseBookCategory();
 
-            BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ResponseMessage(true, "BaseBookCategory qayta tiklandi", dto));
-        }
-
-        category = new BaseBookCategory();
         category.setName(name);
         category = categoryRepository.save(category);
         BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);

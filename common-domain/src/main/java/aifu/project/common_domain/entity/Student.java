@@ -18,10 +18,10 @@ public class Student extends User {
 
     private String faculty;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String passportCode;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String cardNumber;
 
     @Column(unique = true)

@@ -30,9 +30,6 @@ spring:
           auth: true
           starttls:
             enable: true
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
 
 cloudinary:
   cloud_name: dfirqlklp

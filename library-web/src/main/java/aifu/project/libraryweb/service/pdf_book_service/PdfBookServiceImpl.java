@@ -252,8 +252,8 @@ public class PdfBookServiceImpl implements PdfBookService {
         List<PdfBook> content = resultPage.getContent();
         log.info("PDF kitoblar ro'yxati olindi. Ro'yxat: {}", content.stream().map(PdfBook::getId).toList());
 
-        List<PdfBookResponseDTO> bookList = content.stream()
-                .map(PdfBookMapper::toDto)
+        List<PdfBookShortDTO> bookList = content.stream()
+                .map(PdfBookMapper::toPdfBookShortDTO)
                 .toList();
 
         Map<String, Object> map = Util.getPageInfo(resultPage);

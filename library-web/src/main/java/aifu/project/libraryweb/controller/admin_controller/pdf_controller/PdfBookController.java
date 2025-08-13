@@ -4,16 +4,17 @@ import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/admin/pdf-books")
 @RequiredArgsConstructor
@@ -21,12 +22,15 @@ public class PdfBookController {
 
     private final PdfBookService pdfBookService;
 
-    @PostMapping("/category/{categoryId}")
-    public ResponseEntity<ResponseMessage> create
-
-            (@PathVariable Integer categoryId,
-             @Valid @RequestBody PdfBookCreateDTO dto) {
-        PdfBookResponseDTO response = pdfBookService.create(categoryId, dto);
+    @PostMapping
+    @Operation(summary = "PDF kitob yaratish")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF book muvaffaqiyatli yaratildi"),
+            @ApiResponse(responseCode = "400", description = "Yaratish jarayonida xatolik yuz berdi"),
+            @ApiResponse(responseCode = "404", description = "Kategoriya topilmadi")
+    })
+    public ResponseEntity<ResponseMessage> create(@Valid @RequestBody PdfBookCreateDTO dto) {
+        PdfBookResponseDTO response = pdfBookService.create(dto);
         ResponseMessage body = new ResponseMessage(
                 true,
                 "PDF book successfully created",
@@ -37,6 +41,12 @@ public class PdfBookController {
 
 
     @PatchMapping("/{id}")
+    @Operation(summary = "PDF kitob ma'lumotlarini yangilash",
+            description = "Berilgan ID bo'yicha PDF kitob ma'lumotlarini yangilaydi.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF book muvaffaqiyatli yangilandi"),
+            @ApiResponse(responseCode = "400", description = "Field noto'g'ri yoki yangilash jarayonida xatolik yuz berdi"),
+    })
     public ResponseEntity<ResponseMessage> update(
             @PathVariable Integer id,
             @Valid @RequestBody PdfBookUpdateDTO dto) {
@@ -50,6 +60,12 @@ public class PdfBookController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "PDF kitob ma'lumotlarini ID bo'yicha olish",
+            description = "Berilgan ID bo'yicha PDF kitob ma'lumotlarini qaytaradi.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF book muvaffaqiyatli qaytarildi"),
+            @ApiResponse(responseCode = "404", description = "PDF book topilmadi")
+    })
     public ResponseEntity<ResponseMessage> getOne(@PathVariable Integer id) {
         PdfBookResponseDTO book = pdfBookService.getOne(id);
 
@@ -65,6 +81,12 @@ public class PdfBookController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "PDF kitobni o'chirish",
+            description = "Berilgan ID bo'yicha PDF kitobni o'chiradi.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF book muvaffaqiyatli o'chirildi"),
+            @ApiResponse(responseCode = "404", description = "PDF book topilmadi")
+    })
     public ResponseEntity<ResponseMessage> delete(@PathVariable Integer id) {
 
         try {
@@ -76,6 +98,12 @@ public class PdfBookController {
     }
 
     @GetMapping("/download/{id}")
+    @Operation(summary = "PDF kitobni yuklab olish",
+            description = "Berilgan ID bo'yicha PDF kitobni yuklab olish uchun so'rov yuboradi.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF book muvaffaqiyatli yuklab olindi"),
+            @ApiResponse(responseCode = "404", description = "PDF book topilmadi")
+    })
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
         try {
             PdfBookResponseDTO book = pdfBookService.getOne(id);
@@ -109,15 +137,14 @@ public class PdfBookController {
                     .body(pdfData);
 
         } catch (Exception ex) {
-            // Xatolikni logga yozish (shartli)
-            ex.printStackTrace();
+            log.error("Error downloading PDF book with ID {}: {}", id, ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
     }
 
 
-    @GetMapping("/search")
+    @GetMapping
     @Operation(summary = "PDF kitoblarni ro'yxatini olish",
             description = """
                     PDF kitoblarni qidirish uchun so'rov yuboradi.
@@ -129,6 +156,10 @@ public class PdfBookController {
                     - sortDirection: Tartiblash yo'nalishi ('asc' yoki 'desc', default: 'asc')
                     Eslatma: categoryId doim son bolishi kerak.
                     """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF kitoblar ro'yxati muvaffaqiyatli qaytarildi"),
+            @ApiResponse(responseCode = "400", description = "Qidirish so'rovi noto'g'ri")
+    })
     public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String field,
                                                   @RequestParam(required = false) String query,
                                                   @RequestParam(defaultValue = "1") int pageNumber,

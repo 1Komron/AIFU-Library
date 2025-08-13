@@ -42,9 +42,9 @@ public class PdfBookServiceImpl implements PdfBookService {
     private String fileStorageLocation;
 
     @Override
-    public PdfBookResponseDTO create(Integer categoryId, PdfBookCreateDTO dto) {
+    public PdfBookResponseDTO create(PdfBookCreateDTO dto) {
         // 1. Categoryni olib kelamiz
-        Category category = categoryService.getById(categoryId);
+        Category category = categoryService.getById(dto.getCategoryId());
 
         // 2. DTO dan Entity ga mapping (Mapper ishlatish)
         PdfBook book = PdfBookMapper.toEntity(dto);

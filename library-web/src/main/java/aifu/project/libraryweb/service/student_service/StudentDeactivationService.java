@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.service;
+package aifu.project.libraryweb.service.student_service;
 
 import aifu.project.common_domain.dto.action_dto.DeactivationStats;
 

@@ -67,7 +67,7 @@ public class PdfBookServiceImpl implements PdfBookService {
 
     @Override
     public Map<String, Object> getList(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,Sort.by(Sort.Direction.ASC,"id"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         Page<PdfBook> page = pdfBookRepository.findAll(pageable);
 
         Map<String, Object> map = Util.getPageInfo(page);
@@ -152,26 +152,34 @@ public class PdfBookServiceImpl implements PdfBookService {
         }
     }
 
-
     @Override
-    public List<PdfBookPreviewDTO> getBooksByCategoryId(Integer categoryId) {
-        Category category = categoryService.getById(categoryId);
-        return category.getBooks().stream()
-                .map(PdfBookMapper::toPreviewDto)
-                .collect(Collectors.toList());
-    }
+    public Page<PdfBookResponseDTO> getAll(PdfBookSearchCriteriaDTO criteria) {
+        String field = criteria.getField() == null ? "default" : criteria.getField();
+        String query = criteria.getQuery();
 
-    @Override
-    public Page<PdfBookResponseDTO> search(PdfBookSearchCriteriaDTO criteria) {
-        Sort.Direction direction = criteria.getSortDr().equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(criteria.getPageNumber() - 1, criteria.getSize(), Sort.by(direction, criteria.getSortBy()));
-
-        Page<PdfBook> resultPage;
-        if ("author".equalsIgnoreCase(criteria.getField())) {
-            resultPage = pdfBookRepository.findByAuthorContainingIgnoreCase(criteria.getValue(), pageable);
-        } else {
-            resultPage = pdfBookRepository.findByTitleContainingIgnoreCase(criteria.getValue(), pageable);
+        if ((!field.equals("default")) && query == null) {
+            throw new IllegalArgumentException("Query qiymati Null");
         }
+
+        Sort.Direction direction = criteria.getSortDr().equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(criteria.getPageNumber() - 1, criteria.getSize(), Sort.by(direction, "id"));
+
+        Page<PdfBook> resultPage = switch (field) {
+            case "fullInfo" -> {
+                String[] parts = query.trim().split("\\s+");
+
+                String first = "%" + parts[0].toLowerCase() + "%";
+                String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
+
+                yield pdfBookRepository.findByAuthorAndTitle(first, second, pageable);
+            }
+
+            case "categoryId" -> pdfBookRepository.findByCategoryId(Integer.parseInt(query), pageable);
+
+            case "default" -> pdfBookRepository.findAll(pageable);
+
+            default -> throw new IllegalArgumentException("Noto'g'ri field kiritildi: " + field);
+        };
 
         return resultPage.map(PdfBookMapper::toDto);
     }

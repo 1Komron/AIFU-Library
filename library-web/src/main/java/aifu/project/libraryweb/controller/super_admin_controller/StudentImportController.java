@@ -2,7 +2,7 @@
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.config.ImportStats;
-import aifu.project.libraryweb.service.StudentExcelImportService;
+import aifu.project.libraryweb.service.student_service.StudentExcelImportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,7 +52,7 @@ package aifu.project.libraryweb.controller.super_admin_controller; // Sizning pa
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.config.ImportStats;
-import aifu.project.libraryweb.service.StudentExcelImportService;
+import aifu.project.libraryweb.service.student_service.StudentExcelImportService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;

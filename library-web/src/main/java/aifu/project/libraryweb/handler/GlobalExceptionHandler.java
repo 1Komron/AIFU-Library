@@ -118,4 +118,11 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleBookingNotFoundException(BookingNotFoundException e) {
+        log.error("Booking not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
 }

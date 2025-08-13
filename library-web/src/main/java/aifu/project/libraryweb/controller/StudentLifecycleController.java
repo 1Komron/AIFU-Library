@@ -2,7 +2,7 @@ package aifu.project.libraryweb.controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.action_dto.DeactivationStats;
-import aifu.project.libraryweb.service.StudentDeactivationService;
+import aifu.project.libraryweb.service.student_service.StudentDeactivationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

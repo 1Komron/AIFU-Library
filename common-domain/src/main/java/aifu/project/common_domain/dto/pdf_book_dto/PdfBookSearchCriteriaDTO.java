@@ -11,7 +11,7 @@ import lombok.*;
 public class PdfBookSearchCriteriaDTO {
 
     @Schema(description = "Qidirilayotgan qiymat (title yoki author)", example = "Java")
-    private String value;
+    private String query;
 
     @Schema(description = "Qaysi maydon bo'yicha qidirish: 'title' yoki 'author'", example = "title")
     private String field;
@@ -21,9 +21,6 @@ public class PdfBookSearchCriteriaDTO {
 
     @Schema(description = "sahifa raqami",example = "10")
     private int size = 10;
-
-    @Schema(description = "siralash yonlashi: id yoki name",example = "id")
-    private String sortBy = "id";
 
     @Schema(description = "saralash yunalishi: asc yoki desc",example = "asc")
     private String sortDr = "asc";

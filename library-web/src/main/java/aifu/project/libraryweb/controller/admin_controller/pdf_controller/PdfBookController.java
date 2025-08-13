@@ -3,6 +3,7 @@ package aifu.project.libraryweb.controller.admin_controller.pdf_controller;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,26 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin/pdfbooks")
+@RequestMapping("/api/admin/pdf-books")
 @RequiredArgsConstructor
 public class PdfBookController {
 
     private final PdfBookService pdfBookService;
-
-    @GetMapping("/list")
-    public ResponseEntity<ResponseMessage> getList(
-            @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(defaultValue = "12") int pageSize) {
-
-        Map<String, Object> books = pdfBookService.getList(pageNumber, pageSize);
-        ResponseMessage body = new ResponseMessage(
-                true,
-                "PDF book list retrieved successfully",
-                books
-        );
-        return ResponseEntity.ok(body);
-    }
-
 
     @PostMapping("/category/{categoryId}")
     public ResponseEntity<ResponseMessage> create
@@ -131,41 +117,33 @@ public class PdfBookController {
     }
 
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<ResponseMessage> getBooksByCategory(@PathVariable Integer categoryId) {
-        try {
-            List<PdfBookPreviewDTO> books = pdfBookService.getBooksByCategoryId(categoryId);
-            ResponseMessage response = new ResponseMessage(
-                    true,
-                    "Kitoblar muvaffaqiyatli olindi",
-                    books
-            );
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    new ResponseMessage(false, "Category topilmadi: " + e.getMessage(), null)
-            );
-        }
-    }
-
     @GetMapping("/search")
-    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String value,
-                                                  @RequestParam(required = false, defaultValue = "title") String field,
+    @Operation(summary = "PDF kitoblarni ro'yxatini olish",
+            description = """
+                    PDF kitoblarni qidirish uchun so'rov yuboradi.
+                    Parametrlar:
+                    - field: Qidirish maydoni (masalan, 'fullInfo', 'categoryId')
+                    - query: Qidirish so'zi
+                    - pageNumber: Sahifa raqami (default: 1)
+                    - pageSize: Sahifadagi elementlar soni (default: 10)
+                    - sortDirection: Tartiblash yo'nalishi ('asc' yoki 'desc', default: 'asc')
+                    Eslatma: categoryId doim son bolishi kerak.
+                    """)
+    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String field,
+                                                  @RequestParam(required = false) String query,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
-                                                  @RequestParam(defaultValue = "10") int size,
-                                                  @RequestParam(defaultValue = "id") String sortBy,
-                                                  @RequestParam(defaultValue = "asc") String sortDir) {
+                                                  @RequestParam(defaultValue = "10") int pageSize,
+                                                  @RequestParam(defaultValue = "asc") String sortDirection) {
 
         PdfBookSearchCriteriaDTO criteria = PdfBookSearchCriteriaDTO.builder()
-                .value(value)
+                .query(query)
                 .field(field)
                 .pageNumber(pageNumber)
-                .size(size)
-                .sortBy(sortBy)
-                .sortDr(sortDir)
+                .size(pageSize)
+                .sortDr(sortDirection)
                 .build();
 
-        Page<PdfBookResponseDTO> result = pdfBookService.search(criteria);
+        Page<PdfBookResponseDTO> result = pdfBookService.getAll(criteria);
         return ResponseEntity.ok(
                 new ResponseMessage(true, "Search completed successfully", result)
         );

@@ -118,4 +118,32 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(PdfBookNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handlePdfBookNotFoundException(PdfBookNotFoundException e) {
+        log.error("PDF book not found. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(PdfFileDownloadException.class)
+    public ResponseEntity<ResponseMessage> handlePdfFileDownloadException(PdfFileDownloadException e) {
+        log.error("PDF file download failed. Message: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseMessage(false, "Failed to download PDF file.", null));
+    }
+
+    @ExceptionHandler(FileValidationException.class)
+    public ResponseEntity<ResponseMessage> handleFileValidationException(FileValidationException e) {
+        log.warn("File validation failed. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ResponseMessage> handleFileUploadException(FileUploadException e) {
+        log.error("File upload to external storage failed. Message: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseMessage(false, "Could not upload the file. Please try again later.", null));
+    }
+
 }

@@ -69,4 +69,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Set<String> findExistingHashedPassportCodes(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
 
     List<Student> findByPassportCodeInAndIsDeletedFalse(Set<String> strings);
+
+    boolean existsByCardNumber(String cardNumber);
 }

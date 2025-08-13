@@ -124,14 +124,32 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));
 
         if (bookingService.hasBookingForUser(userId))
-            throw new UserDeletionException("The user cannot be deleted because he has active book reservations.");
+            throw new UserDeletionException("Studnetda aktiv bronlar mavjud. Student ID: " + userId);
 
         student.setDeleted(true);
         student.setActive(false);
         student.setChatId(null);
+        student.setCardNumber(null);
         studentRepository.save(student);
 
         return ResponseEntity.ok(new ResponseMessage(true, "User successfully deleted", null));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> updateCardNumber(Long id, String cardNumber) {
+        Student student = studentRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new UserNotFoundException("(Update) Studnet topilmadi. ID: " + id));
+
+        if (studentRepository.existsByCardNumber(cardNumber)) {
+            throw new IllegalArgumentException("Card Number mavjud: " + cardNumber);
+        }
+
+        student.setCardNumber(cardNumber);
+        studentRepository.save(student);
+
+        log.info("Student cardNumber yangilandi. ID: {}, CardNumber: {}", id, cardNumber);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "CardNumber muvaffqiyatli yangilandi", null));
     }
 
     public Student findByCardNumber(String cardNumber) {

@@ -43,9 +43,11 @@ public class BaseBookServiceImpl implements BaseBookService {
 
     @Override
     public ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto) {
+        Integer categoryId = dto.getCategoryId();
+
         BaseBookCategory category = categoryRepository
-                .findByIdAndIsDeletedFalse(dto.getCategoryId())
-                .orElseThrow(() -> new BaseBookCategoryNotFoundException(dto.getCategoryId()));
+                .findByIdAndIsDeletedFalse(categoryId)
+                .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
 
         BaseBook entity = baseBookRepository.save(BaseBookMapper.toEntity(dto, category));
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);

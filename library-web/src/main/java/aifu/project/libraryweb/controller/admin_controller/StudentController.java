@@ -71,4 +71,17 @@ public class StudentController {
     public ResponseEntity<ResponseMessage> deleteStudent(@PathVariable Long id) {
         return studentService.deleteStudent(id);
     }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Student cardNumber ni yangilash",
+            description = "Student cardNumber ni yangilash uchun yangi cardNumber yuboriladi.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Student cardNumber muvaffaqiyatli yangilandi"),
+            @ApiResponse(responseCode = "404", description = "Student topilmadi"),
+            @ApiResponse(responseCode = "400", description = "CardNumber allaqachon mavjud")
+    })
+    public ResponseEntity<ResponseMessage> updateCardNumber(@PathVariable Long id,
+                                                            @RequestParam String cardNumber) {
+        return studentService.updateCardNumber(id, cardNumber);
+    }
 }

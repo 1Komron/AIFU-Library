@@ -7,6 +7,7 @@ import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookSearchCriteriaDTO;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/admin/pdf-books")
 @RequiredArgsConstructor
@@ -41,14 +43,15 @@ public class PdfBookController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ResponseMessage.class)))
     })
-    @PostMapping("/category/{categoryId}")
-    public ResponseEntity<ResponseMessage> create(
-            @PathVariable Integer categoryId,
-            @Valid @RequestBody PdfBookCreateDTO dto) {
-        PdfBookResponseDTO response = pdfBookService.create(categoryId, dto);
+    @PostMapping
+    public ResponseEntity<ResponseMessage> create(@Valid @RequestBody PdfBookCreateDTO dto) {
+        PdfBookResponseDTO response = pdfBookService.create(dto);
         ResponseMessage body = new ResponseMessage(
-                true, "PDF book successfully created", response);
-        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+                true,
+                "PDF book successfully created",
+                response
+        );
+        return ResponseEntity.ok(body);
     }
 
 
@@ -144,41 +147,39 @@ public class PdfBookController {
         return new ResponseEntity<>(pdfData, headers, HttpStatus.OK);
     }
 
-    @Operation(summary = "PDF kitoblarni qidirish va sahifalash",
+    @GetMapping
+    @Operation(summary = "PDF kitoblarni ro'yxatini olish",
             description = """
-                    PDF kitoblarni qidirish, filtrlash va sahifalash uchun so'rov yuboradi.
+                    PDF kitoblarni qidirish uchun so'rov yuboradi.
                     Parametrlar:
-                    - field: Qidirish maydoni ('fullInfo', 'categoryId'). Agar berilmasa, barcha kitoblar qaytadi.
-                    - query: Qidirish so'zi (masalan, 'Alisher Navoiy' yoki kategoriya ID'si '5').
-                    - pageNumber: Sahifa raqami (standart: 1).
-                    - pageSize: Sahifadagi elementlar soni (standart: 10).
-                    - sortDirection: Tartiblash yo'nalishi ('asc' yoki 'desc', standart: 'asc').
+                    - field: Qidirish maydoni (masalan, 'fullInfo', 'categoryId')
+                    - query: Qidirish so'zi
+                    - pageNumber: Sahifa raqami (default: 1)
+                    - pageSize: Sahifadagi elementlar soni (default: 10)
+                    - sortDirection: Tartiblash yo'nalishi ('asc' yoki 'desc', default: 'asc')
+                    Eslatma: categoryId doim son bolishi kerak.
                     """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Qidiruv muvaffaqiyatli yakunlandi",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ResponseMessage.class))),
-            @ApiResponse(responseCode = "400", description = "Noto'g'ri qidiruv parametri kiritildi (masalan, `field` bor, `query` yo'q)",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ResponseMessage.class)))
+            @ApiResponse(responseCode = "200", description = "PDF kitoblar ro'yxati muvaffaqiyatli qaytarildi"),
+            @ApiResponse(responseCode = "400", description = "Qidirish so'rovi noto'g'ri")
     })
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String field,
+                                                  @RequestParam(required = false) String query,
+                                                  @RequestParam(defaultValue = "1") int pageNumber,
+                                                  @RequestParam(defaultValue = "10") int pageSize,
+                                                  @RequestParam(defaultValue = "asc") String sortDirection) {
 
-
-    @GetMapping("/search")
-    public ResponseEntity<ResponseMessage> search(
-            @RequestParam(required = false) String field,
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "asc") String sortDirection) {
         PdfBookSearchCriteriaDTO criteria = PdfBookSearchCriteriaDTO.builder()
-                .query(query).field(field).pageNumber(pageNumber)
-                .size(pageSize).sortDr(sortDirection).build();
+                .query(query)
+                .field(field)
+                .pageNumber(pageNumber)
+                .size(pageSize)
+                .sortDr(sortDirection)
+                .build();
 
-        Page<PdfBookPreviewDTO> result = pdfBookService.getAll(criteria);
+        Map<String, Object> result = pdfBookService.getAll(criteria);
         return ResponseEntity.ok(
-                new ResponseMessage(true, "Search completed successfully", result));
+                new ResponseMessage(true, "Search completed successfully", result)
+        );
     }
-
-
 }

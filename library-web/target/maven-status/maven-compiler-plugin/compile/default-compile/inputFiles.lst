@@ -8,10 +8,10 @@
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/pdf_book_service/CategoryServiceImpl.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/CustomUserDetailsService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/runner/initializer/SuperAdminInitializer.java
-/home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/StudentExcelImportService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/student_service/StudentServiceImpl.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/lucene/CustomAnalyzer.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/sender/NotificationSender.java
+/home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/student_service/StudentDeactivationServiceImpl.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/clien_controller/ClientController.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/auth_serivce/JwtService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/base_book_controller/BaseBookCategoryController.java
@@ -37,6 +37,7 @@
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/repository/NotificationRepository.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/ActionController.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/NotificationController.java
+/home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/runner/migration/MigrationConstraint.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/pdf_controller/PdfBookController.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/PasswordResetService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/LibraryWebApplication.java
@@ -52,7 +53,6 @@
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/repository/BaseBookCategoryRepository.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/pdf_controller/FileUploadController.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/base_book_service/BaseBookCategoryService.java
-/home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/StudentDeactivationService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/entity/SecurityLibrarian.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/booking_serivce/BookingServiceImpl.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/config/JwtFilter.java
@@ -72,11 +72,13 @@
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/lucene/LuceneSearchService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/statistics_service/StatisticsService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/config/WebConfig.java
+/home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/student_service/StudentDeactivationService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/StudentController.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/base_book_service/BaseBookServiceImpl.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/mq/NotificationMQListener.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/BookingController.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/notification_service/NotificationServiceImpl.java
+/home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/student_service/StudentExcelImportService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/service/pdf_book_service/CloudinaryService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/lucene/LuceneIndexService.java
 /home/komronbek/Projects/AIFU_Library/library-web/src/main/java/aifu/project/libraryweb/controller/admin_controller/PasswordResetController.java

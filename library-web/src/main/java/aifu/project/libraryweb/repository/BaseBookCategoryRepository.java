@@ -23,11 +23,7 @@ public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCatego
 
     Optional<BaseBookCategory> findByIdAndIsDeletedFalse(Integer id);
 
-    @Query("SELECT COUNT(c) > 0 FROM BaseBookCategory c WHERE LOWER(c.name) = LOWER(:name)")
-    boolean existsByName(String name);
-
-    BaseBookCategory findByName(String name);
-
+    @Query("SELECT COUNT(c) > 0 FROM BaseBookCategory c WHERE LOWER(c.name) = LOWER(:name) and c.isDeleted = false")
     boolean existsByNameAndIsDeletedFalse(String name);
 
 }

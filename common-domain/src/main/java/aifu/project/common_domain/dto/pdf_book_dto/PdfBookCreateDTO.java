@@ -13,6 +13,8 @@ public class PdfBookCreateDTO {
 
     private String title;
 
+    private Integer categoryId;
+
     private Integer publicationYear;
 
     private String pdfUrl;

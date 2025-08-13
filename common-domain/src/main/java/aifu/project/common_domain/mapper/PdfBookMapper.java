@@ -29,53 +29,6 @@ public class PdfBookMapper {
                 .build();
     }
 
-    /**     PATCH
-     * UpdateDTO → Entity (mavjud obyektni yangilash)
-     */
-    public static void updateEntity(PdfBookUpdateDTO dto, PdfBook entity) {
-
-        if (dto.getAuthor() != null) {
-            entity.setAuthor(dto.getAuthor());
-        }
-        if (dto.getTitle() != null) {
-            entity.setTitle(dto.getTitle());
-        }
-        if (dto.getPublicationYear() != null) {
-            entity.setPublicationYear(dto.getPublicationYear());
-        }
-        if (dto.getSize() != null) {
-            entity.setSize(dto.getSize());
-        }
-        if (dto.getPdfUrl() != null) {
-            entity.setPdfUrl(dto.getPdfUrl());
-        }
-        if (dto.getImageUrl() != null) {
-            entity.setImageUrl(dto.getImageUrl());
-        }
-        if (dto.getScript() != null) {
-            entity.setScript(dto.getScript());
-        }
-        if (dto.getLanguage() != null) {
-            entity.setLanguage(dto.getLanguage());
-        }
-        if (dto.getPublisher() != null) {
-            entity.setPublisher(dto.getPublisher());
-        }
-        if (dto.getPageCount() != null) {
-            entity.setPageCount(dto.getPageCount());
-        }
-        if (dto.getIsbn() != null) {
-            entity.setIsbn(dto.getIsbn());
-        }
-        if(dto.getDescription() != null) {
-            entity.setDescription(dto.getDescription());
-        }
-        if (dto.getCategoryId() != null) {
-            entity.setCategory(Category.builder().id(dto.getCategoryId()).build());
-        }
-
-
-    }
 
     // Entity → Response DTO
 
@@ -117,6 +70,17 @@ public class PdfBookMapper {
         return CategoryPreviewDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .build();
+    }
+
+    public static PdfBookShortDTO toPdfBookShortDTO(PdfBook entity) {
+        return PdfBookShortDTO.builder()
+                .id(entity.getId())
+                .isbn(entity.getIsbn())
+                .author(entity.getAuthor())
+                .title(entity.getTitle())
+                .imageUrl(entity.getImageUrl())
+                .categoryPreviewDTO(toCategoryPreviewDTO(entity.getCategory()))
                 .build();
     }
  }

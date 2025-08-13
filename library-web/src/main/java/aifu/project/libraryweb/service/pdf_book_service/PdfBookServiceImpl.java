@@ -44,15 +44,14 @@ public class PdfBookServiceImpl implements PdfBookService {
     /**
      * Yangi PDF kitob yaratadi, uni ma'lumotlar bazasiga saqlaydi va qidiruv uchun indekslaydi.
      *
-     * @param categoryId Kitob biriktiriladigan kategoriyaning ID'si.
-     * @param dto        Yangi kitobning ma'lumotlarini o'z ichiga olgan DTO (Data Transfer Object).
+     * @param dto Yangi kitobning ma'lumotlarini o'z ichiga olgan DTO (Data Transfer Object).
      * @return Yaratilgan kitobning ma'lumotlarini o'z ichiga olgan {@link PdfBookResponseDTO}.
      * @throws CategoryNotFoundException Agar berilgan `categoryId` bo'yicha kategoriya topilmasa.
      */
     @Override
-    public PdfBookResponseDTO create(Integer categoryId, PdfBookCreateDTO dto) {
-        log.info("Attempting to create a new PDF book for category ID: {}", categoryId);
-        Category category = categoryService.getById(categoryId);
+    public PdfBookResponseDTO create(PdfBookCreateDTO dto) {
+        log.info("Attempting to create a new PDF book for category ID: {}", dto.getCategoryId());
+        Category category = categoryService.getById(dto.getCategoryId());
 
         PdfBook book = PdfBookMapper.toEntity(dto);
         book.setCategory(category);
@@ -120,7 +119,7 @@ public class PdfBookServiceImpl implements PdfBookService {
      * Mavjud PDF kitobning ma'lumotlarini yangilaydi.
      * Yangilangan kitob qidiruv tizimida qayta indekslanadi.
      *
-     * @param id  Yangilanadigan kitobning ID'si.
+     * @param id Yangilanadigan kitobning ID'si.
      * @return Yangilangan kitobning ma'lumotlarini o'z ichiga olgan {@link PdfBookResponseDTO}.
      * @throws PdfBookNotFoundException  Agar berilgan `id` bo'yicha kitob topilmasa.
      * @throws CategoryNotFoundException Agar DTO'da yangi `categoryId` berilgan bo'lsa va u topilmasa.
@@ -269,7 +268,7 @@ public class PdfBookServiceImpl implements PdfBookService {
      *                                  `categoryId` son emas; yoki `field` nomi noto'g'ri).
      */
     @Override
-    public Page<PdfBookResponseDTO> getAll(PdfBookSearchCriteriaDTO criteria) {
+    public Map<String, Object> getAll(PdfBookSearchCriteriaDTO criteria) {
         log.info("Searching for PDF books with criteria: {}", criteria);
         String field = criteria.getField() == null ? "default" : criteria.getField();
         String query = criteria.getQuery();
@@ -299,7 +298,16 @@ public class PdfBookServiceImpl implements PdfBookService {
             default -> throw new IllegalArgumentException("Invalid search field provided: " + field);
         };
 
-        log.info("Found {} PDF books matching the criteria.", resultPage.getTotalElements());
-        return resultPage.map(PdfBookMapper::toDto);
+        List<PdfBook> content = resultPage.getContent();
+        log.info("PDF kitoblar ro'yxati olindi. Ro'yxat: {}", content.stream().map(PdfBook::getId).toList());
+
+        List<PdfBookResponseDTO> bookList = content.stream()
+                .map(PdfBookMapper::toDto)
+                .toList();
+
+        Map<String, Object> map = Util.getPageInfo(resultPage);
+        map.put("data", bookList);
+
+        return map;
     }
 }

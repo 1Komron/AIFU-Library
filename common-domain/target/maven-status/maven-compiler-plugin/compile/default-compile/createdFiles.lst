@@ -20,6 +20,7 @@ aifu/project/common_domain/entity/Booking.class
 aifu/project/common_domain/mapper/BookCopyMapper.class
 aifu/project/common_domain/entity/PdfBook$PdfBookBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO.class
+aifu/project/common_domain/exceptions/PdfBookNotFoundException.class
 aifu/project/common_domain/entity/BaseBookCategory$BaseBookCategoryBuilder.class
 aifu/project/common_domain/dto/PasswordResetConfirmRequest.class
 aifu/project/common_domain/entity/enums/Role.class
@@ -30,6 +31,7 @@ aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO$CategoryPreviewDT
 aifu/project/common_domain/dto/live_dto/BookCopyShortDTO.class
 aifu/project/common_domain/exceptions/BookingNotFoundException.class
 aifu/project/common_domain/dto/statistic_dto/TopBookDTO.class
+aifu/project/common_domain/dto/histroy_dto/HistoryAdminDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationShortDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO$CategoryResponseDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.class
@@ -41,6 +43,7 @@ aifu/project/common_domain/entity/User.class
 aifu/project/common_domain/dto/statistic_dto/BookingsPerDayDTO.class
 aifu/project/common_domain/exceptions/BookCopyIsTakenException.class
 aifu/project/common_domain/exceptions/UserNotFoundException.class
+aifu/project/common_domain/exceptions/PdfFileDownloadException.class
 aifu/project/common_domain/exceptions/CategoryNotFoundException.class
 aifu/project/common_domain/dto/student_dto/StudentSummaryDTO.class
 aifu/project/common_domain/dto/live_dto/BookCopyCreateDTO.class
@@ -92,8 +95,10 @@ aifu/project/common_domain/dto/live_dto/BaseBookCategoryCreateDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/UpdateCategoryDTO$UpdateCategoryDTOBuilder.class
 aifu/project/common_domain/exceptions/NotificationNotFoundException.class
 aifu/project/common_domain/dto/BookCopyStats.class
+aifu/project/common_domain/exceptions/FileUploadException.class
 aifu/project/common_domain/entity/Student.class
 aifu/project/common_domain/dto/action_dto/ExtendAcceptActionDTO.class
+aifu/project/common_domain/exceptions/FileValidationException.class
 aifu/project/common_domain/dto/action_dto/ExtendRejectActionDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryShortDTO.class
 aifu/project/common_domain/dto/booking_dto/BookingResponse.class

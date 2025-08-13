@@ -3,7 +3,6 @@ package aifu.project.libraryweb.service.pdf_book_service;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 
 import java.util.Map;
 
@@ -23,6 +22,6 @@ public interface PdfBookService {
 
     byte[] downloadPdf(Integer id);
 
-    Page<PdfBookResponseDTO> getAll(PdfBookSearchCriteriaDTO criteria);
+    Map<String, Object> getAll(PdfBookSearchCriteriaDTO criteria);
 
 }

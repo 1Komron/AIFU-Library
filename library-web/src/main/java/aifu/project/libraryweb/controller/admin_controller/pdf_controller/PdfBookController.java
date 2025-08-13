@@ -4,7 +4,6 @@ import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookSearchCriteriaDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -176,8 +177,9 @@ public class PdfBookController {
                 .sortDr(sortDirection)
                 .build();
 
-        Page<PdfBookResponseDTO> result = pdfBookService.getAll(criteria);
+        Map<String, Object> result = pdfBookService.getAll(criteria);
         return ResponseEntity.ok(
                 new ResponseMessage(true, "Search completed successfully", result)
         );
+    }
 }

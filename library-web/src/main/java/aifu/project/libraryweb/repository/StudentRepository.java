@@ -70,5 +70,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> findByPassportCodeInAndIsDeletedFalse(Set<String> strings);
 
-    boolean existsCardNumber(String cardNumber);
+    boolean existsByCardNumber(String cardNumber);
 }

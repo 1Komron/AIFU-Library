@@ -38,7 +38,7 @@ public class PdfBookResponseDTO {
 
     private String script;
 
-    private LocalDate localDate;
+    private LocalDate createdDate;
 
     private String description;
 

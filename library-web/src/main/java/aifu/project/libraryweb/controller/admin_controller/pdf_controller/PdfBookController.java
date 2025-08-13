@@ -143,7 +143,6 @@ public class PdfBookController {
         }
     }
 
-
     @GetMapping
     @Operation(summary = "PDF kitoblarni ro'yxatini olish",
             description = """
@@ -160,7 +159,7 @@ public class PdfBookController {
             @ApiResponse(responseCode = "200", description = "PDF kitoblar ro'yxati muvaffaqiyatli qaytarildi"),
             @ApiResponse(responseCode = "400", description = "Qidirish so'rovi noto'g'ri")
     })
-    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String field,
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String field,
                                                   @RequestParam(required = false) String query,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,

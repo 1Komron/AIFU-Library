@@ -93,7 +93,7 @@ public class PdfBookMapper {
                 .publisher(entity.getPublisher())
                 .language(entity.getLanguage())
                 .script(entity.getScript())
-                .localDate(entity.getLocalDate())
+                .createdDate(entity.getLocalDate())
                 .description(entity.getDescription())
                 .categoryPreview(toCategoryPreviewDTO(entity.getCategory()))
                 .build();

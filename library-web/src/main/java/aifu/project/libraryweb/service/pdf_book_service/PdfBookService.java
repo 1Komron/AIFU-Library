@@ -17,7 +17,7 @@ public interface PdfBookService {
 
     PdfBookResponseDTO getOne(Integer id);
 
-    PdfBookResponseDTO update(Integer id, PdfBookUpdateDTO dto);
+    PdfBookResponseDTO update(Integer id, Map<String, Object> updates);
 
     void delete(Integer id);
 

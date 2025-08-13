@@ -24,6 +24,6 @@ public interface PdfBookService {
 
     byte[] downloadPdf(Integer id);
 
-    Page<PdfBookResponseDTO> getAll(PdfBookSearchCriteriaDTO criteria);
+    Page<PdfBookPreviewDTO> getAll(PdfBookSearchCriteriaDTO criteria);
 
 }

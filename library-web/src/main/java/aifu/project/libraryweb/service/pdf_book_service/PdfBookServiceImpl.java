@@ -213,7 +213,7 @@ public class PdfBookServiceImpl implements PdfBookService {
 
 
     @Override
-    public Page<PdfBookResponseDTO> getAll(PdfBookSearchCriteriaDTO criteria) {
+    public Page<PdfBookPreviewDTO> getAll(PdfBookSearchCriteriaDTO criteria) {
         log.info("Searching for PDF books with criteria: {}", criteria);
         String field = criteria.getField() == null ? "default" : criteria.getField();
         String query = criteria.getQuery();
@@ -244,6 +244,6 @@ public class PdfBookServiceImpl implements PdfBookService {
         };
 
         log.info("Found {} PDF books matching the criteria.", resultPage.getTotalElements());
-        return resultPage.map(PdfBookMapper::toDto);
+        return resultPage.map(PdfBookMapper::toPreviewDto);
     }
 }

@@ -2,6 +2,7 @@ package aifu.project.libraryweb.controller.admin_controller.pdf_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookSearchCriteriaDTO;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
@@ -174,7 +175,7 @@ public class PdfBookController {
                 .query(query).field(field).pageNumber(pageNumber)
                 .size(pageSize).sortDr(sortDirection).build();
 
-        Page<PdfBookResponseDTO> result = pdfBookService.getAll(criteria);
+        Page<PdfBookPreviewDTO> result = pdfBookService.getAll(criteria);
         return ResponseEntity.ok(
                 new ResponseMessage(true, "Search completed successfully", result));
     }

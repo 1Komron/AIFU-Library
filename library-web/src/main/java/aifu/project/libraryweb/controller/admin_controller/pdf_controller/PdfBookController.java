@@ -4,7 +4,6 @@ import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
 import aifu.project.common_domain.dto.pdf_book_dto.PdfBookSearchCriteriaDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookUpdateDTO;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,7 +47,6 @@ public class PdfBookController {
         PdfBookResponseDTO response = pdfBookService.create(categoryId, dto);
         ResponseMessage body = new ResponseMessage(
                 true, "PDF book successfully created", response);
-        // Resurs yaratilganda 201 Created statusini qaytarish yaxshi amaliyotdir.
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
@@ -128,7 +126,6 @@ public class PdfBookController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
-        // Logika Service qatlamiga o'tkazilgan. Controller faqat javobni shakllantiradi.
         PdfBookResponseDTO book = pdfBookService.getOne(id);
         byte[] pdfData = pdfBookService.downloadPdf(id);
 

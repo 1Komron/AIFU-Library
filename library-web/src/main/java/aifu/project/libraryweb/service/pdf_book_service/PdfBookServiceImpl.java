@@ -4,7 +4,6 @@ package aifu.project.libraryweb.service.pdf_book_service;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.entity.PdfBook;
-import aifu.project.common_domain.exceptions.CategoryNotFoundException;
 import aifu.project.common_domain.exceptions.PdfBookNotFoundException;
 import aifu.project.common_domain.exceptions.PdfFileDownloadException;
 import aifu.project.common_domain.mapper.PdfBookMapper;
@@ -26,11 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * PDF kitoblar bilan bog'liq barcha biznes mantiqni amalga oshiruvchi servis klassi.
- * Bu klass ma'lumotlar bazasi operatsiyalari, fayllar bilan ishlash va Lucene qidiruv tizimini
- * indekslash uchun mas'uldir. Xatoliklar maxsus istisnolar orqali boshqariladi.
- */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -41,12 +36,12 @@ public class PdfBookServiceImpl implements PdfBookService {
     private final LuceneIndexService luceneIndexService;
 
 
+
     /**
      * Yangi PDF kitob yaratadi, uni ma'lumotlar bazasiga saqlaydi va qidiruv uchun indekslaydi.
      *
      * @param dto Yangi kitobning ma'lumotlarini o'z ichiga olgan DTO (Data Transfer Object).
      * @return Yaratilgan kitobning ma'lumotlarini o'z ichiga olgan {@link PdfBookResponseDTO}.
-     * @throws CategoryNotFoundException Agar berilgan `categoryId` bo'yicha kategoriya topilmasa.
      */
     @Override
     public PdfBookResponseDTO create(PdfBookCreateDTO dto) {
@@ -63,8 +58,6 @@ public class PdfBookServiceImpl implements PdfBookService {
             luceneIndexService.indexPdfBooks(saved);
             log.info("Lucene index created for PdfBook ID: {}", saved.getId());
         } catch (IOException e) {
-            // Muhim: Indekslashdagi xato asosiy operatsiyaga (kitobni saqlashga) ta'sir qilmasligi kerak.
-            // Xato faqat logga yoziladi.
             log.error("PDF book indexing failed for ID: {}. Error: {}", saved.getId(), e.getMessage());
         }
 
@@ -72,14 +65,8 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-    /**
-     * PDF kitoblarning sahifalangan ro'yxatini qaytaradi (soddalashtirilgan ko'rinishda).
-     *
-     * @param pageNumber Qaytariladigan sahifa raqami (1-dan boshlanadi).
-     * @param pageSize   Har bir sahifadagi elementlar soni.
-     * @return Sahifa ma'lumotlari (umumiy son, sahifalar soni) va kitoblar ro'yxatini o'z ichiga olgan {@link Map}.
-     * @deprecated Yaxshiroq funksionallikka ega bo'lgan {@link #getAll(PdfBookSearchCriteriaDTO)} metodidan foydalanish tavsiya etiladi.
-     */
+
+
     @Override
     @Deprecated
     public Map<String, Object> getList(int pageNumber, int pageSize) {
@@ -98,13 +85,7 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-    /**
-     * Yagona PDF kitobni uning noyob ID'si bo'yicha oladi.
-     *
-     * @param id Olinadigan kitobning ID'si.
-     * @return Topilgan kitobning to'liq ma'lumotlarini o'z ichiga olgan {@link PdfBookResponseDTO}.
-     * @throws PdfBookNotFoundException Agar berilgan `id` bo'yicha kitob topilmasa.
-     */
+
     @Override
     public PdfBookResponseDTO getOne(Integer id) {
         log.info("Attempting to retrieve PDF book with ID: {}", id);
@@ -115,20 +96,10 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-    /**
-     * Mavjud PDF kitobning ma'lumotlarini yangilaydi.
-     * Yangilangan kitob qidiruv tizimida qayta indekslanadi.
-     *
-     * @param id Yangilanadigan kitobning ID'si.
-     * @return Yangilangan kitobning ma'lumotlarini o'z ichiga olgan {@link PdfBookResponseDTO}.
-     * @throws PdfBookNotFoundException  Agar berilgan `id` bo'yicha kitob topilmasa.
-     * @throws CategoryNotFoundException Agar DTO'da yangi `categoryId` berilgan bo'lsa va u topilmasa.
-     */
     @Override
     public PdfBookResponseDTO update(Integer id, Map<String, Object> updates) {
         log.info("Attempting to PATCH update PDF book with ID: {}", id);
 
-        // 1. Yangilanadigan kitobni bazadan topamiz. Topilmasa, xatolik beramiz.
         PdfBook entity = pdfBookRepository.findById(id)
                 .orElseThrow(() -> new PdfBookNotFoundException("PDF book topilmadi. ID: " + id));
 
@@ -204,12 +175,7 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-    /**
-     * PDF kitobni ID bo'yicha o'chiradi va uning Lucene indeksini ham o'chiradi.
-     *
-     * @param id O'chiriladigan kitobning ID'si.
-     * @throws PdfBookNotFoundException Agar berilgan `id` bo'yicha kitob topilmasa.
-     */
+
     @Override
     public void delete(Integer id) {
         log.info("Attempting to delete PDF book with ID: {}", id);
@@ -228,14 +194,8 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-    /**
-     * Kitobga biriktirilgan PDF faylni yuklab oladi va uning baytlarini qaytaradi.
-     *
-     * @param id Kitobning ID'si.
-     * @return PDF faylning mazmunini o'z ichiga olgan baytlar massivi (`byte[]`).
-     * @throws PdfBookNotFoundException Agar kitob yoki unga tegishli fayl URL'i topilmasa.
-     * @throws PdfFileDownloadException Agar faylni tashqi manbadan (masalan, Cloudinary) o'qishda xatolik yuz bersa.
-     */
+
+
     @Override
     public byte[] downloadPdf(Integer id) {
         log.info("Attempting to download PDF file for book ID: {}", id);
@@ -258,15 +218,6 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-    /**
-     * Berilgan mezonlar asosida PDF kitoblarni qidiradi, filtrlaydi va sahifalarga bo'lib qaytaradi.
-     * Bu metod kitoblar ro'yxatini olish uchun asosiy va eng moslashuvchan usul hisoblanadi.
-     *
-     * @param criteria Qidiruv, filtrlash, sahifalash va tartiblash parametrlarini o'z ichiga olgan obyekt.
-     * @return Topilgan kitoblar ro'yxati va sahifa ma'lumotlarini o'z ichiga olgan {@link Page} obyekti.
-     * @throws IllegalArgumentException Agar qidiruv mezonlari noto'g'ri bo'lsa (masalan, `field` bor, lekin `query` yo'q;
-     *                                  `categoryId` son emas; yoki `field` nomi noto'g'ri).
-     */
     @Override
     public Map<String, Object> getAll(PdfBookSearchCriteriaDTO criteria) {
         log.info("Searching for PDF books with criteria: {}", criteria);

@@ -129,7 +129,6 @@ public class PdfBookController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Integer id) {
-        // Logika Service qatlamiga o'tkazilgan. Controller faqat javobni shakllantiradi.
         PdfBookResponseDTO book = pdfBookService.getOne(id);
         byte[] pdfData = pdfBookService.downloadPdf(id);
 

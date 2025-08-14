@@ -8,6 +8,7 @@ import aifu.project.common_domain.dto.student_dto.StudentDTO;
 import aifu.project.libraryweb.repository.NotificationRepository;
 import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -28,11 +30,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public ResponseEntity<ResponseMessage> deleteNotification(Long notificationId) {
         Notification notification = notificationRepository.findNotificationById(notificationId)
-                .orElseThrow(() -> new NotificationNotFoundException("Notification not found by id: " + notificationId));
+                .orElseThrow(() -> new NotificationNotFoundException("Notification topilmadi ID: " + notificationId));
 
         notificationRepository.delete(notification);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Notification deleted successfully", null));
+        log.info("Notification muvaffaqiyatli ochirildi. NotificationID: {}", notificationId);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification muvaffaqiyatli ochirildi", null));
     }
 
 
@@ -47,19 +51,30 @@ public class NotificationServiceImpl implements NotificationService {
             default -> notificationRepository.findAll(pageable);
         };
 
-        Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", getShortDTO(page.getContent()));
+        List<Notification> content = page.getContent();
 
-        return ResponseEntity.ok(new ResponseMessage(true, "All notifications", map));
+
+        log.info("Notification ro'yxati: Ro'yxatdagi elementlar soni: {}, Sahifa raqami: {}, Sahifa hajmi: {}, Filtr: {}, Tartiblash yo'nalishi: {}",
+                page.getTotalElements(), pageNumber + 1, pageSize, filter, sortDirection);
+        log.info("Notification ro'yxati: Ro'yxat {}", content.stream().map(Notification::getId).toList());
+
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", getShortDTO(content));
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification ro'yxati", map));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getDetails(String notificationId) {
         Notification notification = notificationRepository.findNotificationById(Long.parseLong(notificationId))
-                .orElseThrow(() -> new NotificationNotFoundException("Not found by id: " + notificationId));
+                .orElseThrow(() -> new NotificationNotFoundException("Notification topilmadi. ID: " + notificationId));
+
+        log.info("Notification ma'lumotlari: {}", notification);
 
         notification.setRead(true);
         notificationRepository.save(notification);
+
+        log.info("Notification o'qilgan deb belgilandi. NotificationID: {}", notificationId);
 
         return ResponseEntity.ok(new ResponseMessage(
                 true,

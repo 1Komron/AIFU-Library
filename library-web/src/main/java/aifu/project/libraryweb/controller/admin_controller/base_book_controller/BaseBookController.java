@@ -83,7 +83,7 @@ public class BaseBookController {
             @ApiResponse(responseCode = "200", description = "Base book ro'yaxtini olish muvaffaqiyatli amalga oshirildi"),
             @ApiResponse(responseCode = "400", description = "Notogri query yoki field kiritildi")
     })
-    public ResponseEntity<ResponseMessage> search(@RequestParam(required = false) String query,
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String query,
                                                   @RequestParam(required = false) String field,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,

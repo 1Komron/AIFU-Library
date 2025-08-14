@@ -41,6 +41,8 @@ public class BaseBookServiceImpl implements BaseBookService {
     private final BaseBookCategoryRepository categoryRepository;
     private final LuceneIndexService luceneIndexService;
 
+    private static final String DEFAULT = "default";
+
     @Override
     public ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto) {
         Integer categoryId = dto.getCategoryId();
@@ -166,7 +168,10 @@ public class BaseBookServiceImpl implements BaseBookService {
 
     @Override
     public ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection) {
-        field = field != null ? field.toLowerCase() : "default";
+        field = field != null ? field : DEFAULT;
+        if ((!field.equals(DEFAULT)) && query == null) {
+            throw new IllegalArgumentException("Query bo'sh bo'lishi mumkin emas. Field: " + field);
+        }
 
         Sort.Direction direction = sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
@@ -174,12 +179,18 @@ public class BaseBookServiceImpl implements BaseBookService {
         Page<BaseBook> page = switch (field) {
             case "id" -> baseBookRepository.searchById(Long.parseLong(query), pageable);
             case "category" -> baseBookRepository.searchByCategory_Id(Integer.parseInt(query), pageable);
-            case "title" -> baseBookRepository.searchByTitle(query, pageable);
-            case "author" -> baseBookRepository.searchByAuthor(query, pageable);
+            case "fullInfo" -> {
+                String[] parts = query.trim().split("\\s+");
+
+                String first = "%" + parts[0].toLowerCase() + "%";
+                String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
+
+                yield baseBookRepository.searchByTitleAndAuthor(first, second, pageable);
+            }
             case "isbn" -> baseBookRepository.searchByIsbn(query, pageable);
             case "udc" -> baseBookRepository.searchByUdc(query, pageable);
             case "series" -> baseBookRepository.searchSeries(query, pageable);
-            case "default" -> baseBookRepository.findByIsDeletedFalse(pageable);
+            case DEFAULT -> baseBookRepository.findByIsDeletedFalse(pageable);
             default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + field);
         };
 

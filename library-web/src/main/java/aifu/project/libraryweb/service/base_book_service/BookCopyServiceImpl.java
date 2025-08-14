@@ -14,6 +14,7 @@ import aifu.project.common_domain.mapper.BookCopyMapper;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.repository.BookCopyRepository;
+import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
 public class BookCopyServiceImpl implements BookCopyService {
     private final BookCopyRepository bookCopyRepository;
     private final BaseBookRepository baseBookRepository;
+
+    private static final String DEFAULT = "default";
 
     @Override
     public ResponseEntity<ResponseMessage> create(BookCopyCreateDTO dto) {
@@ -141,7 +144,11 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection) {
-        field = field == null ? "default" : field;
+        field = field == null ? DEFAULT : field;
+        if (!field.equals(DEFAULT) && query == null) {
+            throw new IllegalArgumentException("Query null bolishi mumkin emas. Field: " + field);
+        }
+
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
@@ -150,9 +157,18 @@ public class BookCopyServiceImpl implements BookCopyService {
 
             case "inventoryNumber" -> bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query, pageable);
 
+            case "fullInfo" -> {
+                String[] parts = query.trim().split("\\s+");
+
+                String first = "%" + parts[0].toLowerCase() + "%";
+                String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
+
+                yield bookCopyRepository.findByTitleAndAuthor(first, second, pageable);
+            }
+
             case "epc" -> bookCopyRepository.findByEpcAndIsDeletedFalse(query, pageable);
 
-            case "default" -> bookCopyRepository.findByIsDeletedFalse(pageable);
+            case DEFAULT -> bookCopyRepository.findByIsDeletedFalse(pageable);
 
             default -> throw new IllegalArgumentException("Noto'g'ri qidiruv maydoni: " + field);
         };
@@ -163,12 +179,9 @@ public class BookCopyServiceImpl implements BookCopyService {
                 page.getNumber() + 1, page.getSize(), sortDirection);
         log.info("BookCopy ro'yxati: {}", content.stream().map(BookCopyShortDTO::id).toList());
 
-        Map<String, Object> map = Map.of(
-                "list", content,
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
-        );
+
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("list", content);
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy ro'yxati", map));
     }

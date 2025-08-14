@@ -38,3 +38,6 @@ springdoc:
 
 server:
   port: 8081
+security:
+  hashing:
+    passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"

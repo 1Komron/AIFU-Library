@@ -195,20 +195,6 @@ public class BookingService {
         extracted(chatId, lang, expiringBookings);
     }
 
-    public ResponseEntity<ResponseMessage> getBookingList(int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(--pageNum, pageSize);
-        Page<BookingShortDTO> page = bookingRepository.findAllBookingShortDTO(pageable);
-
-        Map<String, Object> data = Map.of(
-                "data", page.getContent(),
-                "currentPage", page.getNumber() + 1,
-                "totalPages", page.getTotalPages(),
-                "totalElements", page.getTotalElements()
-        );
-
-        return ResponseEntity.ok(new ResponseMessage(true, "data", data));
-    }
-
     public void changeStatusToOverdue() {
         List<Booking> expiredBookings = getExpiredBookings();
         expiredBookings.forEach(booking -> booking.setStatus(Status.OVERDUE));

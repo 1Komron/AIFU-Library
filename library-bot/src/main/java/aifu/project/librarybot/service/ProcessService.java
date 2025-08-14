@@ -180,7 +180,7 @@ public class ProcessService {
 
         Long chatId = callbackQuery.getMessage().getChatId();
         String data = callbackQuery.getData();
-        System.out.println(data);
+
         String lang = userLanguageService.getLanguage(chatId.toString());
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
@@ -188,7 +188,7 @@ public class ProcessService {
             userLanguageService.setLanguage(chatId.toString(), data);
             buttonService.getMainButtons(chatId, MessageUtil.get(MessageKeys.LANGUAGE_CHANGED, data));
         } else if (data.startsWith("login")) {
-            userService.sendLoginMessage(chatId, lang);
+            userService.sendLoginMessage(chatId, lang, messageId);
         } else if (data.startsWith("back_") || data.startsWith("next_")) {
             processControl(data, chatId, lang, messageId);
         } else if (data.startsWith(EXPIRING)) {

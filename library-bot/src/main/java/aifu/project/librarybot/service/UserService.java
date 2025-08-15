@@ -23,6 +23,7 @@ public class UserService {
     private final UserLanguageService userLanguageService;
     private final ExecuteUtil executeUtil;
     private final InputService inputService;
+    private final PassportHasher passportHasher;
 
     public boolean notExists(Long chatId) {
         return !studentRepository.existsByChatIdAndIsActiveTrueAndIsDeletedFalse(chatId);
@@ -39,14 +40,21 @@ public class UserService {
         executeUtil.execute(sendMessage);
     }
 
-    public void sendLoginMessage(Long chatId, String lang) {
-        inputService.putState(chatId, InputStep.LOGIN);
-        executeUtil.executeMessage(chatId.toString(), MessageKeys.PASSPORT_REQUEST_MESSAGE, lang);
+    public void sendLoginMessage(Long chatId, String lang, Integer messageId) {
+        if (notExists(chatId)) {
+            inputService.putState(chatId, InputStep.LOGIN);
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.PASSPORT_REQUEST_MESSAGE, lang);
+        } else {
+            executeUtil.executeMessage(chatId.toString(), MessageKeys.LOGIN_SUCCESS_MESSAGE, lang);
+            MessageUtil.deleteMessage(chatId.toString(), messageId);
+        }
     }
 
 
     public void login(Long chatId, String text, String lang) {
-        Student student = studentRepository.findByIsDeletedFalseAndPassportCode(text);
+        String hash = passportHasher.hash(text);
+
+        Student student = studentRepository.findByIsDeletedFalseAndPassportCode(hash);
         if (student != null) {
             saveUserChatId(student, chatId);
             executeUtil.executeMessage(chatId.toString(), MessageKeys.LOGIN_SUCCESS_MESSAGE, lang);

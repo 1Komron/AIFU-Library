@@ -40,10 +40,10 @@ public class ClientController {
     @GetMapping("/pdf-books")
     @Operation(summary = "PDF kitoblarni olish")
     @ApiResponse(responseCode = "200", description = "PDF kitoblar muvaffaqiyatli qaytarildi")
-    public ResponseEntity<ResponseMessage> getPdfBooks(
-            @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(defaultValue = "12") int pageSize) {
-        Map<String, Object> books = pdfBookService.getList(pageNumber, pageSize);
+    public ResponseEntity<ResponseMessage> getPdfBooks(@RequestParam(defaultValue = "1") int pageNumber,
+                                                       @RequestParam(defaultValue = "12") int pageSize,
+                                                       @RequestParam(required = false) Integer category) {
+        Map<String, Object> books = pdfBookService.getList(pageNumber, pageSize, category);
         ResponseMessage body = new ResponseMessage(
                 true,
                 "PDF book list retrieved successfully",
@@ -71,7 +71,6 @@ public class ClientController {
                 new ResponseMessage(true, "PDF book successfully retrieved", book)
         );
     }
-
 
 
     @GetMapping("/download/{id}")

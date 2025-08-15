@@ -3,6 +3,7 @@ package aifu.project.libraryweb.service.pdf_book_service;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.entity.PdfBook;
+import aifu.project.common_domain.exceptions.CategoryNotFoundException;
 import aifu.project.common_domain.exceptions.PdfBookNotFoundException;
 import aifu.project.common_domain.exceptions.PdfFileDownloadException;
 import aifu.project.common_domain.mapper.PdfBookMapper;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,6 @@ public class PdfBookServiceImpl implements PdfBookService {
     private final PdfBookRepository pdfBookRepository;
     private final CategoryService categoryService;
     private final LuceneIndexService luceneIndexService;
-
 
 
     /**
@@ -64,14 +63,14 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-
-
     @Override
-    @Deprecated
-    public Map<String, Object> getList(int pageNumber, int pageSize) {
+    public Map<String, Object> getList(int pageNumber, int pageSize, Integer category) {
         log.info("Retrieving paginated list of PDF books. Page: {}, Size: {}", pageNumber, pageSize);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        Page<PdfBook> page = pdfBookRepository.findAll(pageable);
+
+        Page<PdfBook> page = (category == null)
+                ? pdfBookRepository.findAll(pageable)
+                : pdfBookRepository.findAllByCategory_Id(category, pageable);
 
         Map<String, Object> map = Util.getPageInfo(page);
 
@@ -82,7 +81,6 @@ public class PdfBookServiceImpl implements PdfBookService {
         map.put("data", list);
         return map;
     }
-
 
 
     @Override
@@ -175,7 +173,6 @@ public class PdfBookServiceImpl implements PdfBookService {
     }
 
 
-
     @Override
     public void delete(Integer id) {
         log.info("Attempting to delete PDF book with ID: {}", id);
@@ -192,8 +189,6 @@ public class PdfBookServiceImpl implements PdfBookService {
             log.error("Failed to delete Lucene index for PdfBook ID: {}. Error: {}", id, e.getMessage());
         }
     }
-
-
 
 
     @Override

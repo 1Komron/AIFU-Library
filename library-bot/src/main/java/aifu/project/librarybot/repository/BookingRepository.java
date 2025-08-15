@@ -1,7 +1,5 @@
 package aifu.project.librarybot.repository;
 
-import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
-
 import aifu.project.common_domain.entity.Booking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,19 +91,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.student.chatId = :chatId AND b.dueDate = :tomorrow")
     List<Booking> findAllExpiringBookings(@Param("chatId") Long chatId, @Param("tomorrow") LocalDate tomorrow);
-
-    @Query("""
-            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
-                b.id,
-                base.title,
-                base.author,
-                b.dueDate,
-                b.givenAt,
-                b.status
-            )
-            FROM Booking b
-            JOIN b.book copy
-            JOIN copy.book base
-            """)
-    Page<BookingShortDTO> findAllBookingShortDTO(Pageable pageable);
 }

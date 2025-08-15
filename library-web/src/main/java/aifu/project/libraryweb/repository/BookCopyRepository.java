@@ -101,4 +101,28 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
     Optional<BookCopy> findByInventoryNumberAndIsDeletedFalse(String inventoryNumber);
 
     boolean existsByInventoryNumberAndIsDeletedFalse(String inventoryNumber);
+
+    @Query("""
+            select  new aifu.project.common_domain.dto.live_dto.BookCopyShortDTO(
+                bc.id,
+                b.author,
+                b.title,
+                bc.inventoryNumber,
+                bc.shelfLocation,
+                bc.isTaken
+            )from BookCopy bc
+            join bc.book b
+            where (
+                    (lower(b.title) like : first or lower(b.author) like : first)
+                    or
+                    (:second is not null and
+                      (
+                        (lower(b.author) like :first and lower(b.title) like :second)
+                        or
+                        (lower(b.author) like :second and lower(b.title) like :first)
+                      )
+                    )
+            ) and bc.isDeleted = false
+            """)
+    Page<BookCopyShortDTO> findByTitleAndAuthor(String first, String second, Pageable pageable);
 }

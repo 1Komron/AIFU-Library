@@ -71,4 +71,22 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByPassportCodeInAndIsDeletedFalse(Set<String> strings);
 
     boolean existsByCardNumber(String cardNumber);
+
+
+    @Query("""
+             SELECT s FROM Student s
+             WHERE s.passportCode IN :hashedPassportCodes
+             AND s.isDeleted = false
+             AND NOT EXISTS (
+             select 1 from Booking b
+             where b.student = s
+             )
+            """ )
+    List<Student> findNonDebtorStudentsByPassportCodes(
+            @Param("hashedPassportCodes") Set<String> hashedPassportCodes
+
+    );
+
+
 }
+

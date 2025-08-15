@@ -6,6 +6,8 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Table(indexes = {
@@ -23,6 +25,12 @@ public class Student extends User {
 
     @Column(nullable = false)
     private String cardNumber;
+
+    private LocalDate admissionTime;
+
+    private LocalDate graduationTime;
+
+    private String phoneNumber;
 
     @Column(unique = true)
     private Long chatId;

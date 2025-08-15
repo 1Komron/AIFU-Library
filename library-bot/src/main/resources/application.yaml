@@ -1,7 +1,4 @@
 spring:
-  config:
-    import:
-      application-private.yaml
   application:
     name:
       library-bot
@@ -35,6 +32,10 @@ springdoc:
     path: /v1-api
   swagger-ui:
     path: /swagger-ui.html
+
+backup:
+  path:
+    /home/komronbek
 
 server:
   port: 8081

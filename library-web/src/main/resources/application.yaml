@@ -71,6 +71,7 @@ jwt:
 
 security:
   hashing:
-    # Pasport kodlarini xeshlash uchun ishlatiladigan maxfiy "tuz".
-    # BU QIYMATNI HECH KIMGA KO'RSATMANG VA MURAKKAB QILIB O'ZGARTIRING.
     passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"
+
+backup:
+  path: /home/komronbek

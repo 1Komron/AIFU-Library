@@ -1,12 +1,10 @@
 package aifu.project.librarybot.service;
 
-import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
 import aifu.project.common_domain.dto.notification_dto.NotificationExtendShortDTO;
 import aifu.project.common_domain.entity.*;
 import aifu.project.common_domain.entity.enums.NotificationType;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.dto.PartList;
-import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.librarybot.config.RabbitMQConfig;
 import aifu.project.librarybot.repository.BookingRepository;
 import aifu.project.librarybot.repository.NotificationRepository;
@@ -21,7 +19,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -30,7 +27,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -55,12 +51,10 @@ public class BookingService {
             return;
         }
 
-        //  extendDeadline(booking);
-
         Student student = booking.getStudent();
         Notification notification = new Notification(student, booking.getBook(), NotificationType.EXTEND);
 
-        log.info("Extending deadline for booking: {} by student: {}", booking.getId(), student.getId());
+        log.info("Booking vaqtini uzaytirish so'rovi. BookingID: {} StudentID: {}", booking.getId(), student.getId());
 
         notification = notificationRepository.save(notification);
         rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND,
@@ -78,18 +72,6 @@ public class BookingService {
         InlineKeyboardMarkup inlineKeyboardMarkup = KeyboardUtil.getExtendBookingsInventoryNumber(inventoryNumbers);
         message.setReplyMarkup(inlineKeyboardMarkup);
         executeUtil.execute(message);
-    }
-
-    public void extendDeadline(Booking booking) {
-        LocalDate dueDate = booking.getDueDate();
-        LocalDate now = LocalDate.now();
-
-        LocalDate newDueDate = dueDate.isAfter(now) ? dueDate.plusDays(3) : now.plusDays(3);
-
-        booking.setDueDate(newDueDate);
-        booking.setStatus(Status.APPROVED);
-
-        bookingRepository.save(booking);
     }
 
     public PartList getBookList(Long chatId, String lang, int pageNumber) {

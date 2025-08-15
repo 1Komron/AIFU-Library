@@ -1,5 +1,6 @@
 package aifu.project.libraryweb.repository;
 
+import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.entity.PdfBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -28,4 +29,6 @@ public interface PdfBookRepository extends JpaRepository <PdfBook, Integer> {
                   )
             """)
     Page<PdfBook> findByAuthorAndTitle(String first, String second, Pageable pageable);
+
+    Page<PdfBook> findAllByCategory_Id(int category, Pageable pageable);
 }

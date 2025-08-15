@@ -12,7 +12,7 @@ public interface PdfBookService {
 
     PdfBookResponseDTO create(PdfBookCreateDTO dto);
 
-    Map<String, Object> getList(int pageNumber, int pageSize);
+    Map<String, Object> getList(int pageNumber, int pageSize, Integer category);
 
     PdfBookResponseDTO getOne(Integer id);
 

@@ -1,5 +1,6 @@
 package aifu.project.common_domain.dto.pdf_book_dto;
 
+
 import lombok.*;
 
 @Getter
@@ -7,9 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PdfBookPreviewDTO {
+public class PdfBookShortDTO {
 
     private Integer id;
+
+    private String isbn;
 
     private String author;
 
@@ -18,6 +21,4 @@ public class PdfBookPreviewDTO {
     private String imageUrl;
 
     private CategoryPreviewDTO categoryPreviewDTO;
-
-
 }

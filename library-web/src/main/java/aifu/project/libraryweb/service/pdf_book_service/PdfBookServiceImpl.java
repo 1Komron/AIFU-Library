@@ -1,4 +1,3 @@
-
 package aifu.project.libraryweb.service.pdf_book_service;
 
 import aifu.project.common_domain.dto.pdf_book_dto.*;
@@ -92,6 +91,7 @@ public class PdfBookServiceImpl implements PdfBookService {
         log.info("Successfully retrieved PDF book with ID: {}", id);
         return PdfBookMapper.toDto(book);
     }
+
 
 
     @Override
@@ -247,8 +247,8 @@ public class PdfBookServiceImpl implements PdfBookService {
         List<PdfBook> content = resultPage.getContent();
         log.info("PDF kitoblar ro'yxati olindi. Ro'yxat: {}", content.stream().map(PdfBook::getId).toList());
 
-        List<PdfBookResponseDTO> bookList = content.stream()
-                .map(PdfBookMapper::toDto)
+        List<PdfBookShortDTO> bookList = content.stream()
+                .map(PdfBookMapper::toPdfBookShortDTO)
                 .toList();
 
         Map<String, Object> map = Util.getPageInfo(resultPage);

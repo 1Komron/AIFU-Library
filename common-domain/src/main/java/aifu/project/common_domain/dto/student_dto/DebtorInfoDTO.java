@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DebtorInfoDTO {
   private  Long id;
-
+ private String name;
 }

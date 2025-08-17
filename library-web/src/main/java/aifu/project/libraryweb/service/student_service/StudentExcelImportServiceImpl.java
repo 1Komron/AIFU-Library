@@ -4,6 +4,7 @@ import aifu.project.libraryweb.config.ImportStats;
 import aifu.project.libraryweb.config.ImporterColumnProperties;
 import aifu.project.libraryweb.repository.StudentRepository;
 import aifu.project.libraryweb.service.PassportHasher;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ public class StudentExcelImportServiceImpl implements StudentExcelImportService 
     private final PassportHasher passportHasher;
 
     @Override
+    @Transactional
     public ImportStats importStudentsFromExcel(InputStream inputStream) {
         return null;
     }

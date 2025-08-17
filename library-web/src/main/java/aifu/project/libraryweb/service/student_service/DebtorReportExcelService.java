@@ -4,11 +4,8 @@ import aifu.project.common_domain.dto.student_dto.DebtorInfoDTO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
 import java.util.List;
-
-import static java.lang.System.out;
 
 @Service
 public class DebtorReportExcelService {
@@ -53,4 +50,5 @@ public class DebtorReportExcelService {
              return outputStream.toByteArray();
         }
     }
+
 }

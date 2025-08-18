@@ -51,6 +51,9 @@ importer:
     degree: degree, darajasi, степень
     faculty: faculty, fakultet, факультет
     cardNumber: card rifd, rfid, cardnumber, card number, karta raqami
+    admissionTime: admissiontime, validity period 1, kirish vaqti, дата поступления
+    graduationTime: graduationtime, validity period 2, bitirish vaqti, дата окончания
+
 server:
   port: 8080
   address: 0.0.0.0

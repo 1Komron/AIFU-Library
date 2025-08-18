@@ -17,6 +17,7 @@ public class ImporterColumnProperties {
     private String degree = "degree";
     private String faculty = "faculty";
     private String cardNumber = "card rifd";
+    private String admissionTime = "admissionTime";
+    private String graduationTime = "graduationTime";
 
-    
 }

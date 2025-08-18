@@ -1,6 +1,7 @@
 package aifu.project.common_domain.dto.action_dto;
 
 import aifu.project.common_domain.dto.student_dto.DebtorInfoDTO;
+import aifu.project.common_domain.dto.student_dto.ImportErrorDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -12,33 +13,35 @@ import java.util.List;
 public class DeactivationStats {
     private int successCount;
     private List<DebtorInfoDTO> debtors;
-    private List<String> notFoundOrOtherErrors;
+    private List<ImportErrorDTO> notFoundRecords; // "Topilmaganlar" uchun ham to'liq ma'lumot
 
-    private String reportFileName;
-    private String reportFileBase64;
+    // Har bir hisobot uchun alohida fayl
+    private String debtorsReportFileName;
+    private String debtorsReportFileBase64;
+    private String notFoundReportFileName;
+    private String notFoundReportFileBase64;
 
-    public DeactivationStats(int successCount, List<DebtorInfoDTO> debtors, List<String> notFoundOrOtherErrors) {
+    public DeactivationStats(int successCount, List<DebtorInfoDTO> debtors, List<ImportErrorDTO> notFoundRecords) {
         this.successCount = successCount;
         this.debtors = debtors;
-        this.notFoundOrOtherErrors = notFoundOrOtherErrors;
+        this.notFoundRecords = notFoundRecords;
     }
+
     @JsonIgnore
     public String generateResponseMessage() {
-        if (successCount == 0 && (debtors == null || debtors.isEmpty()) && (notFoundOrOtherErrors == null || notFoundOrOtherErrors.isEmpty())) {
-            return "Faylda qayta ishlanadigan ma'lumot topilmadi.";
-        }
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append(String.format("%d ta talaba muvaffaqiyatli deaktivatsiya qilindi.", successCount));
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%d ta talaba muvaffaqiyatli deaktivatsiya qilindi.", successCount));
+
         if (debtors != null && !debtors.isEmpty()) {
-            messageBuilder.append(String.format(" %d ta talaba qarzdorligi sababli o'chirilmadi.", debtors.size()));
-            if (reportFileName != null) {
-                messageBuilder.append(" Tafsilotlar uchun generatsiya qilingan hisobot faylini yuklab oling.");
-            }
-        }
-        if (notFoundOrOtherErrors != null && !notFoundOrOtherErrors.isEmpty()) {
-            messageBuilder.append(String.format(" %d ta yozuvda boshqa xatoliklar (masalan, bazada topilmadi) aniqlandi.", notFoundOrOtherErrors.size()));
+            sb.append(String.format(" %d ta talaba qarzdorligi sababli o'chirilmadi.", debtors.size()));
+            if (debtorsReportFileName != null) sb.append(" Qarzdorlar hisobotini yuklab oling.");
         }
 
-        return messageBuilder.toString();
+        if (notFoundRecords != null && !notFoundRecords.isEmpty()) {
+            sb.append(String.format(" %d ta talaba bazadan topilmadi.", notFoundRecords.size()));
+            if (notFoundReportFileName != null) sb.append(" Topilmaganlar hisobotini yuklab oling.");
+        }
+
+        return sb.toString();
     }
 }

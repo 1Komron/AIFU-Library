@@ -27,7 +27,6 @@ import java.io.IOException;
 @RequestMapping("/api/super-admin/students/import")
 @RequiredArgsConstructor
 @Slf4j
-@SecurityRequirement(name = "bearerAuth")
 
 public class StudentImportController {
 

@@ -27,7 +27,6 @@ import java.io.IOException;
 @RequestMapping("/api/super-admin/students/lifecycle")
 @RequiredArgsConstructor
 @Slf4j
-@SecurityRequirement(name = "bearerAuth")
 public class StudentDeletedController {
 
     private final StudentDeactivationService deactivationService;
@@ -61,12 +60,10 @@ public class StudentDeletedController {
         }
         DeactivationStats stats = deactivationService.deactivateStudents(file.getInputStream());
         ResponseMessage response = new ResponseMessage(true, stats.generateResponseMessage(), stats);
-
-        log.info("Deaktivatsiya jarayoni yakunlandi. Muvaffaqiyatli: {}, Qarzdorlar: {}, Boshqa xatolar: {}",
+        log.info("Deaktivatsiya jarayoni yakunlandi. Muvaffaqiyatsli: {}, Qarzdorlar: {}, Topilmaganlar: {}",
                 stats.getSuccessCount(),
                 stats.getDebtors() != null ? stats.getDebtors().size() : 0,
-                stats.getNotFoundOrOtherErrors() != null ? stats.getNotFoundOrOtherErrors().size() : 0);
-
+                stats.getNotFoundRecords() != null ? stats.getNotFoundRecords().size() : 0);
         return ResponseEntity.ok(response);
     }
 }

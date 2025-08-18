@@ -54,6 +54,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8080",
+                "http://localhost:8081",
                 "http://localhost:3000",
                 "http://localhost:3001",
                 "https://aifu-university.vercel.app",

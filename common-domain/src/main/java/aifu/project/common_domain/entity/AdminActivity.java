@@ -3,6 +3,7 @@ package aifu.project.common_domain.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,4 +26,5 @@ public class AdminActivity {
     private String bookInventoryNumber;
 
     private LocalDateTime createdAt;
+    private LocalDate createdDate;
 }

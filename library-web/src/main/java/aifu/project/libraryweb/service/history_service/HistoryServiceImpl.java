@@ -31,10 +31,7 @@ public class HistoryServiceImpl implements HistoryService {
     private final HistoryRepository historyRepository;
 
     @Override
-    public void add(Booking booking) {
-        SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Librarian librarian = securityLibrarian.toBase();
-
+    public void add(Booking booking, Librarian librarian) {
         History history = new History();
         history.setUser(booking.getStudent());
         history.setBook(booking.getBook());

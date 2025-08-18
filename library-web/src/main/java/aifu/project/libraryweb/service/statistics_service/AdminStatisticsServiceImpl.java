@@ -3,6 +3,7 @@ package aifu.project.libraryweb.service.statistics_service;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.activity_dto.ActivityAnalyticsDTO;
 import aifu.project.common_domain.dto.activity_dto.ActivityDTO;
+import aifu.project.common_domain.dto.activity_dto.ActivityDailyAnalyticsDTO;
 import aifu.project.common_domain.dto.activity_dto.TopAdmin;
 import aifu.project.common_domain.entity.*;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     private final AdminActivityRepository adminActivityRepository;
 
+    private static final String ISSUED = "ISSUED";
     private static final String LAST_MONTH = "last-month";
     private static final String COUNT = "count";
     private static final String PERCENT = "percent";
@@ -42,11 +44,15 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         LocalDate startDate = targetMonth.atDay(1);
         LocalDate endDate = targetMonth.atEndOfMonth();
 
+        LocalDateTime startTime = startDate.atStartOfDay();
+        LocalDateTime endTime = endDate.atTime(LocalTime.MAX);
         long count = adminActivityRepository.countByLibrarianAndActionAndCreatedAtBetween(
                 librarian,
-                "ISSUED",
-                startDate.atStartOfDay(),
-                endDate.atTime(LocalTime.MAX));
+                ISSUED,
+                startTime,
+                endTime);
+
+        long totalCount = adminActivityRepository.countByActionAndCreatedAtBetween(ISSUED, startTime, endTime);
 
         YearMonth prevMonth = targetMonth.minusMonths(1);
         LocalDate prevStart = prevMonth.atDay(1);
@@ -54,7 +60,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
 
         long prevCount = adminActivityRepository.countByLibrarianAndActionAndCreatedAtBetween(
                 librarian,
-                "ISSUED",
+                ISSUED,
                 prevStart.atStartOfDay(),
                 prevEnd.atTime(LocalTime.MAX));
 
@@ -63,9 +69,13 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
             percent = ((double) (count - prevCount) / prevCount) * 100;
         }
 
+        double totalPercent = ((double) count / totalCount) * 100;
+
         Map<String, Object> response = Map.of(
                 COUNT, count,
-                PERCENT, percent
+                PERCENT, percent,
+                "totalCount", totalCount,
+                "totalPercent", totalPercent
         );
 
 
@@ -163,10 +173,16 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         LocalDateTime endTime = today.atTime(LocalTime.MAX);
 
         List<ActivityDTO> activities = adminActivityRepository.findActivities(librarian, startTime, endTime);
+        ActivityAnalyticsDTO activityAnalytics = adminActivityRepository.findActivityAnalytics(librarian, startTime, endTime);
+
+        Map<String, Object> response = Map.of(
+                "activities", activities,
+                "analytics", activityAnalytics
+        );
 
         log.info("Bugungi activity. Librarian: {}, activity ro'xyati: {}", librarian.getId(), activities);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Bugungi activity", activities));
+        return ResponseEntity.ok(new ResponseMessage(true, "Bugungi activity", response));
     }
 
     @Override
@@ -179,12 +195,14 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
                 : currentMonth;
 
         LocalDate startDate = targetMonth.atDay(1);
-        LocalDate endDate = targetMonth.atEndOfMonth();
+        LocalDate endDate = targetMonth.equals(currentMonth)
+                ? LocalDate.now()
+                : targetMonth.atEndOfMonth();
 
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
-        ActivityAnalyticsDTO activityAnalytics = adminActivityRepository.findActivityAnalytics(librarian, startDateTime, endDateTime);
+        List<ActivityDailyAnalyticsDTO> activityAnalytics = adminActivityRepository.findDailyActivityAnalytics(librarian, startDateTime, endDateTime);
 
         log.info("Activity statistikasi: {}", activityAnalytics);
 
@@ -207,10 +225,16 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         LocalDateTime endTime = endDate.atTime(LocalTime.MAX);
 
         List<ActivityDTO> activities = adminActivityRepository.findActivities(librarian, startTime, endTime);
+        ActivityAnalyticsDTO activityAnalytics = adminActivityRepository.findActivityAnalytics(librarian, startTime, endTime);
 
         log.info("Activity (Period '{}'). Librarian: {}, activity ro'xyati: {}", period, librarian.getId(), activities);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Activity. period: " + period, activities));
+        Map<String, Object> response = Map.of(
+                "activities", activities,
+                "analytics", activityAnalytics
+        );
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Activity. period: " + period, response));
     }
 
     @Override
@@ -241,6 +265,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
 
         AdminActivity adminActivity = new AdminActivity();
         adminActivity.setCreatedAt(LocalDateTime.now());
+        adminActivity.setCreatedDate(LocalDate.now());
         adminActivity.setLibrarian(librarian);
         adminActivity.setAction(action);
 

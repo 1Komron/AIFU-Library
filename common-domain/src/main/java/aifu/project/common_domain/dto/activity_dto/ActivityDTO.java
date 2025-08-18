@@ -9,7 +9,5 @@ public record ActivityDTO(
         String bookTitle,
         String bookInventoryNumber,
         String action,
-        LocalDateTime time,
-        ActivityAnalyticsDTO analytics
-) {
+        LocalDateTime time) {
 }

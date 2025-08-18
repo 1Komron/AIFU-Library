@@ -12,6 +12,7 @@ import aifu.project.common_domain.exceptions.BookingNotFoundException;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.BookingRepository;
+import aifu.project.libraryweb.service.statistics_service.AdminStatisticsService;
 import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import aifu.project.libraryweb.service.history_service.HistoryService;
@@ -40,6 +41,7 @@ public class BookingServiceImpl implements BookingService {
     private StudentServiceImpl studentService;
     private final BookCopyService bookCopyService;
     private final HistoryService historyService;
+    private final AdminStatisticsService adminStatisticsService;
 
     private static final String DEFAULT = "default";
 
@@ -125,6 +127,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public ResponseEntity<ResponseMessage> returnBook(ReturnBookDTO request) {
+        SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Librarian librarian = securityLibrarian.toBase();
+
         String epc = request.epc();
 
 //        BookCopy bookCopy = bookCopyService.findByEpc(epc);
@@ -136,7 +141,9 @@ public class BookingServiceImpl implements BookingService {
 
         bookCopyService.updateStatus(bookCopy, false);
 
-        historyService.add(booking);
+        historyService.add(booking, librarian);
+
+        adminStatisticsService.createActivity(booking, "RETURNED", librarian);
 
         bookingRepository.delete(booking);
         log.info("Booking muvaffaqiyatli qaytarildi. Booking: {}", booking);
@@ -163,6 +170,8 @@ public class BookingServiceImpl implements BookingService {
         Booking save = bookingRepository.save(booking);
 
         log.info("Booking muvaffaqiyatli yaratildi. Booking: {}", save);
+
+        adminStatisticsService.createActivity(booking, "ISSUED", librarian);
     }
 
     @Override
@@ -217,7 +226,9 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("Booking uzaytirildi. Booking ID: {}, yangi muddati: {}", booking.getId(), newDueDate);
 
-        bookingRepository.save(booking);
+        booking = bookingRepository.save(booking);
+
+        adminStatisticsService.createActivity(booking, "EXTENDED", librarian);
     }
 
     @Override

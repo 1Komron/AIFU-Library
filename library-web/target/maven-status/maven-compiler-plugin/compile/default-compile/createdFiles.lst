@@ -20,6 +20,7 @@ aifu/project/libraryweb/service/pdf_book_service/PdfBookService.class
 aifu/project/libraryweb/controller/admin_controller/base_book_controller/BookCopyController.class
 aifu/project/libraryweb/service/base_book_service/BaseBookCategoryServiceImpl.class
 aifu/project/libraryweb/service/PasswordResetService.class
+aifu/project/libraryweb/service/statistics_service/AdminStatisticsServiceImpl.class
 aifu/project/libraryweb/lucene/CustomAnalyzer.class
 aifu/project/libraryweb/config/ImportStats.class
 aifu/project/libraryweb/service/notification_service/NotificationServiceImpl.class
@@ -34,6 +35,7 @@ aifu/project/libraryweb/runner/Runner.class
 aifu/project/libraryweb/service/student_service/StudentDeactivationServiceImpl.class
 aifu/project/libraryweb/service/CustomUserDetailsService.class
 aifu/project/libraryweb/lucene/LuceneIndexService.class
+aifu/project/libraryweb/service/statistics_service/AdminStatisticsService.class
 aifu/project/libraryweb/repository/BaseBookCategoryRepository.class
 aifu/project/libraryweb/repository/BookCopyRepository.class
 aifu/project/libraryweb/runner/initializer/LuceneIndexInitializer.class
@@ -41,6 +43,8 @@ aifu/project/libraryweb/controller/StudentLifecycleController.class
 aifu/project/libraryweb/config/SecurityConfig.class
 aifu/project/libraryweb/repository/StudentRepository.class
 aifu/project/libraryweb/controller/admin_controller/StudentController.class
+aifu/project/libraryweb/service/exel/BackupProperties.class
+aifu/project/libraryweb/controller/admin_controller/statistics_controller/AdminStatisticsController.class
 aifu/project/libraryweb/service/base_book_service/BookCopyService.class
 aifu/project/libraryweb/repository/LibrarianRepository.class
 aifu/project/libraryweb/controller/admin_controller/PasswordResetController.class
@@ -58,6 +62,7 @@ aifu/project/libraryweb/service/AdminManagementService.class
 aifu/project/libraryweb/service/booking_serivce/BookingServiceImpl.class
 aifu/project/libraryweb/sender/NotificationSender.class
 aifu/project/libraryweb/controller/super_admin_controller/StudentImportController.class
+aifu/project/libraryweb/controller/admin_controller/statistics_controller/StatisticsController.class
 aifu/project/libraryweb/service/pdf_book_service/CloudinaryService.class
 aifu/project/libraryweb/runner/migration/MigrationConstraint.class
 aifu/project/libraryweb/repository/PdfBookRepository.class
@@ -67,6 +72,8 @@ aifu/project/libraryweb/lucene/KeyboardLayoutCorrector.class
 aifu/project/libraryweb/config/WebSocketConfig.class
 aifu/project/libraryweb/service/PassportHasher.class
 aifu/project/libraryweb/controller/admin_controller/HistoryController.class
+aifu/project/libraryweb/service/exel/ExcelBackupExporter.class
+aifu/project/libraryweb/repository/AdminActivityRepository.class
 aifu/project/libraryweb/controller/admin_controller/base_book_controller/BaseBookCategoryController.class
 aifu/project/libraryweb/service/notification_service/NotificationServiceImpl$1.class
 aifu/project/libraryweb/service/action_service/ActionService.class
@@ -76,7 +83,6 @@ aifu/project/libraryweb/entity/SecurityLibrarian.class
 aifu/project/libraryweb/service/student_service/StudentExcelImportService$Field.class
 aifu/project/libraryweb/repository/BaseBookRepository.class
 aifu/project/libraryweb/service/student_service/StudentExcelImportService.class
-aifu/project/libraryweb/controller/admin_controller/StatisticsController.class
 aifu/project/libraryweb/service/statistics_service/StatisticsServiceImpl.class
 aifu/project/libraryweb/service/student_service/StudentServiceImpl.class
 aifu/project/libraryweb/config/WebConfig.class

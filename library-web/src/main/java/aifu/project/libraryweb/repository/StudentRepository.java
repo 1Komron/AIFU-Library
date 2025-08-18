@@ -90,6 +90,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT s.passportCode FROM Student s WHERE s.passportCode IN :hashedPassportCodes AND s.isDeleted = false")
     Set<String> findActiveExistingHashedPassportCodes(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
 
+    Optional<Student> findByPassportCode(String passportCode);
 
 }
 

@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.admin_controller;
+package aifu.project.libraryweb.controller.admin_controller.statistics_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.statistics_service.StatisticsService;

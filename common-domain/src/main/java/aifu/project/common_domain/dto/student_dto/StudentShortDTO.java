@@ -5,6 +5,7 @@ public record StudentShortDTO(
         String name,
         String surname,
         String cardNumber,
+        String degree,
         boolean status
 ) {
 }

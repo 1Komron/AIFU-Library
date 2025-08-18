@@ -114,7 +114,7 @@ public class StudentServiceImpl implements StudentService {
     private List<StudentShortDTO> getStudentShortDTO(List<Student> students) {
         return students.stream()
                 .map(user -> new StudentShortDTO(user.getId(), user.getName(),
-                        user.getSurname(), user.getCardNumber(), user.isActive()))
+                        user.getSurname(), user.getCardNumber(), user.getDegree(), user.isActive()))
                 .toList();
     }
 

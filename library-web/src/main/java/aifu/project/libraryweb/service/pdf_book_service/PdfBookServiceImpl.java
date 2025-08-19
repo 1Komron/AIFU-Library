@@ -1,9 +1,9 @@
 package aifu.project.libraryweb.service.pdf_book_service;
 
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import aifu.project.common_domain.entity.PdfBook;
-import aifu.project.common_domain.exceptions.CategoryNotFoundException;
 import aifu.project.common_domain.exceptions.PdfBookNotFoundException;
 import aifu.project.common_domain.exceptions.PdfFileDownloadException;
 import aifu.project.common_domain.mapper.PdfBookMapper;
@@ -16,11 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +93,6 @@ public class PdfBookServiceImpl implements PdfBookService {
         log.info("Successfully retrieved PDF book with ID: {}", id);
         return PdfBookMapper.toDto(book);
     }
-
 
 
     @Override
@@ -255,5 +256,28 @@ public class PdfBookServiceImpl implements PdfBookService {
         map.put("data", bookList);
 
         return map;
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> getNewBooks() {
+        List<PdfBookShortDTO> newBooks = pdfBookRepository.findNewBooks(PageRequest.of(0, 4));
+
+        log.info("Yangi pdf kitoblar ro'yxati: {}", newBooks);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Yangi pdf kitoblar ro'yxati", newBooks));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> showByCategories() {
+        List<Category> categories = categoryService.getHomePageCategories();
+
+        List<CategoryWithBooksDTO> list = categories.stream()
+                .map(cat -> new CategoryWithBooksDTO(
+                        new CategoryPreviewDTO(cat.getId(), cat.getName()),
+                        pdfBookRepository.findTopBooksByCategory(cat.getId(), PageRequest.of(0, 4))
+                ))
+                .toList();
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Category boyicha kitob ro'yxati", list));
     }
 }

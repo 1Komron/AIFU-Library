@@ -37,6 +37,21 @@ public class ClientController {
         return searchService.searchBooks(query);
     }
 
+    @GetMapping("/new-books")
+    @Operation(summary = "Yangi kitoblar")
+    @ApiResponse(responseCode = "200", description = "Muvaffaqiyatli bajarildi")
+    public ResponseEntity<ResponseMessage> getNewBooks() {
+        return pdfBookService.getNewBooks();
+    }
+
+    @GetMapping("/show-by-categroies")
+    @Operation(summary = "Categoriyaga tegishli kitoblarni olib chiqish")
+    @ApiResponse(responseCode = "200", description = "Muvaffaqiyatli bajarildi")
+    public ResponseEntity<ResponseMessage> getBooksWithCategories() {
+        return pdfBookService.showByCategories();
+    }
+
+
     @GetMapping("/pdf-books")
     @Operation(summary = "PDF kitoblarni olish")
     @ApiResponse(responseCode = "200", description = "PDF kitoblar muvaffaqiyatli qaytarildi")
@@ -71,7 +86,6 @@ public class ClientController {
                 new ResponseMessage(true, "PDF book successfully retrieved", book)
         );
     }
-
 
     @GetMapping("/download/{id}")
     @Operation(

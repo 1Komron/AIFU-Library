@@ -5,6 +5,8 @@ import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 
 public interface CategoryService {
 
@@ -19,4 +21,7 @@ public interface CategoryService {
     Category getById(Integer id);
 
     ResponseEntity<ResponseMessage> getAll(String sortDirection);
+
+    List<Category> getHomePageCategories();
+
 }

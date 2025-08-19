@@ -4,6 +4,7 @@ import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.exceptions.CategoryNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.common_domain.entity.Category;
@@ -62,12 +63,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
-
     @Override
     public ResponseEntity<ResponseMessage> delete(Integer id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(String.valueOf(id)));
-        if(category.getBooks() != null && !category.getBooks().isEmpty()){
+        if (category.getBooks() != null && !category.getBooks().isEmpty()) {
             throw new CategoryNotFoundException("Cannot delete category with existing books");
         }
         categoryRepository.deleteById(id);
@@ -102,4 +102,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));
     }
 
+    @Override
+    public List<Category> getHomePageCategories() {
+        return categoryRepository.findRandomCategoriesWithBooks(5);
+    }
 }

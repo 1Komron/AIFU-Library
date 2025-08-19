@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,22 +45,25 @@ public interface AdminActivityRepository extends JpaRepository<AdminActivity, Lo
     ActivityAnalyticsDTO findActivityAnalytics(Librarian librarian, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("""
-            select new aifu.project.common_domain.dto.activity_dto.TopAdmin(
-                            l.id,
-                            l.imageUrl,
-                            l.name,
-                            l.surname,
-                            l.email,
-                            new aifu.project.common_domain.dto.activity_dto.ActivityAnalyticsDTO(
-                                count(a),
-                                sum(case when a.action = 'ISSUED' then 1 else 0 end),
-                                sum(case when a.action = 'EXTENDED' then 1 else 0 end),
-                                sum(case when a.action = 'RETURNED' then 1 else 0 end)
-                        )) from AdminActivity a
-                        join a.librarian l
-                        where a.createdAt between :startTime and :endTime
-                        group by l.id, l.imageUrl, l.name, l.surname, l.email
-                        order by count(a) desc
+                select new aifu.project.common_domain.dto.activity_dto.TopAdmin(
+                    l.id,
+                    l.imageUrl,
+                    l.name,
+                    l.surname,
+                    l.email,
+                    new aifu.project.common_domain.dto.activity_dto.ActivityAnalyticsDTO(
+                        count(a),
+                        sum(case when a.action = 'ISSUED' then 1L else 0L end),
+                        sum(case when a.action = 'EXTENDED' then 1L else 0L end),
+                        sum(case when a.action = 'RETURNED' then 1L else 0L end)
+                    )
+                )
+                from Librarian l
+                left join AdminActivity a
+                    on a.librarian = l
+                   and a.createdAt between :startTime and :endTime
+                group by l.id, l.imageUrl, l.name, l.surname, l.email
+                order by count(a) desc
             """)
     List<TopAdmin> findTopAdmins(LocalDateTime startTime, LocalDateTime endTime);
 

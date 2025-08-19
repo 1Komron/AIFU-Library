@@ -8,6 +8,7 @@ import aifu.project.common_domain.dto.activity_dto.TopAdmin;
 import aifu.project.common_domain.entity.*;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.AdminActivityRepository;
+import aifu.project.libraryweb.repository.LibrarianRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     private final AdminActivityRepository adminActivityRepository;
+    private final LibrarianRepository librarianRepository;
 
     private static final String ISSUED = "ISSUED";
     private static final String LAST_MONTH = "last-month";

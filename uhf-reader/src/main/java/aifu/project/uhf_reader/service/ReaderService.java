@@ -120,10 +120,9 @@ public class ReaderService {
         BookCopy bookCopy = bookCopyRepository.findByEpc(epc)
                 .orElseThrow(() -> new BookCopyNotFoundException("Book copy not found for EPC: " + epc));
 
-        Notification notification = new Notification(null, bookCopy, NotificationType.WARNING);
-        Notification save = notificationRepository.save(notification);
+        Notification notification = notificationRepository.save(new Notification(null, bookCopy, NotificationType.WARNING));
 
-        NotificationWarningShortDTO notificationDTO = NotificationWarningShortDTO.toDTO(save);
+        NotificationWarningShortDTO notificationDTO = NotificationWarningShortDTO.toDTO(notification);
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.NOTIFICATION_EXCHANGE,
                 RabbitMQConfig.KEY_WARNING,

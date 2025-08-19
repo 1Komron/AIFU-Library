@@ -196,7 +196,7 @@ public class ProcessService {
         } else if (data.equals(EXPIRED)) {
             processExpired(chatId, lang);
         } else if (data.startsWith(EXTEND)) {
-            processExtend(chatId, lang, data);
+            processExtend(chatId, lang, data, messageId);
         } else if (data.startsWith("search_")) {
             processSearch(chatId, lang, data);
         } else if (data.startsWith("bookId_")) {
@@ -259,10 +259,10 @@ public class ProcessService {
     }
 
     @SneakyThrows
-    private void processExtend(Long chatId, String lang, String data) {
+    private void processExtend(Long chatId, String lang, String data, Integer messageId) {
         if (data.startsWith("extend_")) {
             String inv = data.substring("extend_".length());
-            bookingService.extendDeadline(chatId, lang, inv);
+            bookingService.extendDeadline(chatId.toString(), lang, inv, messageId);
         }
     }
 

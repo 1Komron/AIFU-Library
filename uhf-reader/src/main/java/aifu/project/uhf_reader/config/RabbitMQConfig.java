@@ -4,6 +4,8 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,9 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     public static final String KEY_WARNING = "key.warning";
-
     public static final String QUEUE_WARNING = "queue.warning";
-
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
 
 
@@ -37,5 +37,15 @@ public class RabbitMQConfig {
     @Bean
     public MessageConverter jackson2MessageConverter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+        return new RabbitAdmin(connectionFactory);
+    }
+
+    @Bean
+    public org.springframework.boot.CommandLineRunner rabbitAdminRunner(RabbitAdmin rabbitAdmin) {
+        return args -> rabbitAdmin.initialize();
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -39,26 +40,37 @@ public class BookingService {
 
 
     @Transactional
-    public void extendDeadline(Long chatId, String lang, String inv) {
-        Booking booking = bookingRepository.findBookingByStudent_ChatIdAndBook_InventoryNumber(chatId, inv);
+    public void extendDeadline(String chatId, String lang, String inv, Integer messageId) throws TelegramApiException {
+        Booking booking = bookingRepository.findBookingByStudent_ChatIdAndBook_InventoryNumber(Long.valueOf(chatId), inv);
         if (booking == null) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_NOT_FOUND, lang);
+            executeUtil.executeMessage(chatId, MessageKeys.BOOK_NOT_FOUND, lang);
             return;
         }
         //test qilish kerak
         if (booking.getDueDate().isAfter(LocalDate.now().plusDays(1))) {
-            executeUtil.executeMessage(chatId.toString(), MessageKeys.BOOK_EXTEND_DENIED_TO_EARLY, lang);
+            executeUtil.executeMessage(chatId, MessageKeys.BOOK_EXTEND_DENIED_TO_EARLY, lang);
             return;
         }
 
         Student student = booking.getStudent();
-        Notification notification = new Notification(student, booking.getBook(), NotificationType.EXTEND);
+        BookCopy book = booking.getBook();
+        if (notificationRepository.existsByStudentAndBookCopy(student, book)) {
+            log.info("Booking vaqtini uzaytirish so'rovi allaqachon yuborilgan. BookingID: {} StudentID: {}", booking.getId(), student.getId());
+            executeUtil.execute(MessageUtil.deleteMessage(chatId, messageId));
+            executeUtil.executeMessage(chatId, MessageKeys.BOOKING_STATUS_WAITING_APPROVAL, lang);
+            return;
+        }
+        Notification notification = new Notification(student, book, NotificationType.EXTEND);
 
         log.info("Booking vaqtini uzaytirish so'rovi. BookingID: {} StudentID: {}", booking.getId(), student.getId());
 
         notification = notificationRepository.save(notification);
         rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.KEY_EXTEND,
                 NotificationExtendShortDTO.toDTO(notification));
+
+        executeUtil.execute(MessageUtil.deleteMessage(chatId, messageId));
+        executeUtil.executeMessage(chatId, MessageKeys.BOOKING_STATUS_WAITING_APPROVAL, lang);
+
     }
 
     @SneakyThrows

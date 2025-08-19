@@ -5,8 +5,6 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
-#    url: jdbc:postgresql://aifu-db.c3wi2qakgedd.eu-north-1.rds.amazonaws.com:5432/aifu_library
-#    password: root1234
     username: postgres
   jpa:
     show-sql: true
@@ -16,26 +14,16 @@ spring:
     basename: message
     encoding: UTF-8
   rabbitmq:
-    host: rabbitmq
+    host: localhost
     port: 5672
     username: guest
     password: guest
+    dynamic: true
 bot:
   token:
     7284272709:AAHVHFQTs6fG7ijdzg6cHwZI9MnjUSlJ9PU
   name:
     AIFU Library
-
-
-springdoc:
-  api-docs:
-    path: /v1-api
-  swagger-ui:
-    path: /swagger-ui.html
-
-backup:
-  path:
-    /home/komronbek
 
 server:
   port: 8081

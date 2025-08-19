@@ -30,6 +30,7 @@ public class MessageKeys {
     public static final String BOOKING_HISTORY = "booking.history";
     public static final String BOOKING_HISTORY_EMPTY = "booking.history.empty";
     public static final String BOOKING_STATUS_APPROVED = "booking.status.approved";
+    public static final String BOOKING_STATUS_WAITING_APPROVAL = "booking.status.waiting.approval";
     public static final String BOOKING_STATUS_OVERDUE = "booking.status.overdue";
     public static final String BOOKING_LIST_EMPTY = "booking.list.empty";
     public static final String BOOKING_DUE_EXPIRING = "booking.due.expiring";

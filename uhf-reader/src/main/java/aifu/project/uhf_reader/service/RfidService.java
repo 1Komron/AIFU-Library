@@ -2,38 +2,55 @@ package aifu.project.uhf_reader.service;
 
 import com.gg.reader.api.dal.GClient;
 import com.gg.reader.api.protocol.gx.*;
-import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Hashtable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RfidService {
-
-    private static final Logger log = LoggerFactory.getLogger(RfidService.class);
-
-    private final GClient client;
+    private GClient client = new GClient();
     private final ReaderService readerService;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final AtomicBoolean reconnecting = new AtomicBoolean(false);
 
     public void initReader() {
-        if (client.openTcp("192.168.1.250:8160", 0)) {
+        log.info("Reader ga ulanish...");
+        if (!client.openTcp("192.168.1.250:8160", 0)) {
+            log.error("Reader ga ulanib bolamdi.");
+            scheduler.schedule(this::tryReconnect, 5, TimeUnit.SECONDS);
+        } else {
+            TriggerService triggerService = new TriggerService(client);
+            log.info("✅ Reader ga muvaffaqiyatli ulandi.");
+            log.info("Reader aktiv (connectType={})", client.getConnectType());
+            log.info("⛔ Reader Idle-rejimda");
 
             client.sendSynMsg(new MsgBaseStop());
-            log.info("⛔ Reader в Idle-режиме");
+            client.setSendHeartBeat(true);
 
             setupPower();
             setupTriggers();
             setupInventory();
-            readerService.configureEventHandlers();
-        } else {
-            log.error("❌ Не удалось подключиться к считывателю.");
+            executor.submit(triggerService::triggerSuccess);
+
+            readerService.configureEventHandlers(client);
+            registerReconnectHandler();
         }
     }
 
+    @SuppressWarnings("java:S1149")
     private void setupPower() {
         MsgBaseSetPower setPower = new MsgBaseSetPower();
         Hashtable<Integer, Integer> power = new Hashtable<>();
@@ -43,7 +60,7 @@ public class RfidService {
         power.put(4, 20);
         setPower.setDicPower(power);
         client.sendSynMsg(setPower);
-        log.info("⚙️ Установлена мощность антенн");
+        log.info("⚙️ Anntenalar kuchi o'rnatildi.");
     }
 
     private void setupTriggers() {
@@ -63,7 +80,7 @@ public class RfidService {
         trigger0.setTriggerCommand(null);
         client.sendSynMsg(trigger0);
 
-        log.info("🎯 Настроены триггеры GPI");
+        log.info("🎯 GPI triggerlar sozlandi");
     }
 
     private void setupInventory() {
@@ -79,12 +96,46 @@ public class RfidService {
         client.sendUnsynMsg(msg);
     }
 
-    @PreDestroy
-    public void shutdown() {
-        if (client != null) {
-            client.sendSynMsg(new MsgBaseStop());
-            log.info("🛑 Reader остановлен при завершении приложения.");
-        }
+    private void registerReconnectHandler() {
+        client.onDisconnected = readerName -> {
+            log.warn("❌ Reader bilan bog'lanish yo'qoldi: {}", readerName);
+            scheduler.schedule(this::tryReconnect, 5, TimeUnit.SECONDS);
+        };
     }
+
+    private void tryReconnect() {
+        if (reconnecting.get()) {
+            log.info("Bog'lanish jarayonida...");
+            return;
+        }
+
+        reconnecting.set(true);
+
+        LocalDateTime now = LocalDateTime.now();
+        if (isMaintenanceTime(now)) {
+            log.info("Reader ga ulanmandi. Dam olish vaqti");
+            reconnecting.set(false);
+            return;
+        }
+        log.info("Reader ulanmagan, qayta ulashga urinish...");
+
+        try {
+            client.close();
+        } catch (Exception ignored) {
+            log.info("Client allaqachon o'chirilgan");
+        }
+        this.client = new GClient();
+        initReader();
+        System.out.println("=============================================================================================");
+        reconnecting.set(false);
+    }
+
+    private boolean isMaintenanceTime(LocalDateTime now) {
+        LocalTime time = now.toLocalTime();
+        return now.getDayOfWeek() == DayOfWeek.SUNDAY
+                || time.isAfter(LocalTime.of(22, 0))
+                || time.isBefore(LocalTime.of(7, 0));
+    }
+
 }
 

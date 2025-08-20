@@ -36,7 +36,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     @Query(value = """
             select *
             from category c
-            where (select count(p.id) from pdf_book p where p.category_id = c.id) >= 4
+            where (select count(p.id) from pdf_book p where p.category_id = c.id) >= 6
             order by random()
             limit :limit
             """, nativeQuery = true)

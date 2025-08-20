@@ -10,10 +10,10 @@ import aifu.project.uhf_reader.repository.BookCopyRepository;
 import aifu.project.uhf_reader.repository.NotificationRepository;
 import com.gg.reader.api.dal.GClient;
 import com.gg.reader.api.protocol.gx.LogBaseEpcInfo;
-import com.gg.reader.api.protocol.gx.MsgAppSetGpo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@EnableScheduling
 public class ReaderService {
     private final RabbitTemplate rabbitTemplate;
     private final BookCopyRepository bookCopyRepository;
@@ -33,10 +34,13 @@ public class ReaderService {
     private final AtomicBoolean alarmActive = new AtomicBoolean(false);
     private final Map<String, Long> epcCache = new ConcurrentHashMap<>();
     private static final long REPEAT_DELAY_MS = 3000;
-    private final GClient client;
 
-    public void configureEventHandlers() {
+    private TriggerService triggerService;
+
+    public void configureEventHandlers(GClient client) {
         client.onTagEpcLog = this::handleTagEpcLog;
+
+        this.triggerService = new TriggerService(client);
 
         scheduler.scheduleAtFixedRate(() -> {
             long now = System.currentTimeMillis();
@@ -55,70 +59,36 @@ public class ReaderService {
                     epcCache.put(epc, now);
 
                     switch (bookingService.isEpcBooked(epc)) {
-                        case -1 -> log.info("Tag:  '{}' not found in BookCopy table. Ignoring scan.", epc);
+                        case -1 -> log.info("Tag:  '{}' BookCopy table da topilmadi. Scan ignor qilindi.", epc);
 
                         case 0 -> {
-                            executor.submit(this::triggerAlarm);
+                            if (alarmActive.get()) {
+                                alarmActive.set(true);
+
+                                executor.submit(triggerService::triggerAlarm);
+
+                                alarmActive.set(false);
+                            }
+
                             executor.submit(() -> sendNotification(epc));
-                            log.info("Tag: '{}' found, but no active booking exists for this book.", epc);
+                            log.info("Tag: '{}' topildi, lekin ushbu kitob boyicha aktiv bron mavjud emas.", epc);
                         }
 
                         case 1 -> {
-                            executor.submit(this::triggerSuccess);
-                            log.info("Tag: '{}' is currently booked. Access allowed.", epc);
+                            executor.submit(triggerService::triggerSuccess);
+                            log.info("Tag: '{}' aktiv bron mavjud.", epc);
                         }
 
-                        default -> log.error("Unexpected booking status for Tag: '{}'.", epc);
+                        default -> log.error("Noto'gri status kirib keldi. Tag: '{}'.", epc);
                     }
                 }
             }
         });
     }
 
-    private void triggerSuccess() {
-        MsgAppSetGpo gpo = new MsgAppSetGpo();
-        gpo.setGpo1(1);
-        client.sendSynMsg(gpo);
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            gpo.setGpo1(0);
-            client.sendSynMsg(gpo);
-            Thread.currentThread().interrupt();
-        }
-
-        gpo.setGpo1(0);
-        client.sendSynMsg(gpo);
-    }
-
-    private void triggerAlarm() {
-        if (alarmActive.get()) return;
-
-        alarmActive.set(true);
-
-        MsgAppSetGpo gpo = new MsgAppSetGpo();
-        gpo.setGpo2(1);
-        client.sendSynMsg(gpo);
-        log.info("🚨 Сигнализация ВКЛЮЧЕНА!");
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ignored) {
-            gpo.setGpo2(0);
-            client.sendSynMsg(gpo);
-            Thread.currentThread().interrupt();
-        }
-
-        gpo.setGpo2(0);
-        client.sendSynMsg(gpo);
-        log.info("🔕 Сигнализация ВЫКЛЮЧЕНА!");
-        alarmActive.set(false);
-    }
-
     public void sendNotification(String epc) {
         BookCopy bookCopy = bookCopyRepository.findByEpc(epc)
-                .orElseThrow(() -> new BookCopyNotFoundException("Book copy not found for EPC: " + epc));
+                .orElseThrow(() -> new BookCopyNotFoundException("Book copy topilmadi. EPC: " + epc));
 
         Notification notification = notificationRepository.save(new Notification(null, bookCopy, NotificationType.WARNING));
 
@@ -129,6 +99,6 @@ public class ReaderService {
                 notificationDTO
         );
 
-        log.info("RFID EPC '{}' not booked. Sending notification.", epc);
+        log.info("RFID EPC '{}' bron qilinmagan. Notification uzatamiz.", epc);
     }
 }

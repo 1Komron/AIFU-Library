@@ -44,7 +44,7 @@ public class ClientController {
         return pdfBookService.getNewBooks();
     }
 
-    @GetMapping("/show-by-categroies")
+    @GetMapping("/show-by-categories")
     @Operation(summary = "Categoriyaga tegishli kitoblarni olib chiqish")
     @ApiResponse(responseCode = "200", description = "Muvaffaqiyatli bajarildi")
     public ResponseEntity<ResponseMessage> getBooksWithCategories() {

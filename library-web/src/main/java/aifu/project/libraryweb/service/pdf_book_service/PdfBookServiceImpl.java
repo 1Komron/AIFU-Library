@@ -260,9 +260,9 @@ public class PdfBookServiceImpl implements PdfBookService {
 
     @Override
     public ResponseEntity<ResponseMessage> getNewBooks() {
-        List<PdfBookShortDTO> newBooks = pdfBookRepository.findNewBooks(PageRequest.of(0, 4));
+        List<PdfBookShortDTO> newBooks = pdfBookRepository.findNewBooks(PageRequest.of(0, 6));
 
-        log.info("Yangi pdf kitoblar ro'yxati: {}", newBooks);
+        log.info("Yangi pdf kitoblar ro'yxati: {}", newBooks.stream().map(PdfBookShortDTO::getId).toList());
 
         return ResponseEntity.ok(new ResponseMessage(true, "Yangi pdf kitoblar ro'yxati", newBooks));
     }
@@ -272,11 +272,17 @@ public class PdfBookServiceImpl implements PdfBookService {
         List<Category> categories = categoryService.getHomePageCategories();
 
         List<CategoryWithBooksDTO> list = categories.stream()
-                .map(cat -> new CategoryWithBooksDTO(
-                        new CategoryPreviewDTO(cat.getId(), cat.getName()),
-                        pdfBookRepository.findTopBooksByCategory(cat.getId(), PageRequest.of(0, 4))
-                ))
-                .toList();
+                .map(cat -> {
+                            var obj = new CategoryWithBooksDTO(
+                                    new CategoryPreviewDTO(cat.getId(), cat.getName()),
+                                    pdfBookRepository.findTopBooksByCategory(cat.getId(), PageRequest.of(0, 6)));
+                            log.info("Categroy boyicha kitoblar royxati. Category: {}, Ro'yxat: {}",
+                                    obj.category().getId(), obj.books().stream().map(PdfBookShortDTO::getId).toList());
+
+                            return obj;
+                        }
+                ).toList();
+
 
         return ResponseEntity.ok(new ResponseMessage(true, "Category boyicha kitob ro'yxati", list));
     }

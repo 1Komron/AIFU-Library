@@ -196,4 +196,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b.student.id FROM Booking b WHERE b.student.id IN :studentIds AND b.status <> 'RETURNED'") // Status'ni o'zingizning enum'ga moslang
     Set<Long> findStudentIdsWithActiveBookings(@Param("studentIds") Set<Long> studentIds);
 
+    @Query("select b from  Booking b where b.student.id = :id")
+    List<Booking> finAllByStudent(Long id);
 }

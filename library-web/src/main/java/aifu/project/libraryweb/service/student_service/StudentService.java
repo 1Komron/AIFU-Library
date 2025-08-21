@@ -13,4 +13,6 @@ public interface StudentService {
     ResponseEntity<ResponseMessage> getStudentByCardNumber(String id);
 
     ResponseEntity<ResponseMessage> updateCardNumber(Long id, String cardNumber);
+
+    boolean existsStudent(Long id);
 }

@@ -232,6 +232,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    @Override
+    public List<Booking> getAllBookingsByStudent(Long id) {
+        return bookingRepository.finAllByStudent(id);
+    }
+
+    @Override
     public boolean hasBookingForUser(Long userId) {
         return bookingRepository.existsBookingByStudent_Id(userId);
     }

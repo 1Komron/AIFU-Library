@@ -6,6 +6,7 @@ import aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO;
 import aifu.project.common_domain.dto.booking_dto.BookingResponse;
 import aifu.project.common_domain.dto.booking_dto.BorrowBookDTO;
 import aifu.project.common_domain.dto.booking_dto.ReturnBookDTO;
+import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
@@ -34,4 +35,8 @@ public interface BookingService {
     void setStudentService(StudentServiceImpl studentService);
 
     ResponseEntity<ResponseMessage> extendBooking(ExtendBookingDTO request);
+
+    List<Booking> getAllBookings();
+
+    List<Booking> getAllBookingsByStudent(Long id);
 }

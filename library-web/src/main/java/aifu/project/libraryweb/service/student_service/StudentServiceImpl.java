@@ -157,6 +157,11 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
     }
 
+    @Override
+    public boolean existsStudent(Long id) {
+        return studentRepository.existsByIdAndIsDeletedFalse(id);
+    }
+
     @PostConstruct
     public void init() {
         this.bookingService.setStudentService(this);

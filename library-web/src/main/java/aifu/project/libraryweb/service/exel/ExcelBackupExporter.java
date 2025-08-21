@@ -27,7 +27,7 @@ public class ExcelBackupExporter {
         CellStyle headerStyle = createHeaderCellStyle(workbook);
 
         String[] headers = {
-                "Muallif", "Kitob nomi", "Kategoriya", "Seriya raqami",
+                "#", "Muallif", "Kitob nomi", "Kategoriya", "Seriya raqami",
                 "Chop etilgan yil", "Nashriyot", "Chop etilgan shahar", "ISBN", "Sahifalar Soni",
                 "Til", "udc", "Nusxalar soni", "Nusxalar inventar raqamlari"
         };
@@ -84,15 +84,15 @@ public class ExcelBackupExporter {
             cell9.setCellValue(book.pageCount());
             cell9.setCellStyle(cellStyle);
 
-            Cell cell10 = row.createCell(col);
+            Cell cell10 = row.createCell(col++);
             cell10.setCellValue(book.language());
             cell10.setCellStyle(cellStyle);
 
-            Cell cell11 = row.createCell(col);
+            Cell cell11 = row.createCell(col++);
             cell11.setCellValue(book.udc());
             cell11.setCellStyle(cellStyle);
 
-            Cell cell12 = row.createCell(col);
+            Cell cell12 = row.createCell(col++);
             cell12.setCellValue(book.copyCount());
             cell12.setCellStyle(cellStyle);
 

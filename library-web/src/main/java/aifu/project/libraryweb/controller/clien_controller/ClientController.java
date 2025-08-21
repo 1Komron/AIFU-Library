@@ -8,7 +8,6 @@ import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +32,7 @@ public class ClientController {
     @GetMapping("/search")
     @Operation(summary = "Kitoblarni qidirish")
     @ApiResponse(responseCode = "200", description = "Qidirish muvaffaqiyatli bajarildi")
-    public ResponseEntity<ResponseMessage> search(@NotNull @RequestParam String query) throws Exception {
+    public ResponseEntity<ResponseMessage> search(@RequestParam String query) throws Exception {
         return searchService.searchBooks(query);
     }
 

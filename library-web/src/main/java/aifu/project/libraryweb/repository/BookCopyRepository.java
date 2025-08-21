@@ -125,4 +125,9 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             ) and bc.isDeleted = false
             """)
     Page<BookCopyShortDTO> findByTitleAndAuthor(String first, String second, Pageable pageable);
+
+    @Query("""
+            select b.inventoryNumber from BookCopy  b where b.book.id = :bookId and b.isDeleted = false
+            """)
+    List<String> findInventoryNumberByBook_IdAndIsDeletedFalse(Integer bookId);
 }

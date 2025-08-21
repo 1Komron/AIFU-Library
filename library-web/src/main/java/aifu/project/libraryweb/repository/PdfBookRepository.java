@@ -65,4 +65,14 @@ public interface PdfBookRepository extends JpaRepository<PdfBook, Integer> {
             """)
     List<PdfBookShortDTO> findTopBooksByCategory(@Param("categoryId") Integer categoryId, Pageable pageable);
 
+    @Query("""
+            select new aifu.project.common_domain.dto.pdf_book_dto.PdfBookShortDTO(
+                p.id, p.isbn, p.author, p.title, p.imageUrl,
+                new aifu.project.common_domain.dto.pdf_book_dto.CategoryPreviewDTO(c.id, c.name)
+            )
+            from PdfBook p
+            join p.category c
+            where p.id in :list
+            """)
+    List<PdfBookShortDTO> findAllByIdIn(List<Long> list);
 }

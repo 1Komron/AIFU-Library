@@ -3,6 +3,7 @@ package aifu.project.common_domain.dto.excel_dto;
 import java.util.List;
 
 public record BookExcelDTO(
+        Integer id,
         String author,
         String title,
         String category,
@@ -17,4 +18,9 @@ public record BookExcelDTO(
         Long copyCount,
         List<String> inventoryNumbers
 ) {
+    public BookExcelDTO {
+        if (inventoryNumbers == null) {
+            inventoryNumbers = new java.util.ArrayList<>();
+        }
+    }
 }

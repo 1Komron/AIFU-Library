@@ -35,4 +35,6 @@ public interface BookCopyService {
     ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber);
 
     ResponseEntity<ResponseMessage> getByEPC(String epc);
+
+    List<String> findByBaseBookId(Integer id);
 }

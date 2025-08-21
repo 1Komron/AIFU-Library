@@ -12,9 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EntityScan("aifu.project.common_domain.entity")
-
 @EnableConfigurationProperties(ImporterColumnProperties.class)
-
 public class LibraryWebApplication {
 
     public static void main(String[] args) {

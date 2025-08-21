@@ -79,4 +79,9 @@ public class HistoryServiceImpl implements HistoryService {
 
         return ResponseEntity.ok(new ResponseMessage(true, "Qidiruv natijalari muvaffaqiyatli qaytarildi", map));
     }
+
+    @Override
+    public List<History> getAll() {
+        return historyRepository.findAll();
+    }
 }

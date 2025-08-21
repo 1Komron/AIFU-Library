@@ -286,4 +286,9 @@ public class PdfBookServiceImpl implements PdfBookService {
 
         return ResponseEntity.ok(new ResponseMessage(true, "Category boyicha kitob ro'yxati", list));
     }
+
+    @Override
+    public List<PdfBookShortDTO> getBooks(List<Long> list) {
+        return pdfBookRepository.findAllByIdIn(list);
+    }
 }

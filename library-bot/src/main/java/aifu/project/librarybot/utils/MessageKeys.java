@@ -16,6 +16,7 @@ public class MessageKeys {
 
     public static final String LOGIN = "login";
     public static final String LOGIN_BUTTON = "login.button";
+    public static final String ALREADY_EXISTS = "login.already.exists";
     public static final String PASSPORT_REQUEST_MESSAGE = "passport.request.message";
     public static final String LOGIN_SUCCESS_MESSAGE = "login.success.message";
     public static final String LOGIN_ERROR_NOT_FOUND = "login.error.not.found";

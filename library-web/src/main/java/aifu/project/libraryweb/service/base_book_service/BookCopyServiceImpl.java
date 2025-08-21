@@ -242,4 +242,9 @@ public class BookCopyServiceImpl implements BookCopyService {
     public long count() {
         return bookCopyRepository.count();
     }
+
+    @Override
+    public List<String> findByBaseBookId(Integer id) {
+        return bookCopyRepository.findInventoryNumberByBook_IdAndIsDeletedFalse(id);
+    }
 }

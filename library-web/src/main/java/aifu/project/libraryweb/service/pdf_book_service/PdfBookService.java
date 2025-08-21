@@ -6,6 +6,7 @@ import aifu.project.common_domain.dto.pdf_book_dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,4 +31,5 @@ public interface PdfBookService {
 
     ResponseEntity<ResponseMessage> showByCategories();
 
+    List<PdfBookShortDTO> getBooks(List<Long> list);
 }

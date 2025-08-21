@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.service.base_book_service;
 
 
+import aifu.project.common_domain.dto.excel_dto.BookExcelDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookShortDTO;
 import aifu.project.common_domain.dto.BookCopyStats;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
@@ -225,6 +226,35 @@ public class BaseBookServiceImpl implements BaseBookService {
                             book.getIsbn(),
                             stats.total(),
                             stats.taken()
+                    );
+                })
+                .toList();
+    }
+
+    @Override
+    public List<BookExcelDTO> getAllBooks() {
+        List<BookExcelDTO> allBooks = baseBookRepository.getAllBooks();
+
+        System.out.println(allBooks.toString());
+
+        return allBooks.stream()
+                .map(book -> {
+                    List<String> inv = bookCopyService.findByBaseBookId(book.id());
+                    return new BookExcelDTO(
+                            book.id(),
+                            book.author(),
+                            book.title(),
+                            book.category(),
+                            book.series(),
+                            book.publicationYear(),
+                            book.publisher(),
+                            book.publicationCity(),
+                            book.isbn(),
+                            book.pageCount(),
+                            book.language(),
+                            book.udc(),
+                            (long) inv.size(),
+                            inv
                     );
                 })
                 .toList();

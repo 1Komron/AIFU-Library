@@ -24,3 +24,6 @@
 2025-08-20 13:53:35.954 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 4.042 seconds (process running for 4.355)
 2025-08-20 13:53:36.547 [main] INFO  o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [localhost:5672]
 2025-08-20 13:53:36.576 [main] INFO  o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#19146ad8:0/SimpleConnection@58d8e971 [delegate=amqp://guest@127.0.0.1:5672/, localPort=48516]
+2025-08-20 14:47:25.920 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-20 14:47:25.921 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-20 14:47:25.924 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

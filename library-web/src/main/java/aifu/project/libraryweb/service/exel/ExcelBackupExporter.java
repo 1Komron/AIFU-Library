@@ -8,9 +8,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -19,16 +18,77 @@ import java.util.function.BiConsumer;
 public class ExcelBackupExporter {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public static void exportBookExcel(List<BookExcelDTO> bookList, String filePath) {
-        String[] headers = {
-                "#", "Muallif", "Kitob nomi", "Kategoriya", "Seriya raqami",
-                "Chop etilgan yil", "Nashriyot", "Chop etilgan shahar", "ISBN",
-                "Sahifalar Soni", "Til", "udc", "Nusxalar soni", "Inventar raqamlari"
-        };
+    private static final String BOOK_HEADER_INDEX = "#";
+    private static final String BOOK_HEADER_AUTHOR = "Muallif";
+    private static final String BOOK_HEADER_TITLE = "Kitob nomi";
+    private static final String BOOK_HEADER_CATEGORY = "Kategoriya";
+    private static final String BOOK_HEADER_SERIES = "Seriya raqami";
+    private static final String BOOK_HEADER_TITLE_DETAILS = "Kitob nomi (qo'shimcha)";
+    private static final String BOOK_HEADER_YEAR = "Chop etilgan yil";
+    private static final String BOOK_HEADER_PUBLISHER = "Nashriyot";
+    private static final String BOOK_HEADER_CITY = "Chop etilgan shahar";
+    private static final String BOOK_HEADER_ISBN = "ISBN";
+    private static final String BOOK_HEADER_PAGES = "Sahifalar soni";
+    private static final String BOOK_HEADER_LANGUAGE = "Til";
+    private static final String BOOK_HEADER_UDC = "UDC";
+    private static final String BOOK_HEADER_COPY_COUNT = "Nusxalar soni";
+    private static final String BOOK_HEADER_INVENTORY_NUMBERS = "Inventar raqamlari";
 
-        exportExcel(
+    private static final String[] BOOK_HEADERS = {
+            BOOK_HEADER_INDEX, BOOK_HEADER_AUTHOR, BOOK_HEADER_TITLE,
+            BOOK_HEADER_CATEGORY, BOOK_HEADER_SERIES, BOOK_HEADER_TITLE_DETAILS,
+            BOOK_HEADER_YEAR, BOOK_HEADER_PUBLISHER, BOOK_HEADER_CITY,
+            BOOK_HEADER_ISBN, BOOK_HEADER_PAGES, BOOK_HEADER_LANGUAGE,
+            BOOK_HEADER_UDC, BOOK_HEADER_COPY_COUNT, BOOK_HEADER_INVENTORY_NUMBERS
+    };
+
+    private static final String BOOKING_HEADER_INDEX = "#";
+    private static final String BOOKING_HEADER_STUDENT = "Student";
+    private static final String BOOKING_HEADER_BOOK = "Kitob";
+    private static final String BOOKING_HEADER_BOOK_COPY = "Kitob nusxasi";
+    private static final String BOOKING_HEADER_STATUS = "Holat";
+    private static final String BOOKING_HEADER_START_DATE = "Boshlanish sanasi";
+    private static final String BOOKING_HEADER_END_DATE = "Tugash sanasi";
+
+    private static final String[] BOOKING_HEADERS = {
+            BOOKING_HEADER_INDEX, BOOKING_HEADER_STUDENT, BOOKING_HEADER_BOOK,
+            BOOKING_HEADER_BOOK_COPY, BOOKING_HEADER_STATUS,
+            BOOKING_HEADER_START_DATE, BOOKING_HEADER_END_DATE
+    };
+
+    private static final String STUDENT_HEADER_INDEX = "№";
+    private static final String STUDENT_HEADER_NAME = "Ism";
+    private static final String STUDENT_HEADER_SURNAME = "Familya";
+    private static final String STUDENT_HEADER_PHONE = "Telefon raqam";
+    private static final String STUDENT_HEADER_CARD = "Karta raqami";
+    private static final String STUDENT_HEADER_DIRECTION = "Yo'nalish";
+    private static final String STUDENT_HEADER_DEGREE = "Daraja";
+    private static final String STUDENT_HEADER_START_DATE = "Qabul qilingan sana";
+    private static final String STUDENT_HEADER_END_DATE = "Tugatish sanasi";
+
+    private static final String[] STUDENT_HEADERS = {
+            STUDENT_HEADER_INDEX, STUDENT_HEADER_NAME, STUDENT_HEADER_SURNAME,
+            STUDENT_HEADER_PHONE, STUDENT_HEADER_CARD, STUDENT_HEADER_DIRECTION,
+            STUDENT_HEADER_DEGREE, STUDENT_HEADER_START_DATE, STUDENT_HEADER_END_DATE
+    };
+
+    private static final String HISTORY_HEADER_INDEX = "#";
+    private static final String HISTORY_HEADER_STUDENT_NAME = "Student";
+    private static final String HISTORY_HEADER_BOOK_TITLE = "Kitob";
+    private static final String HISTORY_HEADER_BORROW_DATE = "Olingan sana";
+    private static final String HISTORY_HEADER_RETURN_DATE = "Qaytarilgan sana";
+    private static final String HISTORY_HEADER_STATUS = "Holat";
+
+    private static final String[] HISTORY_HEADERS = {
+            HISTORY_HEADER_INDEX, HISTORY_HEADER_STUDENT_NAME, HISTORY_HEADER_BOOK_TITLE,
+            HISTORY_HEADER_BORROW_DATE, HISTORY_HEADER_RETURN_DATE, HISTORY_HEADER_STATUS
+    };
+
+
+    public static byte[] exportBookExcel(List<BookExcelDTO> bookList) {
+        return exportExcel(
                 "Kitoblar",
-                headers,
+                BOOK_HEADERS,
                 bookList,
                 (row, book) -> {
                     int col = 0;
@@ -46,22 +106,14 @@ public class ExcelBackupExporter {
                     setCell(row, col++, book.udc());
                     setCell(row, col++, book.copyCount());
                     setCell(row, col, String.valueOf(book.inventoryNumbers()));
-                },
-                filePath
+                }
         );
     }
 
-    public static void exportHistoryExcel(List<History> historyList, String filePath) {
-        String[] headers = {
-                "№", "Ism", "Familya", "Telefon raqam",
-                "Kitob nomi", "Muallif", "Inventar raqam",
-                "Berilgan sana", "Qaytib olingan sana",
-                "Kim tomonidan berilgan", "Kim tomonida qabul qilingan"
-        };
-
-        exportExcel(
+    public static byte[] exportHistoryExcel(List<History> historyList) {
+        return exportExcel(
                 "Tarix",
-                headers,
+                HISTORY_HEADERS,
                 historyList,
                 (row, history) -> {
                     Student user = history.getUser();
@@ -78,29 +130,14 @@ public class ExcelBackupExporter {
                     setCell(row, col++, history.getReturnedAt() != null ? history.getReturnedAt().format(formatter) : "");
                     setCell(row, col++, history.getIssuedBy().getName() + " " + history.getIssuedBy().getSurname());
                     setCell(row, col, history.getReturnedBy().getName() + " " + history.getReturnedBy().getSurname());
-                },
-                filePath
+                }
         );
     }
 
-    public static void exportBookingExcel(List<Booking> bookings, String filePath, boolean isByStudent) {
-        String[] headers = {
-                "№", "Ism", "Familya", "Telefon raqam",
-                "Kitob nomi", "Muallif", "Inventar raqam",
-                "Berilgan sana", "Kim tomonidan berilgan",
-                "Tugash vaqti uzaytirilgan kun", "Kim tomonida uzaytirilgan",
-                "Holati", "Tugash vaqti"
-        };
-
-        String fileName = "Bronlar ro'yxati";
-        if (isByStudent && !bookings.isEmpty()) {
-            Student user = bookings.get(0).getStudent();
-            fileName += " (" + user.getName() + " " + user.getSurname() + ")";
-        }
-
-        exportExcel(
-                fileName,
-                headers,
+    public static byte[] exportBookingExcel(List<Booking> bookings) {
+        return exportExcel(
+                "Bronlar ro'yxati",
+                BOOKING_HEADERS,
                 bookings,
                 (row, booking) -> {
                     Student user = booking.getStudent();
@@ -120,20 +157,14 @@ public class ExcelBackupExporter {
                     setCell(row, col++, ext == null ? "" : ext.getName() + " " + ext.getSurname());
                     setCell(row, col++, booking.getStatus() == Status.APPROVED ? "AKTIV" : "VAQTI O'TGAN");
                     setCell(row, col, booking.getDueDate() != null ? booking.getDueDate().format(formatter) : "");
-                },
-                filePath
+                }
         );
     }
 
-    public static void exportStudent(List<Student> students, String filePath) {
-        String[] headers = {
-                "№", "Ism", "Familya", "Telefon raqam", "Karta raqami",
-                "Yo'nalish", "Daraja", "Qabul qilingan sana", "Tugatish sanasi"
-        };
-
-        exportExcel(
-                "Student",
-                headers,
+    public static byte[] exportStudent(List<Student> students) {
+        return exportExcel(
+                "Studentlar",
+                STUDENT_HEADERS,
                 students,
                 (row, student) -> {
                     int col = 0;
@@ -146,18 +177,15 @@ public class ExcelBackupExporter {
                     setCell(row, col++, student.getDegree());
                     setCell(row, col++, student.getAdmissionTime());
                     setCell(row, col, student.getGraduationTime());
-                },
-                filePath
+                }
         );
     }
 
-    private static <T> void exportExcel(
+    private static <T> byte[] exportExcel(
             String sheetName,
             String[] headers,
             List<T> data,
-            BiConsumer<Row, T> rowFiller,
-            String filePath
-    ) {
+            BiConsumer<Row, T> rowFiller) {
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet(sheetName);
 
@@ -180,11 +208,13 @@ public class ExcelBackupExporter {
                 sheet.autoSizeColumn(i);
             }
 
-            try (FileOutputStream fileOut = new FileOutputStream(filePath + "/" + createFileName(sheetName))) {
-                workbook.write(fileOut);
-            }
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                workbook.write(out);
 
-            log.info("Excel {} backup muvaffaqiyatli amalga oshirildi", sheetName);
+                log.info("Excel {} backup muvaffaqiyatli amalga oshirildi", sheetName);
+
+                return out.toByteArray();
+            }
         } catch (IOException e) {
             log.error("{} excel yaratishda xatolik", sheetName, e);
             throw new RuntimeException(sheetName + " excel yaratishda xatolik", e);
@@ -251,10 +281,6 @@ public class ExcelBackupExporter {
         style.setLeftBorderColor(grey);
         style.setBorderRight(BorderStyle.THIN);
         style.setRightBorderColor(grey);
-    }
-
-    private static String createFileName(String name) {
-        return name + " (" + LocalDate.now().format(formatter) + ").xlsx";
     }
 
     private ExcelBackupExporter() {

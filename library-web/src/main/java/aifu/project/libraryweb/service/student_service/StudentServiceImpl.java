@@ -163,8 +163,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public boolean existsStudent(Long id) {
-        return studentRepository.existsByIdAndIsDeletedFalse(id);
+    public Student findStudent(Long id) {
+        return studentRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new UserNotFoundException("Student topilmadi. ID: " + id));
     }
 
     @PostConstruct

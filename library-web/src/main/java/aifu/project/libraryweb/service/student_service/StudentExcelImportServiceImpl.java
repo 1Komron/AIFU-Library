@@ -3,156 +3,174 @@ package aifu.project.libraryweb.service.student_service;
 import aifu.project.common_domain.dto.student_dto.ImportErrorDTO;
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.entity.enums.Role;
-import aifu.project.common_domain.exceptions.StudentImportException;
 import aifu.project.libraryweb.config.ImportStats;
 import aifu.project.libraryweb.repository.StudentRepository;
 import aifu.project.libraryweb.service.PassportHasher;
+
 import aifu.project.libraryweb.service.student_service.utel_service.StudentExcelReaderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-
+/**
+ * Talabalarni Exceldan import qilish uchun servis.
+ * Bu implementatsiya "Partial Unique Index" mantig'iga tayanadi.
+ * Yaroqli yozuvlar bitta `saveAll` operatsiyasi bilan saqlanadi va "race condition"
+ * kabi parallel so'rovlar keltirib chiqaradigan xatoliklar uchun maxsus himoya mantig'iga ega.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class StudentExcelImportServiceImpl implements StudentExcelImportService {
 
-    // --- BOG'LIQLIKLAR (DEPENDENCIES) ---
     private final StudentRepository studentRepository;
     private final PassportHasher passportHasher;
-    private final TransactionTemplate transactionTemplate;
     private final ImportErrorReportExcelService importErrorReportExcelService;
-    private final StudentExcelReaderService studentExcelReaderService; // <-- Yangi yordamchi servis
+    private final StudentExcelReaderService studentExcelReaderService;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
+    @Transactional
     public ImportStats importStudentsFromExcel(InputStream inputStream) {
-        log.info("Talabalarni Exceldan import qilish jarayoni boshlandi.");
+        log.info("Import jarayoni boshlandi ('saveAll' bilan, 'race condition' himoyasi).");
 
-        try {
-            // 1-QADAM: EXCELDAN MA'LUMOTLARNI YORDAMCHI SERVIS ORQALI O'QISH
-            // Barcha murakkab o'qish logikasi shu bitta metod chaqiruvi ortida yashiringan.
-            List<Student> studentsFromExcel = studentExcelReaderService.readFullStudentDataFromExcel(inputStream);
-
-            if (studentsFromExcel.isEmpty()) {
-                log.warn("Import to'xtatildi: Excel faylda qayta ishlanadigan ma'lumot topilmadi.");
-                return new ImportStats(0, Collections.emptyList());
-            }
-            log.info("Excel fayldan {} ta yozuv o'qildi. Bazaga saqlash boshlanmoqda...", studentsFromExcel.size());
-
-            // 2-QADAM: O'qilgan talabalarni birma-bir qayta ishlab, bazaga saqlash va hisobot yaratish
-            return processAndSaveIndividually(studentsFromExcel);
-
-        } catch (StudentImportException e) {
-            // StudentExcelReaderService dan kelgan xatoliklarni o'zgartirmasdan tashqariga uzatamiz
-            throw e;
-        } catch (Exception e) {
-            // Boshqa kutilmagan xatoliklar uchun umumiy xabar
-            log.error("Import jarayonida kutilmagan texnik xatolik yuz berdi", e);
-            throw new StudentImportException("Import jarayonida kutilmagan texnik xatolik: " + e.getMessage(), e);
+        // 1-QADAM: Exceldan barcha talabalarni o'qish
+        List<Student> studentsFromExcel = studentExcelReaderService.readFullStudentDataFromExcel(inputStream);
+        if (studentsFromExcel.isEmpty()) {
+            return new ImportStats(0, Collections.emptyList());
         }
-    }
 
-    /**
-     * Talabalar ro'yxatini birma-bir aylanib chiqib, har birini alohida saqlaydi
-     * va jarayon natijalari bo'yicha to'liq hisobot shakllantiradi.
-     * @param allStudents Exceldan o'qilgan barcha talabalar ro'yxati.
-     * @return Jarayon statistikasi bilan to'ldirilgan ImportStats obyekti.
-     */
-    private ImportStats processAndSaveIndividually(List<Student> allStudents) {
-        int successCount = 0;
+        // 2-QADAM: BAZADAGI PASPORT DUPLIKATLARINI OLDINDAN ANIQLASH
+        Set<String> plainPassportsFromExcel = studentsFromExcel.stream().map(Student::getPassportCode).collect(Collectors.toSet());
+        Set<String> hashedPassports = plainPassportsFromExcel.stream().map(passportHasher::hash).collect(Collectors.toSet());
+        Set<String> existingActiveHashedPassports = studentRepository.findActiveExistingHashedPassportCodesNative(hashedPassports);
+
+        // 3-QADAM: FILTRLASH VA GURUHLARGA AJRATISH
+        List<Student> studentsToSave = new ArrayList<>();
         List<ImportErrorDTO> failedRecords = new ArrayList<>();
-        Set<String> processedPlainPassports = new HashSet<>(); // Excel ichidagi dublikatlarni aniqlash uchun
+        Set<String> processedPlainPassports = new HashSet<>();
 
-        for (Student student : allStudents) {
+        for (Student student : studentsFromExcel) {
             String plainPassport = student.getPassportCode();
-            String errorReason = null;
-
-            // 1. Excel faylning o'zidagi takrorlanishlarni tekshirish
+            String hashedPassport = passportHasher.hash(plainPassport);
             if (!processedPlainPassports.add(plainPassport)) {
-                errorReason = "Excel faylning o'zida takrorlangan.";
-            } else {
-                // 2. Pasport kodini faqat saqlashdan oldin xeshlaymiz
-                student.setPassportCode(passportHasher.hash(plainPassport));
-                // 3. Yangi talabalar uchun standart qiymatlarni belgilaymiz
-                student.setRole(Role.STUDENT);
-                student.setActive(true);
-                student.setDeleted(false);
+                failedRecords.add(createErrorDTO(student, "Excel faylning o'zida takrorlangan."));
+                continue;
+            }
+            if (existingActiveHashedPassports.contains(hashedPassport)) {
+                failedRecords.add(createErrorDTO(student, "Bu pasport kodli aktiv talaba allaqachon mavjud."));
+                continue;
+            }
+            student.setPassportCode(hashedPassport);
+            student.setRole(Role.STUDENT);
+            student.setActive(false);
+            student.setDeleted(false);
+            studentsToSave.add(student);
+        }
 
+        // =========================================================================================
+        // 4-QADAM: OMMBAVIY SAQLASH (`saveAll` bilan, "RACE CONDITION" himoyasi)
+        // =========================================================================================
+        /**
+         * Bu blokning vazifasi - oldindan tekshiruvdan o'tgan "toza" ro'yxatni
+         * bitta `saveAll` operatsiyasi bilan saqlash. Agar shu qisqa vaqt ichida
+         * boshqa bir parallel so'rov tufayli dublikat paydo bo'lib qolsa ("race condition"),
+         * `DataIntegrityViolationException` yuz beradi. Biz bu xatoni ushlab,
+         * aynan qaysi yozuv muammo tug'dirganini aniqlaymiz, uni xatolar ro'yxatiga
+         * o'tkazamiz va qolganlarini qayta saqlashga urinamiz.
+         */
+        int savedCount = 0;
+        if (!studentsToSave.isEmpty()) {
+            List<Student> toSaveBatch = new ArrayList<>(studentsToSave); // Asl ro'yxatni buzmaslik uchun nusxa olamiz
+            boolean shouldRetry = true;
+            while (shouldRetry && !toSaveBatch.isEmpty()) {
+                shouldRetry = false; // Qayta urinishni to'xtatamiz, agar xato bo'lmasa
                 try {
-                    // 4. Har bir saqlashni alohida kichik tranzaksiyada bajarish
-                    transactionTemplate.execute(status -> {
-                        studentRepository.save(student);
-                        return null;
-                    });
-                    successCount++;
+                    studentRepository.saveAll(toSaveBatch);
+                    savedCount += toSaveBatch.size();
+                    log.info("{} ta yangi talaba to'plamda muvaffaqiyatli saqlandi.", toSaveBatch.size());
+                    toSaveBatch.clear(); // Barcha yozuvlar saqlandi
                 } catch (DataIntegrityViolationException e) {
-                    // 5. BAZA XATOSI: UNIQUE cheklovi buzildi (Partial Index ishga tushdi)
-                    log.warn("Dublikat yozuv aniqlandi (Pasport: {}). Sabab: {}", plainPassport, e.getMostSpecificCause().getMessage());
-                    if (e.getMostSpecificCause().getMessage().contains("student_passport_code")) {
-                        errorReason = "Bu pasport kodli aktiv talaba allaqachon mavjud.";
-                    } else if (e.getMostSpecificCause().getMessage().contains("student_card_number")) {
-                        errorReason = "Bu karta raqamli aktiv talaba allaqachon mavjud.";
+                    log.warn("Ommaviy saqlashda ziddiyat (ehtimoliy race condition): {}", e.getMostSpecificCause().getMessage());
+                    // Xatoning matnidan aynan qaysi pasport xato berganini ajratib olamiz
+                    String duplicateHash = extractDuplicateHash(e.getMostSpecificCause().getMessage());
+                    if (duplicateHash != null) {
+                        Iterator<Student> iterator = toSaveBatch.iterator();
+                        boolean found = false;
+                        while (iterator.hasNext()) {
+                            Student s = iterator.next();
+                            if (s.getPassportCode().equals(duplicateHash)) {
+                                failedRecords.add(createErrorDTO(s, "Aktiv dublikat (parallel so'rov tufayli aniqlandi)."));
+                                iterator.remove(); // Xatolikni "toza" ro'yxatdan olib tashlaymiz
+                                shouldRetry = true;  // Ro'yxat o'zgargani uchun, qolganini qayta saqlashga urinib ko'ramiz
+                                log.info("Race condition'da aniqlangan xato ro'yxatdan olib tashlandi. Qolgan {} ta yozuv qayta saqlanadi.", toSaveBatch.size());
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) shouldRetry = false; // Agar xatodagi xesh ro'yxatda topilmasa, tsiklni to'xtatamiz
                     } else {
-                        errorReason = "Noma'lum takrorlanish xatosi.";
+                        log.error("Ommaviy saqlashda pasportni aniqlab bo'lmaydigan dublikat xatosi!");
+                        toSaveBatch.forEach(s -> failedRecords.add(createErrorDTO(s, "Noma'lum dublikat xatosi (ommaviy saqlashda).")));
+                        toSaveBatch.clear();
                     }
-                } catch (Exception e) {
-                    // 6. Boshqa kutilmagan xatolar
-                    log.error("Talabani saqlashda kutilmagan xato (Pasport: {})", plainPassport, e);
-                    errorReason = "Kutilmagan tizim xatoligi.";
                 }
             }
-
-            // 7. Agar biror bir xatolik yuz bergan bo'lsa, uni hisobot uchun ro'yxatga qo'shamiz
-            if (errorReason != null) {
-                failedRecords.add(new ImportErrorDTO(
-                        student.getName(),
-                        student.getSurname(),
-                        student.getDegree(),
-                        student.getFaculty(),
-                        student.getAdmissionTime(),
-                        student.getGraduationTime(),
-                        errorReason
-                ));
-            }
         }
 
-        // 8. Yakuniy statistikani yaratamiz
-        ImportStats stats = new ImportStats(successCount, failedRecords);
-
-        // 9. Agar xatoliklar mavjud bo'lsa, ular uchun Excel hisobot generatsiya qilamiz
+        // 5-QADAM: YAKUNIY HISOBOTNI SHAKLLANTIRISH
+        ImportStats stats = new ImportStats(savedCount, failedRecords);
         if (!failedRecords.isEmpty()) {
             try {
                 byte[] excelFile = importErrorReportExcelService.generateStudentImportErrorReport(failedRecords);
                 String fileName = "import_xatoliklari_" + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ".xlsx";
-
                 stats.setReportFileName(fileName);
                 stats.setReportFileBase64(Base64.getEncoder().encodeToString(excelFile));
-                log.info("{} nomli xatoliklar hisoboti muvaffaqiyatli generatsiya qilindi.", fileName);
+                log.info("{} nomli xatoliklar hisoboti generatsiya qilindi.", fileName);
             } catch (IOException e) {
                 log.error("Import xatoliklari hisobotini Excelga yozishda xatolik!", e);
             }
         }
 
-        log.info("Import jarayoni yakunlandi. Muvaffaqiyatli: {}, Xatolar: {}", successCount, failedRecords.size());
+        log.info("Import jarayoni yakunlandi. Muvaffaqiyatli: {}, Xatolar: {}", stats.getSuccessCount(), stats.getFailedRecords().size());
         return stats;
     }
 
+    /**
+     * Xatolik DTO'sini yaratish uchun yordamchi metod.
+     */
+    private ImportErrorDTO createErrorDTO(Student student, String reason) {
+        return new ImportErrorDTO(
+                student.getName(),
+                student.getSurname(),
+                student.getDegree(),
+                student.getFaculty(),
+                student.getAdmissionTime(),
+                student.getGraduationTime(),
+                reason
+        );
+    }
 
+    /**
+     * PostgreSQL'ning xatolik matnidan dublikat bo'lgan pasport kodini
+     * (xeshlangan holatda) ajratib oladigan yordamchi metod.
+     * @param message `e.getMostSpecificCause().getMessage()` dan olingan matn.
+     * @return Xeshlangan pasport kodi yoki topilmasa `null`.
+     */
+    private String extractDuplicateHash(String message) {
+        if (message == null) return null;
+        Pattern pattern = Pattern.compile("\\(passport_code\\)=\\((.*?)\\)");
+        Matcher matcher = pattern.matcher(message);
+        return matcher.find() ? matcher.group(1) : null;
+    }
 }

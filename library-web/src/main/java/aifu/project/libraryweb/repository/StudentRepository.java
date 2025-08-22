@@ -73,24 +73,18 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByCardNumber(String cardNumber);
 
 
-    @Query("""
-             SELECT s FROM Student s
-             WHERE s.passportCode IN :hashedPassportCodes
-             AND s.isDeleted = false
-             AND NOT EXISTS (
-             select 1 from Booking b
-             where b.student = s
-             )
-            """ )
-    List<Student> findNonDebtorStudentsByPassportCodes(
-            @Param("hashedPassportCodes") Set<String> hashedPassportCodes
 
-    );
 
-    @Query("SELECT s.passportCode FROM Student s WHERE s.passportCode IN :hashedPassportCodes AND s.isDeleted = false")
-    Set<String> findActiveExistingHashedPassportCodes(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
+    @Query(
+            value = "SELECT s.passport_code FROM student s " +
+                    "JOIN users u ON s.id = u.id " +
+                    "WHERE u.is_deleted = false AND s.passport_code IN :hashedPassportCodes",
+            nativeQuery = true
+    )
+    Set<String> findActiveExistingHashedPassportCodesNative(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
 
-    Optional<Student> findByPassportCode(String passportCode);
+
+
 
 }
 

@@ -111,6 +111,7 @@ public class StudentExcelReaderService {
         addAliases(aliasMap, Field.CARD_NUMBER, importerColumnProperties.getCardNumber());
         addAliases(aliasMap, Field.ADMISSION_TIME, importerColumnProperties.getAdmissionTime());
         addAliases(aliasMap, Field.GRADUATION_TIME, importerColumnProperties.getGraduationTime());
+
         return aliasMap;
     }
 

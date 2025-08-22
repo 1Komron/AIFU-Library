@@ -24,7 +24,7 @@ public class OpenAPIConfig {
         prodServer.setDescription("Production Server");
 
         Server localServer = new Server();
-        localServer.setUrl("http://localhost:8080");
+        localServer.setUrl("http://localhost:8081");
         localServer.setDescription("Local Server");
 
         return new OpenAPI()

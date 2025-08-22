@@ -34,4 +34,9 @@ public class BackupController {
         backupService.backupBooking(id);
     }
 
+    @GetMapping("/student")
+    public void exportBackupStudents() {
+        backupService.backupStudents();
+    }
+
 }

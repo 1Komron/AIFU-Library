@@ -73,4 +73,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByCardNumber(String cardNumber);
 
     boolean existsByIdAndIsDeletedFalse(Long id);
+
+    @Query("""
+            select s from Student s where s.isDeleted =false
+            order by s.degree, s.id
+            """)
+    List<Student> findAllByIsDeletedFalse();
+
 }

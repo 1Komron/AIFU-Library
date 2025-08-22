@@ -125,6 +125,32 @@ public class ExcelBackupExporter {
         );
     }
 
+    public static void exportStudent(List<Student> students, String filePath) {
+        String[] headers = {
+                "№", "Ism", "Familya", "Telefon raqam", "Karta raqami",
+                "Yo'nalish", "Daraja", "Qabul qilingan sana", "Tugatish sanasi"
+        };
+
+        exportExcel(
+                "Student",
+                headers,
+                students,
+                (row, student) -> {
+                    int col = 0;
+                    setCell(row, col++, row.getRowNum());
+                    setCell(row, col++, student.getName());
+                    setCell(row, col++, student.getSurname());
+                    setCell(row, col++, student.getPhoneNumber());
+                    setCell(row, col++, student.getCardNumber());
+                    setCell(row, col++, student.getFaculty());
+                    setCell(row, col++, student.getDegree());
+                    setCell(row, col++, student.getAdmissionTime());
+                    setCell(row, col, student.getGraduationTime());
+                },
+                filePath
+        );
+    }
+
     private static <T> void exportExcel(
             String sheetName,
             String[] headers,

@@ -158,6 +158,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> getAll() {
+        return studentRepository.findAllByIsDeletedFalse();
+    }
+
+    @Override
     public boolean existsStudent(Long id) {
         return studentRepository.existsByIdAndIsDeletedFalse(id);
     }

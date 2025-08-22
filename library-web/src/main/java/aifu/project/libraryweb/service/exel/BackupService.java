@@ -3,10 +3,10 @@ package aifu.project.libraryweb.service.exel;
 import aifu.project.common_domain.dto.excel_dto.BookExcelDTO;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.History;
+import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.libraryweb.service.base_book_service.BaseBookService;
 import aifu.project.libraryweb.service.booking_serivce.BookingService;
-import aifu.project.libraryweb.service.exel.ExcelBackupExporter;
 import aifu.project.libraryweb.service.history_service.HistoryService;
 import aifu.project.libraryweb.service.student_service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +50,11 @@ public class BackupService {
 
         List<Booking> bookings = bookingService.getAllBookingsByStudent(id);
         ExcelBackupExporter.exportBookingExcel(bookings, backupPath, true);
+    }
+
+    public void backupStudents() {
+        List<Student> students = studentService.getAll();
+        System.out.println("==========================================================================");
+        ExcelBackupExporter.exportStudent(students,backupPath);
     }
 }

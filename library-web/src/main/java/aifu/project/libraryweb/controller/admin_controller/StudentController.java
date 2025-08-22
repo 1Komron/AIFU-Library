@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/students")
@@ -85,15 +87,24 @@ public class StudentController {
     }
 
     @PatchMapping("/{id}")
-    @Operation(summary = "Student cardNumber ni yangilash",
-            description = "Student cardNumber ni yangilash uchun yangi cardNumber yuboriladi.")
+    @Operation(summary = "Student ma'lumotlarini yangilash",
+            description = """
+                    Update qilsh uchun fieldlar:
+                    -name
+                    -surname
+                    -phoneNumber
+                    -degree
+                    -faculty
+                    -cardNumber
+                    -admissionTime (O'qishga kirgan yili) Son bo'lishi kerak
+                    -graduationTime (O'qishni bitiradigan yili) Son bo'lishi kerak
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Student cardNumber muvaffaqiyatli yangilandi"),
             @ApiResponse(responseCode = "404", description = "Student topilmadi"),
             @ApiResponse(responseCode = "400", description = "CardNumber allaqachon mavjud")
     })
-    public ResponseEntity<ResponseMessage> updateCardNumber(@PathVariable Long id,
-                                                            @RequestParam String cardNumber) {
-        return studentService.updateCardNumber(id, cardNumber);
+    public ResponseEntity<ResponseMessage> update(@PathVariable Long id, @RequestParam Map<String, Object> updates) {
+        return studentService.update(id, updates);
     }
 }

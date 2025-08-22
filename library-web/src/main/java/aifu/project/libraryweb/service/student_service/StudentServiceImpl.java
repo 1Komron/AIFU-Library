@@ -188,18 +188,44 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> updateCardNumber(Long id, String cardNumber) {
+    public ResponseEntity<ResponseMessage> update(Long id, Map<String, Object> updates) {
         Student student = studentRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new UserNotFoundException("(Update) Studnet topilmadi. ID: " + id));
 
-        if (studentRepository.existsByCardNumber(cardNumber)) {
-            throw new IllegalArgumentException("Card Number mavjud: " + cardNumber);
+        for (Map.Entry<String, Object> entry : updates.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (key == null) {
+                throw new IllegalArgumentException("Key Null");
+            }
+
+            if (value == null) {
+                throw new IllegalArgumentException("Value Null");
+            }
+
+            switch (key) {
+                case "name" -> student.setName((String) value);
+                case "surname" -> student.setSurname((String) value);
+                case "phoneNumber" -> student.setPhoneNumber((String) value);
+                case "degree" -> student.setDegree((String) value);
+                case "faculty" -> student.setFaculty((String) value);
+                case "cardNumber" -> {
+                    String cardNumber = (String) value;
+
+                    if (studentRepository.existsByCardNumber(cardNumber)) {
+                        throw new IllegalArgumentException("Card Number mavjud: " + cardNumber);
+                    }
+                    student.setCardNumber(cardNumber);
+                }
+                case "admissionTime" -> student.setAdmissionTime(LocalDate.of((Integer) value, 8, 1));
+                case "graduationTime" -> student.setGraduationTime(LocalDate.of((Integer) value, 8, 1));
+                default -> throw new IllegalArgumentException("Invalid key: " + key);
+            }
         }
 
-        student.setCardNumber(cardNumber);
-        studentRepository.save(student);
-
-        log.info("Student cardNumber yangilandi. ID: {}, CardNumber: {}", id, cardNumber);
+        student = studentRepository.save(student);
+        log.info("Stundent ID bo'yicha update qilindi. \nStudent: {}\n Update qilingan fieldlar: {}", student, updates.keySet());
 
         return ResponseEntity.ok(new ResponseMessage(true, "CardNumber muvaffqiyatli yangilandi", null));
     }

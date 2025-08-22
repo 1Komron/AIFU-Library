@@ -96,6 +96,7 @@ aifu/project/common_domain/dto/pdf_book_dto/PdfBookPreviewDTO$PdfBookPreviewDTOB
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO$PdfBookResponseDTOBuilder.class
 aifu/project/common_domain/dto/booking_dto/BorrowBookDTO.class
 aifu/project/common_domain/dto/auth_dto/LoginDTO.class
+aifu/project/common_domain/exceptions/CardNumberAlreadyExistsException.class
 aifu/project/common_domain/entity/History.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookCreateDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryWithBooksDTO.class
@@ -106,6 +107,8 @@ aifu/project/common_domain/dto/BookCopyStats.class
 aifu/project/common_domain/exceptions/FileUploadException.class
 aifu/project/common_domain/entity/Student.class
 aifu/project/common_domain/dto/action_dto/ExtendAcceptActionDTO.class
+aifu/project/common_domain/exceptions/UserAlreadyExistsException.class
+aifu/project/common_domain/dto/student_dto/CreateStudentDTO.class
 aifu/project/common_domain/exceptions/FileValidationException.class
 aifu/project/common_domain/dto/action_dto/ExtendRejectActionDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryShortDTO.class

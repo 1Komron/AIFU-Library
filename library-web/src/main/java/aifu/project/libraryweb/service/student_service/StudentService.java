@@ -6,6 +6,7 @@ import aifu.project.common_domain.entity.Student;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StudentService {
     ResponseEntity<ResponseMessage> getAll(String filter, String query, String status, int pageNumber, int size, String sortDirection);
@@ -16,7 +17,7 @@ public interface StudentService {
 
     ResponseEntity<ResponseMessage> getStudentByCardNumber(String id);
 
-    ResponseEntity<ResponseMessage> updateCardNumber(Long id, String cardNumber);
+    ResponseEntity<ResponseMessage> update(Long id, Map<String, Object> updates);
 
     Student findStudent(Long id);
 

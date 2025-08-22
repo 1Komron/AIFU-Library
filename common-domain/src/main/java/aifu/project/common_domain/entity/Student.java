@@ -20,7 +20,6 @@ public class Student extends User {
 
     private String faculty;
 
-    @Column(nullable = false)
     private String passportCode;
 
     @Column(nullable = false)

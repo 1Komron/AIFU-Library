@@ -7,9 +7,4 @@ import java.io.InputStream;
 public interface StudentDeactivationService {
 
    DeactivationStats deactivateStudents (InputStream inputStream);
-
-
-
-
-
 }

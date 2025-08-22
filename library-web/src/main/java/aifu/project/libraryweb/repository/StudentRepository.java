@@ -79,4 +79,20 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findAllByIsDeletedFalse();
 
     boolean existsByPassportCode(String passportCode);
+
+
+
+
+    @Query(
+            value = "SELECT s.passport_code FROM student s " +
+                    "JOIN users u ON s.id = u.id " +
+                    "WHERE u.is_deleted = false AND s.passport_code IN :hashedPassportCodes",
+            nativeQuery = true
+    )
+    Set<String> findActiveExistingHashedPassportCodesNative(@Param("hashedPassportCodes") Set<String> hashedPassportCodes);
+
+
+
+
 }
+

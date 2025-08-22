@@ -20,6 +20,7 @@ public class Booking {
     private BookCopy book;
 
     private LocalDate givenAt;
+
     private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)

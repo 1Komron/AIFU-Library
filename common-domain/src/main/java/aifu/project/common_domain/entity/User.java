@@ -3,6 +3,8 @@ package aifu.project.common_domain.entity;
 import aifu.project.common_domain.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Data
@@ -17,6 +19,7 @@ public abstract class User {
     private String surname;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Role role;
 
     private boolean isDeleted = false;

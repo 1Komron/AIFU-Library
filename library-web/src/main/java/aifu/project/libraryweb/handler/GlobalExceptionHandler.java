@@ -14,6 +14,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(CardNumberAlreadyExistsException.class)
+    public ResponseEntity<ResponseMessage> handleCardNumberAlreadyExistsException(CardNumberAlreadyExistsException e) {
+        log.error("CardNumber tizimda mavjud. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ResponseMessage> handleUserAlreadyExistsExceptions(UserAlreadyExistsException e) {
+        log.error("User tizimda mavjud. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ResponseMessage> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {

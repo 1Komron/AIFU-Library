@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.controller.admin_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
 import aifu.project.libraryweb.service.student_service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,7 +16,18 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
     private final StudentService studentService;
 
-    @GetMapping()
+    @PostMapping
+    @Operation(summary = "Student yaratish")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Muvaffaqiyatli yaratildi"),
+            @ApiResponse(responseCode = "400", description = "Notog'ri formatda malumot kiritildi"),
+            @ApiResponse(responseCode = "409", description = "Student avvaldan mavjud")
+    })
+    public ResponseEntity<ResponseMessage> createStudent(CreateStudentDTO createStudentDTO) {
+        return studentService.createStudent(createStudentDTO);
+    }
+
+    @GetMapping
     @Operation(summary = "Studentlar ro'yxatini olish",
             description = """
                     Parametrlar:

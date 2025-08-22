@@ -1,12 +1,16 @@
 package aifu.project.libraryweb.service.student_service;
 
+import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
 import aifu.project.common_domain.entity.Student;
+import aifu.project.common_domain.exceptions.CardNumberAlreadyExistsException;
+import aifu.project.common_domain.exceptions.UserAlreadyExistsException;
 import aifu.project.common_domain.exceptions.UserDeletionException;
 import aifu.project.common_domain.exceptions.UserNotFoundException;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.student_dto.StudentShortDTO;
 import aifu.project.common_domain.dto.student_dto.StudentSummaryDTO;
 import aifu.project.libraryweb.repository.StudentRepository;
+import aifu.project.libraryweb.service.PassportHasher;
 import aifu.project.libraryweb.service.booking_serivce.BookingService;
 import aifu.project.libraryweb.utils.Util;
 import jakarta.annotation.PostConstruct;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +35,58 @@ import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FO
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final BookingService bookingService;
+    private final PassportHasher passportHasher;
 
     private static final String DEFAULT = "default";
 
     public long countStudents() {
         return studentRepository.getStudentsCount();
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> createStudent(CreateStudentDTO createStudentDTO) {
+        String passport = checkPassport(createStudentDTO);
+        String cardNumber = checkCardNumber(createStudentDTO);
+
+        Student student = new Student();
+        student.setChatId(null);
+        student.setActive(false);
+        student.setDeleted(false);
+        student.setName(createStudentDTO.name());
+        student.setSurname(createStudentDTO.surname());
+        student.setPhoneNumber(createStudentDTO.phoneNumber());
+        student.setFaculty(createStudentDTO.faculty());
+        student.setDegree(createStudentDTO.degree());
+        student.setPassportCode(passport);
+        student.setCardNumber(cardNumber);
+        student.setAdmissionTime(LocalDate.of(createStudentDTO.admissionTime(), 8, 1));
+        student.setGraduationTime(LocalDate.of(createStudentDTO.graduationTime(), 7, 1));
+
+        student = studentRepository.save(student);
+
+        StudentSummaryDTO response = StudentSummaryDTO.toDTO(student);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage(true, "Student muvaffaqiyatli qo'shildi", response));
+    }
+
+    private String checkCardNumber(CreateStudentDTO createStudentDTO) {
+        String cardNumber = createStudentDTO.cardNumber();
+        if (studentRepository.existsByCardNumber(cardNumber)) {
+            throw new CardNumberAlreadyExistsException("Card number already exists.");
+        }
+
+        return cardNumber;
+    }
+
+    private String checkPassport(CreateStudentDTO createStudentDTO) {
+        String passportSeries = createStudentDTO.passportSeries().toUpperCase();
+        String passportNumber = createStudentDTO.passportNumber();
+        String passportHash = passportHasher.hash(passportSeries + passportNumber);
+        if (studentRepository.existsByPassportCode(passportHash)) {
+            throw new UserAlreadyExistsException("Student passporti bazada mavjud: " + passportSeries + passportNumber);
+        }
+
+        return passportHash;
     }
 
     @Override

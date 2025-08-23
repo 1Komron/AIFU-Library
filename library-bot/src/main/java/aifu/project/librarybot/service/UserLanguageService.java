@@ -8,7 +8,12 @@ import org.springframework.stereotype.Service;
 public class UserLanguageService {
 
     public String getLanguage(String chatId) {
-        return UserLanguageProperties.getLanguage(chatId);
+        String language = UserLanguageProperties.getLanguage(chatId);
+        if (language == null) {
+            setLanguage(chatId, "ru");
+            return UserLanguageProperties.getLanguage(chatId);
+        }
+        return language;
     }
 
     public void setLanguage(String userId, String language) {

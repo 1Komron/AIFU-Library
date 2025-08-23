@@ -11,7 +11,6 @@ spring:
   application:
     name: library-web
   datasource:
-#    url: jdbc:postgresql://localhost:5432/aifu_library
     url: jdbc:postgresql://postgres:5432/aifu_library
     password: root123
     username: postgres
@@ -84,6 +83,3 @@ jwt:
 security:
   hashing:
     passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"
-
-backup:
-  path: /home/komronbek

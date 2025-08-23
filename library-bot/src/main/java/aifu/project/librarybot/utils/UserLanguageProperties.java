@@ -1,44 +1,44 @@
 package aifu.project.librarybot.utils;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.Properties;
 
 @Slf4j
 public class UserLanguageProperties {
-    private UserLanguageProperties() {
-    }
-
+    private static final String FILE_PATH = "data/user-language.properties";
     private static final Properties properties = new Properties();
-    private static final Path filePath = Paths.get("library-bot/src/main/resources/user-language.properties");
 
     static {
-        if (Files.exists(filePath)) {
-            try (InputStream in = Files.newInputStream(filePath)) {
-                properties.load(in);
-            } catch (IOException e) {
-                log.error("Failed to load user-language.properties file", e);
+        try {
+            Path path = Paths.get(FILE_PATH);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path.getParent());
+                Files.createFile(path);
             }
+            try (InputStream input = Files.newInputStream(path)) {
+                properties.load(input);
+            }
+        } catch (IOException e) {
+            log.error("Failed to load user-language.properties file", e);
         }
     }
 
     public static String getLanguage(String userId) {
-        return properties.getProperty(userId, null);
+        return properties.getProperty(userId);
     }
 
-    @SneakyThrows
     public static void setLanguage(String userId, String language) {
         properties.setProperty(userId, language);
-        try (OutputStream out = Files.newOutputStream(filePath)) {
-            properties.store(out, "User Language Settings");
+        try (OutputStream output = Files.newOutputStream(Paths.get(FILE_PATH))) {
+            properties.store(output, null);
+        } catch (IOException e) {
+            log.error("Failed to load user-language.properties file", e);
         }
     }
 
+    private UserLanguageProperties() {
+    }
 }

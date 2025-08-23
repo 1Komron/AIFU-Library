@@ -1,0 +1,29 @@
+2025-08-20 13:53:32.213 [main] INFO  a.p.librarybot.LibraryBotApplication - Starting LibraryBotApplication using Java 21.0.5 with PID 331613 (/home/komronbek/Projects/AIFU_Library/library-bot/target/classes started by komronbek in /home/komronbek/Projects/AIFU_Library)
+2025-08-20 13:53:32.215 [main] INFO  a.p.librarybot.LibraryBotApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-20 13:53:32.512 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-20 13:53:32.548 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 31 ms. Found 6 JPA repository interfaces.
+2025-08-20 13:53:32.757 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-20 13:53:32.778 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-08-20 13:53:32.793 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-08-20 13:53:32.913 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-20 13:53:32.932 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-08-20 13:53:33.163 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@619c3546
+2025-08-20 13:53:33.164 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-08-20 13:53:33.198 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-20 13:53:33.772 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-20 13:53:34.285 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-20 13:53:34.558 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-08-20 13:53:35.824 [main] INFO  a.p.librarybot.LibraryBotApplication - TelegramBot is ready.
+2025-08-20 13:53:35.954 [main] INFO  a.p.librarybot.LibraryBotApplication - Started LibraryBotApplication in 4.042 seconds (process running for 4.355)
+2025-08-20 13:53:36.547 [main] INFO  o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [localhost:5672]
+2025-08-20 13:53:36.576 [main] INFO  o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#19146ad8:0/SimpleConnection@58d8e971 [delegate=amqp://guest@127.0.0.1:5672/, localPort=48516]
+2025-08-20 14:47:25.920 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-20 14:47:25.921 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-20 14:47:25.924 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

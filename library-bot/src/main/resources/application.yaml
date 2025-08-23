@@ -17,7 +17,7 @@ spring:
     basename: message
     encoding: UTF-8
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest

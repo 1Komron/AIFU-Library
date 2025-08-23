@@ -8,6 +8,7 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
+    baseline-version: 0
   application:
     name: library-web
   datasource:

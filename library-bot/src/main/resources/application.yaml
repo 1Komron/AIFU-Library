@@ -3,13 +3,13 @@ spring:
     name:
       library-bot
   datasource:
-    url: jdbc:postgresql://localhost:5432/aifu_library
+    url: jdbc:postgresql://postgres:5432/aifu_library
     password: root123
     username: postgres
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   messages:
     basename: message
     encoding: UTF-8

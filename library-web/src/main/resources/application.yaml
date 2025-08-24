@@ -12,7 +12,7 @@ spring:
   application:
     name: library-web
   datasource:
-    url: jdbc:postgresql://localhost:5432/aifu_library
+    url: jdbc:postgresql://postgres:5432/aifu_library
     password: root123
     username: postgres
   jpa:
@@ -48,7 +48,7 @@ cloudinary:
 superadmin:
   name: "Admin"
   surname: "Admin"
-  email: "${SUPERADMIN_EMAIL:alisherrustamov2119@gmail.com}"
+  email: "${SUPERADMIN_EMAIL:admin@gmail.com}"
   initial-password: "${SUPERADMIN_PASSWORD:admin123}"
 
 

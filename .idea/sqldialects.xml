@@ -16,5 +16,20 @@
     <file url="file://$PROJECT_DIR$/library-web/src/main/resources/db/migration/V7__booking.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/library-web/src/main/resources/db/migration/V8__category.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/library-web/src/main/resources/db/migration/V9__pdf_book.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V0__enums.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V10__notification.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V11__history.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V12__constraints.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V13__fix_role_comparison_in_trigger.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V14__make_trigger_role_comparison_robust.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V1__users.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V2__student.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V3__librarian.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V4__base_book_category.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V5__base_book.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V6__book_copy.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V7__booking.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V8__category.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/migration-service/src/main/resources/db/migration/V9__pdf_book.sql" dialect="GenericSQL" />
   </component>
 </project>

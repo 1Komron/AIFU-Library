@@ -1,6 +1,8 @@
 package aifu.project.migrationservice;
 
 import org.flywaydb.core.Flyway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -8,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class MigrationServiceApplication implements CommandLineRunner {
+    private static final Logger log = LoggerFactory.getLogger(MigrationServiceApplication.class);
     @Value("${spring.datasource.url}")
     private String dbUrl;
 
@@ -23,18 +26,17 @@ public class MigrationServiceApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("Запуск Flyway миграций...");
+        log.info("Migration service ishga tushirildi...");
 
         Flyway flyway = Flyway.configure()
                 .dataSource(dbUrl, dbUser, dbPassword)
                 .locations("classpath:db/migration")
-                .baselineOnMigrate(true) // если база уже есть
+                .baselineOnMigrate(true)
                 .load();
 
         flyway.migrate();
-
-        System.out.println("Миграции завершены. Сервис завершает работу.");
-        System.exit(0); // обязательно завершаем приложение
+        log.info("Migration service ishini muvaffaqiyatli yakunladi.");
+        System.exit(0);
     }
 
 }

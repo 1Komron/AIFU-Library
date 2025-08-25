@@ -48,6 +48,7 @@ aifu/project/common_domain/dto/statistic_dto/BookingsPerDayDTO.class
 aifu/project/common_domain/exceptions/BookCopyIsTakenException.class
 aifu/project/common_domain/exceptions/UserNotFoundException.class
 aifu/project/common_domain/exceptions/PdfFileDownloadException.class
+aifu/project/common_domain/dto/live_dto/BookImportDTO.class
 aifu/project/common_domain/exceptions/CategoryNotFoundException.class
 aifu/project/common_domain/dto/activity_dto/ActivityDailyAnalyticsDTO.class
 aifu/project/common_domain/dto/student_dto/StudentSummaryDTO.class

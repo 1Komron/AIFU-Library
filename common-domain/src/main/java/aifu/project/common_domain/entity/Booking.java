@@ -3,6 +3,8 @@ package aifu.project.common_domain.entity;
 import aifu.project.common_domain.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
@@ -24,6 +26,7 @@ public class Booking {
     private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)

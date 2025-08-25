@@ -25,7 +25,7 @@ public class StudentController {
             @ApiResponse(responseCode = "400", description = "Notog'ri formatda malumot kiritildi"),
             @ApiResponse(responseCode = "409", description = "Student avvaldan mavjud")
     })
-    public ResponseEntity<ResponseMessage> createStudent(CreateStudentDTO createStudentDTO) {
+    public ResponseEntity<ResponseMessage> createStudent(@RequestBody CreateStudentDTO createStudentDTO) {
         return studentService.createStudent(createStudentDTO);
     }
 

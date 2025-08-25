@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
@@ -130,4 +131,15 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             select b.inventoryNumber from BookCopy  b where b.book.id = :bookId and b.isDeleted = false
             """)
     List<String> findInventoryNumberByBook_IdAndIsDeletedFalse(Integer bookId);
+
+    boolean existsByEpcAndIsDeletedFalse(String epc);
+
+    @Query("""
+            select bc.inventoryNumber
+            from BookCopy bc
+            where bc.isDeleted = false
+            and bc.inventoryNumber in :inventoryNumbers
+            """)
+    Set<String> existsInventoryNumbers(@Param("inventoryNumbers") List<String> inventoryNumbers);
+
 }

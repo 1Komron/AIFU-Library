@@ -46,6 +46,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<ResponseMessage> createStudent(CreateStudentDTO createStudentDTO) {
+        log.info("{}", createStudentDTO.toString());
         String passport = checkPassport(createStudentDTO);
         String cardNumber = checkCardNumber(createStudentDTO);
 

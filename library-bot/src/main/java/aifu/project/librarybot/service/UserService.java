@@ -56,7 +56,7 @@ public class UserService {
 
         Student student = studentRepository.findByIsDeletedFalseAndPassportCode(hash);
         if (student != null) {
-            if (!student.isActive()) {
+            if (student.isActive()) {
                 executeUtil.executeMessage(chatId.toString(), MessageKeys.ALREADY_EXISTS, lang);
             } else {
                 saveUserChatId(student, chatId);

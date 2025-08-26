@@ -41,14 +41,27 @@ public class BookCopyServiceImpl implements BookCopyService {
     private static final String DEFAULT = "default";
 
     @Override
-    public void saveBookCopies(BaseBook baseBook, List<String> inventoryNumbers) {
+    public void saveAll(List<BookCopy> bookCopiesToSave) {
+        bookCopyRepository.saveAll(bookCopiesToSave);
+
+        log.info("Excel orqali qo'shilgan BookCopy lar saqlandi: [{}]",
+                bookCopiesToSave.stream().map(BookCopy::getId).toList());
+    }
+
+    @Override
+    public List<BookCopy> saveBookCopies(BaseBook baseBook, List<String> inventoryNumbers, List<String> errorMessages, int index) {
         Set<String> numbers = bookCopyRepository.existsInventoryNumbers(inventoryNumbers);
-        List<String> existsInventoryNumbers = new ArrayList<>();
         List<BookCopy> newBookCopies = new ArrayList<>();
+        boolean success = true;
 
         for (String inventoryNumber : inventoryNumbers) {
             if (numbers.contains(inventoryNumber)) {
-                existsInventoryNumbers.add(inventoryNumber);
+                log.error("Excel orqali book copy qo'shish. InventoryNumber allaqachon mavjud: {}", inventoryNumber);
+
+                errorMessages.add("Xatolik (%d - qatorda) yuz berdi. Sabab: '%s' kiritilgan inventar raqam raqam bazada mavjud. Iltimos boshqa inventar raqam kiriting"
+                        .formatted(index, inventoryNumber));
+
+                success = false;
             } else {
                 BookCopy bookCopy = new BookCopy();
                 bookCopy.setInventoryNumber(inventoryNumber);
@@ -60,9 +73,7 @@ public class BookCopyServiceImpl implements BookCopyService {
             }
         }
 
-        if (!newBookCopies.isEmpty()) {
-            bookCopyRepository.saveAll(newBookCopies);
-        }
+        return success ? newBookCopies : null;
     }
 
     @Override

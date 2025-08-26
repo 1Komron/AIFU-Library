@@ -1,6 +1,5 @@
 package aifu.project.libraryweb.service.base_book_service;
 
-
 import aifu.project.common_domain.dto.excel_dto.BookExcelDTO;
 import aifu.project.common_domain.dto.live_dto.*;
 import aifu.project.common_domain.dto.BookCopyStats;
@@ -15,12 +14,9 @@ import aifu.project.libraryweb.lucene.LuceneIndexService;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.utils.Util;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +27,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -48,28 +46,80 @@ public class BaseBookServiceImpl implements BaseBookService {
     private static final String DEFAULT = "default";
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> importFromExcel(MultipartFile file) {
         List<BookImportDTO> bookImportDTOS = ExcelBookHelper.excelToBooks(file);
 
-        saveBooks(bookImportDTOS);
-
-        return null;
+        return saveBooks(bookImportDTOS);
     }
 
-    private void saveBooks(List<BookImportDTO> bookImportDTOS) {
-        for (BookImportDTO dto : bookImportDTOS) {
-            String categoryName = dto.category();
+    private ResponseEntity<ResponseMessage> saveBooks(List<BookImportDTO> bookImportDTOS) {
+        int index = 1;
+        boolean success = true;
+        List<String> errorMessages = new ArrayList<>();
+        List<BaseBook> baseBooksToSave = new ArrayList<>();
+        List<BookCopy> bookCopiesToSave = new ArrayList<>();
 
-            BaseBookCategory category = categoryRepository
-                    .findByNameAndIsDeletedFalse(categoryName)
-                    .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryName));
+        Map<String, BaseBookCategory> categoryMap = categoryRepository.findAllActive()
+                .stream()
+                .collect(Collectors.toMap(
+                        c -> c.getName().toLowerCase(),
+                        Function.identity()
+                ));
+
+        for (BookImportDTO dto : bookImportDTOS) {
+            ++index;
+
+            BaseBookCategory category = getCategory(categoryMap, dto.category(), errorMessages, index);
+
+            if (category == null) success = false;
 
             BaseBook baseBook = BookImportDTO.createBaseBook(dto, category);
-            baseBook = baseBookRepository.save(baseBook);
 
-            log.info("Excel orqali base book qo'shildi\nBaseBook: {}", baseBook);
+            baseBooksToSave.add(baseBook);
 
-            bookCopyService.saveBookCopies(baseBook, dto.inventoryNumbers());
+            log.info("Excel orqali base book qo'shildi\nBaseBook: {}.Bazada yaratilmadi...", baseBook);
+
+            List<BookCopy> newBookCopies = bookCopyService.saveBookCopies(baseBook, dto.inventoryNumbers(), errorMessages, index);
+
+            if (newBookCopies == null) {
+                success = false;
+            } else {
+                bookCopiesToSave.addAll(newBookCopies);
+            }
+
+        }
+
+        if (success) {
+            baseBookRepository.saveAll(baseBooksToSave);
+
+            log.info("Excel orqali BaseBook qo'shildi: {}", baseBooksToSave.stream().map(BaseBook::getId));
+
+            if (bookCopiesToSave.isEmpty()) {
+                bookCopyService.saveAll(bookCopiesToSave);
+                log.info("Excel orqali BookCopy qo'shildi: {}", bookCopiesToSave.stream().map(BookCopy::getId));
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ResponseMessage(true, "Muvaffaqiyatli qo'shildi", null));
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ResponseMessage(true, "Xatolik yuz berdi", errorMessages));
+    }
+
+    private BaseBookCategory getCategory(Map<String, BaseBookCategory> categoryMap, String inputCategoryName, List<String> errorMessages, int index) {
+        String categoryName = inputCategoryName == null ? "" : inputCategoryName.toLowerCase();
+
+        if (categoryMap.containsKey(categoryName)) {
+            return categoryMap.get(categoryName);
+        } else {
+            log.error("Base bookni excel orqali qo'shishda BaseBookCategory topilmadi: {}", categoryName);
+
+            errorMessages.add("Xatolik (%d - qatorda) yuz berdi. Sabab: mavjud bo'lmagan Kategoriya kiritildi. Kiritilgan Kategoriya: %s"
+                    .formatted(index, inputCategoryName));
+
+            return null;
         }
     }
 
@@ -263,8 +313,6 @@ public class BaseBookServiceImpl implements BaseBookService {
     @Override
     public List<BookExcelDTO> getAllBooks() {
         List<BookExcelDTO> allBooks = baseBookRepository.getAllBooks();
-
-        System.out.println(allBooks.toString());
 
         return allBooks.stream()
                 .map(book -> {

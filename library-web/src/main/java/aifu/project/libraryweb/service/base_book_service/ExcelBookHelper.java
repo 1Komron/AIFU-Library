@@ -34,18 +34,18 @@ public class ExcelBookHelper {
                 }
 
                 BookImportDTO dto = new BookImportDTO(
+                        formatter.formatCellValue(row.getCell(1)),
                         formatter.formatCellValue(row.getCell(2)),
                         formatter.formatCellValue(row.getCell(3)),
                         formatter.formatCellValue(row.getCell(4)),
-                        formatter.formatCellValue(row.getCell(5)),
-                        Integer.parseInt(formatter.formatCellValue(row.getCell(6))),
+                        Integer.parseInt(formatter.formatCellValue(row.getCell(5))),
+                        formatter.formatCellValue(row.getCell(6)),
                         formatter.formatCellValue(row.getCell(7)),
                         formatter.formatCellValue(row.getCell(8)),
-                        formatter.formatCellValue(row.getCell(9)),
-                        Integer.parseInt(formatter.formatCellValue(row.getCell(10))),
+                        Integer.parseInt(formatter.formatCellValue(row.getCell(9))),
+                        formatter.formatCellValue(row.getCell(10)),
                         formatter.formatCellValue(row.getCell(11)),
-                        formatter.formatCellValue(row.getCell(12)),
-                        getInventoryNumbers(formatter.formatCellValue(row.getCell(13)))
+                        getInventoryNumbers(formatter.formatCellValue(row.getCell(12)))
                 );
 
                 books.add(dto);
@@ -55,13 +55,14 @@ public class ExcelBookHelper {
             return books;
 
         } catch (Exception e) {
-            throw new RuntimeException("Xatolik Excel faylni o‘qishda: " + e.getMessage(), e);
+            throw new IllegalArgumentException("Xatolik Excel faylni o‘qishda: " + e.getMessage(), e);
         }
     }
 
     private static List<String> getInventoryNumbers(String string) {
         return Arrays
                 .stream(string.trim().split(","))
+                .filter(inv -> !inv.isBlank())
                 .map(String::trim)
                 .toList();
     }

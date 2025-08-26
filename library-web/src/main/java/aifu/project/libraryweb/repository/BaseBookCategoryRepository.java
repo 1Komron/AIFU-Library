@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCategory, Integer> {
@@ -26,5 +27,7 @@ public interface BaseBookCategoryRepository extends JpaRepository<BaseBookCatego
     @Query("SELECT COUNT(c) > 0 FROM BaseBookCategory c WHERE LOWER(c.name) = LOWER(:name) and c.isDeleted = false")
     boolean existsByNameAndIsDeletedFalse(String name);
 
-    Optional<BaseBookCategory> findByNameAndIsDeletedFalse(String categoryName);
+    @Query("select c from BaseBookCategory c where c.isDeleted = false")
+    List<BaseBookCategory> findAllActive();
+
 }

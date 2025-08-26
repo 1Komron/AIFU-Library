@@ -39,5 +39,7 @@ public interface BookCopyService {
 
     List<String> findByBaseBookId(Integer id);
 
-    void saveBookCopies(BaseBook baseBook, List<String> strings);
+    List<BookCopy> saveBookCopies(BaseBook baseBook, List<String> strings, List<String> errorMessages,int index);
+
+    void saveAll(List<BookCopy> bookCopiesToSave);
 }

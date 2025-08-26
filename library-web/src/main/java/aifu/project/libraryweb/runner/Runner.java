@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@DependsOn("flyway")
 public class Runner implements CommandLineRunner {
     private final SuperAdminInitializer superAdminInitializer;
     private final LuceneIndexInitializer luceneIndexInitializer;

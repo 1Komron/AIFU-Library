@@ -6,6 +6,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
     username: postgres
+
     flyway:
       enabled: false
   jpa:

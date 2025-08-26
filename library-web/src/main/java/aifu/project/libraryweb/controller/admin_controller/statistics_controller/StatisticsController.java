@@ -48,6 +48,15 @@ public class StatisticsController {
         return statisticsService.getBookingTodayOverdue(pageNumber, pageSize);
     }
 
+    @GetMapping("/bookings/overdue")
+    @Operation(summary = "Vaqti otib ketgan barcha bookinglar")
+    @ApiResponse(responseCode = "200", description = "Vaqti otib ketgan bookinglar muvaffaqiyatli qaytarildi")
+    public ResponseEntity<ResponseMessage> getBookingsOverdue(@RequestParam(defaultValue = "1") int pageNumber,
+                                                              @RequestParam(defaultValue = "5") int pageSize) {
+        return statisticsService.getBookingOverdue(pageNumber, pageSize);
+    }
+
+
     @GetMapping("/bookings/perDay")
     @Operation(summary = "Oy davomida har bir kun uchun bookinglar soni")
     @ApiResponse(responseCode = "200", description = "Har bir kun uchun bookinglar soni muvaffaqiyatli qaytarildi")

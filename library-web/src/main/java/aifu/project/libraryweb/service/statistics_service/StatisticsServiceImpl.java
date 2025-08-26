@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.service.statistics_service;
 
 import aifu.project.common_domain.dto.booking_dto.BookingResponse;
+import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.statistic_dto.*;
 import aifu.project.common_domain.entity.enums.Status;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,12 @@ public class StatisticsServiceImpl implements StatisticsService {
     public ResponseEntity<ResponseMessage> getBookingTodayOverdue(int pageNumber, int pageSize) {
         List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.OVERDUE);
         return ResponseEntity.ok(new ResponseMessage(true, "Today's booking list", list));
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> getBookingOverdue(int pageNumber, int pageSize) {
+        Map<String, Object> data = bookingService.getAllOverdueBookings(--pageNumber, pageSize);
+        return ResponseEntity.ok(new ResponseMessage(true, "Vaqti otib ketgan kitoblar ro'yxati", data));
     }
 
     @Override

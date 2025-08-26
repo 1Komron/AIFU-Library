@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -93,7 +92,6 @@ public class AdminManagementService {
     }
 
 
-
     @Transactional
     public void activateAccount(AccountActivationRequest request) {
         String email = request.getEmail();
@@ -133,6 +131,7 @@ public class AdminManagementService {
         log.info("Adminlar ro'yxati. Ro'yxat: {}, Hajmi: {}", content, librarianPage.getTotalElements());
 
         List<AdminResponse> list = content.stream()
+                .filter(admin -> admin.getRole() == Role.ADMIN)
                 .map(admin -> AdminResponse.builder()
                         .id(admin.getId())
                         .name(admin.getName())
@@ -144,7 +143,7 @@ public class AdminManagementService {
                 .toList();
 
         Map<String, Object> data = Util.getPageInfo(librarianPage);
-        data.put("data", list );
+        data.put("data", list);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Adminlar ro'yxati", data));
     }

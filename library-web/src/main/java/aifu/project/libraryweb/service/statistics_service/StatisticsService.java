@@ -32,4 +32,6 @@ public interface StatisticsService {
 
     //Kitoblarning o'rtacha foydalanish kunlari
     ResponseEntity<ResponseMessage> getAverageUsageDays();
+
+    ResponseEntity<ResponseMessage> getBookingOverdue(int pageNumber, int pageSize);
 }

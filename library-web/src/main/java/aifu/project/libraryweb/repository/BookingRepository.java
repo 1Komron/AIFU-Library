@@ -198,4 +198,23 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("select b from  Booking b where b.student.id = :id")
     List<Booking> finAllByStudent(Long id);
+
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            JOIN b.student s
+            WHERE b.status = :status
+            """)
+    Page<BookingShortDTO> findAllBookingByStatus(Pageable pageable, Status status);
 }

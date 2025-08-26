@@ -67,6 +67,7 @@
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/PasswordChangeRequest.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BaseBookUpdateDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/exceptions/BookCopyNotFoundException.java
+/home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/live_dto/BookImportDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/booking_dto/BookingShortDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/histroy_dto/HistorySummaryDTO.java
 /home/komronbek/Projects/AIFU_Library/common-domain/src/main/java/aifu/project/common_domain/dto/histroy_dto/HistoryBookDTO.java

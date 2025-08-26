@@ -25,8 +25,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,6 +41,31 @@ public class BookCopyServiceImpl implements BookCopyService {
     private static final String DEFAULT = "default";
 
     @Override
+    public void saveBookCopies(BaseBook baseBook, List<String> inventoryNumbers) {
+        Set<String> numbers = bookCopyRepository.existsInventoryNumbers(inventoryNumbers);
+        List<String> existsInventoryNumbers = new ArrayList<>();
+        List<BookCopy> newBookCopies = new ArrayList<>();
+
+        for (String inventoryNumber : inventoryNumbers) {
+            if (numbers.contains(inventoryNumber)) {
+                existsInventoryNumbers.add(inventoryNumber);
+            } else {
+                BookCopy bookCopy = new BookCopy();
+                bookCopy.setInventoryNumber(inventoryNumber);
+                bookCopy.setBook(baseBook);
+                bookCopy.setDeleted(false);
+                bookCopy.setTaken(false);
+
+                newBookCopies.add(bookCopy);
+            }
+        }
+
+        if (!newBookCopies.isEmpty()) {
+            bookCopyRepository.saveAll(newBookCopies);
+        }
+    }
+
+    @Override
     public ResponseEntity<ResponseMessage> create(BookCopyCreateDTO dto) {
         BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(dto.getBaseBookId())
                 .orElseThrow(() -> new BaseBookNotFoundException(dto.getBaseBookId()));
@@ -46,6 +73,11 @@ public class BookCopyServiceImpl implements BookCopyService {
         String inventoryNumber = dto.getInventoryNumber();
         if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
             throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+        }
+
+        String epc = dto.getEpc();
+        if (epc != null && bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
+            throw new IllegalArgumentException("Bu Epc bilan BookCopy mavjud: " + epc);
         }
 
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);

@@ -6,19 +6,15 @@ spring:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
     username: postgres
-
-    flyway:
-      enabled: false
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
-
+      ddl-auto: none
   messages:
     basename: message
     encoding: UTF-8
   rabbitmq:
-    host: rabbitmq
+    host: localhost
     port: 5672
     username: guest
     password: guest

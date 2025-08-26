@@ -2,6 +2,7 @@ package aifu.project.libraryweb.service.student_service;
 
 import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
 import aifu.project.common_domain.entity.Student;
+import aifu.project.common_domain.entity.enums.Role;
 import aifu.project.common_domain.exceptions.CardNumberAlreadyExistsException;
 import aifu.project.common_domain.exceptions.UserAlreadyExistsException;
 import aifu.project.common_domain.exceptions.UserDeletionException;
@@ -45,6 +46,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<ResponseMessage> createStudent(CreateStudentDTO createStudentDTO) {
+        log.info("{}", createStudentDTO.toString());
         String passport = checkPassport(createStudentDTO);
         String cardNumber = checkCardNumber(createStudentDTO);
 
@@ -52,6 +54,7 @@ public class StudentServiceImpl implements StudentService {
         student.setChatId(null);
         student.setActive(false);
         student.setDeleted(false);
+        student.setRole(Role.STUDENT);
         student.setName(createStudentDTO.name());
         student.setSurname(createStudentDTO.surname());
         student.setPhoneNumber(createStudentDTO.phoneNumber());

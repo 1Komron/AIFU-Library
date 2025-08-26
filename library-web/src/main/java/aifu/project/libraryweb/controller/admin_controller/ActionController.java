@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/actions")
@@ -30,7 +28,7 @@ public class ActionController {
             @ApiResponse(responseCode = "200", description = "Booking vaqtini uzaytirish muvaffaqiyatli amalga oshirildi"),
             @ApiResponse(responseCode = "404", description = "Notification | Booking topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> extend(ExtendAcceptActionDTO extendAcceptActionDTO) {
+    public ResponseEntity<ResponseMessage> extend(@RequestBody ExtendAcceptActionDTO extendAcceptActionDTO) {
         return actionService.extendAccept(extendAcceptActionDTO);
     }
 
@@ -40,7 +38,7 @@ public class ActionController {
             @ApiResponse(responseCode = "200", description = "Booking vaqtini uzaytirish rad etildi"),
             @ApiResponse(responseCode = "404", description = "Notification topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> extendReject(ExtendRejectActionDTO extendRejectDTO) {
+    public ResponseEntity<ResponseMessage> extendReject(@RequestBody ExtendRejectActionDTO extendRejectDTO) {
         return actionService.extendReject(extendRejectDTO);
     }
 
@@ -50,7 +48,7 @@ public class ActionController {
             @ApiResponse(responseCode = "200", description = "Warning notification muvaffaqiyatli ochirildi"),
             @ApiResponse(responseCode = "404", description = "Notification topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> warning(WarningActionDTO warningActionDTO) {
+    public ResponseEntity<ResponseMessage> warning(@RequestBody WarningActionDTO warningActionDTO) {
         return actionService.warning(warningActionDTO);
     }
 }

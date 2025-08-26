@@ -2,11 +2,8 @@ package aifu.project.libraryweb.service.base_book_service;
 
 
 import aifu.project.common_domain.dto.excel_dto.BookExcelDTO;
-import aifu.project.common_domain.dto.live_dto.BaseBookShortDTO;
+import aifu.project.common_domain.dto.live_dto.*;
 import aifu.project.common_domain.dto.BookCopyStats;
-import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
-import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
-import aifu.project.common_domain.dto.live_dto.BaseBookResponseDTO;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BaseBookCategory;
 import aifu.project.common_domain.entity.BookCopy;
@@ -20,6 +17,10 @@ import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +28,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,32 @@ public class BaseBookServiceImpl implements BaseBookService {
     private final LuceneIndexService luceneIndexService;
 
     private static final String DEFAULT = "default";
+
+    @Override
+    public ResponseEntity<ResponseMessage> importFromExcel(MultipartFile file) {
+        List<BookImportDTO> bookImportDTOS = ExcelBookHelper.excelToBooks(file);
+
+        saveBooks(bookImportDTOS);
+
+        return null;
+    }
+
+    private void saveBooks(List<BookImportDTO> bookImportDTOS) {
+        for (BookImportDTO dto : bookImportDTOS) {
+            String categoryName = dto.category();
+
+            BaseBookCategory category = categoryRepository
+                    .findByNameAndIsDeletedFalse(categoryName)
+                    .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryName));
+
+            BaseBook baseBook = BookImportDTO.createBaseBook(dto, category);
+            baseBook = baseBookRepository.save(baseBook);
+
+            log.info("Excel orqali base book qo'shildi\nBaseBook: {}", baseBook);
+
+            bookCopyService.saveBookCopies(baseBook, dto.inventoryNumbers());
+        }
+    }
 
     @Override
     public ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto) {

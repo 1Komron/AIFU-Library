@@ -4,10 +4,6 @@ spring:
     port: 5672
     username: guest
     password: guest
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    locations: classpath:db/migration
   application:
     name: library-web
   datasource:
@@ -47,7 +43,7 @@ cloudinary:
 superadmin:
   name: "Admin"
   surname: "Admin"
-  email: "${SUPERADMIN_EMAIL:alisherrustamov2119@gmail.com}"
+  email: "${SUPERADMIN_EMAIL:admin@gmail.com}"
   initial-password: "${SUPERADMIN_PASSWORD:admin123}"
 
 

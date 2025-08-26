@@ -1,6 +1,5 @@
 package aifu.project.common_domain.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +21,6 @@ public class BookCopy {
     @Column(nullable = false)
     private String inventoryNumber;
 
-    @Column(nullable = false)
     private String epc;
 
     private String shelfLocation;

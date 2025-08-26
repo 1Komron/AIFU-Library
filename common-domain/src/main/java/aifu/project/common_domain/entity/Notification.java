@@ -4,6 +4,8 @@ import aifu.project.common_domain.entity.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,7 @@ public class Notification {
     private BookCopy bookCopy;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private NotificationType notificationType;
 
     private LocalDateTime notificationTime;

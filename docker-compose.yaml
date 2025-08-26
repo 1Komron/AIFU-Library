@@ -1,26 +1,57 @@
 version: '3.8'
 
 services:
+  migration:
+    build:
+      context: ./migration
+    container_name: migration_service
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   web:
     build:
-      context: ./library-web
+      context: ./web
     container_name: library_web
-    environment:
-      - BOT_HOST=http://library-bot
-      - BOT_PORT=8081
     ports:
       - "8080:8080"
     depends_on:
-      - rabbitmq
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   bot:
     build:
-      context: ./library-bot
+      context: ./bot
     container_name: telegram_bot
     ports:
       - "8081:8081"
     depends_on:
-      - rabbitmq
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: aifu_library
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d aifu_library" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -30,16 +61,19 @@ services:
       - "5672:5672"
       - "15672:15672"
       - "61613:61613"
+    command: >
+      sh -c "rabbitmq-plugins enable --offline rabbitmq_management rabbitmq_stomp rabbitmq_web_stomp && rabbitmq-server"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    command: >
-      bash -c "rabbitmq-plugins enable --offline rabbitmq_management &&
-               rabbitmq-plugins enable --offline rabbitmq_stomp &&
-               rabbitmq-server"
-
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  pgdata:
+  postgres_data:
+  rabbitmq_data:

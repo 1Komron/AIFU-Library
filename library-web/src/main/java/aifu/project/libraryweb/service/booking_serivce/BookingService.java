@@ -1,11 +1,8 @@
 package aifu.project.libraryweb.service.booking_serivce;
 
 
-import aifu.project.common_domain.dto.booking_dto.ExtendBookingDTO;
+import aifu.project.common_domain.dto.booking_dto.*;
 import aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO;
-import aifu.project.common_domain.dto.booking_dto.BookingResponse;
-import aifu.project.common_domain.dto.booking_dto.BorrowBookDTO;
-import aifu.project.common_domain.dto.booking_dto.ReturnBookDTO;
 import aifu.project.common_domain.entity.Booking;
 import aifu.project.common_domain.entity.enums.Status;
 import aifu.project.common_domain.dto.ResponseMessage;
@@ -13,6 +10,7 @@ import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BookingService {
 
@@ -39,4 +37,6 @@ public interface BookingService {
     List<Booking> getAllBookings();
 
     List<Booking> getAllBookingsByStudent(Long id);
+
+    Map<String, Object> getAllOverdueBookings(int pageNumber, int pageSize);
 }

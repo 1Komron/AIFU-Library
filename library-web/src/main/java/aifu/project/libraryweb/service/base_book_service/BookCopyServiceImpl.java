@@ -44,7 +44,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     public void saveAll(List<BookCopy> bookCopiesToSave) {
         bookCopyRepository.saveAll(bookCopiesToSave);
 
-        log.info("Excel orqali qo'shilgan BookCopy lar saqlandi: [{}]",
+        log.info("Excel orqali qo'shilgan BookCopy lar saqlandi: {}",
                 bookCopiesToSave.stream().map(BookCopy::getId).toList());
     }
 
@@ -83,12 +83,12 @@ public class BookCopyServiceImpl implements BookCopyService {
 
         String inventoryNumber = dto.getInventoryNumber();
         if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
-            throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+            throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
         }
 
         String epc = dto.getEpc();
         if (epc != null && bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
-            throw new IllegalArgumentException("Bu Epc bilan BookCopy mavjud: " + epc);
+            throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
         }
 
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
@@ -119,10 +119,17 @@ public class BookCopyServiceImpl implements BookCopyService {
                 case "inventoryNumber" -> {
                     String inventoryNumber = (String) value;
                     if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
-                        throw new IllegalArgumentException("Bu inventoryNumber bilan BookCopy mavjud: " + inventoryNumber);
+                        throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
                     }
 
                     bookCopy.setInventoryNumber(inventoryNumber);
+                }
+                case "epc" -> {
+                    String epc = (String) value;
+                    if (bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
+                        throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
+
+                    }
                 }
                 case "shelfLocation" -> bookCopy.setShelfLocation((String) value);
                 case "notes" -> bookCopy.setNotes((String) value);
@@ -153,21 +160,20 @@ public class BookCopyServiceImpl implements BookCopyService {
 
         BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
 
-        log.info("EPC bo'yicha BookCopy ma'lumotlari olindi: {}", response);
+        log.info("ID bo'yicha BookCopy ma'lumotlari olindi: {}", response);
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getByEPC(String epc) {
-//        BookCopy bookCopy = bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
-//                .orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + epc));
-        BookCopy bookCopy = bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(epc)
-                .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + epc));
+    public ResponseEntity<ResponseMessage> getByQuery(String field, String query) {
+        BookCopy bookCopy = (field.equals("epc"))
+                ? bookCopyRepository.findByEpcAndIsDeletedFalse(field).orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + field))
+                : bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(field).orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + field));
 
         BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
 
-        log.info("EPC bo'yicha BookCopy ma'lumotlari olindi: {}", response);
+        log.info("{} bo'yicha BookCopy ma'lumotlari olindi: {}", field, response);
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
     }
@@ -186,7 +192,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+    public ResponseEntity<ResponseMessage> getAll(String query, String field, String filter, int pageNumber, int pageSize, String sortDirection) {
         field = field == null ? DEFAULT : field;
         if (!field.equals(DEFAULT) && query == null) {
             throw new IllegalArgumentException("Query null bolishi mumkin emas. Field: " + field);
@@ -195,10 +201,18 @@ public class BookCopyServiceImpl implements BookCopyService {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
-        Page<BookCopyShortDTO> page = switch (field) {
-            case "book" -> bookCopyRepository.findByBookIdAndIsDeletedFalse(Integer.parseInt(query), pageable);
+        String filterQuery = switch (filter) {
+            case "inactive" -> "INACTIVE";
+            case "active" -> "ACTIVE";
+            default -> "ALL";
+        };
 
-            case "inventoryNumber" -> bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query, pageable);
+        Page<BookCopyShortDTO> page = switch (field) {
+            case "book" ->
+                    bookCopyRepository.findByBookIdAndIsDeletedFalse(Integer.parseInt(query), pageable, filterQuery);
+
+            case "inventoryNumber" ->
+                    bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query, pageable, filterQuery);
 
             case "fullInfo" -> {
                 String[] parts = query.trim().split("\\s+");
@@ -206,12 +220,12 @@ public class BookCopyServiceImpl implements BookCopyService {
                 String first = "%" + parts[0].toLowerCase() + "%";
                 String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
 
-                yield bookCopyRepository.findByTitleAndAuthor(first, second, pageable);
+                yield bookCopyRepository.findByTitleAndAuthor(first, second, pageable, filterQuery);
             }
 
-            case "epc" -> bookCopyRepository.findByEpcAndIsDeletedFalse(query, pageable);
+            case "epc" -> bookCopyRepository.findByEpcAndIsDeletedFalse(query, pageable, filterQuery);
 
-            case DEFAULT -> bookCopyRepository.findByIsDeletedFalse(pageable);
+            case DEFAULT -> bookCopyRepository.findByIsDeletedFalse(pageable, filterQuery);
 
             default -> throw new IllegalArgumentException("Noto'g'ri qidiruv maydoni: " + field);
         };
@@ -271,6 +285,12 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopy findByInventoryNumber(String inventoryNumber) {
         return bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
                 .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + inventoryNumber));
+    }
+
+    @Override
+    public BookCopy findById(Integer id) {
+        return bookCopyRepository.findById(id)
+                .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
     }
 
     @Override

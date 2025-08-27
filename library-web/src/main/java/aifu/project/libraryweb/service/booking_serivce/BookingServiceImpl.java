@@ -103,13 +103,12 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request) {
         String cardNumber = request.cardNumber();
-        String epc = request.epc();
+        Integer id = request.id();
         Integer days = request.days();
 
         Student student = studentService.findByCardNumber(cardNumber);
 
-//        BookCopy bookCopy = bookCopyService.findByEpc(epc);
-        BookCopy bookCopy = bookCopyService.findByInventoryNumber(epc);
+        BookCopy bookCopy = bookCopyService.findById(id);
 
         if (bookCopy.isTaken()) {
             log.error("Booking qilingan book copy: {}", bookCopy.getId());
@@ -130,10 +129,9 @@ public class BookingServiceImpl implements BookingService {
         SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Librarian librarian = securityLibrarian.toBase();
 
-        String epc = request.epc();
-
-//        BookCopy bookCopy = bookCopyService.findByEpc(epc);
-        BookCopy bookCopy = bookCopyService.findByInventoryNumber(epc);
+        BookCopy bookCopy = request.field().equals("epc")
+                ? bookCopyService.findByEpc(request.query())
+                : bookCopyService.findByInventoryNumber(request.query());
 
         Booking booking = bookingRepository.findByBook(bookCopy)
                 .orElseThrow(() -> new BookingNotFoundException("Bunday booking mavjud emas. Book copy: %s"

@@ -93,11 +93,11 @@ public class BaseBookServiceImpl implements BaseBookService {
         if (success) {
             baseBookRepository.saveAll(baseBooksToSave);
 
-            log.info("Excel orqali BaseBook qo'shildi: {}", baseBooksToSave.stream().map(BaseBook::getId));
+            log.info("Excel orqali BaseBook qo'shildi: {}", baseBooksToSave.stream().map(BaseBook::getId).toList());
 
-            if (bookCopiesToSave.isEmpty()) {
+            if (!bookCopiesToSave.isEmpty()) {
                 bookCopyService.saveAll(bookCopiesToSave);
-                log.info("Excel orqali BookCopy qo'shildi: {}", bookCopiesToSave.stream().map(BookCopy::getId));
+                log.info("Excel orqali BookCopy qo'shildi: {}", bookCopiesToSave.stream().map(BookCopy::getId).toList());
             }
 
             return ResponseEntity.status(HttpStatus.CREATED)

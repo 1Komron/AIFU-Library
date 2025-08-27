@@ -17,7 +17,7 @@ public interface BookCopyService {
 
     ResponseEntity<ResponseMessage> get(Integer id);
 
-    ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection);
+    ResponseEntity<ResponseMessage> getAll(String query, String field, String filter, int pageNumber, int pageSize, String sortDirection);
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 
@@ -35,11 +35,13 @@ public interface BookCopyService {
 
     ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber);
 
-    ResponseEntity<ResponseMessage> getByEPC(String epc);
+    ResponseEntity<ResponseMessage> getByQuery(String field,String query);
 
     List<String> findByBaseBookId(Integer id);
 
-    List<BookCopy> saveBookCopies(BaseBook baseBook, List<String> strings, List<String> errorMessages,int index);
+    List<BookCopy> saveBookCopies(BaseBook baseBook, List<String> strings, List<String> errorMessages, int index);
 
     void saveAll(List<BookCopy> bookCopiesToSave);
+
+    BookCopy findById(Integer id);
 }

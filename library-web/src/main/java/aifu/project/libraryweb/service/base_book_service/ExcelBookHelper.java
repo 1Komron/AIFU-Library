@@ -33,19 +33,32 @@ public class ExcelBookHelper {
                     continue;
                 }
 
+                String author = formatter.formatCellValue(row.getCell(1));
+                String title = formatter.formatCellValue(row.getCell(2));
+                String category = formatter.formatCellValue(row.getCell(3));
+                String series = formatter.formatCellValue(row.getCell(4));
+                int publicationYear = Integer.parseInt(formatter.formatCellValue(row.getCell(5)));
+                String publisher = formatter.formatCellValue(row.getCell(6));
+                String publicationCity = formatter.formatCellValue(row.getCell(7));
+                String isbn = formatter.formatCellValue(row.getCell(8));
+                int pageCount = Integer.parseInt(formatter.formatCellValue(row.getCell(9)));
+                String language = formatter.formatCellValue(row.getCell(10));
+                String udc = formatter.formatCellValue(row.getCell(11));
+                List<String> inventoryNumbers = getInventoryNumbers(formatter.formatCellValue(row.getCell(12)));
+
                 BookImportDTO dto = new BookImportDTO(
-                        formatter.formatCellValue(row.getCell(1)),
-                        formatter.formatCellValue(row.getCell(2)),
-                        formatter.formatCellValue(row.getCell(3)),
-                        formatter.formatCellValue(row.getCell(4)),
-                        Integer.parseInt(formatter.formatCellValue(row.getCell(5))),
-                        formatter.formatCellValue(row.getCell(6)),
-                        formatter.formatCellValue(row.getCell(7)),
-                        formatter.formatCellValue(row.getCell(8)),
-                        Integer.parseInt(formatter.formatCellValue(row.getCell(9))),
-                        formatter.formatCellValue(row.getCell(10)),
-                        formatter.formatCellValue(row.getCell(11)),
-                        getInventoryNumbers(formatter.formatCellValue(row.getCell(12)))
+                        author,
+                        title,
+                        category,
+                        series,
+                        publicationYear,
+                        publisher,
+                        publicationCity,
+                        isbn,
+                        pageCount,
+                        language,
+                        udc,
+                        inventoryNumbers
                 );
 
                 books.add(dto);

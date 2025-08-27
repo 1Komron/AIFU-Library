@@ -66,14 +66,15 @@ public class BookCopyController {
         return bookCopyService.get(id);
     }
 
-    @GetMapping("/epc/{epc}")
+    @GetMapping("/get")
     @Operation(summary = "Book copy EPC bo'yicha olish")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book copy muvaffaqiyatli olindi"),
             @ApiResponse(responseCode = "404", description = "Book copy topilmadi")
     })
-    public ResponseEntity<ResponseMessage> getByEpc(@PathVariable String epc) {
-        return bookCopyService.getByEPC(epc);
+    public ResponseEntity<ResponseMessage> getByEpc(@RequestParam(defaultValue = "epc") String field,
+                                                    @RequestParam String query) {
+        return bookCopyService.getByQuery(field, query);
     }
 
 
@@ -91,6 +92,7 @@ public class BookCopyController {
                     Parametrlar:
                     - query: Qidiruv so'zi
                     - field: Qidiriladigan field
+                    - filter: 'all', 'active', 'inactive'
                     - pageNumber: Sahifa raqami (default: 1)
                     - pageSize: Sahifa hajmi (default: 10)
                     - sortDirection: Tartiblash yo'nalishi (default: asc) 'asc' yoki 'desc'
@@ -101,10 +103,11 @@ public class BookCopyController {
 
     public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false) String query,
                                                   @RequestParam(required = false) String field,
+                                                  @RequestParam(defaultValue = "all") String filter,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,
                                                   @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
-        return bookCopyService.getAll(query, field, pageNumber, pageSize, sortDirection);
+        return bookCopyService.getAll(query, field, filter, pageNumber, pageSize, sortDirection);
     }
 
 }

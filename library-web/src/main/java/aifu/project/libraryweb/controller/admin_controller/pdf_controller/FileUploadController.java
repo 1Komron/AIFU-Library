@@ -40,7 +40,6 @@ public class FileUploadController {
     })
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseMessage> uploadImage(@RequestPart("file") MultipartFile file) {
-        // 'throws' olib tashlandi. Barcha xatoliklar GlobalExceptionHandler orqali ushlanadi.
         String url = fileStorageService.save(file, "image");
         ResponseMessage body = new ResponseMessage(
                 true,
@@ -63,6 +62,9 @@ public class FileUploadController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ResponseMessage.class)))
     })
+
+
+
     @PostMapping(value = "/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseMessage> uploadPdf(@RequestPart("file") MultipartFile file) {
         // 'throws' olib tashlandi.

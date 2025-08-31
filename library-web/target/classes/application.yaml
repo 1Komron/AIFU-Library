@@ -1,6 +1,6 @@
 spring:
   rabbitmq:
-    host: rabbitmq
+    host: localhost
     port: 5672
     username: guest
     password: guest
@@ -78,4 +78,4 @@ jwt:
 
 security:
   hashing:
-    passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"
+    passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"  #"a1b2c3!@#X9fT7kL2qP0sZ8rD$Mh6&Vr4#@!c3b2a1"

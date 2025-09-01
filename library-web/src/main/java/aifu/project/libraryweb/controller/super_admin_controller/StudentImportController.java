@@ -1,8 +1,7 @@
 package aifu.project.libraryweb.controller.super_admin_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
-import aifu.project.common_domain.dto.student_dto.ImportErrorDTO;
-import aifu.project.libraryweb.config.ImportStats;
+import aifu.project.common_domain.dto.student_dto.ImportResultDTO;
 import aifu.project.libraryweb.service.student_service.ImportErrorReportExcelService;
 import aifu.project.libraryweb.service.student_service.StudentExcelImportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -20,10 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Tag(name = "Talabalarni Import Qilish (Super Admin)")
 @RestController
@@ -33,7 +33,6 @@ import java.util.List;
 
 public class StudentImportController {
 
-    private final ImportErrorReportExcelService importErrorReportExcelService;
     private final StudentExcelImportService studentExcelImportService;
 
     @Operation(summary = "Import uchun Excel shablonini yuklab olish")
@@ -67,49 +66,41 @@ public class StudentImportController {
     }
 
 
-    @Operation(summary = "Excel faylni yuklab, talabalarni import qilish")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+
+
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<ResponseMessage> uploadStudents(@RequestParam("file") MultipartFile file) throws IOException {
-        log.info("'{}' nomli fayl orqali talabalarni import qilish so'rovi qabul qilindi.", file.getOriginalFilename());
+    @Operation(summary = "Excel faylni yuklab, talabalarni import qilish")
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseMessage> importStudents(@RequestParam("file") MultipartFile file) throws IOException {
+        log.info("'{}' fayli bilan import jarayoni boshlandi.", file.getOriginalFilename());
 
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body(new ResponseMessage(false, "Fayl bo'sh bo'lishi mumkin emas.", null));
-        }
-
-        ImportStats stats = studentExcelImportService.importStudentsFromExcel(file.getInputStream());
+        ImportResultDTO result = studentExcelImportService.importStudents(file);
 
         String message = String.format("%d ta talaba muvaffaqiyatli import qilindi. %d ta yozuvda xatolik aniqlandi.",
-                stats.getSuccessCount(),
-                stats.getFailedRecords() != null ? stats.getFailedRecords().size() : 0);
+                result.getSuccessCount(), result.getErrorCount());
 
-        log.info(message);
-        return ResponseEntity.ok(new ResponseMessage(true, message, stats));
+        return ResponseEntity.ok(new ResponseMessage(true, message, result));
     }
+
     @Operation(summary = "Import xatoliklari haqida Excel-hisobot yuklab olish")
-    @PostMapping("/report")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<byte[]> downloadImportErrorReport(@RequestBody List<ImportErrorDTO> failedRecords) {
-        log.info("{} ta yozuvdan iborat import xatoliklari hisobotini generatsiya qilish so'rovi.", failedRecords.size());
-        if (failedRecords.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
+    @GetMapping("/import/report/{jobId}")
+    public ResponseEntity<Resource> downloadImportErrorReport(@PathVariable UUID jobId) {
+        log.info("{} ID'li import jarayonining xatoliklar hisoboti so'raldi.", jobId);
 
-        try {
-            byte[] excelFile = importErrorReportExcelService.generateStudentImportErrorReport(failedRecords);
-            String fileName = "import_xatoliklari_" + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ".xlsx";
+        Map<String, Object> reportData = studentExcelImportService.getErrorReport(jobId);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        byte[] excelFile = (byte[]) reportData.get("file");
+        String fileName = (String) reportData.get("fileName");
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // Fayl yuklash uchun standart media type
-                    .body(excelFile);
+        ByteArrayResource resource = new ByteArrayResource(excelFile);
 
-        } catch (IOException e) {
-            log.error("Import xatoliklari hisobotini generatsiya qilishda xatolik!", e);
-            return ResponseEntity.internalServerError().build();
-        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
     }
 }
+
+

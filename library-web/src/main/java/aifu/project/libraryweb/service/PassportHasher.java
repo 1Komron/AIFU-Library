@@ -37,18 +37,5 @@ public class PassportHasher {
         }
     }
 
-    public boolean verify(String plainPassportCode, String storedHash) {
-        if (plainPassportCode == null || storedHash == null || plainPassportCode.isBlank() || storedHash.isBlank()) {
-            return false;
-        }
-        try {
-            String computedHash = hash(plainPassportCode);
-            return storedHash.equals(computedHash);
-        } catch (Exception e) {
-            log.error("Passport kodini tekshirishda xatolik: {}", plainPassportCode, e);
-            return false;
-        }
-    }
-
 
 }

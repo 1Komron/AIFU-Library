@@ -4,13 +4,9 @@ import aifu.project.uhf_reader.connection.ReaderConnection;
 import aifu.project.uhf_reader.repository.BookCopyRepository;
 import aifu.project.uhf_reader.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.*;
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReaderService {
@@ -25,12 +21,8 @@ public class ReaderService {
 
         reader1.initReader();
 
-        log.info("Reader 1 init qilinishi.");
-
-        ReaderConnection reader2 = new ReaderConnection(8085, "Reader-2",
+        ReaderConnection reader2 = new ReaderConnection(8086, "Reader-2",
                 rabbitTemplate, bookCopyRepository, notificationRepository, bookingService);
-
-        log.info("Reader 2 init qilinishi.");
 
         reader2.initReader();
     }

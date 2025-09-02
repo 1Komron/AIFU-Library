@@ -3,14 +3,14 @@ spring:
     name:
       uhf-reader
   datasource:
-    url: jdbc:postgresql://localhost:5432/aifu_library
+    url: jdbc:postgresql://postgres:5432/aifu_library
     username: postgres
     password: root123
   jpa:
     hibernate:
       ddl-auto: none
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest

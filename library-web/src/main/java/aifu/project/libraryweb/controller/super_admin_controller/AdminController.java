@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/super-admin/admins")
 @RequiredArgsConstructor
 @Slf4j
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminController {
     private final AdminManagementService adminManagementService;
 

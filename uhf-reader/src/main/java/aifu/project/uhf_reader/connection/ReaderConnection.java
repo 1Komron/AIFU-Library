@@ -33,10 +33,11 @@ public class ReaderConnection {
                             BookCopyRepository bookCopyRepository,
                             NotificationRepository notificationRepository,
                             BookingService bookingService
-                            ) {
+    ) {
         this.port = port;
         this.name = name;
         this.readService = new ReadService(
+                this.name,
                 rabbitTemplate,
                 bookCopyRepository,
                 notificationRepository,
@@ -134,20 +135,19 @@ public class ReaderConnection {
         if (isMaintenanceTime(now)) {
             log.info("[{}] Reader ulanmandi. Dam olish vaqti", name);
             reconnecting.set(false);
-            return;
+        } else {
+            log.info("[{}] Reader ulanmagan, qayta ulashga urinish...", name);
+
+            try {
+                server.close();
+            } catch (Exception ignored) {
+                log.info("[{}] Server allaqachon yopilgan", name);
+            }
+
+            this.client = null;
+            initReader();
+            reconnecting.set(false);
         }
-
-        log.info("[{}] Reader ulanmagan, qayta ulashga urinish...", name);
-
-        try {
-            server.close();
-        } catch (Exception ignored) {
-            log.info("[{}] Server allaqachon yopilgan", name);
-        }
-
-        this.client = null;
-        initReader();
-        reconnecting.set(false);
     }
 
     private boolean isMaintenanceTime(LocalDateTime now) {

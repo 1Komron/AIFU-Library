@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @EnableScheduling
 public class ReadService {
+    private final String name;
     private final RabbitTemplate rabbitTemplate;
     private final BookCopyRepository bookCopyRepository;
     private final NotificationRepository notificationRepository;
@@ -29,16 +30,16 @@ public class ReadService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private final AtomicBoolean alarmActive = new AtomicBoolean(false);
     private final Map<String, Long> epcCache = new ConcurrentHashMap<>();
-    private final static long REPEAT_DELAY_MS = 3000;
+    private static final long REPEAT_DELAY_MS = 3000;
 
     private TriggerService triggerService;
 
     public void configureEventHandlers(GClient client) {
-        client.onTagEpcLog = this::handleTagEpcLog;
-
         this.triggerService = new TriggerService(client);
 
         executor.submit(triggerService::triggerSuccess);
+
+        client.onTagEpcLog = this::handleTagEpcLog;
 
         scheduler.scheduleAtFixedRate(() -> {
             long now = System.currentTimeMillis();
@@ -57,7 +58,8 @@ public class ReadService {
                     epcCache.put(epc, now);
 
                     switch (bookingService.isEpcBooked(epc)) {
-                        case -1 -> log.info("Tag:  '{}' BookCopy table da topilmadi. Scan ignor qilindi.", epc);
+                        case -1 ->
+                                log.info("[{}] Tag:  '{}' BookCopy table da topilmadi. Scan ignor qilindi.", this.name, epc);
 
                         case 0 -> {
                             if (alarmActive.get()) {
@@ -69,15 +71,15 @@ public class ReadService {
                             }
 
                             executor.submit(() -> sendNotification(epc));
-                            log.info("Tag: '{}' topildi, lekin ushbu kitob boyicha aktiv bron mavjud emas.", epc);
+                            log.info("[{}] Tag: '{}' topildi, lekin ushbu kitob boyicha aktiv bron mavjud emas.", this.name, epc);
                         }
 
                         case 1 -> {
                             executor.submit(triggerService::triggerSuccess);
-                            log.info("Tag: '{}' aktiv bron mavjud.", epc);
+                            log.info("[{}] Tag: '{}' aktiv bron mavjud.", this.name, epc);
                         }
 
-                        default -> log.error("Noto'gri status kirib keldi. Tag: '{}'.", epc);
+                        default -> log.error("[{}] Noto'gri status kirib keldi. Tag: '{}'.", this.name, epc);
                     }
                 }
             }
@@ -97,11 +99,12 @@ public class ReadService {
                 notificationDTO
         );
 
-        log.info("RFID EPC '{}' bron qilinmagan. Notification uzatamiz.", epc);
+        log.info("[{}] EPC '{}' bron qilinmagan. Notification uzatamiz.", name, epc);
     }
 
-    public ReadService(RabbitTemplate rabbitTemplate, BookCopyRepository bookCopyRepository,
+    public ReadService(String name, RabbitTemplate rabbitTemplate, BookCopyRepository bookCopyRepository,
                        NotificationRepository notificationRepository, BookingService bookingService) {
+        this.name = name;
         this.rabbitTemplate = rabbitTemplate;
         this.bookCopyRepository = bookCopyRepository;
         this.notificationRepository = notificationRepository;

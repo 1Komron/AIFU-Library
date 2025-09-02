@@ -105,9 +105,14 @@ public class ExcelBackupExporter {
                     setCell(row, col++, book.language());
                     setCell(row, col++, book.udc());
                     setCell(row, col++, book.copyCount());
-                    setCell(row, col, String.valueOf(book.inventoryNumbers()));
+                    setCell(row, col, getInventoryNumbers(book));
                 }
         );
+    }
+
+    private static String getInventoryNumbers(BookExcelDTO book) {
+        String value = String.valueOf(book.inventoryNumbers());
+        return value.substring(1, value.length() - 1);
     }
 
     public static byte[] exportHistoryExcel(List<History> historyList) {

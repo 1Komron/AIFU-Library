@@ -1,4 +1,4 @@
-package aifu.project.libraryweb.controller.admin_controller.base_book_controller;
+package aifu.project.libraryweb.controller.super_admin_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.base_book_service.BaseBookService;
@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/admin/book/import")
+@RequestMapping("/api/super-admin/book/import")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class BookImportController {
     private final BaseBookService baseBookService;
 

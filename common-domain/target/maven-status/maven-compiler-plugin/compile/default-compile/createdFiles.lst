@@ -14,6 +14,7 @@ aifu/project/common_domain/exceptions/EmailAlreadyExistsException.class
 aifu/project/common_domain/entity/Librarian.class
 aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO$CreateCategoryDTOBuilder.class
 aifu/project/common_domain/exceptions/HistoryNotFoundException.class
+aifu/project/common_domain/exceptions/ReportGenerationException.class
 aifu/project/common_domain/mapper/BaseBookCategoryMapper.class
 aifu/project/common_domain/dto/pdf_book_dto/CategorySearchCriteriaDTO$CategorySearchCriteriaDTOBuilder.class
 aifu/project/common_domain/dto/action_dto/WarningActionDTO.class
@@ -42,6 +43,7 @@ aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.class
 aifu/project/common_domain/dto/booking_dto/BookingShortDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryDTO.class
 aifu/project/common_domain/dto/statistic_dto/BookingsPerMonthDTO.class
+aifu/project/common_domain/exceptions/ReportNotFoundException.class
 aifu/project/common_domain/dto/statistic_dto/BookingDiagramDTO.class
 aifu/project/common_domain/entity/User.class
 aifu/project/common_domain/dto/statistic_dto/BookingsPerDayDTO.class
@@ -90,6 +92,8 @@ aifu/project/common_domain/dto/histroy_dto/HistorySummaryDTO.class
 aifu/project/common_domain/dto/booking_dto/ExtendBookingDTO.class
 aifu/project/common_domain/exceptions/CategoryDeletionException.class
 aifu/project/common_domain/entity/BookCopy$BookCopyBuilder.class
+aifu/project/common_domain/dto/student_dto/DeactivationResultDTO.class
+aifu/project/common_domain/dto/student_dto/ImportResultDTO.class
 aifu/project/common_domain/entity/PdfBook.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookUpdateDTO.class
 aifu/project/common_domain/entity/enums/NotificationType.class
@@ -115,6 +119,7 @@ aifu/project/common_domain/exceptions/FileValidationException.class
 aifu/project/common_domain/dto/action_dto/ExtendRejectActionDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryShortDTO.class
 aifu/project/common_domain/dto/booking_dto/BookingResponse.class
+aifu/project/common_domain/dto/student_dto/FileDownloadDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookPreviewDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CreateCategoryDTO.class
 aifu/project/common_domain/dto/student_dto/StudentShortDTO.class

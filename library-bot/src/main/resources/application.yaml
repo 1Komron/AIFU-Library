@@ -1,7 +1,7 @@
 spring:
   application:
     name:
-      library-bot
+     library-bot
   datasource:
     url: jdbc:postgresql://localhost:5432/aifu_library
     password: root123
@@ -29,4 +29,4 @@ server:
   port: 8081
 security:
   hashing:
-    passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"
+    passport-salt: "a1b2c3!@#YourVerySecretKeyShouldBeHere#@!c3b2a1"  #"a1b2c3!@#X9fT7kL2qP0sZ8rD$Mh6&Vr4#@!c3b2a1"

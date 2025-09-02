@@ -3,7 +3,9 @@ package aifu.project.libraryweb.handler;
 import aifu.project.common_domain.exceptions.*; // Assuming this is where your other exceptions are
 import aifu.project.common_domain.dto.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -171,5 +173,20 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessage(false, "Could not upload the file. Please try again later.", null));
     }
 
+    @ExceptionHandler(ReportNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleReportNotFoundException(ReportNotFoundException e) {
+        log.warn("Hisobot topilmadi. Sababi: {}", e.getMessage());
+        ResponseMessage responseBody = new ResponseMessage(false, e.getMessage(), null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(responseBody, headers, HttpStatus.NOT_FOUND); // 404
+    }
+
+    @ExceptionHandler(ReportGenerationException.class)
+    public ResponseEntity<ResponseMessage> handleReportGenerationException(ReportGenerationException e) {
+        log.error("Hisobot generatsiyasida kutilmagan xatolik: {}", e.getMessage(), e.getCause());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseMessage(false, "Hisobotni yaratishda serverda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.", null));
+    }
 
 }

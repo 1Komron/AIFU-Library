@@ -44,8 +44,7 @@ public class ImportErrorReportExcelService {
                 row.createCell(3).setCellValue(student.getFaculty());
                 row.createCell(4).setCellValue(student.getAdmissionTime() != null ? student.getAdmissionTime().format(formatter) : "");
                 row.createCell(5).setCellValue(student.getGraduationTime() != null ? student.getGraduationTime().format(formatter) : "");
-                row.createCell(4).setCellValue(student.getErrorReason());
-            }
+                row.createCell(6).setCellValue(student.getErrorReason());            }
             for (int i = 0; i < columns.length; i++) {
                 sheet.autoSizeColumn(i);
             }

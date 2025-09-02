@@ -20,7 +20,7 @@ public class AdminProfileController {
     }
 
     @PatchMapping
-    public ResponseEntity<ResponseMessage> updateAdminProfile(@RequestParam Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> updateAdminProfile(@RequestBody Map<String, Object> updates) {
         return librarianService.update(updates);
     }
 }

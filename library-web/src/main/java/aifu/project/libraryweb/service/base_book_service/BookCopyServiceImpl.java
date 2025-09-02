@@ -168,8 +168,8 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public ResponseEntity<ResponseMessage> getByQuery(String field, String query) {
         BookCopy bookCopy = (field.equals("epc"))
-                ? bookCopyRepository.findByEpcAndIsDeletedFalse(field).orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + field))
-                : bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(field).orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + field));
+                ? bookCopyRepository.findByEpcAndIsDeletedFalse(query).orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + field))
+                : bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query).orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + field));
 
         BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
 

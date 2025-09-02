@@ -104,7 +104,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student topilmadi"),
             @ApiResponse(responseCode = "400", description = "CardNumber allaqachon mavjud")
     })
-    public ResponseEntity<ResponseMessage> update(@PathVariable Long id, @RequestParam Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return studentService.update(id, updates);
     }
 }

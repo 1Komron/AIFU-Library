@@ -6,6 +6,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/aifu_library
     username: postgres
     password: root123
+  jpa:
+    hibernate:
+      ddl-auto: none
   rabbitmq:
     host: localhost
     port: 5672

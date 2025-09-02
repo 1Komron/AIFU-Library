@@ -20,6 +20,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ResponseMessage> handleUserNotFoundException(UserNotFoundException e) {
+        log.error("Foydalanuvchi topilmadi. Message: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessage(false, e.getMessage(), null));
+    }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ResponseMessage> handleUserAlreadyExistsExceptions(UserAlreadyExistsException e) {
         log.error("User tizimda mavjud. Message: {}", e.getMessage());
@@ -163,7 +170,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ResponseMessage(false, "Could not upload the file. Please try again later.", null));
     }
-
 
 
 }

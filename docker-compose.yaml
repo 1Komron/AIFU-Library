@@ -35,6 +35,18 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  reader:
+    build:
+      context: ./reader
+    container_name: uhf-reader
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
   postgres:
     image: postgres:15
     container_name: postgres
@@ -44,7 +56,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root123
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

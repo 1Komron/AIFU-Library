@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,17 @@ public class NotificationServiceImpl implements NotificationService {
     private static final String NOTIFICATION_TIME = "notificationTime";
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> deleteNotification(Long notificationId) {
+        log.info("ID: {} orqali notification o'chirish jarayoni...", notificationId);
+
         Notification notification = notificationRepository.findNotificationById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException("Notification topilmadi ID: " + notificationId));
 
         notificationRepository.delete(notification);
 
         log.info("Notification muvaffaqiyatli ochirildi. NotificationID: {}", notificationId);
+        log.info("ID: {} orqali notification ochirish yakunlandi.", notificationId);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Notification muvaffaqiyatli ochirildi", null));
     }
@@ -42,6 +47,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public ResponseEntity<ResponseMessage> getAllNotifications(int pageNumber, int pageSize, String filter, String sortDirection) {
+        log.info("Notification ro'yxatini olish jarayoni...");
+
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, NOTIFICATION_TIME));
 
@@ -53,7 +60,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         List<Notification> content = page.getContent();
 
-
         log.info("Notification ro'yxati: Ro'yxatdagi elementlar soni: {}, Sahifa raqami: {}, Sahifa hajmi: {}, Filtr: {}, Tartiblash yo'nalishi: {}",
                 page.getTotalElements(), pageNumber + 1, pageSize, filter, sortDirection);
         log.info("Notification ro'yxati: Ro'yxat {}", content.stream().map(Notification::getId).toList());
@@ -61,12 +67,17 @@ public class NotificationServiceImpl implements NotificationService {
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", getShortDTO(content));
 
+        log.info("Notification ro'yxatini olish jaarayoni yakunlandi.");
+
         return ResponseEntity.ok(new ResponseMessage(true, "Notification ro'yxati", map));
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getDetails(String notificationId) {
-        Notification notification = notificationRepository.findNotificationById(Long.parseLong(notificationId))
+    @Transactional
+    public ResponseEntity<ResponseMessage> getDetails(Long notificationId) {
+        log.info("ID: {} orqali notification malumotlarini olish jarayoni...", notificationId);
+
+        Notification notification = notificationRepository.findNotificationById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException("Notification topilmadi. ID: " + notificationId));
 
         log.info("Notification ma'lumotlari: {}", notification);
@@ -75,6 +86,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
 
         log.info("Notification o'qilgan deb belgilandi. NotificationID: {}", notificationId);
+        log.info("ID: {} oqali notification malumotlarini olish yakunlandi.", notificationId);
 
         return ResponseEntity.ok(new ResponseMessage(
                 true,
@@ -89,7 +101,6 @@ public class NotificationServiceImpl implements NotificationService {
                             case EXTEND -> NotificationExtendShortDTO.toDTO(notification);
                             case WARNING -> NotificationWarningShortDTO.toDTO(notification);
                         })
-
                 .toList();
     }
 

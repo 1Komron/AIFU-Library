@@ -8,6 +8,7 @@ import aifu.project.libraryweb.service.booking_serivce.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +64,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Bron qilishda xatolik yuz berdi. Kitob boshqa student tomonidan bron qilingan"),
             @ApiResponse(responseCode = "404", description = "Kitob yoki student topilmadi")
     })
-    public ResponseEntity<ResponseMessage> borrowBook(@RequestBody BorrowBookDTO request) {
+    public ResponseEntity<ResponseMessage> borrowBook(@Valid @RequestBody BorrowBookDTO request) {
         return bookingService.borrowBook(request);
     }
 
@@ -74,7 +75,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Bronni uzaytirishda xatolik yuz berdi. Noto'g'ri uzaytirish kunlari kiritildi"),
             @ApiResponse(responseCode = "404", description = "Bron topilmadi")
     })
-    public ResponseEntity<ResponseMessage> extendBooking(@RequestBody ExtendBookingDTO request) {
+    public ResponseEntity<ResponseMessage> extendBooking(@Valid @RequestBody ExtendBookingDTO request) {
         return bookingService.extendBooking(request);
     }
 
@@ -84,7 +85,7 @@ public class BookingController {
             @ApiResponse(responseCode = "200", description = "Kitob muvaffaqiyatli qaytarildi"),
             @ApiResponse(responseCode = "404", description = "Student | Kitob | Bron topilmadi")
     })
-    public ResponseEntity<ResponseMessage> returnBook(@RequestBody ReturnBookDTO request) {
+    public ResponseEntity<ResponseMessage> returnBook(@Valid @RequestBody ReturnBookDTO request) {
         return bookingService.returnBook(request);
     }
 }

@@ -1,4 +1,6 @@
 package aifu.project.common_domain.dto.action_dto;
 
-public record ExtendRejectActionDTO(Long notificationId) {
+import jakarta.validation.constraints.NotNull;
+
+public record ExtendRejectActionDTO(@NotNull Long notificationId) {
 }

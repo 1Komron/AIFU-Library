@@ -47,16 +47,23 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public ResponseEntity<ResponseMessage> getById(Long id) {
+        log.info("ID:{} orqali Tarixni olib chiqish jarayoni...", id);
+
         History history = historyRepository.findById(id)
                 .orElseThrow(() -> new HistoryNotFoundException("History topilmadi: " + id));
 
         HistorySummaryDTO data = HistorySummaryDTO.toDTO(history);
+
+        log.info("ID: {} orqali Tarixni olib chiqish jarayoni yakunlandi", id);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Tarix ma'lumotlari muvaffaqiyatli qaytarildi", data));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getAll(String field, String query, int pageNumber, int pageSize, String sortDirection) {
+        log.info("Tarix ro'yxatini olib chiqish jarayoni...");
+        log.info("Field: {}, Query: {}, pageNumber: {}, pageSize: {}", field, query, pageNumber, pageSize);
+
         field = field == null ? "default" : field;
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
@@ -76,6 +83,8 @@ public class HistoryServiceImpl implements HistoryService {
 
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("data", content.stream().map(HistoryShortDTO::toDTO).toList());
+
+        log.info("Tarix ro'yxatini olib chiqish yakunlandi.");
 
         return ResponseEntity.ok(new ResponseMessage(true, "Qidiruv natijalari muvaffaqiyatli qaytarildi", map));
     }

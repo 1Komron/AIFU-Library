@@ -1,5 +1,7 @@
 package aifu.project.common_domain.dto.action_dto;
 
-public record WarningActionDTO(Long notificationId) {
+import jakarta.validation.constraints.NotNull;
+
+public record WarningActionDTO(@NotNull Long notificationId) {
 
 }

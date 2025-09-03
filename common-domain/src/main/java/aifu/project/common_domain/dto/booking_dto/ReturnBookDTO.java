@@ -1,4 +1,6 @@
 package aifu.project.common_domain.dto.booking_dto;
 
-public record ReturnBookDTO(String field, String query) {
+import jakarta.validation.constraints.NotNull;
+
+public record ReturnBookDTO(@NotNull Long bookingId) {
 }

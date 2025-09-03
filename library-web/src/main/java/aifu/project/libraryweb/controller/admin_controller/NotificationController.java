@@ -22,7 +22,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Notification ma'lumotlari muvaffaqiyatli olindi"),
             @ApiResponse(responseCode = "404", description = "Notification topilmadi")
     })
-    public ResponseEntity<ResponseMessage> getNotificationDetails(@PathVariable String id) {
+    public ResponseEntity<ResponseMessage> getNotificationDetails(@PathVariable Long id) {
         return notificationService.getDetails(id);
     }
 

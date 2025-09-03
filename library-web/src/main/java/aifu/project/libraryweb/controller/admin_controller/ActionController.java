@@ -8,6 +8,7 @@ import aifu.project.libraryweb.service.action_service.ActionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class ActionController {
             @ApiResponse(responseCode = "200", description = "Booking vaqtini uzaytirish muvaffaqiyatli amalga oshirildi"),
             @ApiResponse(responseCode = "404", description = "Notification | Booking topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> extend(@RequestBody ExtendAcceptActionDTO extendAcceptActionDTO) {
+    public ResponseEntity<ResponseMessage> extend(@Valid @RequestBody ExtendAcceptActionDTO extendAcceptActionDTO) {
         return actionService.extendAccept(extendAcceptActionDTO);
     }
 
@@ -38,7 +39,7 @@ public class ActionController {
             @ApiResponse(responseCode = "200", description = "Booking vaqtini uzaytirish rad etildi"),
             @ApiResponse(responseCode = "404", description = "Notification topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> extendReject(@RequestBody ExtendRejectActionDTO extendRejectDTO) {
+    public ResponseEntity<ResponseMessage> extendReject(@Valid @RequestBody ExtendRejectActionDTO extendRejectDTO) {
         return actionService.extendReject(extendRejectDTO);
     }
 
@@ -48,7 +49,7 @@ public class ActionController {
             @ApiResponse(responseCode = "200", description = "Warning notification muvaffaqiyatli ochirildi"),
             @ApiResponse(responseCode = "404", description = "Notification topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> warning(@RequestBody WarningActionDTO warningActionDTO) {
+    public ResponseEntity<ResponseMessage> warning(@Valid @RequestBody WarningActionDTO warningActionDTO) {
         return actionService.warning(warningActionDTO);
     }
 }

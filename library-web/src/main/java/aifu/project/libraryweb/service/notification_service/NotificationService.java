@@ -8,5 +8,5 @@ public interface NotificationService {
 
     ResponseEntity<ResponseMessage> getAllNotifications(int pageNumber, int pageSize, String filter, String sortDirection);
 
-    ResponseEntity<ResponseMessage> getDetails(String notificationId);
+    ResponseEntity<ResponseMessage> getDetails(Long notificationId);
 }

@@ -102,7 +102,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public ResponseEntity<ResponseMessage> borrowBook(BorrowBookDTO request) {
-        String cardNumber = request.cardNumber();
+        log.info("Kitob berish jarayoni...");
+        String cardNumber = request.cardNumber().trim();
         Integer id = request.id();
         Integer days = request.days();
 
@@ -119,6 +120,8 @@ public class BookingServiceImpl implements BookingService {
 
         bookCopyService.updateStatus(bookCopy, true);
 
+        log.info("Kitob berish jarayoni yakunlandi.");
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseMessage(true, "Booking muvaffaqiyatli yaratildi", null));
     }
@@ -126,16 +129,17 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public ResponseEntity<ResponseMessage> returnBook(ReturnBookDTO request) {
+        log.info("Kitobni qaytarish jarayoni...");
+
         SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Librarian librarian = securityLibrarian.toBase();
 
-        BookCopy bookCopy = request.field().equals("epc")
-                ? bookCopyService.findByEpc(request.query())
-                : bookCopyService.findByInventoryNumber(request.query());
+        log.info("Kitobni qaytib olayotgan kutubxonachi: {}", librarian);
 
-        Booking booking = bookingRepository.findByBook(bookCopy)
-                .orElseThrow(() -> new BookingNotFoundException("Bunday booking mavjud emas. Book copy: %s"
-                        .formatted(bookCopy)));
+        Booking booking = bookingRepository.findById(request.bookingId())
+                .orElseThrow(() -> new BookingNotFoundException("Booking topilmadi. ID: " + request.bookingId()));
+
+        BookCopy bookCopy = booking.getBook();
 
         bookCopyService.updateStatus(bookCopy, false);
 
@@ -144,8 +148,10 @@ public class BookingServiceImpl implements BookingService {
         adminStatisticsService.createActivity(booking, "RETURNED", librarian);
 
         bookingRepository.delete(booking);
-        log.info("Booking muvaffaqiyatli qaytarildi. Booking: {}", booking);
-        log.info("Booking ochirildi va tarixga qo'shildi");
+
+        log.info("Kitob muvaffaqiyatli qaytarildi. Booking: {}", booking);
+        log.info("Kitob ochirildi va tarixga qo'shildi");
+        log.info("Kitob qayatarish jarayoni yakunlandi.");
 
         return ResponseEntity.ok(new ResponseMessage(true, "Kitob muvaffaqiyatli qaytib olindi", null));
     }
@@ -153,6 +159,9 @@ public class BookingServiceImpl implements BookingService {
     public void createBooking(Student student, BookCopy bookCopy, Integer days) {
         SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Librarian librarian = securityLibrarian.toBase();
+
+        log.info("Kitob berayotgan kutubxonachi: {}", librarian);
+
         Booking booking = new Booking();
         booking.setIssuedBy(librarian);
         booking.setStudent(student);
@@ -192,7 +201,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> extendBooking(ExtendBookingDTO request) {
+        log.info("Kitob qaytarish vaqtni uzaytirish jarayoni...");
+
         Long id = request.bookingId();
         Integer extendDays = request.extendDays();
 
@@ -201,15 +213,16 @@ public class BookingServiceImpl implements BookingService {
 
         extendDueDate(booking, extendDays);
 
+        log.info("Kitob qaytarish vaqtini uzaytirish jarayoni yakunlandi.");
+
         return ResponseEntity.ok(new ResponseMessage(true, "Booking extended successfully", null));
     }
 
     private void extendDueDate(Booking booking, Integer extendDays) {
-        if (extendDays == null || extendDays < 1) {
-            throw new IllegalArgumentException("Noto'g'ri uzaytirish kunlari kiritildi: " + extendDays);
-        }
         SecurityLibrarian securityLibrarian = (SecurityLibrarian) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Librarian librarian = securityLibrarian.toBase();
+
+        log.info("Kitobni qaytarish vaqtini uzaytirayotgan kutubxonachi: {}", librarian);
 
         LocalDate dueDate = booking.getDueDate();
         LocalDate now = LocalDate.now();
@@ -229,16 +242,16 @@ public class BookingServiceImpl implements BookingService {
         adminStatisticsService.createActivity(booking, "EXTENDED", librarian);
     }
 
-        @Override
-        public Map<String, Object> getAllOverdueBookings(int pageNumber, int pageSize) {
-            Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            Page<BookingShortDTO> page = bookingRepository.findAllBookingByStatus(pageable, Status.OVERDUE);
+    @Override
+    public Map<String, Object> getAllOverdueBookings(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<BookingShortDTO> page = bookingRepository.findAllBookingByStatus(pageable, Status.OVERDUE);
 
-            Map<String, Object> map = Util.getPageInfo(page);
-            map.put("data", page.getContent());
+        Map<String, Object> map = Util.getPageInfo(page);
+        map.put("data", page.getContent());
 
-            return map;
-        }
+        return map;
+    }
 
     @Override
     public List<Booking> getAllBookings() {

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -31,24 +32,32 @@ public class ActionServiceImpl implements ActionService {
     private final BookingRepository bookingRepository;
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> extendReject(ExtendRejectActionDTO extendRejectActionDTO) {
+        log.info("Kitob qaytarish vaqtini uzaytirishga RAD ETISH jarayoni...");
+
         Long notificationId = extendRejectActionDTO.notificationId();
 
         Notification notification = notificationRepository.findNotificationById(notificationId)
                 .orElseThrow(() -> new NotificationNotFoundException(NOTIFICATION_NOT_FOUND + notificationId));
 
         Booking booking = bookingRepository.findByStudentAndBook(notification.getStudent(), notification.getBookCopy())
-                .orElseThrow(() -> new BookingNotFoundException("Booking topilmadi. ID: " + notificationId));
+                .orElseThrow(() -> new BookingNotFoundException("Booking topilmadi. Notification ID: " + notificationId));
 
-        log.info("Booking vaqti uzaytirish rad etildi. Booking: {}", booking);
+        log.info("Kitob qaytarish vaqtini uzaytirish rad etildi. Booking: {}", booking);
 
         notificationRepository.delete(notification);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Booking vaqtini uzaytirish rad etildi", null));
+        log.info("Kitob qaytarish vaqtini uzaytirishga RAD ETISH jarayoni yakunlandi.");
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Booking vaqtini uzaytirish rad etildi", notification));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> extendAccept(ExtendAcceptActionDTO extendAcceptActionDTO) {
+        log.info("Kitob qaytarish vaqtini uzaytirish TASDIQLASH jarayoni...");
+
         Long notificationId = extendAcceptActionDTO.notificationId();
         Integer extendDays = extendAcceptActionDTO.extendDays();
 
@@ -56,17 +65,21 @@ public class ActionServiceImpl implements ActionService {
                 .orElseThrow(() -> new NotificationNotFoundException(NOTIFICATION_NOT_FOUND + notificationId));
 
         Booking booking = bookingRepository.findByStudentAndBook(notification.getStudent(), notification.getBookCopy())
-                .orElseThrow(() -> new BookingNotFoundException("Booking topilmadi. ID: " + notificationId));
+                .orElseThrow(() -> new BookingNotFoundException("Booking topilmadi. Notification ID: " + notificationId));
 
         extendDeadline(booking, extendDays);
 
         notificationRepository.delete(notification);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Booking vaqtini uzaytirish muvaffaqiyatli amalga oshirildi", null));
+        log.info("Kitob qaytarish vaqtini uzaytirish TASDIQLASH jarayoni yakunlandi.");
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Booking vaqtini uzaytirish muvaffaqiyatli amalga oshirildi", notification));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> warning(WarningActionDTO warningActionDTO) {
+        log.info("Warning xabarni o'chirish jarayoni...");
+
         Long notificationId = warningActionDTO.notificationId();
 
         Notification notification = notificationRepository.findNotificationById(notificationId)
@@ -75,8 +88,9 @@ public class ActionServiceImpl implements ActionService {
         notificationRepository.delete(notification);
 
         log.info("Warning notification ochirildi: {}", notification);
+        log.info("Warning xabarni o'chirish jarayoni yakunlandi.");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Notification muvaffaqiyatli ochirildi", null));
+        return ResponseEntity.ok(new ResponseMessage(true, "Notification muvaffaqiyatli ochirildi", notification));
     }
 
     private void extendDeadline(Booking booking, Integer extendDays) {

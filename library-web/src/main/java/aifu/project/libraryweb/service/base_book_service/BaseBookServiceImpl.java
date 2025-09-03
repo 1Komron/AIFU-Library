@@ -124,8 +124,12 @@ public class BaseBookServiceImpl implements BaseBookService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> create(BaseBookCreateDTO dto) {
-        Integer categoryId = dto.getCategoryId();
+        log.info("BaseBook yarartilish jarayoni boshlandi...");
+        log.info("BaseBook yaratish uchun kelgan DTO: {}", dto);
+
+        Integer categoryId = dto.categoryId();
 
         BaseBookCategory category = categoryRepository
                 .findByIdAndIsDeletedFalse(categoryId)
@@ -142,12 +146,16 @@ public class BaseBookServiceImpl implements BaseBookService {
             log.error(e.getMessage());
         }
 
+        log.info("BaseBook yarartilish jarayoni yakunlandi");
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseMessage(true, "Base book muvaffaqiyatli yaratildi", responseDTO));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
+        log.info("ID {} bo'yicha base book ma'lumotlarini olish jarayoni boshlandi...", id);
+
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
 
@@ -162,11 +170,16 @@ public class BaseBookServiceImpl implements BaseBookService {
                 "takenCount", mapCount.get("taken")
         );
 
+        log.info("ID {} bo'yicha base book ma'lumotlarini olish jarayoni yakunlandi", id);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Base book by ID: " + id, map));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates) {
+        log.info("ID {} bo'yicha base book tahrirlash jarayoni boshlandi...", id);
+
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
 
@@ -181,17 +194,17 @@ public class BaseBookServiceImpl implements BaseBookService {
                 throw new IllegalArgumentException("Value null");
 
             switch (key) {
-                case "title" -> entity.setTitle((String) value);
-                case "author" -> entity.setAuthor((String) value);
-                case "series" -> entity.setSeries((String) value);
-                case "titleDetails" -> entity.setTitleDetails((String) value);
+                case "title" -> entity.setTitle(((String) value).trim());
+                case "author" -> entity.setAuthor(((String) value).trim());
+                case "series" -> entity.setSeries(((String) value).trim());
+                case "titleDetails" -> entity.setTitleDetails(((String) value).trim());
                 case "publicationYear" -> entity.setPublicationYear(Integer.parseInt(value.toString()));
-                case "publisher" -> entity.setPublisher((String) value);
-                case "publicationCity" -> entity.setPublicationCity((String) value);
-                case "isbn" -> entity.setIsbn((String) value);
+                case "publisher" -> entity.setPublisher(((String) value).trim());
+                case "publicationCity" -> entity.setPublicationCity(((String) value).trim());
+                case "isbn" -> entity.setIsbn(((String) value).trim());
                 case "pageCount" -> entity.setPageCount(Integer.parseInt(value.toString()));
-                case "language" -> entity.setLanguage((String) value);
-                case "udc" -> entity.setUdc((String) value);
+                case "language" -> entity.setLanguage(((String) value).trim());
+                case "udc" -> entity.setUdc(((String) value).trim());
                 case "category" -> {
                     Integer categoryId = Integer.parseInt(value.toString());
                     BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(categoryId)
@@ -212,13 +225,18 @@ public class BaseBookServiceImpl implements BaseBookService {
             log.error(e.getMessage());
         }
 
+        log.info("ID {} bo'yicha base book tahrirlash jarayoni yakunlandi", id);
+
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
         return ResponseEntity.ok(new ResponseMessage(true, "Base book muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> delete(Integer id) {
+        log.info("ID {} bo'yicha base book o'chirish jarayoni boshlandi...", id);
+
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
 
@@ -243,11 +261,17 @@ public class BaseBookServiceImpl implements BaseBookService {
             log.error(e.getMessage());
         }
 
+        log.info("ID {} bo'yicha base book o'chirish jarayoni yakunlandi", id);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Base book muvaffaqiyatli o'chirildi", id));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getAll(String query, String field, int pageNumber, int pageSize, String sortDirection) {
+        log.info("Base book ro'yxatini olish jarayoni boshlandi...");
+        log.info("Base book ro'yxatini olish uchun kelgan parametlar: query='{}', field='{}', pageNumber={}, pageSize={}, sortDirection='{}'",
+                query, field, pageNumber, pageSize, sortDirection);
+
         field = field != null ? field : DEFAULT;
         if ((!field.equals(DEFAULT)) && query == null) {
             throw new IllegalArgumentException("Query bo'sh bo'lishi mumkin emas. Field: " + field);
@@ -267,9 +291,9 @@ public class BaseBookServiceImpl implements BaseBookService {
 
                 yield baseBookRepository.searchByTitleAndAuthor(first, second, pageable);
             }
-            case "isbn" -> baseBookRepository.searchByIsbn(query, pageable);
-            case "udc" -> baseBookRepository.searchByUdc(query, pageable);
-            case "series" -> baseBookRepository.searchSeries(query, pageable);
+            case "isbn" -> baseBookRepository.searchByIsbn(query.trim(), pageable);
+            case "udc" -> baseBookRepository.searchByUdc(query.trim(), pageable);
+            case "series" -> baseBookRepository.searchSeries(query.trim(), pageable);
             case DEFAULT -> baseBookRepository.findByIsDeletedFalse(pageable);
             default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + field);
         };
@@ -281,6 +305,7 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         log.info("Base book ro'yxatini olish amalga oshirildi: query={}, field={}, pageNumber={}, pageSize={}", query, field, pageNumber + 1, pageSize);
         log.info("Base book ro'yxatini olish natijalari (ID): {}", list.stream().map(BaseBookShortDTO::id).toList());
+        log.info("Base book ro'yxatini olish jarayoni yakunlandi");
 
         return ResponseEntity.ok(new ResponseMessage(true, "Base book ni '%s' fieldi orqali qidirish".formatted(field), map));
     }

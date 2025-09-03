@@ -7,6 +7,7 @@ import aifu.project.libraryweb.service.base_book_service.BaseBookCategoryService
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class BaseBookCategoryController {
             @ApiResponse(responseCode = "201", description = "Base book category muvofaqiyatli yaratildi"),
             @ApiResponse(responseCode = "409", description = "Ushbu nomli Base book category mavjud")
     })
-    public ResponseEntity<ResponseMessage> create(@RequestBody CreateCategoryRequest request) {
+    public ResponseEntity<ResponseMessage> create(@Valid @RequestBody CreateCategoryRequest request) {
         return baseBookCategoryService.create(request);
     }
 
@@ -33,7 +34,7 @@ public class BaseBookCategoryController {
             @ApiResponse(responseCode = "200", description = "Base book category muvofaqiyatli tahrirlandi"),
             @ApiResponse(responseCode = "404", description = "Base book category topilmadi")
     })
-    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody UpdateCategoryRequest request) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @Valid @RequestBody UpdateCategoryRequest request) {
         return baseBookCategoryService.update(id, request);
     }
 
@@ -50,7 +51,7 @@ public class BaseBookCategoryController {
 
     @GetMapping
     @Operation(summary = "Base book category ro'yxatini olish")
-    public ResponseEntity<ResponseMessage> getBaseBookCategoryList(@RequestParam(required = false,defaultValue = "asc") String sortDirection) {
+    public ResponseEntity<ResponseMessage> getBaseBookCategoryList(@RequestParam(required = false, defaultValue = "asc") String sortDirection) {
         return baseBookCategoryService.getList(sortDirection);
     }
 

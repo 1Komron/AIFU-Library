@@ -1,20 +1,17 @@
 package aifu.project.common_domain.dto.live_dto;
 
-import lombok.Data;
-
-@Data
-public class BaseBookResponseDTO {
-    private Integer id;
-    private String author;
-    private String title;
-    private String series;
-    private String titleDetails;
-    private Integer publicationYear;
-    private String publisher;
-    private String publicationCity;
-    private String isbn;
-    private Integer pageCount;
-    private String language;
-    private String udc;
-    private BaseBookCategoryDTO category;
+public record BaseBookResponseDTO(
+        Integer id,
+        String author,
+        String title,
+        String series,
+        String titleDetails,
+        Integer publicationYear,
+        String publisher,
+        String publicationCity,
+        String isbn,
+        Integer pageCount,
+        String language,
+        String udc,
+        BaseBookCategoryDTO category) {
 }

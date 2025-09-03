@@ -1,18 +1,18 @@
 package aifu.project.common_domain.dto.live_dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-public class BookCopyCreateDTO {
+public record BookCopyCreateDTO(
 
-    private String inventoryNumber;
+        @NotBlank String inventoryNumber,
 
-    private String shelfLocation;
+        String shelfLocation,
 
-    private String notes;
+        String notes,
 
-    private Integer baseBookId;
+        @NotNull Integer baseBookId,
 
-    private String epc;
+        String epc) {
 
 }

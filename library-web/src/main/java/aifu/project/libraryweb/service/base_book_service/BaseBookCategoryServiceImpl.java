@@ -11,6 +11,7 @@ import aifu.project.common_domain.exceptions.CategoryDeletionException;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookCategoryRepository;
 import aifu.project.libraryweb.repository.BaseBookRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -28,8 +29,12 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     private final BaseBookRepository baseBookRepository;
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> create(CreateCategoryRequest request) {
-        String name = request.name();
+        log.info("BaseBookCategory yaratilishi jarayoni...");
+        log.info("Yangi BaseBookCategory yaratish so'rovi: {}", request);
+
+        String name = request.name().trim();
 
         boolean exists = categoryRepository.existsByNameAndIsDeletedFalse(name);
 
@@ -46,36 +51,47 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
 
         log.info("BaseBookCategory yaratildi: {}", category);
+        log.info("BaseBookCategory yaratish jarayoni yakunlandi.");
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseMessage(true, "BaseBookCategory yaratildi", dto));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> update(Integer id, UpdateCategoryRequest request) {
+        log.info("BaseBookCategory tahrirlanishi jarayoni...");
+        log.info("BaseBookCategory tahrirlash so'rovi: {}, ID: {}", request, id);
+
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
 
-        boolean exists = categoryRepository.existsByNameAndIsDeletedFalse(request.name());
+        String newName = request.name().trim();
+        boolean exists = categoryRepository.existsByNameAndIsDeletedFalse(newName);
 
         if (exists) {
             log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (UPDATE). Update qilinayotgan category: {}",
-                    request.name(), category);
+                    newName, category);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ResponseMessage(false, "BaseBookCategory allaqachon mavjud", null));
         }
 
-        category.setName(request.name());
+        category.setName(newName);
         category = categoryRepository.save(category);
         BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
 
         log.info("BaseBookCategory nomi tahrirlandi: {}", category);
+        log.info("BaseBookCategory tahrirlash jarayoni yakunlandi.");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory tahrirlandi", dto));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> delete(Integer id) {
+        log.info("BaseBookCategory o'chirilishi jarayoni...");
+        log.info("O'chirilishi so'ralgan BaseBookCategory ID: {}", id);
+
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
 
@@ -91,26 +107,31 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         categoryRepository.save(category);
 
         log.info("BaseBookCategory o'chirildi: {}", category);
+        log.info("BaseBookCategory o'chirish jarayoni yakunlandi.");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory o'chirildi", id));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getList(String sortDirection) {
+        log.info("BaseBookCategory ro'yxatini olish jarayoni...");
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         List<BaseBookCategoryShortDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(direction, "id"));
 
         log.info("BaseBookCategory ro'yxati olindi. Ro'yxat: {}.  Elementlar soni: {}", list, list.size());
+        log.info("BaseBookCategory ro'yxatini olish jarayoni yakunlandi.");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory lar ro'yxati", list));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
+        log.info("BaseBookCategory ID bo'yicha olish jarayoni...");
         BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookCategoryNotFoundException(id));
 
         log.info("BaseBookCategory topildi: {}", category);
+        log.info("BaseBookCategory ID bo'yicha olish jarayoni yakunlandi.");
 
         BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
         return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory", dto));

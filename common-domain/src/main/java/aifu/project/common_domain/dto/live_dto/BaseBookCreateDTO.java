@@ -1,24 +1,39 @@
 package aifu.project.common_domain.dto.live_dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@Builder
-public class BaseBookCreateDTO {
 
-    private Integer categoryId;
-    private String author;
-    private String title;
-    private String series;
-    private String titleDetails;
-    private Integer publicationYear;
-    private String publisher;
-    private String publicationCity;
-    private String isbn;
-    private Integer pageCount;
-    private String language;
-    private String udc;
+public record BaseBookCreateDTO(
+
+        @NotNull Integer categoryId,
+
+        @NotBlank String author,
+
+        @NotBlank String title,
+
+        String series,
+
+        String titleDetails,
+
+        @JsonFormat(pattern = "yyyy")
+        @NotNull Integer publicationYear,
+
+        @NotBlank String publisher,
+
+        @NotBlank String publicationCity,
+
+        @NotBlank String isbn,
+
+        @Min(1)
+        @NotNull Integer pageCount,
+
+        @NotBlank String language,
+
+        @NotBlank String udc
+) {
+
 }
+

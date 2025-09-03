@@ -9,11 +9,11 @@ public class BookCopyMapper {
 
     public static BookCopy toEntity(BookCopyCreateDTO dto, BaseBook baseBook) {
         return BookCopy.builder()
-                .inventoryNumber(dto.getInventoryNumber())
-                .shelfLocation(dto.getShelfLocation())
-                .notes(dto.getNotes())
+                .inventoryNumber(dto.inventoryNumber())
+                .shelfLocation(dto.shelfLocation())
+                .notes(dto.notes())
                 .book(baseBook)
-                .epc(dto.getEpc())
+                .epc(dto.epc())
                 .build();
     }
 

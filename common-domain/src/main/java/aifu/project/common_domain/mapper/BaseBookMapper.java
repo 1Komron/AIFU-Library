@@ -11,37 +11,37 @@ public class BaseBookMapper {
 
     public static BaseBook toEntity(BaseBookCreateDTO dto, BaseBookCategory category) {
         return BaseBook.builder()
-                .author(dto.getAuthor())
-                .title(dto.getTitle())
-                .series(dto.getSeries())
-                .titleDetails(dto.getTitleDetails())
-                .publicationYear(dto.getPublicationYear())
-                .publisher(dto.getPublisher())
-                .publicationCity(dto.getPublicationCity())
-                .isbn(dto.getIsbn())
-                .pageCount(dto.getPageCount())
-                .language(dto.getLanguage())
-                .udc(dto.getUdc())
+                .author(dto.author().trim())
+                .title(dto.title().trim())
+                .series(dto.series() == null ? null : dto.series().trim())
+                .titleDetails(dto.titleDetails() == null ? null : dto.titleDetails().trim())
+                .publicationYear(dto.publicationYear())
+                .publisher(dto.publisher().trim())
+                .publicationCity(dto.publicationCity().trim())
+                .isbn(dto.isbn().trim())
+                .pageCount(dto.pageCount())
+                .language(dto.language().trim())
+                .udc(dto.udc().trim())
                 .category(category)
                 .build();
     }
 
     public static BaseBookResponseDTO toResponseDTO(BaseBook entity) {
-        BaseBookResponseDTO dto = new BaseBookResponseDTO();
-        dto.setId(entity.getId());
-        dto.setAuthor(entity.getAuthor());
-        dto.setTitle(entity.getTitle());
-        dto.setSeries(entity.getSeries());
-        dto.setTitleDetails(entity.getTitleDetails());
-        dto.setPublicationYear(entity.getPublicationYear());
-        dto.setPublisher(entity.getPublisher());
-        dto.setPublicationCity(entity.getPublicationCity());
-        dto.setIsbn(entity.getIsbn());
-        dto.setPageCount(entity.getPageCount());
-        dto.setLanguage(entity.getLanguage());
-        dto.setUdc(entity.getUdc());
-        dto.setCategory(BaseBookCategoryDTO.toDTO(entity.getCategory()));
-        return dto;
+        return new BaseBookResponseDTO(
+                entity.getId(),
+                entity.getAuthor(),
+                entity.getTitle(),
+                entity.getSeries(),
+                entity.getTitleDetails(),
+                entity.getPublicationYear(),
+                entity.getPublisher(),
+                entity.getPublicationCity(),
+                entity.getIsbn(),
+                entity.getPageCount(),
+                entity.getLanguage(),
+                entity.getUdc(),
+                BaseBookCategoryDTO.toDTO(entity.getCategory())
+        );
     }
 
     public static void updateEntity(BaseBook entity, BaseBookUpdateDTO dto, BaseBookCategory category) {

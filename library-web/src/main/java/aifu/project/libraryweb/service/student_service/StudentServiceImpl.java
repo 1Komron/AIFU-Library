@@ -100,6 +100,7 @@ public class StudentServiceImpl implements StudentService {
                                                   int size,
                                                   String sortDirection) {
 
+        field = field == null ? DEFAULT : field;
         if (!field.equals(DEFAULT) && query == null) {
             throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(field));
         }

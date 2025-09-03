@@ -15,6 +15,7 @@ import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.repository.BaseBookRepository;
 import aifu.project.libraryweb.repository.BookCopyRepository;
 import aifu.project.libraryweb.utils.Util;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -77,16 +78,20 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> create(BookCopyCreateDTO dto) {
-        BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(dto.getBaseBookId())
-                .orElseThrow(() -> new BaseBookNotFoundException(dto.getBaseBookId()));
+        log.info("BookCopy yaratish jarayoni boshlandi...");
+        log.info("BookCopy yaratish uchun so'rov keldi: {}", dto);
 
-        String inventoryNumber = dto.getInventoryNumber();
+        BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(dto.baseBookId())
+                .orElseThrow(() -> new BaseBookNotFoundException(dto.baseBookId()));
+
+        String inventoryNumber = dto.inventoryNumber().trim();
         if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
             throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
         }
 
-        String epc = dto.getEpc();
+        String epc = dto.epc() == null ? null : dto.epc().trim();
         if (epc != null && bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
             throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
         }
@@ -95,6 +100,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         entity = bookCopyRepository.save(entity);
 
         log.info("BookCopy yaratildi: {}", entity);
+        log.info("BookCopy yaratilish jarayoni tugadi");
 
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(entity);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -102,7 +108,11 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates) {
+        log.info("BookCopy tahrirlash jarayoni boshlandi...");
+        log.info("BookCopy tahrirlash uchun so'rov keldi. ID: {}, Updates: {}", id, updates.keySet());
+
         BookCopy bookCopy = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
@@ -117,7 +127,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
             switch (key) {
                 case "inventoryNumber" -> {
-                    String inventoryNumber = (String) value;
+                    String inventoryNumber = ((String) value).trim();
                     if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
                         throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
                     }
@@ -125,16 +135,16 @@ public class BookCopyServiceImpl implements BookCopyService {
                     bookCopy.setInventoryNumber(inventoryNumber);
                 }
                 case "epc" -> {
-                    String epc = (String) value;
+                    String epc = ((String) value).trim();
                     if (bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
                         throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
 
                     }
                 }
-                case "shelfLocation" -> bookCopy.setShelfLocation((String) value);
-                case "notes" -> bookCopy.setNotes((String) value);
+                case "shelfLocation" -> bookCopy.setShelfLocation(((String) value).trim());
+                case "notes" -> bookCopy.setNotes(((String) value).trim());
                 case "book" -> {
-                    Integer baseBookId = Integer.parseInt((String) value);
+                    Integer baseBookId = Integer.parseInt(((String) value).trim());
                     BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(baseBookId)
                             .orElseThrow(() -> new BaseBookNotFoundException(baseBookId));
 
@@ -144,29 +154,35 @@ public class BookCopyServiceImpl implements BookCopyService {
                         throw new IllegalArgumentException("BookCopy tahrirlash. Mavjud bo'lmagan field. Field: " + key);
             }
         });
+        bookCopyRepository.save(bookCopy);
 
         log.info("BookCopy tahrirladni: {}.\nTahrirlangan field lar: {}", bookCopy, updates.keySet());
 
-        bookCopyRepository.save(bookCopy);
-
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(bookCopy);
+
+        log.info("BookCopy tahrirlash jarayoni tugadi");
+
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> get(Integer id) {
+        log.info("ID: {} bo'yicha BookCopy ma'lumotlarini olish jarayoni boshlandi...", id);
+
         BookCopy bookCopy = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
         BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
 
         log.info("ID bo'yicha BookCopy ma'lumotlari olindi: {}", response);
+        log.info("ID oraqli BookCopy malumotlarni olish jarayoni tugadi");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getByQuery(String field, String query) {
+        log.info("Query orqali BookCopy ma'lumotlarini olish jarayoni boshlandi... Field: {}, Query: {}", field, query);
         BookCopy bookCopy = (field.equals("epc"))
                 ? bookCopyRepository.findByEpcAndIsDeletedFalse(query).orElseThrow(() -> new BookCopyNotFoundException("EPC bo'yicha BookCopy topilmadi: " + field))
                 : bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query).orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + field));
@@ -174,15 +190,18 @@ public class BookCopyServiceImpl implements BookCopyService {
         BookCopySummaryDTO response = BookCopySummaryDTO.toDTO(bookCopy);
 
         log.info("{} bo'yicha BookCopy ma'lumotlari olindi: {}", field, response);
+        log.info("Query orqali BookCopy malumotlarni olish jarayoni tugadi");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber) {
+        log.info("InventoryNumber tekshirish jarayoni boshlandi... InventoryNumber: {}", inventoryNumber);
         boolean exists = bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber);
 
         log.info("Inventory number tekshirildi: {}, Status: {}", inventoryNumber, exists ? "Mavjud" : "Mavjud emas");
+        log.info("Inventory number tekshirish jarayoni tugadi");
 
         return ResponseEntity.ok(
                 new ResponseMessage(
@@ -193,6 +212,9 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public ResponseEntity<ResponseMessage> getAll(String query, String field, String filter, int pageNumber, int pageSize, String sortDirection) {
+        log.info("BookCopy ro'yxatini olish jarayoni boshlandi... Field: {}, Query: {}, Filter: {}, Sahifa: {}, Hajmi: {}, Tartiblash: {}",
+                field, query, filter, pageNumber, pageSize, sortDirection);
+
         field = field == null ? DEFAULT : field;
         if (!field.equals(DEFAULT) && query == null) {
             throw new IllegalArgumentException("Query null bolishi mumkin emas. Field: " + field);
@@ -236,15 +258,18 @@ public class BookCopyServiceImpl implements BookCopyService {
                 page.getNumber() + 1, page.getSize(), sortDirection);
         log.info("BookCopy ro'yxati: {}", content.stream().map(BookCopyShortDTO::id).toList());
 
-
         Map<String, Object> map = Util.getPageInfo(page);
         map.put("list", content);
+
+        log.info("BookCopy ro'yxatini olish jarayoni tugadi");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy ro'yxati", map));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseMessage> delete(Integer id) {
+        log.info("ID: {} bo'lgan BookCopy o'chirish jarayoni boshlandi...", id);
         BookCopy bookCopy = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
@@ -255,6 +280,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         bookCopyRepository.save(bookCopy);
 
         log.info("ID: {} bo'lgan BookCopy o'chirildi.", id);
+        log.info("ID orqali BookCopy o'chirish jarayoni tugadi");
 
         return ResponseEntity.ok(new ResponseMessage(true, "BookCopy o'chirildi", id));
     }

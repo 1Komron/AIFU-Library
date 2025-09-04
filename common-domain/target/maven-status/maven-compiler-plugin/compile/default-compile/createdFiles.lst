@@ -30,7 +30,6 @@ aifu/project/common_domain/dto/AdminCreateRequest.class
 aifu/project/common_domain/entity/AdminActivity.class
 aifu/project/common_domain/dto/statistic_dto/TopStudentDTO.class
 aifu/project/common_domain/dto/student_dto/DebtorInfoDTO.class
-aifu/project/common_domain/dto/live_dto/BaseBookCreateDTO$BaseBookCreateDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryPreviewDTO$CategoryPreviewDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookShortDTO$PdfBookShortDTOBuilder.class
 aifu/project/common_domain/dto/live_dto/BookCopyShortDTO.class

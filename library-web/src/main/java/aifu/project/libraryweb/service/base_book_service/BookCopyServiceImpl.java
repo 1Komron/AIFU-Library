@@ -237,9 +237,9 @@ public class BookCopyServiceImpl implements BookCopyService {
                     bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(query, pageable, filterQuery);
 
             case "fullInfo" -> {
-                String[] parts = query.trim().split("\\s+");
+                String[] parts = query.trim().split("~");
 
-                String first = "%" + parts[0].toLowerCase() + "%";
+                String first = parts[0].isBlank() ? null : "%" + parts[0].toLowerCase() + "%";
                 String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
 
                 yield bookCopyRepository.findByTitleAndAuthor(first, second, pageable, filterQuery);
@@ -302,18 +302,6 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public BookCopy findByEpc(String epc) {
-        return bookCopyRepository.findByEpcAndIsDeletedFalse(epc)
-                .orElseThrow(() -> new BookCopyNotFoundException("{} -> EPC ega BookCopy topilmadi: " + epc));
-    }
-
-    @Override
-    public BookCopy findByInventoryNumber(String inventoryNumber) {
-        return bookCopyRepository.findByInventoryNumberAndIsDeletedFalse(inventoryNumber)
-                .orElseThrow(() -> new BookCopyNotFoundException("Inventory number bo'yicha BookCopy topilmadi: " + inventoryNumber));
-    }
-
-    @Override
     public BookCopy findById(Integer id) {
         return bookCopyRepository.findById(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
@@ -321,10 +309,12 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public void updateStatus(BookCopy bookCopy, boolean isTaken) {
+        log.info("BookCopy statusini yangilash jarayoni boshlandi... ID: {}, Taken: {}", bookCopy.getId(), isTaken);
         bookCopy.setTaken(isTaken);
         bookCopyRepository.save(bookCopy);
 
         log.info("BookCopy status yangilandi. ID: {}, Taken: {}", bookCopy.getId(), isTaken);
+        log.info("BookCopy statusini yangilash jarayoni tugadi");
     }
 
     @Override

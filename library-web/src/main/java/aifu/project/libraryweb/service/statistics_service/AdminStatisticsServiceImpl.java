@@ -261,6 +261,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
 
     @Override
     public void createActivity(Booking booking, String action, Librarian librarian) {
+        log.info("Yangi Admin activity yaratish jarayoni...");
         BookCopy bookCopy = booking.getBook();
         BaseBook baseBook = bookCopy.getBook();
         Student student = booking.getStudent();

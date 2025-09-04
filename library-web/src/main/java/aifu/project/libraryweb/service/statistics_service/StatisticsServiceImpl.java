@@ -223,6 +223,10 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public ResponseEntity<ResponseMessage> getTopPopularBooks() {
         int limit = 5;
+        YearMonth yearMonth = YearMonth.now().minusMonths(1);
+        LocalDate start = yearMonth.atDay(1);
+        LocalDate end = yearMonth.atEndOfMonth();
+
         @SuppressWarnings("unchecked")
         List<Object[]> rows = em.createNativeQuery("""
                             SELECT
@@ -235,19 +239,25 @@ public class StatisticsServiceImpl implements StatisticsService {
                             FROM (
                                 SELECT book_id
                                 FROM booking
+                                WHERE given_at >= :startDate AND given_at < :endDate
+                        
                                 UNION ALL
+
                                 SELECT book_id
                                 FROM history
+                                WHERE given_at >= :startDate AND given_at < :endDate
                             ) AS all_bookings
                             JOIN book_copy bc ON bc.id = all_bookings.book_id
                             JOIN base_book b ON b.id = bc.base_book_id
                             JOIN category c ON c.id = b.category_id
-                            where b.is_deleted = false
+                            WHERE b.is_deleted = false
                             GROUP BY b.id, b.title, b.author, c.id, c.name, b.isbn
                             ORDER BY usage_count DESC
                             LIMIT :limit
                         """)
                 .setParameter("limit", limit)
+                .setParameter("startDate", start)
+                .setParameter("endDate", end)
                 .getResultList();
 
 

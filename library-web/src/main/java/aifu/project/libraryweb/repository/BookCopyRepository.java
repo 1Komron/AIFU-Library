@@ -134,15 +134,9 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             )from BookCopy bc
             join bc.book b
             where (
-                    (lower(b.title) like : first or lower(b.author) like : first)
+                    (:first is not null and lower(b.author) like :first)
                     or
-                    (:second is not null and
-                      (
-                        (lower(b.author) like :first and lower(b.title) like :second)
-                        or
-                        (lower(b.author) like :second and lower(b.title) like :first)
-                      )
-                    )
+                    (:second is not null and lower(b.title) like :second)
             ) and bc.isDeleted = false
             AND (
                   :status = 'ALL'

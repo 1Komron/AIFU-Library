@@ -46,15 +46,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                 select s from Student s
                 where
                   (
-                    (lower(s.surname) like :first or lower(s.name) like :first)
+                    (:first is not null and lower(s.name) like :first)
                     or
-                    (:second is not null and
-                      (
-                        (lower(s.surname) like :first and lower(s.name) like :second)
-                        or
-                        (lower(s.surname) like :second and lower(s.name) like :first)
-                      )
-                    )
+                    (:second is not null and lower(s.surname) like :second)
                   )
                   and s.isDeleted = false
                   and s.isActive in :statusList

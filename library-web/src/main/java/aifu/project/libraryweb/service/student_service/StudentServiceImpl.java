@@ -2,7 +2,6 @@ package aifu.project.libraryweb.service.student_service;
 
 import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
 import aifu.project.common_domain.entity.Student;
-import aifu.project.common_domain.entity.enums.Role;
 import aifu.project.common_domain.exceptions.CardNumberAlreadyExistsException;
 import aifu.project.common_domain.exceptions.UserAlreadyExistsException;
 import aifu.project.common_domain.exceptions.UserDeletionException;
@@ -28,8 +27,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static aifu.project.common_domain.exceptions.UserNotFoundException.NOT_FOUND_BY_CHAT_ID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -46,48 +43,47 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<ResponseMessage> createStudent(CreateStudentDTO createStudentDTO) {
+        log.info("Student yaratish jarayoni...");
         log.info("{}", createStudentDTO.toString());
+
         String passport = checkPassport(createStudentDTO);
         String cardNumber = checkCardNumber(createStudentDTO);
 
-        Student student = new Student();
-        student.setChatId(null);
-        student.setActive(false);
-        student.setDeleted(false);
-        student.setRole(Role.STUDENT);
-        student.setName(createStudentDTO.name());
-        student.setSurname(createStudentDTO.surname());
-        student.setPhoneNumber(createStudentDTO.phoneNumber());
-        student.setFaculty(createStudentDTO.faculty());
-        student.setDegree(createStudentDTO.degree());
-        student.setPassportCode(passport);
-        student.setCardNumber(cardNumber);
-        student.setAdmissionTime(LocalDate.of(createStudentDTO.admissionTime(), 8, 1));
-        student.setGraduationTime(LocalDate.of(createStudentDTO.graduationTime(), 7, 1));
-
-        student = studentRepository.save(student);
+        Student student = CreateStudentDTO.toEntity(createStudentDTO, passport, cardNumber);
+        studentRepository.save(student);
 
         StudentSummaryDTO response = StudentSummaryDTO.toDTO(student);
+
+        log.info("Student muvaffaqiyatli yaratildi. Student: {}", student);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage(true, "Student muvaffaqiyatli qo'shildi", response));
     }
 
     private String checkCardNumber(CreateStudentDTO createStudentDTO) {
+        log.info("Student cardNumber tekshirilmoqda...");
+
         String cardNumber = createStudentDTO.cardNumber();
         if (studentRepository.existsByCardNumber(cardNumber)) {
             throw new CardNumberAlreadyExistsException("Card number already exists.");
         }
 
+        log.info("Student cardNumber bazada mavjud emas. Davom etilmoqda...");
+
         return cardNumber;
     }
 
     private String checkPassport(CreateStudentDTO createStudentDTO) {
-        String passportSeries = createStudentDTO.passportSeries().toUpperCase();
-        String passportNumber = createStudentDTO.passportNumber();
+        log.info("Student passporti tekshirilmoqda...");
+
+        String passportSeries = createStudentDTO.passportSeries().toUpperCase().trim();
+        String passportNumber = createStudentDTO.passportNumber().trim();
         String passportHash = passportHasher.hash(passportSeries + passportNumber);
+
         if (studentRepository.existsByPassportCode(passportHash)) {
             throw new UserAlreadyExistsException("Student passporti bazada mavjud: " + passportSeries + passportNumber);
         }
+
+        log.info("Student passporti bazada mavjud emas. Davom etilmoqda...");
 
         return passportHash;
     }
@@ -99,6 +95,9 @@ public class StudentServiceImpl implements StudentService {
                                                   int pageNumber,
                                                   int size,
                                                   String sortDirection) {
+        log.info("Studentlar ro'yxatini olish jarayoni boshlandi...");
+        log.info("Kiritilgan parametrlar: field={}, query={}, status={}, pageNumber={}, size={}, sortDirection={}",
+                field, query, status, pageNumber, size, sortDirection);
 
         field = field == null ? DEFAULT : field;
         if (!field.equals(DEFAULT) && query == null) {
@@ -118,9 +117,9 @@ public class StudentServiceImpl implements StudentService {
             case "id" -> studentRepository.findByIdAndIsDeletedFalse(Long.parseLong(query), pageable, statusList);
             case "cardNumber" -> studentRepository.findByCardNumberAndIsDeletedFalse(query, pageable, statusList);
             case "fullName" -> {
-                String[] parts = query.trim().split("\\s+");
+                String[] parts = query.trim().split("~");
 
-                String first = "%" + parts[0].toLowerCase() + "%";
+                String first = parts[0].isBlank() ? null : "%" + parts[0].toLowerCase() + "%";
                 String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
 
                 yield studentRepository.findBySurnameAndName(first, second, pageable, statusList);
@@ -143,27 +142,29 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getStudent(String id) {
-        Student student = studentRepository.findById(Long.parseLong(id))
-                .orElseThrow(() -> new UserNotFoundException("User not found by id:" + id));
+    public ResponseEntity<ResponseMessage> getStudent(Long id) {
+        log.info("ID bo'yicha student ma'lumotlarini olish jarayoni boshlandi... ID: {}", id);
+
+        Student student = findStudent(id);
+
+        StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
 
         log.info("Stundent ID bo'yicha topildi. Student: {}", student);
 
-        StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
-
-        return ResponseEntity.ok(new ResponseMessage(true, "Detailed user information", dto));
+        return ResponseEntity.ok(new ResponseMessage(true, "Student malumotlari", dto));
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getStudentByCardNumber(String id) {
-        Student student = studentRepository.findByCardNumberAndIsDeletedFalse(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + id));
+    public ResponseEntity<ResponseMessage> getStudentByCardNumber(String cardNumber) {
+        log.info("CardNumber bo'yicha student ma'lumotlarini olish jarayoni boshlandi... CardNumber: {}", cardNumber);
 
-        log.info("Stundent CardNumbcer bo'yicha topildi. Student: {}", student);
+        Student student = findByCardNumber(cardNumber);
 
         StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Detailed user information", dto));
+        log.info("Stundent CardNumber bo'yicha topildi. Student: {}", student);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Student malumotlari", dto));
     }
 
     private List<StudentShortDTO> getStudentShortDTO(List<Student> students) {
@@ -174,12 +175,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> deleteStudent(Long userId) {
-        Student student = studentRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_BY_CHAT_ID + userId));
+    public ResponseEntity<ResponseMessage> deleteStudent(Long id) {
+        log.info("ID bo'yicha studentni o'chirish jarayoni boshlandi... ID: {}", id);
 
-        if (bookingService.hasBookingForUser(userId))
-            throw new UserDeletionException("Studnetda aktiv bronlar mavjud. Student ID: " + userId);
+        Student student = findStudent(id);
+
+        if (bookingService.hasBookingForUser(id))
+            throw new UserDeletionException("Studnetda aktiv bronlar mavjud. Student ID: " + id);
 
         student.setDeleted(true);
         student.setActive(false);
@@ -187,13 +189,17 @@ public class StudentServiceImpl implements StudentService {
         student.setCardNumber(null);
         studentRepository.save(student);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "User successfully deleted", null));
+        log.info("ID bo'yicha student o'chirildi. Student: {}", student);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "Student muvaffaqiyatli o'chirildi", null));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> update(Long id, Map<String, Object> updates) {
-        Student student = studentRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new UserNotFoundException("(Update) Studnet topilmadi. ID: " + id));
+        log.info("ID bo'yicha studentni update qilish jarayoni boshlandi... ID: {}, Update qilinadigan fieldlar: {}",
+                id, updates.keySet());
+
+        Student student = findStudent(id);
 
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             String key = entry.getKey();
@@ -208,13 +214,13 @@ public class StudentServiceImpl implements StudentService {
             }
 
             switch (key) {
-                case "name" -> student.setName((String) value);
-                case "surname" -> student.setSurname((String) value);
-                case "phoneNumber" -> student.setPhoneNumber((String) value);
-                case "degree" -> student.setDegree((String) value);
-                case "faculty" -> student.setFaculty((String) value);
+                case "name" -> student.setName(((String) value).trim());
+                case "surname" -> student.setSurname(((String) value).trim());
+                case "phoneNumber" -> student.setPhoneNumber(((String) value).trim());
+                case "degree" -> student.setDegree(((String) value).trim());
+                case "faculty" -> student.setFaculty(((String) value).trim());
                 case "cardNumber" -> {
-                    String cardNumber = (String) value;
+                    String cardNumber = ((String) value).trim();
 
                     if (studentRepository.existsByCardNumber(cardNumber)) {
                         throw new IllegalArgumentException("Card Number mavjud: " + cardNumber);
@@ -228,14 +234,16 @@ public class StudentServiceImpl implements StudentService {
         }
 
         student = studentRepository.save(student);
+        StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
+
         log.info("Stundent ID bo'yicha update qilindi. \nStudent: {}\n Update qilingan fieldlar: {}", student, updates.keySet());
 
-        return ResponseEntity.ok(new ResponseMessage(true, "CardNumber muvaffqiyatli yangilandi", null));
+        return ResponseEntity.ok(new ResponseMessage(true, "Student malumotlari muvaffqiyatli yangilandi", dto));
     }
 
     public Student findByCardNumber(String cardNumber) {
         return studentRepository.findByCardNumberAndIsDeletedFalse(cardNumber)
-                .orElseThrow(() -> new UserNotFoundException("User not found by card number: " + cardNumber));
+                .orElseThrow(() -> new UserNotFoundException("Student CardNumber orqali topilmadi. CardNumber: " + cardNumber));
     }
 
     @Override

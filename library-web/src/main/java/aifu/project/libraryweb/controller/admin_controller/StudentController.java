@@ -6,6 +6,7 @@ import aifu.project.libraryweb.service.student_service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class StudentController {
             @ApiResponse(responseCode = "400", description = "Notog'ri formatda malumot kiritildi"),
             @ApiResponse(responseCode = "409", description = "Student avvaldan mavjud")
     })
-    public ResponseEntity<ResponseMessage> createStudent(@RequestBody CreateStudentDTO createStudentDTO) {
+    public ResponseEntity<ResponseMessage> createStudent(@Valid @RequestBody CreateStudentDTO createStudentDTO) {
         return studentService.createStudent(createStudentDTO);
     }
 
@@ -61,7 +62,7 @@ public class StudentController {
             @ApiResponse(responseCode = "200", description = "Student ma'lumotlari muvaffaqiyatli olindi"),
             @ApiResponse(responseCode = "404", description = "Student topilmadi"),
     })
-    public ResponseEntity<ResponseMessage> getStudent(@PathVariable String id) {
+    public ResponseEntity<ResponseMessage> getStudent(@PathVariable Long id) {
         return studentService.getStudent(id);
     }
 

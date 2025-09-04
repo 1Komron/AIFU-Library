@@ -40,15 +40,9 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
     @Query("""
             select b from BaseBook b
             where (
-                    (lower(b.title) like : first or lower(b.author) like : first)
+                   (:first is not null and lower(b.author) like :first)
                     or
-                    (:second is not null and
-                      (
-                        (lower(b.author) like :first and lower(b.title) like :second)
-                        or
-                        (lower(b.author) like :second and lower(b.title) like :first)
-                      )
-                    )
+                   (:second is not null and lower(b.title) like :second)
             ) and b.isDeleted = false
             """)
     Page<BaseBook> searchByTitleAndAuthor(String first, String second, Pageable pageable);

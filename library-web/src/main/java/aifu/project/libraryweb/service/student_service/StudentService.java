@@ -11,9 +11,9 @@ import java.util.Map;
 public interface StudentService {
     ResponseEntity<ResponseMessage> getAll(String filter, String query, String status, int pageNumber, int size, String sortDirection);
 
-    ResponseEntity<ResponseMessage> getStudent(String id);
+    ResponseEntity<ResponseMessage> getStudent(Long id);
 
-    ResponseEntity<ResponseMessage> deleteStudent(Long userId);
+    ResponseEntity<ResponseMessage> deleteStudent(Long id);
 
     ResponseEntity<ResponseMessage> getStudentByCardNumber(String id);
 

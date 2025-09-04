@@ -27,10 +27,6 @@ public interface BookCopyService {
 
     Map<Integer, BookCopyStats> getStatsMap(List<Integer> bookIds);
 
-    BookCopy findByEpc(String epc);
-
-    BookCopy findByInventoryNumber(String inventoryNumber);
-
     void updateStatus(BookCopy bookCopy, boolean isTaken);
 
     ResponseEntity<ResponseMessage> checkInventoryNumber(String inventoryNumber);

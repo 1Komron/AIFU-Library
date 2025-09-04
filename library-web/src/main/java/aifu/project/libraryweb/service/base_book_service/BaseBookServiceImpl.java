@@ -284,9 +284,9 @@ public class BaseBookServiceImpl implements BaseBookService {
             case "id" -> baseBookRepository.searchById(Long.parseLong(query), pageable);
             case "category" -> baseBookRepository.searchByCategory_Id(Integer.parseInt(query), pageable);
             case "fullInfo" -> {
-                String[] parts = query.trim().split("\\s+");
+                String[] parts = query.trim().split("~");
 
-                String first = "%" + parts[0].toLowerCase() + "%";
+                String first = parts[0].isBlank() ? null : "%" + parts[0].toLowerCase() + "%";
                 String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
 
                 yield baseBookRepository.searchByTitleAndAuthor(first, second, pageable);

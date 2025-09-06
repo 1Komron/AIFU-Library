@@ -8,7 +8,6 @@ import aifu.project.common_domain.dto.activity_dto.TopAdmin;
 import aifu.project.common_domain.entity.*;
 import aifu.project.libraryweb.entity.SecurityLibrarian;
 import aifu.project.libraryweb.repository.AdminActivityRepository;
-import aifu.project.libraryweb.repository.LibrarianRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +18,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     private final AdminActivityRepository adminActivityRepository;
-    private final LibrarianRepository librarianRepository;
 
     private static final String ISSUED = "ISSUED";
     private static final String LAST_MONTH = "last-month";
@@ -204,11 +205,36 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
-        List<ActivityDailyAnalyticsDTO> activityAnalytics = adminActivityRepository.findDailyActivityAnalytics(librarian, startDateTime, endDateTime);
+        List<ActivityDailyAnalyticsDTO> result = getResult(librarian, startDateTime, endDateTime);
 
-        log.info("Activity statistikasi: {}", activityAnalytics);
+        log.info("Activity statistikasi: {}", result);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Statistika", activityAnalytics));
+        return ResponseEntity.ok(new ResponseMessage(true, "Statistika", result));
+    }
+
+    private List<ActivityDailyAnalyticsDTO> getResult(Librarian librarian, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<ActivityDailyAnalyticsDTO> rawData = adminActivityRepository.findDailyActivityAnalytics(librarian, startDateTime, endDateTime);
+
+        log.info("Activity statistikasi. RawData: {}", rawData);
+
+        Map<LocalDate, ActivityDailyAnalyticsDTO> dataMap = rawData.stream()
+                .collect(Collectors.toMap(ActivityDailyAnalyticsDTO::day, Function.identity()));
+
+        List<ActivityDailyAnalyticsDTO> result = new ArrayList<>();
+
+        LocalDate startDate = startDateTime.toLocalDate();
+        LocalDate endDate = endDateTime.toLocalDate();
+
+        while (!startDate.isAfter(endDate)) {
+            ActivityDailyAnalyticsDTO dto = dataMap.getOrDefault(
+                    startDate,
+                    new ActivityDailyAnalyticsDTO(startDate, 0L, 0L, 0L, 0L)
+            );
+            result.add(dto);
+            startDate = startDate.plusDays(1);
+        }
+
+        return result;
     }
 
     @Override

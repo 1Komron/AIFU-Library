@@ -61,7 +61,12 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     private static Librarian updateLibrarian(Map<String, Object> updates) {
+        log.info("Kutubxonachi profile tahrirlash jarayoni...");
+        log.info("Update qilinayotgan fieldlar: {}", updates.keySet());
+
         Librarian librarian = getLibrarian();
+
+        log.info("Update qilinayotga kutubxonachi: {}", librarian);
 
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             String key = entry.getKey();
@@ -79,7 +84,7 @@ public class LibrarianServiceImpl implements LibrarianService {
                 case "name" -> librarian.setName((String) value);
                 case "surname" -> librarian.setSurname((String) value);
                 case "image" -> librarian.setImageUrl((String) value);
-                default -> throw new IllegalArgumentException("Noma'lum key: " + key);
+                default -> throw new IllegalArgumentException("Noma'lum field: " + key);
             }
         }
         return librarian;

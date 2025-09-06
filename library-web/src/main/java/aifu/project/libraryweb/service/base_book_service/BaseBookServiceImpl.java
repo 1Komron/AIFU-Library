@@ -133,7 +133,7 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         BaseBookCategory category = categoryRepository
                 .findByIdAndIsDeletedFalse(categoryId)
-                .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
+                .orElseThrow(BaseBookCategoryNotFoundException::new);
 
         BaseBook entity = baseBookRepository.save(BaseBookMapper.toEntity(dto, category));
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
@@ -149,7 +149,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         log.info("BaseBook yarartilish jarayoni yakunlandi");
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseMessage(true, "Base book muvaffaqiyatli yaratildi", responseDTO));
+                .body(new ResponseMessage(true, "Kitob muvaffaqiyatli yaratildi", responseDTO));
     }
 
     @Override
@@ -172,7 +172,7 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         log.info("ID {} bo'yicha base book ma'lumotlarini olish jarayoni yakunlandi", id);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book by ID: " + id, map));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitob ma'lumotlari", map));
     }
 
     @Override
@@ -228,7 +228,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         log.info("ID {} bo'yicha base book tahrirlash jarayoni yakunlandi", id);
 
         BaseBookResponseDTO responseDTO = BaseBookMapper.toResponseDTO(entity);
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book muvaffaqiyatli tahrirlandi", responseDTO));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitob muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
 
@@ -247,7 +247,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         if (!canDelete) {
             log.warn("Base bookni o'chirishga urinish: {}, lekin book copy lar mavjud", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage(true, "Base bookni o'chirib bo'lmayidi. BookCopy lar mavjud", id));
+                    .body(new ResponseMessage(true, "Kitobni o'chirib bo'lmayidi. Kitob nusxalari mavjud", id));
         }
 
         entity.setDeleted(true);
@@ -263,7 +263,7 @@ public class BaseBookServiceImpl implements BaseBookService {
 
         log.info("ID {} bo'yicha base book o'chirish jarayoni yakunlandi", id);
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book muvaffaqiyatli o'chirildi", id));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitob muvaffaqiyatli o'chirildi", id));
     }
 
     @Override
@@ -307,7 +307,7 @@ public class BaseBookServiceImpl implements BaseBookService {
         log.info("Base book ro'yxatini olish natijalari (ID): {}", list.stream().map(BaseBookShortDTO::id).toList());
         log.info("Base book ro'yxatini olish jarayoni yakunlandi");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Base book ni '%s' fieldi orqali qidirish".formatted(field), map));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitoblar ro'yxati", map));
     }
 
     @Override

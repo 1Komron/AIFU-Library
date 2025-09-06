@@ -88,12 +88,12 @@ public class BookCopyServiceImpl implements BookCopyService {
 
         String inventoryNumber = dto.inventoryNumber().trim();
         if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
-            throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
+            throw new IllegalArgumentException("'%s' inventar raqamiga ega bo'lgan kitob nusxasi mavjud".formatted(inventoryNumber));
         }
 
         String epc = dto.epc() == null ? null : dto.epc().trim();
         if (epc != null && bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
-            throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
+            throw new IllegalArgumentException("'%s' EPC ega bo'lgan kitob nusxasi mavjud".formatted(epc));
         }
 
         BookCopy entity = BookCopyMapper.toEntity(dto, baseBook);
@@ -104,7 +104,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(entity);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseMessage(true, "BookCopy muvaffaqiyatli yaratildi", responseDTO));
+                .body(new ResponseMessage(true, "Kitob nusxasi muvaffaqiyatli yaratildi", responseDTO));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
         log.info("BookCopy tahrirlash jarayoni tugadi");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy muvaffaqiyatli tahrirlandi", responseDTO));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitob nusxasi muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
     @Override
@@ -177,7 +177,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         log.info("ID bo'yicha BookCopy ma'lumotlari olindi: {}", response);
         log.info("ID oraqli BookCopy malumotlarni olish jarayoni tugadi");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BookCopy", response));
+        return ResponseEntity.ok(new ResponseMessage(true, "Nusxa ma'lumotlari", response));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         return ResponseEntity.ok(
                 new ResponseMessage(
                         true,
-                        exists ? "Inventory number mavjud" : "Inventory number mavjud emas",
+                        exists ? "Inventar raqam tizimda mavjud." : "Inventar raqam mavjud emas.",
                         exists));
     }
 

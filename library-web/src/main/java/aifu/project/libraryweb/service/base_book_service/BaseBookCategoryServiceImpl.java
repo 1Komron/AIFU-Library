@@ -41,7 +41,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         if (exists) {
             log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (CREATE)", name);
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ResponseMessage(false, "BaseBookCategory allaqachon mavjud", null));
+                    .body(new ResponseMessage(false, "'%s' nomli kategoriya allaqachon mavjud".formatted(request.name()), null));
         }
 
         BaseBookCategory category = new BaseBookCategory();
@@ -54,7 +54,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         log.info("BaseBookCategory yaratish jarayoni yakunlandi.");
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseMessage(true, "BaseBookCategory yaratildi", dto));
+                .body(new ResponseMessage(true, "'%s' nomli kategoriya muvaffaqiyatli yaratildi", dto));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
             log.error("'{}' -> nomli BaseBookCategory allaqachon mavjud (UPDATE). Update qilinayotgan category: {}",
                     newName, category);
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ResponseMessage(false, "BaseBookCategory allaqachon mavjud", null));
+                    .body(new ResponseMessage(false, "'%s' nomli kategoriya allaqachon mavjud".formatted(request.name()), null));
         }
 
         category.setName(newName);
@@ -83,7 +83,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         log.info("BaseBookCategory nomi tahrirlandi: {}", category);
         log.info("BaseBookCategory tahrirlash jarayoni yakunlandi.");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory tahrirlandi", dto));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kategoriya muvaffaqiyatli tahrirlandi", dto));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
                 .allMatch(BaseBook::isDeleted);
 
         if (!allBooksDeleted)
-            throw new CategoryDeletionException("BaseBookCategory ni o'chirib bo'lmaydi. O'chirilmagan BaseBook mavjud. BaseBookCategory ID: " + id);
+            throw new CategoryDeletionException("'%s' nomli kategoriyani o'chirib bo'lmaydi. O'chirilmagan kitoblar mavjud.");
 
         category.setDeleted(true);
         categoryRepository.save(category);
@@ -109,7 +109,10 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         log.info("BaseBookCategory o'chirildi: {}", category);
         log.info("BaseBookCategory o'chirish jarayoni yakunlandi.");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory o'chirildi", id));
+        return ResponseEntity
+                .ok(new ResponseMessage(true,
+                        "'%s' nomli kategoriya muvaffaqiyatli o'chirildi".formatted(category.getName()),
+                        id));
     }
 
     @Override
@@ -121,7 +124,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         log.info("BaseBookCategory ro'yxati olindi. Ro'yxat: {}.  Elementlar soni: {}", list, list.size());
         log.info("BaseBookCategory ro'yxatini olish jarayoni yakunlandi.");
 
-        return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory lar ro'yxati", list));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kategoriyalar ro'yxati", list));
     }
 
     @Override
@@ -134,6 +137,6 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
         log.info("BaseBookCategory ID bo'yicha olish jarayoni yakunlandi.");
 
         BaseBookCategoryDTO dto = BaseBookCategoryDTO.toDTO(category);
-        return ResponseEntity.ok(new ResponseMessage(true, "BaseBookCategory", dto));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kategoryia ma'lumotlari", dto));
     }
 }

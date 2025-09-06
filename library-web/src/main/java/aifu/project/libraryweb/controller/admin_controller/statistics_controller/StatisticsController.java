@@ -24,6 +24,13 @@ public class StatisticsController {
         return statisticsService.countAllBookings();
     }
 
+    @GetMapping("bookings/overdue/count")
+    @Operation(summary = "Barcha vaqti o'tgan bronlar soni")
+    @ApiResponse(responseCode = "200", description = "Muvaffaqiyatli qaytarildi")
+    public ResponseEntity<ResponseMessage> getOverdueBookingsCount() {
+        return statisticsService.countOverdueBookings();
+    }
+
     @GetMapping("/bookings/diagram")
     @Operation(summary = "Barcha bookinglarning diagramma korinishi")
     @ApiResponse(responseCode = "200", description = "Diagramma qiymatlar muvaffaqiyatli qaytarildi")

@@ -46,6 +46,11 @@ public class BookingServiceImpl implements BookingService {
     private static final String DEFAULT = "default";
 
     @Override
+    public long countOverdueBookings() {
+        return bookingRepository.countBookingByStatus(Status.OVERDUE);
+    }
+
+    @Override
     public ResponseEntity<ResponseMessage> getBooking(Long id) {
         BookingSummaryDTO data = bookingRepository.findSummary(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found. By id: " + id));

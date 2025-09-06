@@ -24,6 +24,8 @@ public interface BookingService {
 
     long countAllBookings();
 
+    long countOverdueBookings();
+
     BookingDiagramDTO getBookingDiagram();
 
     List<BookingResponse> getListBookingsToday(int i, int pageSize, Status status);

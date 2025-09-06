@@ -34,4 +34,6 @@ public interface StatisticsService {
     ResponseEntity<ResponseMessage> getAverageUsageDays();
 
     ResponseEntity<ResponseMessage> getBookingOverdue(int pageNumber, int pageSize);
+
+    ResponseEntity<ResponseMessage> countOverdueBookings();
 }

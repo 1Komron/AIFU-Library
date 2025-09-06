@@ -33,27 +33,33 @@ public class StatisticsServiceImpl implements StatisticsService {
     private EntityManager em;
 
     @Override
+    public ResponseEntity<ResponseMessage> countOverdueBookings() {
+        long count = bookingService.countOverdueBookings();
+        return ResponseEntity.ok(new ResponseMessage(true, "Vaqti o'tgan bronlar soni", count));
+    }
+
+    @Override
     public ResponseEntity<ResponseMessage> countAllBookings() {
         long count = bookingService.countAllBookings();
-        return ResponseEntity.ok(new ResponseMessage(true, "Booking count", count));
+        return ResponseEntity.ok(new ResponseMessage(true, "Bronlar soni", count));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingDiagram() {
         BookingDiagramDTO diagram = bookingService.getBookingDiagram();
-        return ResponseEntity.ok(new ResponseMessage(true, "Booking diagram", diagram));
+        return ResponseEntity.ok(new ResponseMessage(true, "Bron diagram", diagram));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingToday(int pageNumber, int pageSize) {
         List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.APPROVED);
-        return ResponseEntity.ok(new ResponseMessage(true, "Today's booking list", list));
+        return ResponseEntity.ok(new ResponseMessage(true, "Bugungi bronlar ro'yxati", list));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingTodayOverdue(int pageNumber, int pageSize) {
         List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.OVERDUE);
-        return ResponseEntity.ok(new ResponseMessage(true, "Today's booking list", list));
+        return ResponseEntity.ok(new ResponseMessage(true, "Bugungi kechiktirilgan bronlar ro'yxati", list));
     }
 
     @Override
@@ -65,19 +71,19 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public ResponseEntity<ResponseMessage> countUsers() {
         long count = studentService.countStudents();
-        return ResponseEntity.ok(new ResponseMessage(true, "Users count", count));
+        return ResponseEntity.ok(new ResponseMessage(true, "Studentlar soni", count));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> countBooks() {
         long count = bookService.countBooks();
-        return ResponseEntity.ok(new ResponseMessage(true, "Books count", count));
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitoblar soni", count));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> countBookCopies() {
         long count = bookCopyService.count();
-        return ResponseEntity.ok(new ResponseMessage(true, "Book copies count", count));
+        return ResponseEntity.ok(new ResponseMessage(true, "Nusxalar soni", count));
     }
 
     // Kunlik statistikalar
@@ -150,7 +156,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 ))
                 .toList();
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Booking list", list));
+        return ResponseEntity.ok(new ResponseMessage(true, "Bronlar ro'yxati", list));
     }
 
 
@@ -215,7 +221,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 ))
                 .toList();
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Statistics by month for year " + year, list));
+        return ResponseEntity.ok(new ResponseMessage(true, "Statistika oylik. Yil: " + year, list));
     }
 
 
@@ -242,7 +248,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                                 WHERE given_at >= :startDate AND given_at < :endDate
                         
                                 UNION ALL
-
+                        
                                 SELECT book_id
                                 FROM history
                                 WHERE given_at >= :startDate AND given_at < :endDate
@@ -273,7 +279,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 ))
                 .toList();
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Top popular books", topBooks));
+        return ResponseEntity.ok(new ResponseMessage(true, "Top kitoblar", topBooks));
     }
 
     // Eng ko'p kitob o'qigan talabalar
@@ -313,7 +319,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 ))
                 .toList();
 
-        return ResponseEntity.ok(new ResponseMessage(true, "Top students list", topStudents));
+        return ResponseEntity.ok(new ResponseMessage(true, "Top studentlar ro'yxati", topStudents));
     }
 
     //Kitoblarning o'rtacha foydalanish kunlari
@@ -333,7 +339,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         return ResponseEntity.ok(new ResponseMessage(
                 true,
-                "Average book usage duration in days",
+                "O'ratacha kitob o'qish vaqti (Kunlarda)",
                 averageUsage
         ));
     }

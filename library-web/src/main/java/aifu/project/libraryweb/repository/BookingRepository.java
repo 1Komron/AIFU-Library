@@ -215,4 +215,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             WHERE b.status = :status
             """)
     Page<BookingShortDTO> findAllBookingByStatus(Pageable pageable, Status status);
+
+    long countBookingByStatus(Status status);
 }

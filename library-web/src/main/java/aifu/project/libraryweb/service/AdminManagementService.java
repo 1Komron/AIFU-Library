@@ -78,6 +78,7 @@ public class AdminManagementService {
                 .surname(savedAdmin.getSurname())
                 .email(savedAdmin.getEmail())
                 .role(savedAdmin.getRole().name())
+                .imageUrl(savedAdmin.getImageUrl())
                 .isActive(savedAdmin.isActive())
                 .build();
 
@@ -138,6 +139,7 @@ public class AdminManagementService {
                         .surname(admin.getSurname())
                         .email(admin.getEmail())
                         .role(admin.getRole().name())
+                        .imageUrl(admin.getImageUrl())
                         .isActive(admin.isActive())
                         .build())
                 .toList();

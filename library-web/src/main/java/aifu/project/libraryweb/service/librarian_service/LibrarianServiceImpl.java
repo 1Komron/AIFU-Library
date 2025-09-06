@@ -34,6 +34,7 @@ public class LibrarianServiceImpl implements LibrarianService {
                 .surname(librarian.getSurname())
                 .email(librarian.getEmail())
                 .role(librarian.getRole().name())
+                .imageUrl(librarian.getImageUrl())
                 .isActive(librarian.isActive())
                 .build();
 
@@ -54,6 +55,7 @@ public class LibrarianServiceImpl implements LibrarianService {
                 .surname(librarian.getSurname())
                 .email(librarian.getEmail())
                 .role(librarian.getRole().name())
+                .imageUrl(librarian.getImageUrl())
                 .isActive(librarian.isActive())
                 .build();
 

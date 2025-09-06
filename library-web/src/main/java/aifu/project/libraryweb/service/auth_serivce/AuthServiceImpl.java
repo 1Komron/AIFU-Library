@@ -48,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
                 .surname(librarian.getSurname())
                 .email(librarian.getEmail())
                 .role(librarian.getRole().name())
+                .imageUrl(librarian.getImageUrl())
                 .isActive(librarian.isActive())
                 .build();
 
@@ -72,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
                 .surname(librarian.getSurname())
                 .email(librarian.getEmail())
                 .role(librarian.getRole().name())
+                .imageUrl(librarian.getImageUrl())
                 .isActive(librarian.isActive())
                 .build();
 

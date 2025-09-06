@@ -1,5 +1,6 @@
 package aifu.project.libraryweb.repository;
 
+import aifu.project.common_domain.dto.booking_dto.BookingResponse;
 import aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO;
 import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
 import aifu.project.common_domain.dto.booking_dto.BookingSummaryDTO;
@@ -68,14 +69,29 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("""
             SELECT new aifu.project.common_domain.dto.statistic_dto.BookingDiagramDTO(
-                COUNT(b),
+                SUM(CASE WHEN b.status != 'OVERDUE' THEN 1 ELSE 0 END),
                 SUM(CASE WHEN b.status = 'OVERDUE' THEN 1 ELSE 0 END)
             )
             FROM Booking b
             """)
     BookingDiagramDTO getDiagramData();
 
-    List<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status);
+    @Query("""
+            select new aifu.project.common_domain.dto.booking_dto.BookingResponse(
+            concat(s.name, ' ', s.surname),
+                concat(l.name, ' ', l.surname),
+            book.author,
+            book.title,
+            b.dueDate
+            )
+            from Booking b
+            join b.book.book book
+            join b.student s
+            join b.issuedBy l
+            where b.givenAt = :givenAt
+            and b.status = :status
+            """)
+    List<BookingResponse> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status);
 
     boolean existsBookingByStudent_Id(Long userId);
 

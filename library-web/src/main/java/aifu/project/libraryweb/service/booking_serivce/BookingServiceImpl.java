@@ -198,9 +198,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponse> getListBookingsToday(Status status) {
-        List<Booking> bookingList = bookingRepository.findAllBookingByGivenAtAndStatus(LocalDate.now(), status);
-
-        return getBookingResponseList(bookingList);
+        return bookingRepository.findAllBookingByGivenAtAndStatus(LocalDate.now(), status);
     }
 
     @Override
@@ -246,10 +244,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Map<String, Object> getAllOverdueBookings() {
-        List<BookingShortDTO> dataList = bookingRepository.findAllBookingByStatus(Status.OVERDUE);
-
-        return Map.of("data", dataList);
+    public List<BookingShortDTO> getAllOverdueBookings() {
+        return bookingRepository.findAllBookingByStatus(Status.OVERDUE);
     }
 
     @Override
@@ -265,12 +261,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public boolean hasBookingForUser(Long userId) {
         return bookingRepository.existsBookingByStudent_Id(userId);
-    }
-
-    private List<BookingResponse> getBookingResponseList(List<Booking> bookingList) {
-        return bookingList.stream()
-                .map(b -> new BookingResponse(b.getId(), b.getStudent().getName(), b.getStudent().getSurname()))
-                .toList();
     }
 
     @Override

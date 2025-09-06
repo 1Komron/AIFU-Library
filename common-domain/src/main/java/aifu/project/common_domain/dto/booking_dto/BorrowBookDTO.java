@@ -9,5 +9,5 @@ public record BorrowBookDTO(
         @NotNull Integer id,
 
         @Min(1)
-        @NotBlank Integer days) {
+        @NotNull Integer days) {
 }

@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.service.statistics_service;
 
 import aifu.project.common_domain.dto.booking_dto.BookingResponse;
+import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.statistic_dto.*;
 import aifu.project.common_domain.entity.enums.Status;
@@ -12,14 +13,15 @@ import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StatisticsServiceImpl implements StatisticsService {
@@ -34,48 +36,72 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public ResponseEntity<ResponseMessage> countOverdueBookings() {
         long count = bookingService.countOverdueBookings();
+
+        log.info("Barcha kech qoldirilgan bookinglar soni: {}", count);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Vaqti o'tgan bronlar soni", count));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> countAllBookings() {
         long count = bookingService.countAllBookings();
+
+        log.info("Barcha bookinglar soni: {}", count);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Bronlar soni", count));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingDiagram() {
         BookingDiagramDTO diagram = bookingService.getBookingDiagram();
+
+        log.info("Booking diagram: {}", diagram);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Bron diagram", diagram));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingToday() {
         List<BookingResponse> list = bookingService.getListBookingsToday(Status.APPROVED);
+
+        log.info("Bugungi bookinglar ro'yxati: {}", list);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Bugungi bronlar ro'yxati", list));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingTodayOverdue() {
         List<BookingResponse> list = bookingService.getListBookingsToday(Status.OVERDUE);
+
+        log.info("Bugungi vaqti o'tgan bookinglar ro'yxati: {}", list);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Bugungi kechiktirilgan bronlar ro'yxati", list));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> getBookingOverdue() {
-        Map<String, Object> data = bookingService.getAllOverdueBookings();
+        List<BookingShortDTO> data = bookingService.getAllOverdueBookings();
+
+        log.info("Vaqti o'tgan bookinglar ro'yxati: {}", data.stream().map(BookingShortDTO::id));
+
         return ResponseEntity.ok(new ResponseMessage(true, "Vaqti otib ketgan kitoblar ro'yxati", data));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> countUsers() {
         long count = studentService.countStudents();
+
+        log.info("Barcha studentlar soni: {}", count);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Studentlar soni", count));
     }
 
     @Override
     public ResponseEntity<ResponseMessage> countBooks() {
         long count = bookService.countBooks();
+
+        log.info("Barcha kitoblar soni: {}", count);
+
         return ResponseEntity.ok(new ResponseMessage(true, "Kitoblar soni", count));
     }
 

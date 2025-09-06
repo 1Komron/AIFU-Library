@@ -40,5 +40,5 @@ public interface BookingService {
 
     List<Booking> getAllBookingsByStudent(Long id);
 
-    Map<String, Object> getAllOverdueBookings();
+    List<BookingShortDTO>  getAllOverdueBookings();
 }

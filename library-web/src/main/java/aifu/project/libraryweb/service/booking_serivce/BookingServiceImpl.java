@@ -197,12 +197,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponse> getListBookingsToday(int pageNumber, int pageSize, Status status) {
-        Pageable pageableRequest = PageRequest.of(pageNumber, pageSize);
-        Page<Booking> pageable = bookingRepository.findAllBookingByGivenAtAndStatus(
-                LocalDate.now(), status, pageableRequest);
+    public List<BookingResponse> getListBookingsToday(Status status) {
+        List<Booking> bookingList = bookingRepository.findAllBookingByGivenAtAndStatus(LocalDate.now(), status);
 
-        return getBookingResponseList(pageable.getContent());
+        return getBookingResponseList(bookingList);
     }
 
     @Override
@@ -248,14 +246,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Map<String, Object> getAllOverdueBookings(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<BookingShortDTO> page = bookingRepository.findAllBookingByStatus(pageable, Status.OVERDUE);
+    public Map<String, Object> getAllOverdueBookings() {
+        List<BookingShortDTO> dataList = bookingRepository.findAllBookingByStatus(Status.OVERDUE);
 
-        Map<String, Object> map = Util.getPageInfo(page);
-        map.put("data", page.getContent());
-
-        return map;
+        return Map.of("data", dataList);
     }
 
     @Override

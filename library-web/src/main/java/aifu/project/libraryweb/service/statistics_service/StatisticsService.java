@@ -8,9 +8,9 @@ public interface StatisticsService {
 
     ResponseEntity<ResponseMessage> getBookingDiagram();
 
-    ResponseEntity<ResponseMessage> getBookingToday(int pageNumber, int pageSize);
+    ResponseEntity<ResponseMessage> getBookingToday();
 
-    ResponseEntity<ResponseMessage> getBookingTodayOverdue(int pageNumber, int pageSize);
+    ResponseEntity<ResponseMessage> getBookingTodayOverdue();
 
     ResponseEntity<ResponseMessage> countUsers();
 
@@ -33,7 +33,7 @@ public interface StatisticsService {
     //Kitoblarning o'rtacha foydalanish kunlari
     ResponseEntity<ResponseMessage> getAverageUsageDays();
 
-    ResponseEntity<ResponseMessage> getBookingOverdue(int pageNumber, int pageSize);
+    ResponseEntity<ResponseMessage> getBookingOverdue();
 
     ResponseEntity<ResponseMessage> countOverdueBookings();
 }

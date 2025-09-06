@@ -28,7 +28,7 @@ public interface BookingService {
 
     BookingDiagramDTO getBookingDiagram();
 
-    List<BookingResponse> getListBookingsToday(int i, int pageSize, Status status);
+    List<BookingResponse> getListBookingsToday(Status status);
 
     boolean hasBookingForUser(Long userId);
 
@@ -40,5 +40,5 @@ public interface BookingService {
 
     List<Booking> getAllBookingsByStudent(Long id);
 
-    Map<String, Object> getAllOverdueBookings(int pageNumber, int pageSize);
+    Map<String, Object> getAllOverdueBookings();
 }

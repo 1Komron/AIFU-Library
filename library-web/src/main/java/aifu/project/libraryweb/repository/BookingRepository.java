@@ -75,7 +75,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             """)
     BookingDiagramDTO getDiagramData();
 
-    Page<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status, Pageable pageable);
+    List<Booking> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status);
 
     boolean existsBookingByStudent_Id(Long userId);
 
@@ -214,7 +214,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             JOIN b.student s
             WHERE b.status = :status
             """)
-    Page<BookingShortDTO> findAllBookingByStatus(Pageable pageable, Status status);
+    List<BookingShortDTO> findAllBookingByStatus(Status status);
 
     long countBookingByStatus(Status status);
 }

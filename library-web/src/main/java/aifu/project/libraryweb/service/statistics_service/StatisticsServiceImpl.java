@@ -1,7 +1,6 @@
 package aifu.project.libraryweb.service.statistics_service;
 
 import aifu.project.common_domain.dto.booking_dto.BookingResponse;
-import aifu.project.common_domain.dto.booking_dto.BookingShortDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCategoryDTO;
 import aifu.project.common_domain.dto.statistic_dto.*;
 import aifu.project.common_domain.entity.enums.Status;
@@ -51,20 +50,20 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getBookingToday(int pageNumber, int pageSize) {
-        List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.APPROVED);
+    public ResponseEntity<ResponseMessage> getBookingToday() {
+        List<BookingResponse> list = bookingService.getListBookingsToday(Status.APPROVED);
         return ResponseEntity.ok(new ResponseMessage(true, "Bugungi bronlar ro'yxati", list));
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getBookingTodayOverdue(int pageNumber, int pageSize) {
-        List<BookingResponse> list = bookingService.getListBookingsToday(--pageNumber, pageSize, Status.OVERDUE);
+    public ResponseEntity<ResponseMessage> getBookingTodayOverdue() {
+        List<BookingResponse> list = bookingService.getListBookingsToday(Status.OVERDUE);
         return ResponseEntity.ok(new ResponseMessage(true, "Bugungi kechiktirilgan bronlar ro'yxati", list));
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> getBookingOverdue(int pageNumber, int pageSize) {
-        Map<String, Object> data = bookingService.getAllOverdueBookings(--pageNumber, pageSize);
+    public ResponseEntity<ResponseMessage> getBookingOverdue() {
+        Map<String, Object> data = bookingService.getAllOverdueBookings();
         return ResponseEntity.ok(new ResponseMessage(true, "Vaqti otib ketgan kitoblar ro'yxati", data));
     }
 

@@ -42,25 +42,22 @@ public class StatisticsController {
     @GetMapping("/bookings/today")
     @Operation(summary = "Bugungi bookinglar")
     @ApiResponse(responseCode = "200", description = "Bugungi bookinglar muvaffaqiyatli qaytarildi")
-    public ResponseEntity<ResponseMessage> getTodayBookings(@RequestParam(defaultValue = "1") int pageNumber,
-                                                            @RequestParam(defaultValue = "5") int pageSize) {
-        return statisticsService.getBookingToday(pageNumber, pageSize);
+    public ResponseEntity<ResponseMessage> getTodayBookings() {
+        return statisticsService.getBookingToday();
     }
 
     @GetMapping("/bookings/today/overdue")
     @Operation(summary = "Bugun vaqti otib ketgan bookinglar")
     @ApiResponse(responseCode = "200", description = "Bugun vaqti otib ketgan bookinglar muvaffaqiyatli qaytarildi")
-    public ResponseEntity<ResponseMessage> getTodayBookingsOverdue(@RequestParam(defaultValue = "1") int pageNumber,
-                                                                   @RequestParam(defaultValue = "5") int pageSize) {
-        return statisticsService.getBookingTodayOverdue(pageNumber, pageSize);
+    public ResponseEntity<ResponseMessage> getTodayBookingsOverdue() {
+        return statisticsService.getBookingTodayOverdue();
     }
 
     @GetMapping("/bookings/overdue")
     @Operation(summary = "Vaqti otib ketgan barcha bookinglar")
     @ApiResponse(responseCode = "200", description = "Vaqti otib ketgan bookinglar muvaffaqiyatli qaytarildi")
-    public ResponseEntity<ResponseMessage> getBookingsOverdue(@RequestParam(defaultValue = "1") int pageNumber,
-                                                              @RequestParam(defaultValue = "5") int pageSize) {
-        return statisticsService.getBookingOverdue(pageNumber, pageSize);
+    public ResponseEntity<ResponseMessage> getBookingsOverdue() {
+        return statisticsService.getBookingOverdue();
     }
 
 

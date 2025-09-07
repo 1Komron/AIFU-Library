@@ -7,6 +7,7 @@ public record BookExcelDTO(
         String author,
         String title,
         String category,
+        String titleDetail,
         String series,
         Integer publicationYear,
         String publisher,

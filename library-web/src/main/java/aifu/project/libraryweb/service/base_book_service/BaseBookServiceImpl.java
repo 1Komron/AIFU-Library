@@ -348,6 +348,7 @@ public class BaseBookServiceImpl implements BaseBookService {
                             book.title(),
                             book.category(),
                             book.series(),
+                            book.titleDetail(),
                             book.publicationYear(),
                             book.publisher(),
                             book.publicationCity(),

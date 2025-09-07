@@ -54,6 +54,7 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
                            bb.title,
                            bb.category.name,
                            bb.series,
+                           bb.titleDetails,
                            bb.publicationYear,
                            bb.publisher,
                            bb.publicationCity,

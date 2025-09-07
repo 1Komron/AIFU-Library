@@ -16,6 +16,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BookImportNonValidHeaderException.class)
+    public ResponseEntity<ResponseMessage> handleBookImportNonValidHeaderException(BookImportNonValidHeaderException e) {
+        System.out.println("check");
+        System.out.println(e.getErrors());
+        log.error("Exel orqali kitob qo'shida xatolik yuz berdi. Message: {}, Errors: {}", e.getMessage(), e.getErrors());
+        return ResponseEntity.badRequest().body(new ResponseMessage(false, e.getMessage(), e.getErrors()));
+    }
+
     @ExceptionHandler(CardNumberAlreadyExistsException.class)
     public ResponseEntity<ResponseMessage> handleCardNumberAlreadyExistsException(CardNumberAlreadyExistsException e) {
         log.error("CardNumber tizimda mavjud. Message: {}", e.getMessage());

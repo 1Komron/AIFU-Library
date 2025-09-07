@@ -23,7 +23,7 @@ public class ExcelBackupExporter {
     private static final String BOOK_HEADER_TITLE = "Kitob nomi";
     private static final String BOOK_HEADER_CATEGORY = "Kategoriya";
     private static final String BOOK_HEADER_SERIES = "Seriya raqami";
-    private static final String BOOK_HEADER_TITLE_DETAILS = "Kitob nomi (qo'shimcha)";
+    private static final String BOOK_HEADER_TITLE_DETAILS = "Tavsif";
     private static final String BOOK_HEADER_YEAR = "Chop etilgan yil";
     private static final String BOOK_HEADER_PUBLISHER = "Nashriyot";
     private static final String BOOK_HEADER_CITY = "Chop etilgan shahar";
@@ -102,6 +102,7 @@ public class ExcelBackupExporter {
                     setCell(row, col++, book.author());
                     setCell(row, col++, book.title());
                     setCell(row, col++, book.category());
+                    setCell(row, col++, book.titleDetail());
                     setCell(row, col++, book.series());
                     setCell(row, col++, book.publicationYear());
                     setCell(row, col++, book.publisher());

@@ -25,4 +25,6 @@ public interface BaseBookService {
     List<BookExcelDTO> getAllBooks();
 
     ResponseEntity<ResponseMessage> importFromExcel(MultipartFile file);
+
+    ResponseEntity<byte[]> templateFromExcel();
 }

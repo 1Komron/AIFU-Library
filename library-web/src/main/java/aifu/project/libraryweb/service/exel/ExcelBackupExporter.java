@@ -232,7 +232,7 @@ public class ExcelBackupExporter {
         }
     }
 
-    private static void createHeaderRow(Sheet sheet, String[] headers, CellStyle style) {
+    public static void createHeaderRow(Sheet sheet, String[] headers, CellStyle style) {
         Row headerRow = sheet.createRow(0);
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -251,7 +251,7 @@ public class ExcelBackupExporter {
     }
 
     @NotNull
-    private static CellStyle createHeaderCellStyle(XSSFWorkbook workbook) {
+    public static CellStyle createHeaderCellStyle(XSSFWorkbook workbook) {
         Font boldFont = createFont(workbook, true);
         CellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFont(boldFont);

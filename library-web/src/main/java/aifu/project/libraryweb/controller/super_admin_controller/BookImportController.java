@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -31,5 +28,14 @@ public class BookImportController {
     })
     public ResponseEntity<ResponseMessage> uploadExcel(@RequestParam("file") MultipartFile file) {
         return baseBookService.importFromExcel(file);
+    }
+
+    @GetMapping(path = "/template", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @Operation(summary = "Excel shablonini yuklab olish")
+    @ApiResponse(responseCode = "200", description = "Excel muvaffaqiyatli yuklandi va kitoblar qo'shildi")
+    @ApiResponse(responseCode = "204", description = "Shablon majud emas")
+
+    public ResponseEntity<byte[]> templateExcel() {
+        return baseBookService.templateFromExcel();
     }
 }

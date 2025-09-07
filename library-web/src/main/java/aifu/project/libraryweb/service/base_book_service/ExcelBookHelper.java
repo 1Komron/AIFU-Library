@@ -1,11 +1,15 @@
 package aifu.project.libraryweb.service.base_book_service;
 
+import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.live_dto.BookImportDTO;
 import aifu.project.common_domain.exceptions.BookImportNonValidHeaderException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,6 +17,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import static aifu.project.libraryweb.service.exel.ExcelBackupExporter.createHeaderCellStyle;
+import static aifu.project.libraryweb.service.exel.ExcelBackupExporter.createHeaderRow;
+
+@Slf4j
 public class ExcelBookHelper {
     private static final String BOOK_HEADER_INDEX = "#";
     private static final String BOOK_HEADER_AUTHOR = "Muallif";
@@ -37,6 +45,32 @@ public class ExcelBookHelper {
             BOOK_HEADER_ISBN, BOOK_HEADER_PAGES, BOOK_HEADER_LANGUAGE,
             BOOK_HEADER_UDC, BOOK_HEADER_COPY_COUNT, BOOK_HEADER_INVENTORY_NUMBERS
     };
+
+    public static byte[] templateExcel() {
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Kitoblar");
+            CellStyle headerStyle = createHeaderCellStyle(workbook);
+            createHeaderRow(sheet, BOOK_HEADERS, headerStyle);
+
+            int length = BOOK_HEADERS.length;
+            for (int i = 0; i < length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+                workbook.write(byteArrayOutputStream);
+                byte[] excelBytes = byteArrayOutputStream.toByteArray();
+
+                log.info("Excel shabloni muvaffaqiyatli yaratildi, o'lchami: {} bayt", excelBytes.length);
+
+                return excelBytes;
+            }
+        } catch (IOException e) {
+            log.error("Excel shablonini yaratishda xatolik yuz berdi: {}", e.getMessage());
+            return new byte[0];
+        }
+
+    }
 
 
     public static List<BookImportDTO> excelToBooks(MultipartFile file) {

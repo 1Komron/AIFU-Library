@@ -21,7 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +53,17 @@ public class BaseBookServiceImpl implements BaseBookService {
         List<BookImportDTO> bookImportDTOS = ExcelBookHelper.excelToBooks(file);
 
         return saveBooks(bookImportDTOS);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> templateFromExcel() {
+        byte[] bytes = ExcelBookHelper.templateExcel();
+        return bytes.length > 0
+                ? ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Shablon.xlsx")
+                .body(bytes)
+                : ResponseEntity.noContent().build();
     }
 
     private ResponseEntity<ResponseMessage> saveBooks(List<BookImportDTO> bookImportDTOS) {

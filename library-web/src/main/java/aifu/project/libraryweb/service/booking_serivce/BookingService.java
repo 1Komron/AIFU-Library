@@ -10,7 +10,6 @@ import aifu.project.libraryweb.service.student_service.StudentServiceImpl;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
 
 public interface BookingService {
 
@@ -41,4 +40,6 @@ public interface BookingService {
     List<Booking> getAllBookingsByStudent(Long id);
 
     List<BookingShortDTO>  getAllOverdueBookings();
+
+    ResponseEntity<ResponseMessage> getBookingByStudentId(Long id);
 }

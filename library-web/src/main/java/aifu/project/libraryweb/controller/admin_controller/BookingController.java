@@ -29,6 +29,16 @@
             return bookingService.getBooking(id);
         }
 
+        @GetMapping("/student/{id}")
+        @Operation(summary = "Booking ma'lmotlarini Student ID bo'yicha olish")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Booking ma'lumotlari muvaffaqiyatli qaytarildi"),
+                @ApiResponse(responseCode = "404", description = "Booking topilmadi")
+        })
+        public ResponseEntity<ResponseMessage> getBookingByStudentId(@PathVariable Long id) {
+            return bookingService.getBookingByStudentId(id);
+        }
+
         @GetMapping
         @Operation(summary = "Bookinglar ro'yxatini olish",
                 description = """

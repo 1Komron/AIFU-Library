@@ -75,8 +75,6 @@ public class BookingServiceImpl implements BookingService {
         };
 
         Page<BookingShortDTO> page = switch (field) {
-            case "studentId" ->
-                    bookingRepository.findAllBookingShortDTOByStudentId(Long.parseLong(query), statuses, pageable);
             case "cardNumber" -> bookingRepository.findAllBookingShortDTOByStudentCardNumber(query, statuses, pageable);
             case "fullName" -> {
                 String[] parts = query.trim().split("\\s+");
@@ -241,6 +239,18 @@ public class BookingServiceImpl implements BookingService {
         booking = bookingRepository.save(booking);
 
         adminStatisticsService.createActivity(booking, "EXTENDED", librarian);
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> getBookingByStudentId(Long id) {
+        log.info("Student ID bo'yicha student bronlari olib chiqish jarayoni...");
+        Student student = studentService.findStudent(id);
+
+        List<BookingShortDTO> bookingShortDTO = bookingRepository.findAllStudentBookingShortDTO(student);
+
+        log.info("'{}' Studenni bronlar ro'yxati: {}", student.getId(), bookingShortDTO);
+
+        return ResponseEntity.ok(new ResponseMessage(true, "'%s' studentning bronlar ro'yxati".formatted(id), bookingShortDTO));
     }
 
     @Override

@@ -85,7 +85,7 @@ public class LibrarianServiceImpl implements LibrarianService {
             switch (key) {
                 case "name" -> librarian.setName((String) value);
                 case "surname" -> librarian.setSurname((String) value);
-                case "image" -> librarian.setImageUrl((String) value);
+                case "imageUrl" -> librarian.setImageUrl((String) value);
                 default -> throw new IllegalArgumentException("Noma'lum field: " + key);
             }
         }

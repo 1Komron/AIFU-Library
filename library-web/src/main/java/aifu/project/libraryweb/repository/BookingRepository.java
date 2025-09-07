@@ -22,6 +22,26 @@ import java.util.Set;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    @Query("""
+            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
+                b.id,
+                    s.name,
+                    s.surname,
+                    base.title,
+                    base.author,
+                    b.dueDate,
+                    b.givenAt,
+                    b.status
+            )
+            FROM Booking b
+            JOIN b.book copy
+            JOIN copy.book base
+            JOIN b.student s
+            where b.student = :student
+            """)
+    List<BookingShortDTO> findAllStudentBookingShortDTO(Student student);
+
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
                 b.id,
@@ -94,26 +114,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<BookingResponse> findAllBookingByGivenAtAndStatus(LocalDate givenAt, Status status);
 
     boolean existsBookingByStudent_Id(Long userId);
-
-    @Query("""
-            SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(
-                b.id,
-                    s.name,
-                    s.surname,
-                    base.title,
-                    base.author,
-                    b.dueDate,
-                    b.givenAt,
-                    b.status
-            )
-            FROM Booking b
-            JOIN b.book copy
-            JOIN copy.book base
-            JOIN b.student s
-            WHERE b.student.id = :id
-            and b.status in :statuses
-            """)
-    Page<BookingShortDTO> findAllBookingShortDTOByStudentId(Long id, List<Status> statuses, Pageable pageable);
 
     @Query("""
             SELECT new aifu.project.common_domain.dto.booking_dto.BookingShortDTO(

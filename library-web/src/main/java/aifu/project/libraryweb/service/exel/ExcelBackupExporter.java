@@ -73,14 +73,14 @@ public class ExcelBackupExporter {
     };
 
     private static final String HISTORY_HEADER_INDEX = "#";
-    private static final String HISTORY_HEADER_STUDENT_NAME = "Student";
+    private static final String HISTORY_HEADER_STUDENT_FULL_NAME = "F.I.O (Talaba)";
     private static final String HISTORY_HEADER_BOOK_TITLE = "Kitob";
     private static final String HISTORY_HEADER_BORROW_DATE = "Olingan sana";
     private static final String HISTORY_HEADER_RETURN_DATE = "Qaytarilgan sana";
     private static final String HISTORY_HEADER_STATUS = "Holat";
 
     private static final String[] HISTORY_HEADERS = {
-            HISTORY_HEADER_INDEX, HISTORY_HEADER_STUDENT_NAME, HISTORY_HEADER_BOOK_TITLE,
+            HISTORY_HEADER_INDEX, HISTORY_HEADER_STUDENT_FULL_NAME, HISTORY_HEADER_BOOK_TITLE,
             HISTORY_HEADER_BORROW_DATE, HISTORY_HEADER_RETURN_DATE, HISTORY_HEADER_STATUS
     };
 
@@ -125,7 +125,7 @@ public class ExcelBackupExporter {
                     BookCopy bookCopy = history.getBook();
                     int col = 0;
                     setCell(row, col++, row.getRowNum());
-                    setCell(row, col++, user.getName());
+                    setCell(row, col++, user.getName() + " " + user.getSurname());
                     setCell(row, col++, user.getSurname());
                     setCell(row, col++, user.getPhoneNumber());
                     setCell(row, col++, bookCopy.getBook().getTitle());

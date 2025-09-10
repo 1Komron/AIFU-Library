@@ -65,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(filter));
         }
 
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--pageNum, pageSize, Sort.by(direction, "id"));
 
         List<Status> statuses = switch (filter.toUpperCase()) {
@@ -77,9 +77,9 @@ public class BookingServiceImpl implements BookingService {
         Page<BookingShortDTO> page = switch (field) {
             case "cardNumber" -> bookingRepository.findAllBookingShortDTOByStudentCardNumber(query, statuses, pageable);
             case "fullName" -> {
-                String[] parts = query.trim().split("\\s+");
+                String[] parts = query.trim().split("~");
 
-                String first = "%" + parts[0].toLowerCase() + "%";
+                String first = parts[0].isBlank() ? null : "%" + parts[0].toLowerCase() + "%";
                 String second = (parts.length == 2) ? "%" + parts[1].toLowerCase() + "%" : null;
 
                 yield bookingRepository.findAllBookingShortDTOByStudentFullName(first, second, statuses, pageable);

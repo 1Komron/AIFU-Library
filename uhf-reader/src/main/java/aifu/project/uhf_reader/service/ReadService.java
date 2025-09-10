@@ -62,7 +62,7 @@ public class ReadService {
                                 log.info("[{}] Tag:  '{}' BookCopy table da topilmadi. Scan ignor qilindi.", this.name, epc);
 
                         case 0 -> {
-                            if (alarmActive.get()) {
+                            if (!alarmActive.get()) {
                                 alarmActive.set(true);
 
                                 executor.submit(triggerService::triggerAlarm);

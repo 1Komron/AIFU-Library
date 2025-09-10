@@ -74,6 +74,7 @@ public class ExcelBackupExporter {
 
     private static final String HISTORY_HEADER_INDEX = "#";
     private static final String HISTORY_HEADER_STUDENT_FULL_NAME = "F.I.O";
+    private static final String HISTORY_HEADER_STUDENT_FACULTY = "Yo'nalish";
     private static final String HISTORY_HEADER_STUDENT_PHONE_NUBMER = "Telefon raqam";
     private static final String HISTORY_HEADER_BOOK_TITLE = "Kitob nomi";
     private static final String HISTORY_HEADER_BOOK_AUTHOR = "Kitob muallifi";
@@ -84,7 +85,7 @@ public class ExcelBackupExporter {
     private static final String HISTORY_HEADER_RETURN_ADMIN = "Kim tomonidan qabul qilingan";
 
     private static final String[] HISTORY_HEADERS = {
-            HISTORY_HEADER_INDEX, HISTORY_HEADER_STUDENT_FULL_NAME, HISTORY_HEADER_STUDENT_PHONE_NUBMER,
+            HISTORY_HEADER_INDEX, HISTORY_HEADER_STUDENT_FULL_NAME, HISTORY_HEADER_STUDENT_FACULTY, HISTORY_HEADER_STUDENT_PHONE_NUBMER,
             HISTORY_HEADER_BOOK_TITLE, HISTORY_HEADER_BOOK_AUTHOR, HISTORY_HEADER_BOOK_INV,
             HISTORY_HEADER_BORROW_DATE, HISTORY_HEADER_RETURN_DATE,
             HISTORY_HEADER_BORROW_ADMIN, HISTORY_HEADER_RETURN_ADMIN,
@@ -133,6 +134,7 @@ public class ExcelBackupExporter {
                     int col = 0;
                     setCell(row, col++, row.getRowNum());
                     setCell(row, col++, user.getName() + " " + user.getSurname());
+                    setCell(row, col++, user.getFaculty());
                     setCell(row, col++, user.getPhoneNumber() == null ? "-" : user.getPhoneNumber());
                     setCell(row, col++, bookCopy.getBook().getTitle());
                     setCell(row, col++, bookCopy.getBook().getAuthor());

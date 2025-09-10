@@ -118,7 +118,7 @@ public class BaseBookCategoryServiceImpl implements BaseBookCategoryService {
     @Override
     public ResponseEntity<ResponseMessage> getList(String sortDirection) {
         log.info("BaseBookCategory ro'yxatini olish jarayoni...");
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         List<BaseBookCategoryShortDTO> list = categoryRepository.findAllByIsDeletedFalse(Sort.by(direction, "id"));
 
         log.info("BaseBookCategory ro'yxati olindi. Ro'yxat: {}.  Elementlar soni: {}", list, list.size());

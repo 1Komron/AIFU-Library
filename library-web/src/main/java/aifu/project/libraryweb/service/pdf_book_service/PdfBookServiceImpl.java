@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -229,9 +228,10 @@ public class PdfBookServiceImpl implements PdfBookService {
 
         Page<PdfBook> resultPage = switch (field) {
             case "fullInfo" -> {
-                String[] parts = query.trim().split("\\s+");
+                String[] parts = query.trim().split("~");
                 String first = "%" + parts[0].toLowerCase() + "%";
                 String second = (parts.length > 1) ? "%" + parts[1].toLowerCase() + "%" : null;
+
                 yield pdfBookRepository.findByAuthorAndTitle(first, second, pageable);
             }
             case "categoryId" -> {

@@ -106,7 +106,7 @@ public class BookCopyController {
                                                   @RequestParam(defaultValue = "all") String filter,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,
-                                                  @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+                                                  @RequestParam(required = false, defaultValue = "desc") String sortDirection) {
         return bookCopyService.getAll(query, field, filter, pageNumber, pageSize, sortDirection);
     }
 

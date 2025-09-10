@@ -87,7 +87,7 @@ public class BaseBookController {
                                                   @RequestParam(required = false) String field,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,
-                                                  @RequestParam(defaultValue = "asc") String sortDirection) {
+                                                  @RequestParam(defaultValue = "desc") String sortDirection) {
         return baseBookService.getAll(query, field, pageNumber, pageSize, sortDirection);
     }
 }

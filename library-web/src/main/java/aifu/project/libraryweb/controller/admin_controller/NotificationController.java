@@ -33,12 +33,12 @@ public class NotificationController {
                     - pageNumber: Sahifa raqami (default: 1)
                     - pageSize: Sahifa hajmi (default: 10)
                     - filter: Filtrlash turi (default: 'all') 'all', 'unread', 'read'
-                    - sortDirection: Tartiblash yo'nalishi (default: asc) 'asc' yoki 'desc'
+                    - sortDirection: Tartiblash yo'nalishi (default: desc) 'asc' yoki 'desc'
                     """)
     public ResponseEntity<ResponseMessage> getAllNotifications(@RequestParam(defaultValue = "1") int pageNumber,
                                                                @RequestParam(defaultValue = "10") int pageSize,
                                                                @RequestParam(required = false, defaultValue = "all") String filter,
-                                                               @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+                                                               @RequestParam(required = false, defaultValue = "desc") String sortDirection) {
         return notificationService.getAllNotifications(pageNumber, pageSize, filter, sortDirection);
     }
 

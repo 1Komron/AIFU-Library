@@ -47,7 +47,7 @@ public class AdminController {
             @ApiResponse(responseCode = "403", description = "Ruxsat yo'q (faqat SUPER_ADMIN kirishi mumkin)"),
             @ApiResponse(responseCode = "500", description = "Serverdagi ichki xatolik")
     })
-    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "asc") String sortDirection,
+    public ResponseEntity<ResponseMessage> getAll(@RequestParam(required = false, defaultValue = "desc") String sortDirection,
                                                   @RequestParam(defaultValue = "1") Integer pageNumber,
                                                   @RequestParam(defaultValue = "10") Integer pageSize) {
         return adminManagementService.getAll(pageNumber, pageSize, sortDirection);

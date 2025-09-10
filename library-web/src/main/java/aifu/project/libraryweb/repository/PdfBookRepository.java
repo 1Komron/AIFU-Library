@@ -20,15 +20,9 @@ public interface PdfBookRepository extends JpaRepository<PdfBook, Integer> {
             SELECT b from PdfBook b
             where
                   (
-                    (lower(b.author) like :first or lower(b.title) like :first)
+                    (:first is not null and (lower(b.author) like :first))
                     or
-                    (:second is not null and
-                      (
-                        (lower(b.author) like :first and lower(b.title) like :second)
-                        or
-                        (lower(b.author) like :second and lower(b.title) like :first)
-                      )
-                    )
+                    (:second is not null and (lower(b.title) like :second))
                   )
             """)
     Page<PdfBook> findByAuthorAndTitle(String first, String second, Pageable pageable);

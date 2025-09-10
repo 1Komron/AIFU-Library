@@ -124,7 +124,7 @@ public class AdminManagementService {
 
 
     public ResponseEntity<ResponseMessage> getAll(Integer page, Integer size, String sortDirection) {
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--page, size, Sort.by(direction, "id"));
         Page<Librarian> librarianPage = librarianRepository.findAll(pageable);
 

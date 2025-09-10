@@ -63,7 +63,7 @@
                                                       @RequestParam(defaultValue = "all") String filter,
                                                       @RequestParam(defaultValue = "1") int pageNum,
                                                       @RequestParam(defaultValue = "10") int pageSize,
-                                                      @RequestParam(defaultValue = "asc") String sortDirection) {
+                                                      @RequestParam(defaultValue = "desc") String sortDirection) {
             return bookingService.getAll(field, query, filter, pageNum, pageSize, sortDirection);
         }
 

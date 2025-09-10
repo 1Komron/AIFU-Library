@@ -64,7 +64,7 @@ public class HistoryServiceImpl implements HistoryService {
         log.info("Field: {}, Query: {}, pageNumber: {}, pageSize: {}", field, query, pageNumber, pageSize);
 
         field = field == null ? "default" : field;
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
         Page<History> page = switch (field) {

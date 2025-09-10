@@ -38,7 +38,7 @@ public class StudentController {
                     - pageNumber: Sahifa raqami (default: 1)
                     - cardNumber: Student kartasi raqami
                     - sortBy: Tartiblash uchun field (default: id)
-                    - sortDir: Tartiblash yo'nalishi (default: asc) 'asc' yoki 'desc'
+                    - sortDir: Tartiblash yo'nalishi (default: desc) 'asc' yoki 'desc'
                     
                     Eslatma: id doimo son korinishida bolishi kerak. Ism va Familiya faqat 2 ta so'zdan iborat bo'lishi kerak.
                     """)
@@ -51,7 +51,7 @@ public class StudentController {
                                                   @RequestParam(defaultValue = "all") String status,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int size,
-                                                  @RequestParam(defaultValue = "asc") String sortDirection) {
+                                                  @RequestParam(defaultValue = "desc") String sortDirection) {
 
         return studentService.getAll(field, query, status, pageNumber, size, sortDirection);
     }

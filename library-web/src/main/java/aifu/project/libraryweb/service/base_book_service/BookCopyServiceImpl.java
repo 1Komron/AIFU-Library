@@ -220,7 +220,7 @@ public class BookCopyServiceImpl implements BookCopyService {
             throw new IllegalArgumentException("Query null bolishi mumkin emas. Field: " + field);
         }
 
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, "id"));
 
         String filterQuery = switch (filter) {

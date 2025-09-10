@@ -49,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
     public ResponseEntity<ResponseMessage> getAllNotifications(int pageNumber, int pageSize, String filter, String sortDirection) {
         log.info("Notification ro'yxatini olish jarayoni...");
 
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--pageNumber, pageSize, Sort.by(direction, NOTIFICATION_TIME));
 
         Page<Notification> page = switch (filter.toLowerCase()) {

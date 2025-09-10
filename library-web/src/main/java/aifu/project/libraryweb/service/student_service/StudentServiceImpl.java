@@ -104,7 +104,7 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("Query qiymati: null. Field qiymati: %s".formatted(field));
         }
 
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--pageNumber, size, Sort.by(direction, "id"));
 
         List<Boolean> statusList = switch (status) {

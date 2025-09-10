@@ -45,7 +45,7 @@ public class HistoryController {
                                                   @RequestParam(required = false) String query,
                                                   @RequestParam(defaultValue = "1") int pageNumber,
                                                   @RequestParam(defaultValue = "10") int pageSize,
-                                                  @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+                                                  @RequestParam(required = false, defaultValue = "desc") String sortDirection) {
         return historyService.getAll(field, query, pageNumber, pageSize, sortDirection);
     }
 }

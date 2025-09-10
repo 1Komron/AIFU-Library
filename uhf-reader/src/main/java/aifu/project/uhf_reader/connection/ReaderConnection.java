@@ -75,10 +75,10 @@ public class ReaderConnection {
     private void setupPower() {
         MsgBaseSetPower setPower = new MsgBaseSetPower();
         Hashtable<Integer, Integer> power = new Hashtable<>();
-        power.put(1, 20);
-        power.put(2, 20);
-        power.put(3, 20);
-        power.put(4, 20);
+        power.put(1, 30);
+        power.put(2, 30);
+        power.put(3, 30);
+        power.put(4, 30);
         setPower.setDicPower(power);
         client.sendSynMsg(setPower);
         log.info("⚙️ [{}] Antennalar kuchi o‘rnatildi.", name);

@@ -51,7 +51,7 @@ public class BaseBookCategoryController {
 
     @GetMapping
     @Operation(summary = "Base book category ro'yxatini olish")
-    public ResponseEntity<ResponseMessage> getBaseBookCategoryList(@RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+    public ResponseEntity<ResponseMessage> getBaseBookCategoryList(@RequestParam(required = false, defaultValue = "desc") String sortDirection) {
         return baseBookCategoryService.getList(sortDirection);
     }
 

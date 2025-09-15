@@ -1,32 +1,34 @@
 package aifu.project.common_domain.dto.live_dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
 
-@Data
-public class BaseBookUpdateDTO {
+public record BaseBookUpdateDTO(
+        Integer categoryId,
 
-    private String author;
+        String author,
 
-    private String title;
+        String title,
 
-    private String series;
+        String series,
 
-    private String titleDetails;
+        String titleDetails,
 
-    private Integer publicationYear;
+        @JsonFormat(pattern = "yyyy")
+        Integer publicationYear,
 
-    private String publisher;
+        String publisher,
 
-    private String publicationCity;
+        String publicationCity,
 
-    private String isbn;
+        String isbn,
 
-    private Integer pageCount;
+        @Min(1)
+        Integer pageCount,
 
-    private String language;
+        String language,
 
-    private String udc;
-
-    private Integer categoryId;
+        String udc
+) {
 
 }

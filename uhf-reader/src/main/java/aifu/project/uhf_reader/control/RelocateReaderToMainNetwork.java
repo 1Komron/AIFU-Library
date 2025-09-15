@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RelocateReaderToMainNetwork {
     private static final String READER_IP = "192.168.1.250:8160";
-    private static final String NEW_IP = "10.166.159.251";
+    private static final String NEW_IP = "10.166.159.250"; //Reader-2 -> 10.166.159.251
     private static final String MASK = "255.255.224.0";
     private static final String GATEWAY = "10.166.128.1";
     private static final String DNS_1 = "10.166.128.1";

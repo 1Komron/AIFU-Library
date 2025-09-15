@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SetReaderToClientMode {
 
-    private static final String IP = "10.166.159.251";
+    private static final String IP = "10.166.159.250"; //Reader-2 -> 10.166.159.251
     private static final String PORT = "8160";
-    private static final String NEW_CLIENT_IP = "167.86.98.218";
-    private static final int NEW_CLIENT_PORT = 8086;
+    private static final String NEW_SERVER_IP = "167.86.98.218";
+    private static final int NEW_SERVER_PORT = 8085;  //Reader-2 -> 8086
 
 
     public static void main(String[] args) {
@@ -22,16 +22,16 @@ public class SetReaderToClientMode {
             MsgAppSetTcpMode setModeMsg = new MsgAppSetTcpMode();
 
             setModeMsg.setTcpMode(1);
-            setModeMsg.setClientIp(NEW_CLIENT_IP);
-            setModeMsg.setClientPort(NEW_CLIENT_PORT);
+            setModeMsg.setClientIp(NEW_SERVER_IP);
+            setModeMsg.setClientPort(NEW_SERVER_PORT);
 
             log.info("Readerni client rejimiga o'tkazish: Client IP={}, Client PORT={}",
-                    NEW_CLIENT_IP, NEW_CLIENT_PORT);
+                    NEW_SERVER_IP, NEW_SERVER_PORT);
             client.sendSynMsg(setModeMsg);
 
             if (setModeMsg.getRtCode() == 0x00) {
                 log.info("Reader muvaffaqiyatli client rejimiga o'tkazildi.");
-                log.info("Endi reader yangi Client IP va PORT ga ulanadi: {}:{}", NEW_CLIENT_IP, NEW_CLIENT_PORT);
+                log.info("Endi reader yangi Client IP va PORT ga ulanadi: {}:{}", NEW_SERVER_IP, NEW_SERVER_PORT);
             } else {
                 log.error("Readerni client rejimiga o'tkazishda xatolik: {}", setModeMsg.getRtMsg());
             }

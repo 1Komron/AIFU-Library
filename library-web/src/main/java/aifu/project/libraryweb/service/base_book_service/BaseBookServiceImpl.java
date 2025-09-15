@@ -31,8 +31,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static aifu.project.libraryweb.utils.UpdateUtils.updateIfChanged;
 
 @Slf4j
 @Service
@@ -189,47 +192,18 @@ public class BaseBookServiceImpl implements BaseBookService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(Integer id, BaseBookUpdateDTO updates) {
         log.info("ID {} bo'yicha base book tahrirlash jarayoni boshlandi...", id);
+        log.info("Update DTO: {}", updates);
 
         BaseBook entity = baseBookRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BaseBookNotFoundException(id));
 
-        for (Map.Entry<String, Object> entry : updates.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            if (key == null)
-                throw new IllegalArgumentException("Key null");
-
-            if (value == null)
-                throw new IllegalArgumentException("Value null");
-
-            switch (key) {
-                case "title" -> entity.setTitle(((String) value).trim());
-                case "author" -> entity.setAuthor(((String) value).trim());
-                case "series" -> entity.setSeries(((String) value).trim());
-                case "titleDetails" -> entity.setTitleDetails(((String) value).trim());
-                case "publicationYear" -> entity.setPublicationYear(Integer.parseInt(value.toString()));
-                case "publisher" -> entity.setPublisher(((String) value).trim());
-                case "publicationCity" -> entity.setPublicationCity(((String) value).trim());
-                case "isbn" -> entity.setIsbn(((String) value).trim());
-                case "pageCount" -> entity.setPageCount(Integer.parseInt(value.toString()));
-                case "language" -> entity.setLanguage(((String) value).trim());
-                case "udc" -> entity.setUdc(((String) value).trim());
-                case "category" -> {
-                    Integer categoryId = Integer.parseInt(value.toString());
-                    BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(categoryId)
-                            .orElseThrow(() -> new BaseBookCategoryNotFoundException(categoryId));
-                    entity.setCategory(category);
-                }
-                default -> throw new IllegalArgumentException("Mavjud bo'lmagan field: " + key);
-            }
-        }
+        updateEntityFields(updates, entity);
 
         baseBookRepository.save(entity);
 
-        log.info("Base book tahrirlandi: {}.\nTahrirlanga field lar: {}", entity, updates.keySet());
+        log.info("Base book tahrirlandi: {}.", entity);
 
         try {
             luceneIndexService.indexBaseBooks(entity);
@@ -243,6 +217,25 @@ public class BaseBookServiceImpl implements BaseBookService {
         return ResponseEntity.ok(new ResponseMessage(true, "Kitob muvaffaqiyatli tahrirlandi", responseDTO));
     }
 
+    private void updateEntityFields(BaseBookUpdateDTO updates, BaseBook entity) {
+        updateIfChanged(updates.author(), entity::getAuthor, entity::setAuthor);
+        updateIfChanged(updates.title(), entity::getTitle, entity::setTitle);
+        updateIfChanged(updates.series(), entity::getSeries, entity::setSeries);
+        updateIfChanged(updates.titleDetails(), entity::getTitleDetails, entity::setTitleDetails);
+        updateIfChanged(updates.publicationYear(), entity::getPublicationYear, entity::setPublicationYear);
+        updateIfChanged(updates.publisher(), entity::getPublisher, entity::setPublisher);
+        updateIfChanged(updates.publicationCity(), entity::getPublicationCity, entity::setPublicationCity);
+        updateIfChanged(updates.isbn(), entity::getIsbn, entity::setIsbn);
+        updateIfChanged(updates.pageCount(), entity::getPageCount, entity::setPageCount);
+        updateIfChanged(updates.language(), entity::getLanguage, entity::setLanguage);
+        updateIfChanged(updates.udc(), entity::getUdc, entity::setUdc);
+
+        if (updates.categoryId() != null && !Objects.equals(updates.categoryId(), entity.getCategory().getId())) {
+            BaseBookCategory category = categoryRepository.findByIdAndIsDeletedFalse(updates.categoryId())
+                    .orElseThrow(() -> new BaseBookCategoryNotFoundException(updates.categoryId()));
+            entity.setCategory(category);
+        }
+    }
 
     @Override
     @Transactional

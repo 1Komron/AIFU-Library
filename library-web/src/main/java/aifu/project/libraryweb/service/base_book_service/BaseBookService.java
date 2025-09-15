@@ -3,6 +3,7 @@ package aifu.project.libraryweb.service.base_book_service;
 import aifu.project.common_domain.dto.excel_dto.BookExcelDTO;
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.common_domain.dto.live_dto.BaseBookUpdateDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ public interface BaseBookService {
 
     ResponseEntity<ResponseMessage> get(Integer id);
 
-    ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates);
+    ResponseEntity<ResponseMessage> update(Integer id, BaseBookUpdateDTO updates);
 
     ResponseEntity<ResponseMessage> delete(Integer id);
 

@@ -2,6 +2,7 @@ package aifu.project.libraryweb.controller.admin_controller.base_book_controller
 
 import aifu.project.common_domain.dto.live_dto.BaseBookCreateDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.common_domain.dto.live_dto.BaseBookUpdateDTO;
 import aifu.project.libraryweb.service.base_book_service.BaseBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,7 +46,7 @@ public class BaseBookController {
             @ApiResponse(responseCode = "400", description = "Mavjud bolmagan fieldni tahrirlanishga urinish")
     })
     public ResponseEntity<ResponseMessage> updateBaseBook(@PathVariable Integer id,
-                                                          @RequestBody Map<String, Object> updates) {
+                                                          @RequestBody BaseBookUpdateDTO updates) {
         return baseBookService.update(id, updates);
     }
 

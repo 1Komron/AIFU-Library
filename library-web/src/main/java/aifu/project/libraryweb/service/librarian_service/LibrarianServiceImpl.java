@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.service.librarian_service;
 
 import aifu.project.common_domain.dto.AdminResponse;
+import aifu.project.common_domain.dto.AdminUpdateDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.exceptions.LoginBadCredentialsException;
@@ -12,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import static aifu.project.libraryweb.utils.UpdateUtils.updateIfChanged;
 
 @Slf4j
 @Service
@@ -42,12 +43,12 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> update(Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(AdminUpdateDTO updates) {
         Librarian librarian = updateLibrarian(updates);
 
         librarian = librarianRepository.save(librarian);
 
-        log.info("Libararian update qilindi. Librarian: {}. Update qilingan fieldlar: {}", librarian, updates.keySet());
+        log.info("Libararian update qilindi. Librarian: {}.", librarian);
 
         AdminResponse response = AdminResponse.builder()
                 .id(librarian.getId())
@@ -62,34 +63,23 @@ public class LibrarianServiceImpl implements LibrarianService {
         return ResponseEntity.ok(new ResponseMessage(true, "Muvaffaqiyatli update qilindi", response));
     }
 
-    private static Librarian updateLibrarian(Map<String, Object> updates) {
+    private Librarian updateLibrarian(AdminUpdateDTO updates) {
         log.info("Kutubxonachi profile tahrirlash jarayoni...");
-        log.info("Update qilinayotgan fieldlar: {}", updates.keySet());
+        log.info("Update qilinayotgan fieldlar: {}", updates);
 
         Librarian librarian = getLibrarian();
 
         log.info("Update qilinayotga kutubxonachi: {}", librarian);
 
-        for (Map.Entry<String, Object> entry : updates.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
+        updateFields(updates, librarian);
 
-            if (key == null) {
-                throw new IllegalArgumentException("Key Null");
-            }
-
-            if (value == null) {
-                throw new IllegalArgumentException("Value Null");
-            }
-
-            switch (key) {
-                case "name" -> librarian.setName((String) value);
-                case "surname" -> librarian.setSurname((String) value);
-                case "imageUrl" -> librarian.setImageUrl((String) value);
-                default -> throw new IllegalArgumentException("Noma'lum field: " + key);
-            }
-        }
         return librarian;
+    }
+
+    private void updateFields(AdminUpdateDTO updates, Librarian librarian) {
+        updateIfChanged(updates.name(), librarian::getName, librarian::setName);
+        updateIfChanged(updates.surname(), librarian::getSurname, librarian::setSurname);
+        updateIfChanged(updates.imageUrl(), librarian::getImageUrl, librarian::setImageUrl);
     }
 
     private static Librarian getLibrarian() {

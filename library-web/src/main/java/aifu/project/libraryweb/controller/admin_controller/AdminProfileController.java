@@ -1,5 +1,6 @@
 package aifu.project.libraryweb.controller.admin_controller;
 
+import aifu.project.common_domain.dto.AdminUpdateDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.libraryweb.service.librarian_service.LibrarianService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class AdminProfileController {
     }
 
     @PatchMapping
-    public ResponseEntity<ResponseMessage> updateAdminProfile(@RequestBody Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> updateAdminProfile(@RequestBody AdminUpdateDTO updates) {
         return librarianService.update(updates);
     }
 }

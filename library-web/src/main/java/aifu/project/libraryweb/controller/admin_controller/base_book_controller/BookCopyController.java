@@ -2,6 +2,7 @@ package aifu.project.libraryweb.controller.admin_controller.base_book_controller
 
 import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
 import aifu.project.common_domain.dto.ResponseMessage;
+import aifu.project.common_domain.dto.live_dto.BookCopyUpdateDTO;
 import aifu.project.libraryweb.service.base_book_service.BookCopyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,7 +42,7 @@ public class BookCopyController {
             @ApiResponse(responseCode = "404", description = "Book copy | Base Book topilmadi"),
             @ApiResponse(responseCode = "400", description = "Noto'g'ri field | qiymat")
     })
-    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody BookCopyUpdateDTO updates) {
         return bookCopyService.update(id, updates);
     }
 

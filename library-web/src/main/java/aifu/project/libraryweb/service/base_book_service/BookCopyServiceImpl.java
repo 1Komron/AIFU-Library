@@ -1,10 +1,7 @@
 package aifu.project.libraryweb.service.base_book_service;
 
 import aifu.project.common_domain.dto.BookCopyStats;
-import aifu.project.common_domain.dto.live_dto.BookCopyCreateDTO;
-import aifu.project.common_domain.dto.live_dto.BookCopyResponseDTO;
-import aifu.project.common_domain.dto.live_dto.BookCopyShortDTO;
-import aifu.project.common_domain.dto.live_dto.BookCopySummaryDTO;
+import aifu.project.common_domain.dto.live_dto.*;
 import aifu.project.common_domain.entity.BaseBook;
 import aifu.project.common_domain.entity.BookCopy;
 import aifu.project.common_domain.exceptions.BaseBookNotFoundException;
@@ -31,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static aifu.project.libraryweb.utils.UpdateUtils.updateIfChanged;
 
 @Slf4j
 @Service
@@ -109,60 +108,52 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseMessage> update(Integer id, Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(Integer id, BookCopyUpdateDTO updates) {
         log.info("BookCopy tahrirlash jarayoni boshlandi...");
-        log.info("BookCopy tahrirlash uchun so'rov keldi. ID: {}, Updates: {}", id, updates.keySet());
+        log.info("BookCopy tahrirlash uchun so'rov keldi. ID: {}, Updates: {}", id, updates);
 
         BookCopy bookCopy = bookCopyRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new BookCopyNotFoundException(BookCopyNotFoundException.BY_ID + id));
 
-        updates.forEach((key, value) -> {
+        updateFields(updates, bookCopy);
 
-            if (value == null)
-                throw new IllegalArgumentException("BookCopy tahrirlash. Value null");
-
-            if (key == null) {
-                throw new IllegalArgumentException("BookCopy tahrirlash. Key null");
-            }
-
-            switch (key) {
-                case "inventoryNumber" -> {
-                    String inventoryNumber = ((String) value).trim();
-                    if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
-                        throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
-                    }
-
-                    bookCopy.setInventoryNumber(inventoryNumber);
-                }
-                case "epc" -> {
-                    String epc = ((String) value).trim();
-                    if (bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
-                        throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
-
-                    }
-                }
-                case "shelfLocation" -> bookCopy.setShelfLocation(((String) value).trim());
-                case "notes" -> bookCopy.setNotes(((String) value).trim());
-                case "book" -> {
-                    Integer baseBookId = Integer.parseInt(((String) value).trim());
-                    BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(baseBookId)
-                            .orElseThrow(() -> new BaseBookNotFoundException(baseBookId));
-
-                    bookCopy.setBook(baseBook);
-                }
-                default ->
-                        throw new IllegalArgumentException("BookCopy tahrirlash. Mavjud bo'lmagan field. Field: " + key);
-            }
-        });
         bookCopyRepository.save(bookCopy);
 
-        log.info("BookCopy tahrirladni: {}.\nTahrirlangan field lar: {}", bookCopy, updates.keySet());
+        log.info("BookCopy tahrirladni: {}.", bookCopy);
 
         BookCopyResponseDTO responseDTO = BookCopyMapper.toResponseDTO(bookCopy);
 
         log.info("BookCopy tahrirlash jarayoni tugadi");
 
         return ResponseEntity.ok(new ResponseMessage(true, "Kitob nusxasi muvaffaqiyatli tahrirlandi", responseDTO));
+    }
+
+    private void updateFields(BookCopyUpdateDTO updates, BookCopy entity) {
+        String inventoryNumber = entity.getInventoryNumber() != null ? entity.getInventoryNumber().trim() : null;
+        String epc = entity.getEpc() != null ? entity.getEpc().trim() : null;
+
+        if (updates.baseBookId() != null && !updates.baseBookId().equals(entity.getBook().getId())) {
+            BaseBook baseBook = baseBookRepository.findByIdAndIsDeletedFalse(updates.baseBookId())
+                    .orElseThrow(() -> new BaseBookNotFoundException(updates.baseBookId()));
+            entity.setBook(baseBook);
+        }
+
+        if (inventoryNumber != null && !updates.inventoryNumber().equals(inventoryNumber)) {
+            if (bookCopyRepository.existsByInventoryNumberAndIsDeletedFalse(inventoryNumber)) {
+                throw new IllegalArgumentException("Bu inventoryNumber bilan nusxa mavjud: " + inventoryNumber);
+            }
+            entity.setInventoryNumber(inventoryNumber);
+        }
+
+        if (epc != null && !updates.epc().equals(epc)) {
+            if (bookCopyRepository.existsByEpcAndIsDeletedFalse(epc)) {
+                throw new IllegalArgumentException("Bu Epc bilan nusxa mavjud: " + epc);
+            }
+            entity.setEpc(epc);
+        }
+
+        updateIfChanged(updates.shelfLocation(), entity::getShelfLocation, entity::setShelfLocation);
+        updateIfChanged(updates.notes(), entity::getNotes, entity::setNotes);
     }
 
     @Override

@@ -1,10 +1,7 @@
 package aifu.project.libraryweb.controller.admin_controller.pdf_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookCreateDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookPreviewDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookResponseDTO;
-import aifu.project.common_domain.dto.pdf_book_dto.PdfBookSearchCriteriaDTO;
+import aifu.project.common_domain.dto.pdf_book_dto.*;
 import aifu.project.libraryweb.service.pdf_book_service.PdfBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +66,7 @@ public class PdfBookController {
                             schema = @Schema(implementation = ResponseMessage.class)))
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Integer id, @RequestBody PdfBookUpdateDTO updates) {
 
         PdfBookResponseDTO updatedBook = pdfBookService.update(id, updates);
 

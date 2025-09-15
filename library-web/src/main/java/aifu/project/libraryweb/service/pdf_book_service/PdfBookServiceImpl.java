@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import static aifu.project.libraryweb.utils.UpdateUtils.updateIfChanged;
+
 
 @Slf4j
 @Service
@@ -95,72 +97,16 @@ public class PdfBookServiceImpl implements PdfBookService {
 
 
     @Override
-    public PdfBookResponseDTO update(Integer id, Map<String, Object> updates) {
+    public PdfBookResponseDTO update(Integer id, PdfBookUpdateDTO updates) {
         log.info("Attempting to PATCH update PDF book with ID: {}", id);
 
         PdfBook entity = pdfBookRepository.findById(id)
                 .orElseThrow(() -> new PdfBookNotFoundException("PDF book topilmadi. ID: " + id));
 
-        for (Map.Entry<String, Object> entry : updates.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            if (key == null)
-                throw new IllegalArgumentException("Key null");
-
-            if (value == null)
-                throw new IllegalArgumentException("Value null");
-
-            switch (key) {
-                case "title" -> {
-                    if (value instanceof String title && !title.isBlank()) {
-                        entity.setTitle(title);
-                    }
-                }
-                case "author" -> {
-                    if (value instanceof String author && !author.isBlank()) {
-                        entity.setAuthor(author);
-                    }
-                }
-                case "language" -> {
-                    if (value instanceof String language) {
-                        entity.setLanguage(language);
-                    }
-                }
-                case "pageCount" -> {
-                    if (value instanceof Integer pageCount) {
-                        entity.setPageCount(pageCount);
-                    }
-                }
-                case "publisher" -> {
-                    if (value instanceof String publisher) {
-                        entity.setPublisher(publisher);
-                    }
-                }
-                case "description" -> {
-                    if (value instanceof String description) {
-                        entity.setDescription(description);
-                    }
-                }
-                case "pdfUrl" -> {
-                    if (value instanceof String pdfUrl && !pdfUrl.isBlank()) {
-                        entity.setPdfUrl(pdfUrl);
-                    }
-                }
-                case "categoryId" -> {
-                    if (value instanceof Integer categoryId) {
-                        Category category = categoryService.getById(categoryId);
-                        entity.setCategory(category);
-                    } else {
-                        throw new IllegalArgumentException("Category ID must be an Integer.");
-                    }
-                }
-                default -> throw new IllegalArgumentException("Invalid field for update: " + key);
-            }
-        }
+        updateFields(entity, updates);
 
         PdfBook updatedBook = pdfBookRepository.save(entity);
-        log.info("PDF book tahrirlandi: {}.\nTahrirlanga field lar: {}", entity, updates.keySet());
+        log.info("PDF book tahrirlandi: {}.\nTahrirlanga field lar: {}", entity, updates);
 
         try {
             luceneIndexService.indexPdfBooks(updatedBook);
@@ -170,6 +116,26 @@ public class PdfBookServiceImpl implements PdfBookService {
         }
 
         return PdfBookMapper.toDto(updatedBook);
+    }
+
+    private void updateFields(PdfBook entity, PdfBookUpdateDTO updates) {
+        updateIfChanged(updates.getAuthor(), entity::getAuthor, entity::setAuthor);
+        updateIfChanged(updates.getTitle(), entity::getTitle, entity::setTitle);
+        updateIfChanged(updates.getPublicationYear(), entity::getPublicationYear, entity::setPublicationYear);
+        updateIfChanged(updates.getPdfUrl(), entity::getPdfUrl, entity::setPdfUrl);
+        updateIfChanged(updates.getImageUrl(), entity::getImageUrl, entity::setImageUrl);
+        updateIfChanged(updates.getIsbn(), entity::getIsbn, entity::setIsbn);
+        updateIfChanged(updates.getPageCount(), entity::getPageCount, entity::setPageCount);
+        updateIfChanged(updates.getPublisher(), entity::getPublisher, entity::setPublisher);
+        updateIfChanged(updates.getLanguage(), entity::getLanguage, entity::setLanguage);
+        updateIfChanged(updates.getScript(), entity::getScript, entity::setScript);
+        updateIfChanged(updates.getSize(), entity::getSize, entity::setSize);
+        updateIfChanged(updates.getDescription(), entity::getDescription, entity::setDescription);
+
+        if (updates.getCategoryId() != null && !updates.getCategoryId().equals(entity.getCategory().getId())) {
+            Category newCategory = categoryService.getById(updates.getCategoryId());
+            entity.setCategory(newCategory);
+        }
     }
 
 

@@ -26,6 +26,7 @@ aifu/project/common_domain/dto/pdf_book_dto/PdfBookResponseDTO.class
 aifu/project/common_domain/exceptions/PdfBookNotFoundException.class
 aifu/project/common_domain/entity/BaseBookCategory$BaseBookCategoryBuilder.class
 aifu/project/common_domain/dto/PasswordResetConfirmRequest.class
+aifu/project/common_domain/dto/student_dto/StudentUpdateDTO.class
 aifu/project/common_domain/entity/enums/Role.class
 aifu/project/common_domain/dto/AdminCreateRequest.class
 aifu/project/common_domain/entity/AdminActivity.class
@@ -40,6 +41,7 @@ aifu/project/common_domain/dto/histroy_dto/HistoryAdminDTO.class
 aifu/project/common_domain/dto/notification_dto/NotificationShortDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO$CategoryResponseDTOBuilder.class
 aifu/project/common_domain/dto/pdf_book_dto/FileUploadResponseDTO.class
+aifu/project/common_domain/dto/live_dto/BaseBookOptionsDTO.class
 aifu/project/common_domain/dto/booking_dto/BookingShortDTO.class
 aifu/project/common_domain/dto/live_dto/BaseBookCategoryDTO.class
 aifu/project/common_domain/dto/statistic_dto/BookingsPerMonthDTO.class
@@ -69,6 +71,7 @@ aifu/project/common_domain/dto/live_dto/BaseBookCategoryCreateDTO$BaseBookCatego
 aifu/project/common_domain/exceptions/BookCopyNotFoundException.class
 aifu/project/common_domain/dto/live_dto/BaseBookShortDTO.class
 aifu/project/common_domain/dto/pdf_book_dto/PdfBookSearchCriteriaDTO$PdfBookSearchCriteriaDTOBuilder.class
+aifu/project/common_domain/dto/live_dto/BookCopyUpdateDTO.class
 aifu/project/common_domain/entity/BaseBookCategory.class
 aifu/project/common_domain/exceptions/StudentImportException.class
 aifu/project/common_domain/dto/pdf_book_dto/CategoryResponseDTO.class
@@ -112,6 +115,7 @@ aifu/project/common_domain/exceptions/NotificationNotFoundException.class
 aifu/project/common_domain/dto/BookCopyStats.class
 aifu/project/common_domain/exceptions/FileUploadException.class
 aifu/project/common_domain/entity/Student.class
+aifu/project/common_domain/dto/AdminUpdateDTO.class
 aifu/project/common_domain/dto/action_dto/ExtendAcceptActionDTO.class
 aifu/project/common_domain/exceptions/UserAlreadyExistsException.class
 aifu/project/common_domain/dto/student_dto/CreateStudentDTO.class

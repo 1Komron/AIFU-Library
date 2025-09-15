@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.repository;
 
 import aifu.project.common_domain.dto.excel_dto.BookExcelDTO;
+import aifu.project.common_domain.dto.live_dto.BaseBookOptionsDTO;
 import aifu.project.common_domain.entity.BaseBook;
 
 import org.springframework.data.domain.Page;
@@ -69,5 +70,16 @@ public interface BaseBookRepository extends JpaRepository<BaseBook, Integer> {
             left join bb.copies c
             """)
     List<BookExcelDTO> getAllBooks();
+
+    @Query("""
+            select new aifu.project.common_domain.dto.live_dto.BaseBookOptionsDTO(
+                b.id,
+                b.author,
+                b.title
+            )
+            from BaseBook b
+            where b.isDeleted = false
+            """)
+    List<BaseBookOptionsDTO> findAllOptionsData();
 }
 

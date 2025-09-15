@@ -50,6 +50,12 @@ public class BaseBookServiceImpl implements BaseBookService {
     private static final String DEFAULT = "default";
 
     @Override
+    public ResponseEntity<ResponseMessage> getOptions() {
+        List<BaseBookOptionsDTO> data = baseBookRepository.findAllOptionsData();
+        return ResponseEntity.ok(new ResponseMessage(true, "Kitoblar ro'yxati", data));
+    }
+
+    @Override
     @Transactional
     public ResponseEntity<ResponseMessage> importFromExcel(MultipartFile file) {
         List<BookImportDTO> bookImportDTOS = ExcelBookHelper.excelToBooks(file);

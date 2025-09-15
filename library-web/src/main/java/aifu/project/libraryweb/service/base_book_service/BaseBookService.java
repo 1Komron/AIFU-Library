@@ -28,4 +28,6 @@ public interface BaseBookService {
     ResponseEntity<ResponseMessage> importFromExcel(MultipartFile file);
 
     ResponseEntity<byte[]> templateFromExcel();
+
+    ResponseEntity<ResponseMessage> getOptions();
 }

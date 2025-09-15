@@ -12,13 +12,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/admin/base-books")
 @RequiredArgsConstructor
 public class BaseBookController {
     private final BaseBookService baseBookService;
+
+    @GetMapping("/options")
+    @Operation(summary = "Book copy yaratish uchun base book tanlash")
+    @ApiResponse(responseCode = "200", description = "Base book ro'yxati muvaffaqiyatli olindi")
+    public ResponseEntity<ResponseMessage> getOptions() {
+        return baseBookService.getOptions();
+    }
 
     @PostMapping
     @Operation(summary = "Base book yaratish")

@@ -25,26 +25,24 @@ public class PasswordResetService {
     private static final long CODE_EXPIRY_TIME = 5 * 60 * 1000; //5 Daqiqa saqlaydi
 
 
+    public void initiatePasswordReset(String email) {
+        if (!librarianRepository.existsByEmail(email)) {
+            log.warn("Parolni tiklash uchun email topilmadi: {}", email);
+            return;
+        }
 
-       public void initiatePasswordReset(String email) {
-           if (!librarianRepository.existsByEmail(email)) {
-           log.warn("Parolni tiklash uchun email topilmadi: {}", email);
-           return;
-           }
+        String code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+        resetCodeCache.put(email, Map.entry(code, System.currentTimeMillis()));
 
-           String code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
-           resetCodeCache.put(email, Map.entry(code, System.currentTimeMillis()));
+        try {
+            emailService.sendConfirmationCode(email, code);
+            log.info("Tasdiqlash codi {} emailga yuborildi ", email);
+        } catch (Exception e) {
+            log.error("Email yuborishda xato: {}", email, e);
+            throw new RuntimeException("Tasdiqlash kodi yuborishda xatolik yuz berdi");
+        }
 
-           try {
-               emailService.sendConfirmationCode(email, code);
-               log.info("Tasdiqlash codi {} emailga yuborildi ", email);
-           }catch (Exception e){
-               log.error("Email yuborishda xato: {}", email, e);
-               throw new RuntimeException("Tasdiqlash kodi yuborishda xatolik yuz berdi");
-           }
-
-       }
-
+    }
 
 
     @Transactional
@@ -69,5 +67,5 @@ public class PasswordResetService {
         log.info("Parol {} emaili uchun muvaffaqiyatli yangilandi", email);
     }
 
-       }
+}
 

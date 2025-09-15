@@ -29,7 +29,7 @@ public class AdminController {
     @Operation(summary = "Admin yaratish")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Admin muvaffaqiyatli yaratildi"),
+            @ApiResponse(responseCode = "201", description = "Admin muvaffaqiyatli yaratildi"),
             @ApiResponse(responseCode = "409", description = "Bu email bilan allaqachon royxatdan otilgan"),
     })
     public ResponseEntity<ResponseMessage> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
@@ -132,6 +132,4 @@ public class AdminController {
         log.info("Http Request: DELETE /api/super-admin/admins/{}",id);
         return adminManagementService.deleteAdmin(id);
     }
-
-
 }

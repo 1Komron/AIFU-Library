@@ -1,6 +1,7 @@
 package aifu.project.libraryweb.service.student_service;
 
 import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
+import aifu.project.common_domain.dto.student_dto.StudentUpdateDTO;
 import aifu.project.common_domain.entity.Student;
 import aifu.project.common_domain.exceptions.CardNumberAlreadyExistsException;
 import aifu.project.common_domain.exceptions.UserAlreadyExistsException;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import static aifu.project.libraryweb.utils.UpdateUtils.updateIfChanged;
 
 @Slf4j
 @Service
@@ -195,50 +198,46 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> update(Long id, Map<String, Object> updates) {
-        log.info("ID bo'yicha studentni update qilish jarayoni boshlandi... ID: {}, Update qilinadigan fieldlar: {}",
-                id, updates.keySet());
+    public ResponseEntity<ResponseMessage> update(Long id, StudentUpdateDTO updates) {
+        log.info("ID bo'yicha studentni update qilish jarayoni boshlandi... ID: {}.", id);
+        log.info("Update qilinadigan fieldlar: {}", updates);
 
         Student student = findStudent(id);
 
-        for (Map.Entry<String, Object> entry : updates.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
+        updateField(updates, student);
 
-            if (key == null) {
-                throw new IllegalArgumentException("Key Null");
-            }
-
-            if (value == null) {
-                throw new IllegalArgumentException("Value Null");
-            }
-
-            switch (key) {
-                case "name" -> student.setName(((String) value).trim());
-                case "surname" -> student.setSurname(((String) value).trim());
-                case "phoneNumber" -> student.setPhoneNumber(((String) value).trim());
-                case "degree" -> student.setDegree(((String) value).trim());
-                case "faculty" -> student.setFaculty(((String) value).trim());
-                case "cardNumber" -> {
-                    String cardNumber = ((String) value).trim();
-
-                    if (studentRepository.existsByCardNumber(cardNumber)) {
-                        throw new IllegalArgumentException("Card Number mavjud: " + cardNumber);
-                    }
-                    student.setCardNumber(cardNumber);
-                }
-                case "admissionTime" -> student.setAdmissionTime(LocalDate.of((Integer) value, 8, 1));
-                case "graduationTime" -> student.setGraduationTime(LocalDate.of((Integer) value, 8, 1));
-                default -> throw new IllegalArgumentException("Invalid key: " + key);
-            }
-        }
-
-        student = studentRepository.save(student);
+        studentRepository.save(student);
         StudentSummaryDTO dto = StudentSummaryDTO.toDTO(student);
 
-        log.info("Stundent ID bo'yicha update qilindi. \nStudent: {}\n Update qilingan fieldlar: {}", student, updates.keySet());
+        log.info("Stundent ID bo'yicha update qilindi. \nStudent: {}", student);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Student malumotlari muvaffqiyatli yangilandi", dto));
+    }
+
+    private void updateField(StudentUpdateDTO updates, Student student) {
+        String cardNumber = updates.cardNumber() != null ? updates.cardNumber().trim() : null;
+
+        updateIfChanged(updates.name(), student::getName, student::setName);
+        updateIfChanged(updates.surname(), student::getSurname, student::setSurname);
+        updateIfChanged(updates.phoneNumber(), student::getPhoneNumber, student::setPhoneNumber);
+        updateIfChanged(updates.degree(), student::getDegree, student::setDegree);
+        updateIfChanged(updates.faculty(), student::getFaculty, student::setFaculty);
+
+        updateIfChanged(
+                LocalDate.of(updates.admissionTime(), 8, 1),
+                student::getAdmissionTime,
+                student::setAdmissionTime);
+
+        updateIfChanged(LocalDate.of(updates.graduationTime(), 7, 1),
+                student::getGraduationTime,
+                student::setGraduationTime);
+
+        if (cardNumber != null && !cardNumber.equals(student.getCardNumber())) {
+            if (studentRepository.existsByCardNumber(cardNumber)) {
+                throw new IllegalArgumentException("Card Number mavjud: " + cardNumber);
+            }
+            student.setCardNumber(cardNumber);
+        }
     }
 
     public Student findByCardNumber(String cardNumber) {

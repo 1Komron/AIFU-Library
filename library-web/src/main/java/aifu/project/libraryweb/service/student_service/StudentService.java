@@ -2,6 +2,7 @@ package aifu.project.libraryweb.service.student_service;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
+import aifu.project.common_domain.dto.student_dto.StudentUpdateDTO;
 import aifu.project.common_domain.entity.Student;
 import org.springframework.http.ResponseEntity;
 
@@ -17,7 +18,7 @@ public interface StudentService {
 
     ResponseEntity<ResponseMessage> getStudentByCardNumber(String id);
 
-    ResponseEntity<ResponseMessage> update(Long id, Map<String, Object> updates);
+    ResponseEntity<ResponseMessage> update(Long id, StudentUpdateDTO updates);
 
     Student findStudent(Long id);
 

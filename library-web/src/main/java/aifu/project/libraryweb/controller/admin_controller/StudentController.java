@@ -2,6 +2,7 @@ package aifu.project.libraryweb.controller.admin_controller;
 
 import aifu.project.common_domain.dto.ResponseMessage;
 import aifu.project.common_domain.dto.student_dto.CreateStudentDTO;
+import aifu.project.common_domain.dto.student_dto.StudentUpdateDTO;
 import aifu.project.libraryweb.service.student_service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -105,7 +106,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student topilmadi"),
             @ApiResponse(responseCode = "400", description = "CardNumber allaqachon mavjud")
     })
-    public ResponseEntity<ResponseMessage> update(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Long id, @RequestBody StudentUpdateDTO updates) {
         return studentService.update(id, updates);
     }
 }

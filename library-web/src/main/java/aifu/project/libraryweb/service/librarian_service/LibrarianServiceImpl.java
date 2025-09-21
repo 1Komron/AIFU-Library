@@ -29,15 +29,7 @@ public class LibrarianServiceImpl implements LibrarianService {
             throw new LoginBadCredentialsException("No user is logged in");
         }
 
-        AdminResponse response = AdminResponse.builder()
-                .id(librarian.getId())
-                .name(librarian.getName())
-                .surname(librarian.getSurname())
-                .email(librarian.getEmail())
-                .role(librarian.getRole().name())
-                .imageUrl(librarian.getImageUrl())
-                .isActive(librarian.isActive())
-                .build();
+        AdminResponse response = AdminResponse.toDto(librarian);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Data", response));
     }
@@ -50,15 +42,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
         log.info("Libararian update qilindi. Librarian ID: {}.", librarian.getId());
 
-        AdminResponse response = AdminResponse.builder()
-                .id(librarian.getId())
-                .name(librarian.getName())
-                .surname(librarian.getSurname())
-                .email(librarian.getEmail())
-                .role(librarian.getRole().name())
-                .imageUrl(librarian.getImageUrl())
-                .isActive(librarian.isActive())
-                .build();
+        AdminResponse response = AdminResponse.toDto(librarian);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Muvaffaqiyatli update qilindi", response));
     }

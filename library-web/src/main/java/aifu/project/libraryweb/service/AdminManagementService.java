@@ -50,15 +50,7 @@ public class AdminManagementService {
         emailService.sendSimpleMessage(request.getEmail());
         log.info("Faollashtirish kodi muvaffaqiyatli yuborildi: email={}", request.getEmail());
 
-        AdminResponse response = AdminResponse.builder()
-                .id(savedAdmin.getId())
-                .name(savedAdmin.getName())
-                .surname(savedAdmin.getSurname())
-                .email(savedAdmin.getEmail())
-                .role(savedAdmin.getRole().name())
-                .imageUrl(savedAdmin.getImageUrl())
-                .isActive(savedAdmin.isActive())
-                .build();
+        AdminResponse response = AdminResponse.toDto(savedAdmin);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
@@ -98,26 +90,14 @@ public class AdminManagementService {
     public ResponseEntity<ResponseMessage> getAll(Integer page, Integer size, String sortDirection) {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(--page, size, Sort.by(direction, "id"));
-        Page<Librarian> librarianPage = librarianRepository.findAll(pageable);
+        Page<AdminResponse> librarianPage = librarianRepository.findAdmins(pageable);
 
-        List<Librarian> content = librarianPage.getContent();
+        List<AdminResponse> content = librarianPage.getContent();
         log.info("Adminlar ro'yxati. Ro'yxat: {}, Hajmi: {}", content, librarianPage.getTotalElements());
 
-        List<AdminResponse> list = content.stream()
-                .filter(admin -> admin.getRole() == Role.ADMIN)
-                .map(admin -> AdminResponse.builder()
-                        .id(admin.getId())
-                        .name(admin.getName())
-                        .surname(admin.getSurname())
-                        .email(admin.getEmail())
-                        .role(admin.getRole().name())
-                        .imageUrl(admin.getImageUrl())
-                        .isActive(admin.isActive())
-                        .build())
-                .toList();
 
         Map<String, Object> data = Util.getPageInfo(librarianPage);
-        data.put("data", list);
+        data.put("data", content);
 
         return ResponseEntity.ok(new ResponseMessage(true, "Adminlar ro'yxati", data));
     }

@@ -46,9 +46,9 @@ public class LibrarianServiceImpl implements LibrarianService {
     public ResponseEntity<ResponseMessage> update(AdminUpdateDTO updates) {
         Librarian librarian = updateLibrarian(updates);
 
-        librarian = librarianRepository.save(librarian);
+        librarianRepository.save(librarian);
 
-        log.info("Libararian update qilindi. Librarian: {}.", librarian);
+        log.info("Libararian update qilindi. Librarian ID: {}.", librarian.getId());
 
         AdminResponse response = AdminResponse.builder()
                 .id(librarian.getId())
@@ -69,7 +69,7 @@ public class LibrarianServiceImpl implements LibrarianService {
 
         Librarian librarian = getLibrarian();
 
-        log.info("Update qilinayotga kutubxonachi: {}", librarian);
+        log.info("Update qilinayotga kutubxonachi. ID: {}", librarian.getId());
 
         updateFields(updates, librarian);
 

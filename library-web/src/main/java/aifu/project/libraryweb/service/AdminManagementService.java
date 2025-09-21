@@ -24,52 +24,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
-
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 
 public class AdminManagementService {
-
-
     private final LibrarianRepository librarianRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    private static final Map<String, Map.Entry<String, Long>> activationCodeCache = new ConcurrentHashMap<>();
-    private static final long CODE_EXPIRY_TIME_MS = 5 * 60 * 1000;
-
     public ResponseEntity<ResponseMessage> createAdmin(AdminCreateRequest request) {
-        log.info("yangi admin yaratish jarayoni boshlandi: email={}", request.getEmail());
+        log.info("yangi admin yaratish jarayoni boshlandi: Request={}", request.toString());
 
         if (librarianRepository.existsByEmail(request.getEmail())) {
             log.warn("Admin yaratish jarayoni bekor qilindi: bu email bilan admin allaqachon mavjud: email={}", request.getEmail());
             throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
         }
 
-        Librarian newAdmin = new Librarian();
-        newAdmin.setName(request.getName());
-        newAdmin.setSurname(request.getSurname());
-        newAdmin.setEmail(request.getEmail());
-        newAdmin.setPassword(passwordEncoder.encode(request.getPassword()));
-        newAdmin.setRole(Role.ADMIN);
-        newAdmin.setDeleted(false);
-        newAdmin.setActive(false);
+        Librarian savedAdmin = AdminCreateRequest.toEntity(request, passwordEncoder.encode(request.getPassword()));
+        savedAdmin = librarianRepository.save(savedAdmin);
 
-        Librarian savedAdmin = librarianRepository.save(newAdmin);
-        log.info("Yangi admin (noactive) bazaga saqlandi: id={}, email={}", savedAdmin.getId(), savedAdmin.getEmail());
+        log.info("Yangi admin bazaga saqlandi (Inactive): ID={}, Email={}", savedAdmin.getId(), savedAdmin.getEmail());
 
-
-        String activationCode = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
-        activationCodeCache.put(request.getEmail(), Map.entry(activationCode, System.currentTimeMillis()));
-
-
-        String subject = "Kutubxona Tizimida Accountdi faollashtirish codi";
-        String text = "Salom! Sizning yangi admin akkauntingizni faollashtirish uchun tasdiqlash kodi: " + activationCode;
-        emailService.sendSimpleMessage(request.getEmail(), subject, text);
+        emailService.sendSimpleMessage(request.getEmail());
         log.info("Faollashtirish kodi muvaffaqiyatli yuborildi: email={}", request.getEmail());
 
         AdminResponse response = AdminResponse.builder()
@@ -84,14 +62,11 @@ public class AdminManagementService {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
-                        new ResponseMessage
-                                (true,
-                                        "Yangi admin muvaffaqiyatli yaratildi va faollashtirish kodi yuborildi!",
-                                        response)
+                        new ResponseMessage(true,
+                                "Yangi admin muvaffaqiyatli yaratildi va faollashtirish kodi yuborildi!",
+                                response)
                 );
-
     }
-
 
     @Transactional
     public void activateAccount(AccountActivationRequest request) {
@@ -99,14 +74,13 @@ public class AdminManagementService {
         String code = request.getCode();
         log.info("Akkauntni faollashtirishga urinish: email={}", email);
 
-        Map.Entry<String, Long> entry = activationCodeCache.get(email);
+        Map.Entry<String, Long> entry = emailService.getCacheEntry(email);
 
-        if (entry == null || !entry.getKey().equals(code) || System.currentTimeMillis() - entry.getValue() > CODE_EXPIRY_TIME_MS) {
-            activationCodeCache.remove(email);
-            log.warn("Faollashtirishda xatolik: cod notug'ri yoki muddati o'tgan. email={}", email);
+        if (entry == null || !entry.getKey().equals(code) || System.currentTimeMillis() - entry.getValue() > EmailService.getCODE_EXPIRY_TIME_MS()) {
+            emailService.removeCacheEntry(email);
+            log.warn("Faollashtirishda xatolik: Kod notug'ri yoki muddati o'tgan. email={}", email);
             throw new IllegalArgumentException("Faollashtirish kodi notug'ri yoki muddati o'tgan!");
         }
-
 
         Librarian user = librarianRepository.findByEmailAndIsActiveFalse(email)
                 .orElseThrow(() -> {
@@ -117,11 +91,9 @@ public class AdminManagementService {
 
         user.setActive(true);
         librarianRepository.save(user);
-        activationCodeCache.remove(email);
+        emailService.removeCacheEntry(email);
         log.info("Akkaunt muvaffaqiyatli faollashtirildi: email={}", email);
-
     }
-
 
     public ResponseEntity<ResponseMessage> getAll(Integer page, Integer size, String sortDirection) {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -152,10 +124,10 @@ public class AdminManagementService {
 
     public ResponseEntity<ResponseMessage> deleteAdmin(Long adminId) {
         Librarian adminToDelete = librarianRepository
-                .findByIdAndRoleAndIsDeletedFalse(adminId, Role.ADMIN)
+                .findByID(adminId)
                 .orElseThrow(() -> {
                     log.warn("O'chirish uchun Admin topilmadi yoki bu ID SuperAdminga tegishli: id={}", adminId);
-                    return new RuntimeException("Berilgan ID bilan Admin topilmadi.");
+                    return new IllegalArgumentException("Berilgan ID bilan Admin topilmadi.");
                 });
 
         adminToDelete.setActive(false);

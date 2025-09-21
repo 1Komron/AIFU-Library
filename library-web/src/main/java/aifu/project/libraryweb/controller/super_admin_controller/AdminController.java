@@ -92,11 +92,6 @@ public class AdminController {
         return ResponseEntity.ok(new ResponseMessage(true, "Akkaunt muvaffaqiyatli faollashtirildi!", null));
     }
 
-
-
-
-
-
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Adminni o'chirish (yumshoq)",

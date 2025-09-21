@@ -3,6 +3,7 @@ package aifu.project.libraryweb.repository;
 import aifu.project.common_domain.entity.Librarian;
 import aifu.project.common_domain.entity.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
@@ -21,9 +22,8 @@ public interface LibrarianRepository extends JpaRepository<Librarian, Long> {
 
     Optional<Librarian> findByEmailAndIsActiveFalse(String email);
 
-    Optional<Librarian> findByIdAndRoleAndIsDeletedFalse(Long id, Role role);
-
-
+    @Query("SELECT l FROM Librarian l WHERE l.id = :id AND l.role = 'ADMIN' AND l.isDeleted = false")
+    Optional<Librarian> findByID(Long id);
 
 }
 

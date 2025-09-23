@@ -11,6 +11,7 @@ public record BookCopySummaryDTO(
         String category,
         Integer bookCopyId,
         String inventoryNumber,
+        String epc,
         String shelfLocation,
         String notes,
         Boolean isTaken
@@ -26,6 +27,7 @@ public record BookCopySummaryDTO(
                 baseBook.getCategory().getName(),
                 bookCopy.getId(),
                 bookCopy.getInventoryNumber(),
+                bookCopy.getEpc(),
                 bookCopy.getShelfLocation(),
                 bookCopy.getNotes(),
                 bookCopy.isTaken()
